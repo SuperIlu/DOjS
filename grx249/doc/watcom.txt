@@ -1,0 +1,53 @@
+WATCOM C++ 11.0 Port of GRX2.2x
+Contact - Gary Sands (gsands@stbni.co.uk)
+The port has been caried out for a 32-bit library for DOS4GW binaries.
+
+Compilation
+--------------------------------------------
+NOW HAVE REAL MAKE FILES.
+The project and target files were a real pain to maintain!
+Run "WMAKE -F MAKEFILE.WAT" in the GRX base directory to
+build the library and test executables. The library builds
+to "LIB/WATCOM32" and the tests build to "BIN". Run
+"WMAKE -F MAKEFILE.WAT CLEAN" to delete the object and
+link files. You may see a few warnings from the test
+programs - DON'T PANIC. The WATCOM compiler is just very
+pedantic.
+
+Running "WMAKE DEBUG=1 -F MAKEFILE.WAT" should make a
+debug build of the library.
+
+If you want to make your own .PRJ and .TGT files for the IDE
+remember to compile everything with __MSDOS__ and
+SMALL_STACK defined (-d option in source options). There
+may be a few more definitions necessary. Check the top level
+makefile to see what the compiler options are if you have
+problems or see a large amount of warning messages.
+
+What works
+--------------------------------------------
+All the test programs shipped with GRX2.29 should work.
+VBE2 Protected Mode Interface and Linear Frame Buffer Support now
+compile and work. Don't forget to copy any .DAT files the test
+programs need to the "BIN" directory.
+
+What does not work
+--------------------------------------------
+16-bit Real Mode Library - I have not looked at it yet.
+// Added a few fixes for 16-bit mode but not finished. HSC
+
+What needs to be done
+--------------------------------------------
+Speed enhancements - need Watcom versions of the DJGPP/GNU inline
+assembly routines. In particular the line drawing and fill algorithms.
+Some of the fills have been written by Hartmut. He has put a lot of
+effort turning my hacks for Watcom into a structured part of GRX and
+deserves most of the credit for this port.
+
+** REMEMBER THAT THE DEFAULT STACK SIZE IS 3K SO YOU MAY HAVE TO
+ADJUST THAT IN THE LINKER OPTIONS OF YOUR EXECUTABLE - This is less
+of a problem now if you define SMALL_STACK **
+
+And of course best of luck using GRX with Watcom!
+
+

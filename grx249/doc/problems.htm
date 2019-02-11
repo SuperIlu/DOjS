@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+<body>
+<h1>Known GRX problems and things that must be improved</h1>
+<h2>General:</h2>
+<ul>
+  <li>The memory driver allocates all planes in one chunk instead
+of using real planes.
+    <p></p>
+  </li>
+  <li>Printing in 1200dpi on Laserjet supporting PCL6 doesn't work.
+  </li>
+</ul>
+<h2>Win32 driver:</h2>
+<ul>
+  <li>Drawline can be faster. Now when we paint a long diagonal line,
+the
+invalidate rect is very big.
+    <p></p>
+  </li>
+  <li>Add a 16 bpp framedriver.
+    <p></p>
+  </li>
+  <li>The printing code doesn't work correctly.
+  </li>
+</ul>
+<h2>X11 driver:</h2>
+<ul>
+  <li>Try to make GrPixel faster.
+    <p></p>
+  </li>
+  <li>The driver can't respond to PAINT events, so it has problems with
+XFree86 v4 because the backing-store is not enabled by default. The
+best solution is to have a context to save the actual window (and the
+GrPixel problem can be solved too). The workaround is to add next lines
+to the /etc/X11/XF86Config-4 file, in the Device section:
+    <p> Option "BackingStore"
+    </p>
+    <p> Option "SaveUnders"
+    </p>
+  </li>
+</ul>
+<h2>Linux console framebuffer driver:</h2>
+<ul>
+  <li>Try to change modes if the underlaying framebuffer driver allow
+it.
+    <p></p>
+  </li>
+  <li>Complete the alternate direct mouse driver (now it only handles
+PS/2 and IMPS2 mice).
+    <p></p>
+  </li>
+  <li>Use the alternate input driver even when the Svgalib driver is
+included,
+so virtual consoles can be switched.
+  </li>
+</ul>
+<h2>Linux console SVGALIB driver:</h2>
+<ul>
+  <li>Nedded alternate framedrivers for 1 and 4 bpp modes. The actual
+ones are
+using inport/outport instructions and doesn't work with svgalib 1.9.x
+and
+even with 1.4.x if the linux framebuffer is enabled.
+    <p></p>
+  </li>
+</ul>
+<h2>VGA DOS driver:</h2>
+<ul>
+  <li>It can be improved a lot, replacing the generic funtions it uses.
+    <p></p>
+  </li>
+  <li>BitBlt to screen doens't work in 4bpp modes if the screen is not
+set as the default context.
+  </li>
+</ul>
+</body>
+</html>

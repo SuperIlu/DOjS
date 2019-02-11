@@ -1,0 +1,35 @@
+#
+# GRX 2.0 test programs makefile for Turbo C. Uses Turbo C make.
+#
+.AUTODEPEND
+
+!include "../../makedefs.bcc"
+
+INCDIR= -I../../include -I$(BCCROOT)\include
+LIBDIR= -L$(BCCROOT)/lib
+
+GRX20ST = ../../lib/$(GRX_LIB_SUBDIR)/grx20$(MODEL).lib
+
+PROGS=                  \
+	bgilink.exe     \
+	bccbgi.exe      \
+	colortst.exe    \
+	small.exe       \
+	tellipse.exe    \
+	tfill.exe       \
+	tmodes.exe      \
+	tpoly.exe       \
+	ttext.exe
+
+all:    $(PROGS)
+
+clean:
+	if exist *.obj del *.obj
+	if exist *.exe del *.exe
+
+.obj.exe:
+	$(BCC) $(LIBDIR) $(LDOPT) -n. -e$* $*.obj $(GRX20ST)
+
+.c.obj:
+	$(BCC) -c $(CCOPT) $(INCDIR) -o$*.obj $*.c
+

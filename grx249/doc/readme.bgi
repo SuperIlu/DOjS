@@ -1,0 +1,326 @@
+
+ BCC2GRX  -  Interfacing Borland based graphics programs to LIBGRX
+ Copyright (C) 1993-97 by Hartmut Schirmer
+ Copyright (C) 2002 by Dimitar Zhekov
+
+ This library is now part of the GRX graphics library.
+
+ Contact : grx@gnu.de
+
+1. Introduction and overview
+-----------------------------------------------------------------------------
+
+  The BCC2GRX was created to allow users of LIBGRX to compile graphics
+  programs written for Borland-C++ and Turbo-C graphics interface. C code
+  can be directly compiled and linked with BCC2GRX.
+
+  Using LIBGRX based graphics gives you some advantages :
+
+     - 32 bit linear memory model (except for Turbo-C and BCC / DOS)
+     - high resolution and high color graphics modes supported
+     - easy way to support new graphics adapters
+     - LIBGRX and BCC2GRX are free software
+     - most ported applications run faster
+
+  The current BCC2GRX (v2.3) does only a few error checks since it is
+  assumed the program was extensively tested before porting it to GRX.
+  BCC2GRX is not a convenient platform to develop new BGI programs. Of
+  course you should use native LIBGRX in such cases!
+
+
+2. Differences between BGI and BCC2GRX
+-----------------------------------------------------------------------------
+
+  BCC2GRX is based on LIBGRX instead of using an  .bgi driver. This
+  introduces some differences compared with the Borland GI. The (known)
+  differences are listed below.
+
+     - Most LIBGRX platforms are 32 bit. An int will take 4 bytes instead of
+       2 with Turbo-C and BCC for DOS. If you need a 16 bit integer, change
+       the definition from int to short which is 16 bit on all systems.
+     - WHITE is a function not constant with BCC2GRX. This may cause
+       problems in switch () statements.
+        (You may use
+         #define WHITE 15
+         #include <libbcc.h>
+        to improve compatibility.)
+     - BCC2GRX can not use .bgi drivers. Installing an user driver and the
+       register(far)bgidriver will always cause an error.
+     - registerfarbgifont() and registerbgifont() are the same. Both take a
+       void* to the character font (whole file with header !)
+     - initgraph()/detectgraph() work slightly different. See below for
+       details.
+     - getmodenames() and other functions may be called before initgraph()
+     - character files won't be flushed at closegraph()
+     - NOT_PUT isn't supported.
+     - some constants may differ in value
+     - BCC2GRX's outtext() and outtextxy() do correct clipping
+     - some graphics primitives slightly differ in behaviour between BGI and
+       LIBGRX. Eg. the "saucer" in bccbgi.c putimage()/getimage() demo
+       looks a little different.
+     - the BCC2GRX header file is <libbcc.h>. You must change the #include
+       statements since BCC2GRX is incompatible with <graphics.h>. For
+       programs compatible with both Borland GI and BCC2GRX, conditional
+       compilation may be used:
+         #if defined(__MSDOS__) && defined(__TURBOC__)
+         #  include <graphics.h>
+         #else
+         #  include <libbcc.h>
+         #endif
+       and such programs should be linked with the respective library,
+       either Borland or GRX (but not both).
+     - the color constants like REG, GREEN, etc. won't work in graphics
+       modes with more than 256 colors. Use _ega_color(RED),
+       _ega_color(GREEN), etc to get the right colors
+
+
+3. Some useful internals of BCC2GRX
+-----------------------------------------------------------------------------
+
+  Since LIBGRX provides a flexible and powerful set of graphics primitives,
+  some of the basic routines are defined within bccgrx.h using "__inline__
+  static" functions when using a GNU-C compiler. It compiles these functions
+  like macros, but you can refer to their addresses. There is one exeption to
+  this rule: When compiling code based on a pascal program, a macro is used
+  for getaspectratio since the pascal and C graphics interfaces use different
+  calling types.
+
+  BGI has something called a 'viewport'. There are two very different
+  behaviors depending on the clipping flag:
+
+     If clipping is on, one introduces something like a subscreen where
+     (nearly) all drawing operations are done.
+     Otherwise the origin of the drawing coordinate system is shifted from
+     the top left corner to some other point on screen.
+
+  BCC2GRX always adds the origin shift to all operations. If clipping is
+  requested, GrSetClipBox() is called and LIBGRX restricts drawing to the
+  selected subscreen.
+
+  One may wonder why BCC2GRX has it's own drawpoly() function instead of
+  using the LIBGRX function. In BGI a polygon isn't really a polygon but may
+  be a union of several unconnected closed polygons. In more detail:
+
+     If the start point of a polygon is reached again, the next point
+     is the start point of a new polygon. No connection line is drawn.
+
+  So one may draw several closed polygons at once. I don't know whether this
+  behavior of the BGI is a bug or a feature, but BCC2GRX is at least
+  compatible ...
+
+
+4. initgraph()/detectgraph()/closegraph()
+-----------------------------------------------------------------------------
+
+  It's recommended to use something like the following code to
+  initialize the graphics interface :
+
+     int gd, gm, err;
+     gd = DETECT;                         /* or detectgraph(&gd,&gm); */
+     initgraph(&gd,&gm,PATH_TO_CHR_FILES);
+     err = graphresult();
+     if (err != grOk) ...
+
+  This code sets up the default graphics mode defined in the GO32 or GRX20DRV
+  environment variable. This code will work with Borland and GRX based BGI
+  code without change. BCC2GRX will treat all gd values as 'DETECT' and set
+  up the GRX default graphics mode.
+
+  BCC2GRX provides two new functions to select the graphics mode:
+
+     void set_BGI_mode(int *graphdriver, int *graphmode);
+  and
+     void set_BGI_mode_whc(int *graphdriver, int *graphmode,
+                           int width, int height, int colors);
+
+  If your code requires one of the standard BGI modes, use set_BGI_mode()
+  with BCC2GRX:
+
+       gd = VGA; gm = VGAHI;
+     #ifdef __GNUC__
+       set_BGI_mode( &gd, &gm);
+     #endif
+       initgraph( &gd, &gm, "");
+
+  All resolutions including the SVGA modes may be set up by calling the
+  set_BGI_mode_whc() function:
+
+     #ifdef __GNUC__
+       set_BGI_mode_whc( &gd, &gm, 640, 480, 1<<24);
+     #else
+       /* BCC stuff invoking a SVGA mode, needs nonstd BGI driver */
+     #endif
+       initgraph( &gd, &gm, "");
+
+  The BCC2GRX requests the desired resolution from LIBGRX by calling
+
+     GrSetMode( GR_width_height_color_graphics, ...)
+
+  If there is no such mode in the current driver, a related one may be set up
+  by LIBGRX. If you program needs a special resolution (say eg. Hercules
+  720x348) you should check getmaxx() and getmaxy() after initgraph().
+
+  Please note that
+     - set_BGI_mode(HERCMONO, HERCMONOHI) uses 720x350x16 on VGA cards,
+     - all drivers != NATIVE_GRX behave like DETECT with BCC2GRX,
+     - set_BGI_mode[_whc]() sets up local variables used by initgraph() and
+       setgraphmode(). You may change the resolution after initgraph() done
+       by
+           gd = DETECT;
+           initgraph(&gd, &gm, "");
+           /* Default graphics mode */
+           ....
+         #if defined(__TURBOC__) && defined(__MSDOS__)
+           /* Borland GI stuff to set up 1024x768x256 mode */
+           gm = ... ;
+         #else
+           set_BGI_mode_whc(&gd, &gm, 1024, 768, 256);
+         #endif
+           setgraphmode( gm);
+           /* Now in 1024x768x256 mode */
+
+  Starting with BCC2GRX v2.0 there are new functions:
+
+     getmodemaxcolor(int mode), getmodemaxx(int mode), getmodemaxy(int mode)
+
+  which may be called at any time, even before initgraph(). A program may
+  require true rgb support (32k colors or more) and at least 800x600 pixels.
+  The new getmodemax*() functions may be used for flexible setup:
+
+     int gd=DETECT, gm;
+   #if defined(__BCC2GRX__) && (__BCC2GRX__>=0x200)
+     #define XR 800
+     #define YR 600
+     #define CR (1<<15)
+     int lo,hi,x=0,y=0,c=0,i;
+     detectgraph(&gd,&gm);
+     getmoderange(gd, &lo, &hi); gm=-1;
+     for (i=hi;i>=lo;--i)
+       if (getmodemaxcolor(i)>=CR) {
+         if (getmodemaxx(i)==XR && getmodemaxy(i)==YR) {
+           gm = i; /* enough colors and exact geometry */
+           break; /* ==> done */
+         }
+         if (getmodemaxx(i)>=XR && getmodemaxy(i)>=YR)
+           gm = i;
+       } else break; /* no success */
+     if (gm<0) {
+       puts("Sorry, no sufficient video mode available\n");
+       exit(1);
+     }
+     #undef XR
+     #undef YR
+     #undef CR
+   #endif
+     initgraph(&gd,&gm,"");
+
+  The above example exploits the BCC2GRX ordering of modes:
+     less colors first, less total pixel count earlier, or
+     decide by horizontal width
+  Eg.:
+     640x480x16  // 16 < 256 available colors
+     320x200x256 // 64000 < 128000 total pixel
+     640x200x256 // 128000 < 172800 total pixel
+     360x480x256 // 360 < 480 horizontal pixel
+     480x360x256 // 172800 < 480000 total pixel
+     800x600x256 // 256 < 16M available colors
+     640x480x16M
+
+  closegraph() doesn't free any allocated memory (eg. vector fonts).
+
+  The paging routines setactivepage() and setvisualpage() are functional for
+  GRX v2 base BCC2GRX. Just call set_BGI_mode_pages() before calling
+  initgraph():
+
+     set_BGI_mode_pages(2);  /* 1 or 2 valid ! */
+     initgraph(...);
+     if (graphresult() == grOk && get_BGI_mode_pages() > 1) {
+       /* Do cool paging stuff */
+     }
+
+  You can't check paging without switching into graphics mode!
+  Translating BCC modes by set_BGI_mode() will disable paging!
+
+
+5. Using fonts
+------------------------------------------------------------------------------
+
+  The BCC2GRX v1.2 or newer can link vector fonts into the .exe file.
+  The standard fonts are in the libbcc*.a:
+
+     _bold_font, _euro_font, _goth_font, _lcom_font
+     _litt_font, _sans_font, _scri_font, _simp_font
+     _trip_font, _tscr_font
+
+  Call registerbgifont() to enable font usage:
+
+     registerbgifont( &_bold_font);
+     registerbgifont( &_euro_font);
+     registerbgifont( &_goth_font);
+     registerbgifont( &_lcom_font);
+     registerbgifont( &_litt_font);
+     registerbgifont( &_sans_font);
+     registerbgifont( &_scri_font);
+     registerbgifont( &_simp_font);
+     registerbgifont( &_trip_font);
+     registerbgifont( &_tscr_font);
+
+  Of course you can also link non standard fonts:
+
+     - copy the .chr file(s) to bcc2grx/src
+     - goto bcc2grx and type 'make'
+     - add
+         extern int _<font_name>_font;
+         registerbgifont( &_<font_name>_font);
+       to your source
+
+  The actual BCC2GRX handels the 11 standard and up to 10 user fonts. If you
+  need more user fonts, you should change the definition of LastUserFont in
+  text.c!
+
+  Starting with BCC2GRX v1.2 you can also use the LIBGRX bitmapped fonts.
+  Just get a font handle and set the new text style. Eg. you may want to use
+  the 8x16 VGA font in high resolution graphics:
+
+     font_handle = installuserfont( "pc8x16.fnt");
+     settextstyle( font_handle, HORIZ_DIR, 1);
+
+  See test/ttext.c for more examples.
+
+  Please note that GRX 2.x can't scale bitmap fonts at drawing level any
+  longer. Before drawing a magnified DEFAULT_FONT, BCC2GRX will first set up
+  the required new font and keeps a pointer for later use. Due to this, you
+  might notice a slight delay the first time you request a magnified font.
+
+  The new GRX 2.x may use Borland vector fonts as native fonts. Managing the
+  resulting bitmap fonts would use much more memory than linking the font
+  rendering code twice, so I decided not to use the GRX font API.
+
+  Every font will be loaded only once and stay in (virtual) memory until the
+  program terminates. If this behaviour doesn't work with your program (eg.
+  something like a font editor) or you get short of memory loading hundreds
+  of fonts, please tell me about.
+
+
+8. What's new in this release?
+-----------------------------------------------------------------------------
+
+  New copyright terms: same license as the rest of GRX.
+  Updated for GRX 1.03 / .vdr drivers / 64K && 16M color modes
+  More robust library internal function naming
+  BLACK now is a constant
+  Several (minor) bug fixes
+  Updated for GRX v2
+  libbcc.h won't include GRX stuff any more
+  added version control __BCC2GRX__
+  Linux support
+  setactivepage()/setvisualpage() with GRX v2
+
+  For a more complete list of changes and new features check src/changes.
+
+
+9. LIBGRX 2.4.5 and later
+-----------------------------------------------------------------------------
+
+  Starting with LIBGRX 2.4.5, BCC2GRX supports Turbo-C and BCC. The
+  documentation has been updated accordingly.

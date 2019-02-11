@@ -1,0 +1,277 @@
+#
+# Library Makefile for LINUX/X11. Uses GNU Make.
+#
+# set up for GCC / Linux
+#
+.PHONY : libst libsh clean cleanall install uninstall setsuid \
+	 install-bin uninstall-bin install-fonts uninstall-fonts \
+	 install-info uninstall-info
+         
+GRXVX11=y
+
+include ../makedefs.grx
+
+INCDIR= -I. -I./include -I../include $(X11INCS)
+
+ifdef GRX_DEFAULT_FONT_PATH
+CCOPT += -DGRX_DEFAULT_FONT_PATH=\"$(GRX_DEFAULT_FONT_PATH)\"
+endif
+
+ifeq ($(USE_XF86DGA_DRIVER),y)
+CCOPT += -DXF86DGA_DRIVER
+endif
+
+ifeq ($(USE_XF86DGA_FRAMEBUFFER),y)
+CCOPT += -DXF86DGA_FRAMEBUFFER
+endif
+
+ifeq ($(SET_XSUIDROOT),y)
+EXECBITS = 4755
+else
+EXECBITS = 0755
+endif
+
+ADDON_LIBS =
+
+ifeq ($(USE_XF86DGA_DRIVER),y)
+  ADDON_LIBS += -lXxf86dga -lXext
+endif
+
+GRX20ST   = ../lib/$(GRX_LIB_SUBDIR)/libgrx20X.a
+
+GRX20SH = ../lib/$(GRX_LIB_SUBDIR)/libgrx20X.so
+GRX20SHli = $(GRX20SH).$(word 1,$(subst ., ,$(GRX_VERSION)))
+GRX20SHna = $(GRX20SH).$(GRX_VERSION)
+SHCCOPT = -fPIC -D__SHARED__
+
+OX=.o
+OP=
+
+include ./stdobjs.mak
+
+STD_O= $(STD_1) $(STD_2)  $(STD_3)  $(STD_4) \
+       $(STD_5) $(STD_6)  $(STD_7)  $(STD_8) \
+       $(STD_9) $(STD_10) $(STD_11) $(STD_12)\
+
+BGI_O= $(BGI_1) $(BGI_2)  $(BGI_3)  $(BGI_4) \
+       $(BGI_5) $(BGI_6)
+
+ADDON_O=
+
+ifdef DEBUG
+ ADDON_O += $(DBG_1)
+endif
+
+ifeq ($(HAVE_LIBTIFF),y)
+  ADDON_O += $(TIF_1)
+endif
+
+ifeq ($(HAVE_LIBJPEG),y)
+  ADDON_O += $(JPG_1)
+else
+  ADDON_O += $(NOJPG_1)
+endif
+
+ifeq ($(HAVE_LIBPNG),y)
+  ADDON_O += $(PNG_1)
+else
+  ADDON_O += $(NOPNG_1)
+endif
+
+ifeq ($(INCLUDE_PRINTING_CODE),y)
+  ADDON_O += $(PRN_1)
+  INCDIR += -I../addons/print
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+  BGI_O += $(PRNBGI_1)
+endif
+endif
+
+ifeq ($(INCLUDE_BMP_CODE),y)
+  ADDON_O += $(BMP_1)
+  INCDIR  += -I../addons/bmp
+endif
+
+O=      $(STD_O)            \
+	$(ADDON_O)          \
+	fdrivers/fd_xwin.o  \
+	fdrivers/ram24.o    \
+	fdrivers/ram32l.o   \
+	fdrivers/ram32h.o   \
+	fonts/fdv_xwin.o    \
+	mouse/xwininp.o     \
+	mouse/xwinkeys.o    \
+	misc/x11misc.o      \
+	vdrivers/vd_xwin.o
+
+ifeq ($(USE_XF86DGA_DRIVER),y)
+O+=	fdrivers/lfb16.o    \
+	fdrivers/lfb24.o    \
+	fdrivers/lfb32h.o   \
+	fdrivers/lfb32l.o   \
+	fdrivers/lfb8.o     \
+	fdrivers/lfbbltrv.o \
+	fdrivers/lfbbltvr.o \
+	fdrivers/lfbbltvv.o \
+	vdrivers/vd_xfdga.o
+endif
+
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+  O += $(BGI_O)
+endif
+
+LO = $(subst $(OX),.lo,$(O))
+
+UTILP = ../bin/bin2c \
+	../bin/fnt2c
+
+UTILPX= ../bin/xmodetest
+
+all: libst libsh $(UTILP) $(UTILPX)
+
+libst: $(GRX20ST)
+
+$(GRX20ST): $(LINUX_i386_X11) $(O)
+	-rm -f $(GRX20ST)
+	$(AR) -r $(GRX20ST) $(O)
+	$(RANLIB) $(GRX20ST)
+
+ifeq ($(INCLUDE_SHARED_SUPPORT),y)
+libsh: $(GRX20SHna)
+else
+libsh:
+endif
+
+$(GRX20SHna): $(LINUX_i386_X11) $(LO)
+	-rm -f $(GRX20SHna)
+	$(CC) $(LDOPT) -shared -Wl,-soname,$(notdir $(GRX20SHli)) -o $(GRX20SHna) $(LO)
+	ln -sf $(notdir $(GRX20SHna)) $(GRX20SHli)
+
+$(UTILP): ../bin/% : utilprog/%.o $(GRX20ST)
+	$(CC) $(LDOPT) -o $@ utilprog/$*.o $(GRX20ST) $(X11LIBS)
+	$(STRIP) $@
+
+$(UTILPX): ../bin/x% : utilprog/%.o $(GRX20ST)
+	$(CC) $(LDOPT) -o $@ utilprog/$*.o $(GRX20ST) $(ADDON_LIBS) $(X11LIBS)
+	$(STRIP) $@
+	chmod $(EXECBITS) $@
+
+$(O): $(LINUX_i386_X11)
+
+$(LO): $(LINUX_i386_X11)
+
+$(LINUX_i386_X11):
+	-if [ ! -r $(LINUX_i386_X11) ]; then \
+	rm -f $(SYSTEM_TAG_PREFIX).* $(O) $(LO) utilprog/*.o; fi
+	touch $(LINUX_i386_X11)
+
+clean:
+	rm -f $(O) $(LO) $(LINUX_i386_X11)
+	rm -f utilprog/*.o
+
+cleanall: clean
+ifeq ($(INCLUDE_SHARED_SUPPORT),y)
+	rm -f $(GRX20SHna) $(GRX20SHli)
+endif
+	rm -f $(GRX20ST)
+	rm -f $(UTILP) $(UTILPX)
+
+install: libst libsh
+	install -m 0755 -d $(DESTDIR)$(libdir)
+	install -m 0755 -d $(DESTDIR)$(includedir)
+	install -m 0644 $(GRX20ST) $(DESTDIR)$(libdir)
+ifeq ($(INCLUDE_SHARED_SUPPORT),y)
+	install -m 0755 $(GRX20SHna) $(DESTDIR)$(libdir)
+	ln -sf $(notdir $(GRX20SHna)) $(DESTDIR)$(libdir)/$(notdir $(GRX20SHli))
+	ln -sf $(notdir $(GRX20SHli)) $(DESTDIR)$(libdir)/$(notdir $(GRX20SH))
+endif
+	install -m 0644 ../include/grx20.h $(DESTDIR)$(includedir)
+	install -m 0644 ../include/grxkeys.h $(DESTDIR)$(includedir)
+	install -m 0644 ../include/libbcc.h $(DESTDIR)$(includedir)
+ifeq ($(INCLUDE_PRINTING_CODE),y)
+	install -m 0644 ../addons/print/grxprint.h $(DESTDIR)$(includedir)
+endif
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	install -m 0755 -d $(DESTDIR)$(unitsdir)
+	install -m 0644 ../pascal/grx.pas $(DESTDIR)$(unitsdir)
+	install -m 0644 ../pascal/bgi/graph.pas $(DESTDIR)$(unitsdir)
+endif
+
+uninstall:
+	rm -f $(DESTDIR)$(libdir)/$(notdir $(GRX20ST))
+ifeq ($(INCLUDE_SHARED_SUPPORT),y)
+	rm -f $(DESTDIR)$(libdir)/$(notdir $(GRX20SH))
+	rm -f $(DESTDIR)$(libdir)/$(notdir $(GRX20SHli))
+	rm -f $(DESTDIR)$(libdir)/$(notdir $(GRX20SHna))
+endif
+	rm -f $(DESTDIR)$(includedir)/grx20.h
+	rm -f $(DESTDIR)$(includedir)/grxkeys.h
+	rm -f $(DESTDIR)$(includedir)/libbcc.h
+ifeq ($(INCLUDE_PRINTING_CODE),y)
+	rm -f $(DESTDIR)$(includedir)/grxprint.h
+endif
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	rm -f $(DESTDIR)$(unitsdir)/grx.pas
+	rm -f $(DESTDIR)$(unitsdir)/graph.pas
+endif
+
+setsuid: $(UTILPX)
+ifeq ($(SET_XSUIDROOT),y)
+	chown root ../bin/modetest
+	chmod $(EXECBITS) ../bin/modetest
+else
+	@echo "Nothing to do, SET_XSUIDROOT is not set to 'y' in makedefs.grx"
+endif
+
+install-info:
+	install -m 0755 -d $(DESTDIR)$(infodir)
+	install -m 0644 ../doc/grx*um.inf $(DESTDIR)$(infodir)/grx.info
+	for info_dir_file in $(DESTDIR)$(infodir)/dir /etc/info-dir; do \
+	  if [ -w $$info_dir_file ]; then \
+	    install-info --dir-file=$$info_dir_file $(DESTDIR)$(infodir)/grx.info; \
+	  fi; \
+	done
+
+uninstall-info:
+	for info_dir_file in $(DESTDIR)$(infodir)/dir /etc/info-dir; do \
+	  if [ -w $$info_dir_file ]; then \
+	    install-info --dir-file=$$info_dir_file -r grx; \
+	  fi; \
+	done
+	rm -f $(DESTDIR)$(infodir)/grx.info
+
+install-bin: $(UTILP) $(UTILPX)
+	install -m 0755 -d $(DESTDIR)$(bindir)
+	install -m 0755 ../bin/bin2c $(DESTDIR)$(bindir)
+	install -m 0755 ../bin/fnt2c $(DESTDIR)$(bindir)
+	install -m $(EXECBITS) ../bin/xmodetest $(DESTDIR)$(bindir)
+
+uninstall-bin:
+	rm -f $(DESTDIR)$(bindir)/bin2c
+	rm -f $(DESTDIR)$(bindir)/fnt2c
+	rm -f $(DESTDIR)$(bindir)/xmodetest
+
+ifdef GRX_DEFAULT_FONT_PATH
+install-fonts:
+	install -m 0755 -d $(DESTDIR)$(GRX_DEFAULT_FONT_PATH)
+	install -m 0644 ../fonts/* $(DESTDIR)$(GRX_DEFAULT_FONT_PATH)
+uninstall-fonts:
+	rm -f $(DESTDIR)$(GRX_DEFAULT_FONT_PATH)/*
+endif
+
+dep:
+	$(CC) -MM $(CCOPT) $(INCDIR) $(O:.o=.c) \
+	| sed 's#^.*: \(.*\)\.c#\1.o: \1.c#g' >depend.x11
+
+$(O): %.o : %.c
+	$(CC) -c $(CCOPT) -D__XWIN__ $(INCDIR) $*.c -o $*.o
+
+$(LO): %.lo : %.c
+	$(CC) -c $(CCOPT) $(SHCCOPT) -D__XWIN__ $(INCDIR) $*.c -o $*.lo
+
+.c.s:
+	$(CC) -S $(CCOPT) -D__XWIN__ $(INCDIR) $*.c -o $*.s
+
+.c.o:
+	$(CC) -c $(CCOPT) -D__XWIN__ $(INCDIR) $*.c -o $*.o
+
+include depend.x11

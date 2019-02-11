@@ -1,0 +1,351 @@
+Welcome to GRX 2.4.9!
+
+GRX is a 2D graphics C library originaly written by Csaba Biegl for
+DJ Delorie's DOS port of the GCC compiler. Now it support a big range
+of platforms.
+
+
+Supported platforms
+===================
+
+Directly supported platforms:
+-----------------------------
+
+  Currently GRX directly supports the following four platforms:
+
+     DOS / DJGPP v>=2.03 EGA, VGA and VESA drivers
+     Linux / console     svgalib and framebuffer drivers
+     Linux / X11R6       xwin  driver (windowed) and SDL (full screen)
+     Win32 / Mingw       win32 driver (windowed) and SDL (full screen)
+
+  The Linux console framebuffer driver is new from GRX 2.4.2.
+  The SDL driver, compiled separately, is new from GRX 2.4.7.
+  Both i386 and x86_64 architectures are supported for the linux
+  console and the linux X11 versions. See below.
+
+Other DOS platforms:
+--------------------
+
+  Makefiles for Borland C++ have been updated in GRX 2.4.6
+
+  Until 2.3 the Watcom C++ compiler was supported, probably it still work,
+  but the makefiles must be updated:
+
+Other X11 platforms:
+--------------------
+
+  GRX should work on any X11R5 (or later) system after a few changes
+  in "makedefs.grx"
+
+  New in GRX 2.4.6 is a DGA (Direct Graphics Access) driver for Xfree86,
+  experimental, not compiled by default, it must be enabled editing
+  the "makedefs.grx" file.
+
+  New in GRX 2.4.7 is a SDL driver. Compiled separately after editing
+  the "makedefs.grx" file, SDL section, EP=x .
+
+Other Win32 platforms:
+----------------------
+
+  GRX is reported to compile with MSVC, and there is support in the source
+  files, so you only need to generate the project files.
+
+  New in GRX 2.4.7 is a SDL driver. Compiled separately after editing
+  the "makedefs.grx" file, SDL section, EP= .
+
+  Other Win32 compilers may probably work.
+
+Other platforms:
+----------------
+
+  Some people has ported GRX to embeded devices. For this you need a good
+  understanding of GRX internals.
+
+
+GRX installation instructions
+=============================
+
+Requirements:
+-------------
+
+  The source files and fonts:  grx249.tar.gz or grx249.zip
+  This document:               readme
+
+A. Unpacking the GRX archive
+----------------------------
+
+  1) Choose and download the .tar.gz or .zip package. You can use either.
+     The .zip is intended for dos and win32 users, specialy for DJGPP users,
+     because it expand to the contrib subdir and has manifest files.
+
+  2) 'cd' to a directory where you want the GRX file tree to be created
+     as a subdirectory. Examples are:
+
+       DJGPP : C:\DJGPP\
+       Mingw : C:\MINGW\
+       Linux : /usr/local/src/
+
+  3) unpack the GRX archive:
+
+         tar xzvf grx249.tar.gz  (1)
+     or
+         unzip grx249.zip        (2)
+
+     (1) This will create the subdirectory 'grx249'.
+     (2) This will create the subdirectory 'contrib/grx249'.
+
+B. Compiling GRX
+----------------
+
+  1) Go to GRX base dir and edit "makedefs.grx" to customize it for
+     your system.
+
+  2) Switch to "src" sub dir
+
+  3) run 'make -f <your makefile>':
+
+     makefile.dj2 for DOS/DJGPPv2
+     makefile.w32 for Win32/Mingw
+     makefile.lnx for Linux/console
+     makefile.x11 for Linux/X11
+     makefile.sdl for SDL driver on MingW and X11
+
+     This process generates the GRX lib in the "lib/---" (where --- is
+     dj2, w32, lnx, x11) subdir and some utility programs in the
+     "bin" subdir.
+
+     Note for DJGPP/Mingw users: If you set in makedefs.grx HAVE_UNIX_TOOLS=n
+     do _not_ use an environment variable  `SHELL' leading to `bash', e.g. 
+     `SHELL=/djgpp/bin/bash.exe'. For mingw use mingw32-make instead of make.
+     Some parts of the DJGPP/Mingw Makefiles with this option require 
+     `command.com'. If you set HAVE_UNIX_TOOLS=y (i.e. work under bash
+     for djgpp or msys for mingw32), there are no problems.
+
+     Note for Linux/console users: At the end you must become root and
+     run 'make -f makefile.lnx setsuid' in order to set de suid flag of
+     the modetest utility program. (This is required by the SVGALIB
+     video driver).
+
+C. Testing GRX
+--------------
+
+  1) Switch to "test" sub dir
+
+  2) run 'make -f <your makefile>'
+
+  3) run the 'demogrx' program
+
+  4) Switch to "test/bgi" sub dir
+
+  5) run 'make -f <your makefile>'
+
+  6) run the 'bccbgi' program
+
+  Note for Linux/console users: you must compile test programs as root.
+  (This is required by the SVGALIB video driver).
+ 
+D. Installing GRX lib for your compiler
+---------------------------------------
+
+  You'll either need to 1: copy some GRX files to places where your compiler
+  will find them or 2: change your compiler setup so it will find the GRX
+  files in there default place.
+
+  1) Copy the library from <GRX base>/lib/<your system> to the compiler
+     library directory.
+     Copy the header files from <GRX base>/include to your compiler include
+     directory.
+
+     Or you can let makefiles do it for you, switch to "src" sub dir and
+     run 'make -f <your makefile> install'. You can uninstall the library
+     running 'make -f <your makefile> uninstall'.
+
+     Note for Linux users: probably you must be root to do that. Don't forget
+     to run 'ldconfig' to register the shared libraries.
+
+  2) See compiler documentation. Either change the default compiler behaviour
+     (eg., change djgpp.env) or use command line switches to tell the
+     compiler where to find the GRX files.
+
+E. Installing GRX utility programs
+----------------------------------
+
+  Run 'make -f <your makefile> install-bin'
+
+  You can uninstall them running 'make -f <your makefile> uninstall-bin'
+
+  Note for Linux users: probably you must be root to do that.
+
+F. Installing GRX fonts
+-----------------------
+
+  Only if you have defined a default font directory in "makedefs.grx"
+  you can install them running 'make -f <your makefile> install-fonts'
+
+  You can uninstall them running 'make -f <your makefile> uninstall-fonts'
+
+  Note for Linux users: probably you must be root to do that.
+
+G. Installing GRX info doc
+--------------------------
+
+  Except for the 'w32' target you can install the GRX info doc in your
+  info tree. Run 'make -f <your makefile> install-info'
+
+  You can uninstall them running 'make -f <your makefile> uninstall-info'
+
+  Note for Linux users: probably you must be root to do that.
+
+
+Support for the x86_64 architecture
+===================================
+
+  By default, on linux, the makefiles build the library for the i386
+  architecture even in a x86_64 cpu. To build the x86_64 library (in
+  a x86_64 compatible cpu of course) you must set to 'y' the BUILD_X86_64
+  variable in the makedefs.grx file.
+
+Alternate installation by a Configure script
+============================================
+
+  For people who know how to use it, a configure script is provided,
+  run './configure --help' to show the options.
+
+
+Environment variables for using GRX programs
+============================================
+
+  1) set the default driver and graphics mode info (very useful but not
+     required), in DOS or Windows:
+
+       SET GRX20DRV=<driver> gw <width> gh <height> nc <colors>
+
+     in Linux:
+
+       export GRX20DRV="<driver> gw <width> gh <height> nc <colors>"
+
+     Available drivers are for:
+
+       DOS  : herc, stdvga, stdega, et4000, cl5426, mach64,
+              ati28800, s3, VESA, memory
+       Linux: svgalib, linuxfb, memory
+       X11  : xwin, memory
+       Win32: win32, memory
+
+       There is also a sdl driver for x11 and win32, compiled separately.
+       In this case GRX20DRV="sdl::fs" gives full screen, GRX20DRV="sdl::ww"
+       gives windowed graphics. You can also change inside a program:
+       see test/fswwtest.c.
+
+     Values for gw and gh can be by example 640,480 or 800,600
+     Values for nc can be 2, 16, 256, 64K or 16M.
+
+  2) set the GRX font dir, in DOS or Windows:
+
+       SET GRXFONT=<directory for the GRX fonts>
+
+     in linux:
+
+       export GRXFONT=<directory for the GRX fonts>
+
+     This is required for GRX graphics text output. Path: <GRX base>/fonts
+
+     NOTE: You can define a default font directory when compiling GRX.
+           Check the "makedefs.grx" file. 
+
+  3) the linux framebuffer driver opens the "/dev/fb0" device file by
+     default, if you want to open an alternate device file, set the
+     $FRAMEBUFFER environment variable:
+
+       export FRAMEBUFFER=<device file>
+
+
+Suidroot in the Linux console platform
+======================================
+
+  You know setting suidroot is a security flaw, if you want your grx linux
+  console program really portable yo have not options, because the svgalib
+  stable version requires it. But if you really wants a suidroot aware
+  libgrx you can modify makedefs.grx to obtain:
+
+  * a framebuffer only linux console libgrx version
+
+  * a libgrx version without some framedrivers than do direct in/out port,
+  so you can link it with the svgalib alpha version (1.9.x) that not
+  requires suidroot.
+
+
+Pascal users
+============
+
+  GRX has a Pascal interface (gpc), if you plan to use it don't forget
+  next steps before compiling:
+  
+  1) Activate INCLUDE_GPC_SUPPORT editing the "makedefs.grx" file.
+  
+  2) Edit the files pascal/grx.pas and pascal/bgi/graph.pas to uncomment
+  the '{.$L ...}' directives (near the beginning) to load the auxiliary
+  libraries (tiff, jpeg, png, z and socket) you need.
+
+  Alternatively you can use the configure script.
+
+  See the "pascal/readme" file for other details.
+
+
+Help
+====
+
+  Read the user's guide in the "doc/grx249um.htm" file. If you ran
+  'make <your makefile> install-info', just type 'info grx' to view
+  the info version of the manual.
+
+  If you have problems installing or running GRX check
+
+    http://www.gnu.de/software/GRX/
+
+  for updates, pre-compiled libs, ...
+
+  If this doesn't help, check your system/compiler FAQ (eg., the
+  DJGPP v2 FAQ is at http://www.delorie.com/djgpp/v2faq)
+
+  Check the GRX mailing list archive at
+  http://grx.gnu.de/archive/grx/en/
+
+  Check out the DJGPP newsgroup comp.os.msdos.djgpp (archive at
+  http://www.delorie.com/djgpp/mail-archives/ )
+
+  Send a problem report to comp.os.msdos.djgpp or to the GRX mailing
+  list <grx@gnu.de> (see below).
+
+  There is a GRX mailing list <grx@gnu.de> and a separate, moderated
+  mailing list for GRX announcements <grx-announce@gnu.de>. To
+  subscribe to one of the lists, send an email containing "subscribe
+  grx" or "subscribe grx-announce" in the body to <majordomo@gnu.de>.
+  (The subject will be ignored.)
+
+
+License
+=======
+
+  The GRX graphics library is free software; you can redistribute it
+  and/or modify it under some conditions; see the "copying.grx" file
+  for details.
+
+
+Credits
+=======
+
+  I am maintainig GRX now by accident, but if GRX is a so good library
+  it is thanks to:
+
+  Csaba Biegl <csaba@vuse.vanderbilt.edu> who wrote it.
+  Michael Goffioul <goffioul@emic.ucl.ac.be> who released 2.1
+  Hartmut Schirmer <hsc@techfak.uni-kiel.de> who released 2.2 and 2.3
+  Peter Gerwinski <peter@gerwinski.de> released GRX 2.3.1 and 2.3.2.
+  Mariano Alvarez Fernandez <malfer@telefonica.net> who released 2.3.3-4 and 2.4.0-6. 
+
+  and other people, see the "doc/credits.doc" for details.
+
+
+Enjoy, M. Lombardi <Maurice.Lombardi@ujf-grenoble.fr>
+

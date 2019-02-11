@@ -1,0 +1,255 @@
+char11.fnt:FONT -Bitstream-Charter-Medium-R-Normal--8-80-75-75-P-45-ISO8859-1
+char11b.fnt:FONT -Bitstream-Charter-Bold-R-Normal--8-80-75-75-P-50-ISO8859-1
+char11bi.fnt:FONT -Bitstream-Charter-Bold-I-Normal--8-80-75-75-P-50-ISO8859-1
+char11i.fnt:FONT -Bitstream-Charter-Medium-I-Normal--8-80-75-75-P-44-ISO8859-1
+char14.fnt:FONT -Bitstream-Charter-Medium-R-Normal--10-100-75-75-P-56-ISO8859-1
+char14b.fnt:FONT -Bitstream-Charter-Bold-R-Normal--10-100-75-75-P-63-ISO8859-1
+char14bi.fnt:FONT -Bitstream-Charter-Bold-I-Normal--10-100-75-75-P-62-ISO8859-1
+char14i.fnt:FONT -Bitstream-Charter-Medium-I-Normal--10-100-75-75-P-55-ISO8859-1
+char16.fnt:FONT -Bitstream-Charter-Medium-R-Normal--12-120-75-75-P-67-ISO8859-1
+char16b.fnt:FONT -Bitstream-Charter-Bold-R-Normal--12-120-75-75-P-75-ISO8859-1
+char16bi.fnt:FONT -Bitstream-Charter-Bold-I-Normal--12-120-75-75-P-74-ISO8859-1
+char16i.fnt:FONT -Bitstream-Charter-Medium-I-Normal--12-120-75-75-P-65-ISO8859-1
+char18.fnt:FONT -Bitstream-Charter-Medium-R-Normal--15-140-75-75-P-84-ISO8859-1
+char18b.fnt:FONT -Bitstream-Charter-Bold-R-Normal--15-140-75-75-P-94-ISO8859-1
+char18bi.fnt:FONT -Bitstream-Charter-Bold-I-Normal--15-140-75-75-P-93-ISO8859-1
+char18i.fnt:FONT -Bitstream-Charter-Medium-I-Normal--15-140-75-75-P-82-ISO8859-1
+char23.fnt:FONT -Bitstream-Charter-Medium-R-Normal--19-180-75-75-P-106-ISO8859-1
+char23b.fnt:FONT -Bitstream-Charter-Bold-R-Normal--19-180-75-75-P-119-ISO8859-1
+char23bi.fnt:FONT -Bitstream-Charter-Bold-I-Normal--19-180-75-75-P-117-ISO8859-1
+char23i.fnt:FONT -Bitstream-Charter-Medium-I-Normal--19-180-75-75-P-103-ISO8859-1
+char30.fnt:FONT -Bitstream-Charter-Medium-R-Normal--25-240-75-75-P-139-ISO8859-1
+char30b.fnt:FONT -Bitstream-Charter-Bold-R-Normal--25-240-75-75-P-157-ISO8859-1
+char30bi.fnt:FONT -Bitstream-Charter-Bold-I-Normal--25-240-75-75-P-154-ISO8859-1
+char30i.fnt:FONT -Bitstream-Charter-Medium-I-Normal--25-240-75-75-P-136-ISO8859-1
+char40.fnt:FONT -Bitstream-Charter-Medium-R-Normal--33-240-100-100-P-183-ISO8859-1
+char40b.fnt:FONT -Bitstream-Charter-Bold-R-Normal--33-240-100-100-P-206-ISO8859-1
+char40bi.fnt:FONT -Bitstream-Charter-Bold-I-Normal--33-240-100-100-P-203-ISO8859-1
+char40i.fnt:FONT -Bitstream-Charter-Medium-I-Normal--33-240-100-100-P-179-ISO8859-1
+cour11.fnt:FONT -Adobe-Courier-Medium-R-Normal--8-80-75-75-M-50-ISO8859-1
+cour11b.fnt:FONT -Adobe-Courier-Bold-R-Normal--8-80-75-75-M-50-ISO8859-1
+cour11bi.fnt:FONT -Adobe-Courier-Bold-O-Normal--8-80-75-75-M-50-ISO8859-1
+cour11i.fnt:FONT -Adobe-Courier-Medium-O-Normal--8-80-75-75-M-50-ISO8859-1
+cour12.fnt:FONT -Adobe-Courier-Medium-R-Normal--10-100-75-75-M-60-ISO8859-1
+cour12b.fnt:FONT -Adobe-Courier-Bold-R-Normal--10-100-75-75-M-60-ISO8859-1
+cour12bi.fnt:FONT -Adobe-Courier-Bold-O-Normal--10-100-75-75-M-60-ISO8859-1
+cour12i.fnt:FONT -Adobe-Courier-Medium-O-Normal--10-100-75-75-M-60-ISO8859-1
+cour14.fnt:FONT -Adobe-Courier-Medium-R-Normal--12-120-75-75-M-70-ISO8859-1
+cour14b.fnt:FONT -Adobe-Courier-Bold-R-Normal--12-120-75-75-M-70-ISO8859-1
+cour14bi.fnt:FONT -Adobe-Courier-Bold-O-Normal--12-120-75-75-M-70-ISO8859-1
+cour14i.fnt:FONT -Adobe-Courier-Medium-O-Normal--12-120-75-75-M-70-ISO8859-1
+cour16.fnt:FONT -Adobe-Courier-Medium-R-Normal--14-140-75-75-M-90-ISO8859-1
+cour16b.fnt:FONT -Adobe-Courier-Bold-R-Normal--14-140-75-75-M-90-ISO8859-1
+cour16bi.fnt:FONT -Adobe-Courier-Bold-O-Normal--14-140-75-75-M-90-ISO8859-1
+cour16i.fnt:FONT -Adobe-Courier-Medium-O-Normal--14-140-75-75-M-90-ISO8859-1
+cour20.fnt:FONT -Adobe-Courier-Medium-R-Normal--18-180-75-75-M-110-ISO8859-1
+cour20b.fnt:FONT -Adobe-Courier-Bold-R-Normal--18-180-75-75-M-110-ISO8859-1
+cour20bi.fnt:FONT -Adobe-Courier-Bold-O-Normal--18-180-75-75-M-110-ISO8859-1
+cour20i.fnt:FONT -Adobe-Courier-Medium-O-Normal--18-180-75-75-M-110-ISO8859-1
+cour25.fnt:FONT -Adobe-Courier-Medium-R-Normal--24-240-75-75-M-150-ISO8859-1
+cour25b.fnt:FONT -Adobe-Courier-Bold-R-Normal--24-240-75-75-M-150-ISO8859-1
+cour25bi.fnt:FONT -Adobe-Courier-Bold-O-Normal--24-240-75-75-M-150-ISO8859-1
+cour25i.fnt:FONT -Adobe-Courier-Medium-O-Normal--24-240-75-75-M-150-ISO8859-1
+cour34.fnt:FONT -Adobe-Courier-Medium-R-Normal--34-240-100-100-M-200-ISO8859-1
+cour34b.fnt:FONT -Adobe-Courier-Bold-R-Normal--34-240-100-100-M-200-ISO8859-1
+cour34bi.fnt:FONT -Adobe-Courier-Bold-O-Normal--34-240-100-100-M-200-ISO8859-1
+cour34i.fnt:FONT -Adobe-Courier-Medium-O-Normal--34-240-100-100-M-200-ISO8859-1
+helv11.fnt:FONT -Adobe-Helvetica-Medium-R-Normal--8-80-75-75-P-46-ISO8859-1
+helv11b.fnt:FONT -Adobe-Helvetica-Bold-R-Normal--8-80-75-75-P-50-ISO8859-1
+helv11bi.fnt:FONT -Adobe-Helvetica-Bold-O-Normal--8-80-75-75-P-50-ISO8859-1
+helv11i.fnt:FONT -Adobe-Helvetica-Medium-O-Normal--8-80-75-75-P-47-ISO8859-1
+helv13.fnt:FONT -Adobe-Helvetica-Medium-R-Normal--10-100-75-75-P-56-ISO8859-1
+helv13b.fnt:FONT -Adobe-Helvetica-Bold-R-Normal--10-100-75-75-P-60-ISO8859-1
+helv13bi.fnt:FONT -Adobe-Helvetica-Bold-O-Normal--10-100-75-75-P-60-ISO8859-1
+helv13i.fnt:FONT -Adobe-Helvetica-Medium-O-Normal--10-100-75-75-P-57-ISO8859-1
+helv15.fnt:FONT -Adobe-Helvetica-Medium-R-Normal--12-120-75-75-P-67-ISO8859-1
+helv15b.fnt:FONT -Adobe-Helvetica-Bold-R-Normal--12-120-75-75-P-70-ISO8859-1
+helv15bi.fnt:FONT -Adobe-Helvetica-Bold-O-Normal--12-120-75-75-P-69-ISO8859-1
+helv15i.fnt:FONT -Adobe-Helvetica-Medium-O-Normal--12-120-75-75-P-67-ISO8859-1
+helv17.fnt:FONT -Adobe-Helvetica-Medium-R-Normal--14-140-75-75-P-77-ISO8859-1
+helv17b.fnt:FONT -Adobe-Helvetica-Bold-R-Normal--14-140-75-75-P-82-ISO8859-1
+helv17bi.fnt:FONT -Adobe-Helvetica-Bold-O-Normal--14-140-75-75-P-82-ISO8859-1
+helv17i.fnt:FONT -Adobe-Helvetica-Medium-O-Normal--14-140-75-75-P-78-ISO8859-1
+helv22.fnt:FONT -Adobe-Helvetica-Medium-R-Normal--18-180-75-75-P-98-ISO8859-1
+helv22b.fnt:FONT -Adobe-Helvetica-Bold-R-Normal--18-180-75-75-P-103-ISO8859-1
+helv22bi.fnt:FONT -Adobe-Helvetica-Bold-O-Normal--18-180-75-75-P-104-ISO8859-1
+helv22i.fnt:FONT -Adobe-Helvetica-Medium-O-Normal--18-180-75-75-P-98-ISO8859-1
+helv29.fnt:FONT -Adobe-Helvetica-Medium-R-Normal--24-240-75-75-P-130-ISO8859-1
+helv29b.fnt:FONT -Adobe-Helvetica-Bold-R-Normal--24-240-75-75-P-138-ISO8859-1
+helv29bi.fnt:FONT -Adobe-Helvetica-Bold-O-Normal--24-240-75-75-P-138-ISO8859-1
+helv29i.fnt:FONT -Adobe-Helvetica-Medium-O-Normal--24-240-75-75-P-130-ISO8859-1
+helv38.fnt:FONT -Adobe-Helvetica-Medium-R-Normal--34-240-100-100-P-176-ISO8859-1
+helv38b.fnt:FONT -Adobe-Helvetica-Bold-R-Normal--34-240-100-100-P-182-ISO8859-1
+helv38bi.fnt:FONT -Adobe-Helvetica-Bold-O-Normal--34-240-100-100-P-182-ISO8859-1
+helv38i.fnt:FONT -Adobe-Helvetica-Medium-O-Normal--34-240-100-100-P-176-ISO8859-1
+lucb11.fnt:FONT -B&H-LucidaBright-Medium-R-Normal--8-80-75-75-P-45-ISO8859-1
+lucb11b.fnt:FONT -B&H-LucidaBright-DemiBold-R-Normal--8-80-75-75-P-47-ISO8859-1
+lucb11bi.fnt:FONT -B&H-LucidaBright-DemiBold-I-Normal--8-80-75-75-P-48-ISO8859-1
+lucb11i.fnt:FONT -B&H-LucidaBright-Medium-I-Normal--8-80-75-75-P-45-ISO8859-1
+lucb12.fnt:FONT -B&H-LucidaBright-Medium-R-Normal--10-100-75-75-P-56-ISO8859-1
+lucb12b.fnt:FONT -B&H-LucidaBright-DemiBold-R-Normal--10-100-75-75-P-59-ISO8859-1
+lucb12bi.fnt:FONT -B&H-LucidaBright-DemiBold-I-Normal--10-100-75-75-P-59-ISO8859-1
+lucb12i.fnt:FONT -B&H-LucidaBright-Medium-I-Normal--10-100-75-75-P-57-ISO8859-1
+lucb15.fnt:FONT -B&H-LucidaBright-Medium-R-Normal--12-120-75-75-P-68-ISO8859-1
+lucb15b.fnt:FONT -B&H-LucidaBright-DemiBold-R-Normal--12-120-75-75-P-71-ISO8859-1
+lucb15bi.fnt:FONT -B&H-LucidaBright-DemiBold-I-Normal--12-120-75-75-P-72-ISO8859-1
+lucb15i.fnt:FONT -B&H-LucidaBright-Medium-I-Normal--12-120-75-75-P-67-ISO8859-1
+lucb17.fnt:FONT -B&H-LucidaBright-Medium-R-Normal--14-140-75-75-P-80-ISO8859-1
+lucb17b.fnt:FONT -B&H-LucidaBright-DemiBold-R-Normal--14-140-75-75-P-84-ISO8859-1
+lucb17bi.fnt:FONT -B&H-LucidaBright-DemiBold-I-Normal--14-140-75-75-P-84-ISO8859-1
+lucb17i.fnt:FONT -B&H-LucidaBright-Medium-I-Normal--14-140-75-75-P-80-ISO8859-1
+lucb21.fnt:FONT -B&H-LucidaBright-Medium-R-Normal--18-180-75-75-P-103-ISO8859-1
+lucb21b.fnt:FONT -B&H-LucidaBright-DemiBold-R-Normal--18-180-75-75-P-107-ISO8859-1
+lucb21bi.fnt:FONT -B&H-LucidaBright-DemiBold-I-Normal--18-180-75-75-P-107-ISO8859-1
+lucb21i.fnt:FONT -B&H-LucidaBright-Medium-I-Normal--18-180-75-75-P-102-ISO8859-1
+lucb27.fnt:FONT -B&H-LucidaBright-Medium-R-Normal--24-240-75-75-P-137-ISO8859-1
+lucb27b.fnt:FONT -B&H-LucidaBright-DemiBold-R-Normal--24-240-75-75-P-143-ISO8859-1
+lucb27bi.fnt:FONT -B&H-LucidaBright-DemiBold-I-Normal--24-240-75-75-P-143-ISO8859-1
+lucb27i.fnt:FONT -B&H-LucidaBright-Medium-I-Normal--24-240-75-75-P-136-ISO8859-1
+lucb40.fnt:FONT -B&H-LucidaBright-Medium-R-Normal--34-240-100-100-P-193-ISO8859-1
+lucb40b.fnt:FONT -B&H-LucidaBright-DemiBold-R-Normal--34-240-100-100-P-202-ISO8859-1
+lucb40bi.fnt:FONT -B&H-LucidaBright-DemiBold-I-Normal--34-240-100-100-P-203-ISO8859-1
+lucb40i.fnt:FONT -B&H-LucidaBright-Medium-I-Normal--34-240-100-100-P-194-ISO8859-1
+lucs11.fnt:FONT -B&H-Lucida-Medium-R-Normal-Sans-8-80-75-75-P-45-ISO8859-1
+lucs11b.fnt:FONT -B&H-Lucida-Bold-R-Normal-Sans-8-80-75-75-P-50-ISO8859-1
+lucs11bi.fnt:FONT -B&H-Lucida-Bold-I-Normal-Sans-8-80-75-75-P-49-ISO8859-1
+lucs11i.fnt:FONT -B&H-Lucida-Medium-I-Normal-Sans-8-80-75-75-P-45-ISO8859-1
+lucs12.fnt:FONT -B&H-Lucida-Medium-R-Normal-Sans-10-100-75-75-P-58-ISO8859-1
+lucs12b.fnt:FONT -B&H-Lucida-Bold-R-Normal-Sans-10-100-75-75-P-66-ISO8859-1
+lucs12bi.fnt:FONT -B&H-Lucida-Bold-I-Normal-Sans-10-100-75-75-P-67-ISO8859-1
+lucs12i.fnt:FONT -B&H-Lucida-Medium-I-Normal-Sans-10-100-75-75-P-59-ISO8859-1
+lucs15.fnt:FONT -B&H-Lucida-Medium-R-Normal-Sans-12-120-75-75-P-71-ISO8859-1
+lucs15b.fnt:FONT -B&H-Lucida-Bold-R-Normal-Sans-12-120-75-75-P-79-ISO8859-1
+lucs15bi.fnt:FONT -B&H-Lucida-Bold-I-Normal-Sans-12-120-75-75-P-79-ISO8859-1
+lucs15i.fnt:FONT -B&H-Lucida-Medium-I-Normal-Sans-12-120-75-75-P-71-ISO8859-1
+lucs17.fnt:FONT -B&H-Lucida-Medium-R-Normal-Sans-14-140-75-75-P-81-ISO8859-1
+lucs17b.fnt:FONT -B&H-Lucida-Bold-R-Normal-Sans-14-140-75-75-P-92-ISO8859-1
+lucs17bi.fnt:FONT -B&H-Lucida-Bold-I-Normal-Sans-14-140-75-75-P-92-ISO8859-1
+lucs17i.fnt:FONT -B&H-Lucida-Medium-I-Normal-Sans-14-140-75-75-P-82-ISO8859-1
+lucs21.fnt:FONT -B&H-Lucida-Medium-R-Normal-Sans-18-180-75-75-P-106-ISO8859-1
+lucs21b.fnt:FONT -B&H-Lucida-Bold-R-Normal-Sans-18-180-75-75-P-120-ISO8859-1
+lucs21bi.fnt:FONT -B&H-Lucida-Bold-I-Normal-Sans-18-180-75-75-P-119-ISO8859-1
+lucs21i.fnt:FONT -B&H-Lucida-Medium-I-Normal-Sans-18-180-75-75-P-105-ISO8859-1
+lucs27.fnt:FONT -B&H-Lucida-Medium-R-Normal-Sans-24-240-75-75-P-136-ISO8859-1
+lucs27b.fnt:FONT -B&H-Lucida-Bold-R-Normal-Sans-24-240-75-75-P-152-ISO8859-1
+lucs27bi.fnt:FONT -B&H-Lucida-Bold-I-Normal-Sans-24-240-75-75-P-151-ISO8859-1
+lucs27i.fnt:FONT -B&H-Lucida-Medium-I-Normal-Sans-24-240-75-75-P-136-ISO8859-1
+lucs40.fnt:FONT -B&H-Lucida-Medium-R-Normal-Sans-34-240-100-100-P-191-ISO8859-1
+lucs40b.fnt:FONT -B&H-Lucida-Bold-R-Normal-Sans-34-240-100-100-P-216-ISO8859-1
+lucs40bi.fnt:FONT -B&H-Lucida-Bold-I-Normal-Sans-34-240-100-100-P-215-ISO8859-1
+lucs40i.fnt:FONT -B&H-Lucida-Medium-I-Normal-Sans-34-240-100-100-P-192-ISO8859-1
+luct10.fnt:FONT -B&H-LucidaTypewriter-Medium-R-Normal-Sans-8-80-75-75-M-50-ISO8859-1
+luct10b.fnt:FONT -B&H-LucidaTypewriter-Bold-R-Normal-Sans-8-80-75-75-M-50-ISO8859-1
+luct11.fnt:FONT -B&H-LucidaTypewriter-Medium-R-Normal-Sans-10-100-75-75-M-60-ISO8859-1
+luct11b.fnt:FONT -B&H-LucidaTypewriter-Bold-R-Normal-Sans-10-100-75-75-M-60-ISO8859-1
+luct13.fnt:FONT -B&H-LucidaTypewriter-Medium-R-Normal-Sans-12-120-75-75-M-70-ISO8859-1
+luct13b.fnt:FONT -B&H-LucidaTypewriter-Bold-R-Normal-Sans-12-120-75-75-M-70-ISO8859-1
+luct15.fnt:FONT -B&H-LucidaTypewriter-Medium-R-Normal-Sans-14-140-75-75-M-90-ISO8859-1
+luct15b.fnt:FONT -B&H-LucidaTypewriter-Bold-R-Normal-Sans-14-140-75-75-M-90-ISO8859-1
+luct19.fnt:FONT -B&H-LucidaTypewriter-Medium-R-Normal-Sans-18-180-75-75-M-110-ISO8859-1
+luct19b.fnt:FONT -B&H-LucidaTypewriter-Bold-R-Normal-Sans-18-180-75-75-M-110-ISO8859-1
+luct27.fnt:FONT -B&H-LucidaTypewriter-Medium-R-Normal-Sans-24-240-75-75-M-140-ISO8859-1
+luct27b.fnt:FONT -B&H-LucidaTypewriter-Bold-R-Normal-Sans-24-240-75-75-M-140-ISO8859-1
+luct38.fnt:FONT -B&H-LucidaTypewriter-Medium-R-Normal-Sans-34-240-100-100-M-200-ISO8859-1
+luct38b.fnt:FONT -B&H-LucidaTypewriter-Bold-R-Normal-Sans-34-240-100-100-M-200-ISO8859-1
+ncen11.fnt:FONT -Adobe-New Century Schoolbook-Medium-R-Normal--8-80-75-75-P-50-ISO8859-1
+ncen11b.fnt:FONT -Adobe-New Century Schoolbook-Bold-R-Normal--8-80-75-75-P-56-ISO8859-1
+ncen11bi.fnt:FONT -Adobe-New Century Schoolbook-Bold-I-Normal--8-80-75-75-P-56-ISO8859-1
+ncen11i.fnt:FONT -Adobe-New Century Schoolbook-Medium-I-Normal--8-80-75-75-P-50-ISO8859-1
+ncen13.fnt:FONT -Adobe-New Century Schoolbook-Medium-R-Normal--10-100-75-75-P-60-ISO8859-1
+ncen13b.fnt:FONT -Adobe-New Century Schoolbook-Bold-R-Normal--10-100-75-75-P-66-ISO8859-1
+ncen13bi.fnt:FONT -Adobe-New Century Schoolbook-Bold-I-Normal--10-100-75-75-P-66-ISO8859-1
+ncen13i.fnt:FONT -Adobe-New Century Schoolbook-Medium-I-Normal--10-100-75-75-P-60-ISO8859-1
+ncen15.fnt:FONT -Adobe-New Century Schoolbook-Medium-R-Normal--12-120-75-75-P-70-ISO8859-1
+ncen15b.fnt:FONT -Adobe-New Century Schoolbook-Bold-R-Normal--12-120-75-75-P-77-ISO8859-1
+ncen15bi.fnt:FONT -Adobe-New Century Schoolbook-Bold-I-Normal--12-120-75-75-P-76-ISO8859-1
+ncen15i.fnt:FONT -Adobe-New Century Schoolbook-Medium-I-Normal--12-120-75-75-P-70-ISO8859-1
+ncen18.fnt:FONT -Adobe-New Century Schoolbook-Medium-R-Normal--14-140-75-75-P-82-ISO8859-1
+ncen18b.fnt:FONT -Adobe-New Century Schoolbook-Bold-R-Normal--14-140-75-75-P-87-ISO8859-1
+ncen18bi.fnt:FONT -Adobe-New Century Schoolbook-Bold-I-Normal--14-140-75-75-P-88-ISO8859-1
+ncen18i.fnt:FONT -Adobe-New Century Schoolbook-Medium-I-Normal--14-140-75-75-P-81-ISO8859-1
+ncen22.fnt:FONT -Adobe-New Century Schoolbook-Medium-R-Normal--18-180-75-75-P-103-ISO8859-1
+ncen22b.fnt:FONT -Adobe-New Century Schoolbook-Bold-R-Normal--18-180-75-75-P-113-ISO8859-1
+ncen22bi.fnt:FONT -Adobe-New Century Schoolbook-Bold-I-Normal--18-180-75-75-P-111-ISO8859-1
+ncen22i.fnt:FONT -Adobe-New Century Schoolbook-Medium-I-Normal--18-180-75-75-P-104-ISO8859-1
+ncen29.fnt:FONT -Adobe-New Century Schoolbook-Medium-R-Normal--24-240-75-75-P-137-ISO8859-1
+ncen29b.fnt:FONT -Adobe-New Century Schoolbook-Bold-R-Normal--24-240-75-75-P-149-ISO8859-1
+ncen29bi.fnt:FONT -Adobe-New Century Schoolbook-Bold-I-Normal--24-240-75-75-P-148-ISO8859-1
+ncen29i.fnt:FONT -Adobe-New Century Schoolbook-Medium-I-Normal--24-240-75-75-P-136-ISO8859-1
+ncen40.fnt:FONT -Adobe-New Century Schoolbook-Medium-R-Normal--34-240-100-100-P-181-ISO8859-1
+ncen40b.fnt:FONT -Adobe-New Century Schoolbook-Bold-R-Normal--34-240-100-100-P-193-ISO8859-1
+ncen40bi.fnt:FONT -Adobe-New Century Schoolbook-Bold-I-Normal--34-240-100-100-P-193-ISO8859-1
+ncen40i.fnt:FONT -Adobe-New Century Schoolbook-Medium-I-Normal--34-240-100-100-P-182-ISO8859-1
+symb11.fnt:FONT -Adobe-Symbol-Medium-R-Normal--8-80-75-75-P-51-ADOBE-FONTSPECIFIC
+symb14.fnt:FONT -Adobe-Symbol-Medium-R-Normal--10-100-75-75-P-61-ADOBE-FONTSPECIFIC
+symb16.fnt:FONT -Adobe-Symbol-Medium-R-Normal--12-120-75-75-P-74-ADOBE-FONTSPECIFIC
+symb20.fnt:FONT -ADOBE-Symbol-Medium-R-Normal--14-140-75-75-P-85-ADOBE-FONTSPECIFIC
+symb25.fnt:FONT -Adobe-Symbol-Medium-R-Normal--18-180-75-75-P-107-ADOBE-FONTSPECIFIC
+symb32.fnt:FONT -Adobe-Symbol-Medium-R-Normal--24-240-75-75-P-142-ADOBE-FONTSPECIFIC
+symb34.fnt:FONT -Adobe-Symbol-Medium-R-Normal--34-240-100-100-P-191-ADOBE-FONTSPECIFIC
+tms11.fnt:FONT -Adobe-Times-Medium-R-Normal--8-80-75-75-P-44-ISO8859-1
+tms11b.fnt:FONT -Adobe-Times-Bold-R-Normal--8-80-75-75-P-47-ISO8859-1
+tms11bi.fnt:FONT -Adobe-Times-Bold-I-Normal--8-80-75-75-P-47-ISO8859-1
+tms11i.fnt:FONT -Adobe-Times-Medium-I-Normal--8-80-75-75-P-42-ISO8859-1
+tms13.fnt:FONT -Adobe-Times-Medium-R-Normal--10-100-75-75-P-54-ISO8859-1
+tms13b.fnt:FONT -Adobe-Times-Bold-R-Normal--10-100-75-75-P-57-ISO8859-1
+tms13bi.fnt:FONT -Adobe-Times-Bold-I-Normal--10-100-75-75-P-57-ISO8859-1
+tms13i.fnt:FONT -Adobe-Times-Medium-I-Normal--10-100-75-75-P-52-ISO8859-1
+tms15.fnt:FONT -Adobe-Times-Medium-R-Normal--12-120-75-75-P-64-ISO8859-1
+tms15b.fnt:FONT -Adobe-Times-Bold-R-Normal--12-120-75-75-P-67-ISO8859-1
+tms15bi.fnt:FONT -Adobe-Times-Bold-I-Normal--12-120-75-75-P-68-ISO8859-1
+tms15i.fnt:FONT -Adobe-Times-Medium-I-Normal--12-120-75-75-P-63-ISO8859-1
+tms18.fnt:FONT -Adobe-Times-Medium-R-Normal--14-140-75-75-P-74-ISO8859-1
+tms18b.fnt:FONT -Adobe-Times-Bold-R-Normal--14-140-75-75-P-77-ISO8859-1
+tms18bi.fnt:FONT -Adobe-Times-Bold-I-Normal--14-140-75-75-P-77-ISO8859-1
+tms18i.fnt:FONT -Adobe-Times-Medium-I-Normal--14-140-75-75-P-73-ISO8859-1
+tms22.fnt:FONT -Adobe-Times-Medium-R-Normal--18-180-75-75-P-94-ISO8859-1
+tms22b.fnt:FONT -Adobe-Times-Bold-R-Normal--18-180-75-75-P-99-ISO8859-1
+tms22bi.fnt:FONT -Adobe-Times-Bold-I-Normal--18-180-75-75-P-98-ISO8859-1
+tms22i.fnt:FONT -Adobe-Times-Medium-I-Normal--18-180-75-75-P-94-ISO8859-1
+tms29.fnt:FONT -Adobe-Times-Medium-R-Normal--24-240-75-75-P-124-ISO8859-1
+tms29b.fnt:FONT -Adobe-Times-Bold-R-Normal--24-240-75-75-P-132-ISO8859-1
+tms29bi.fnt:FONT -Adobe-Times-Bold-I-Normal--24-240-75-75-P-128-ISO8859-1
+tms29i.fnt:FONT -Adobe-Times-Medium-I-Normal--24-240-75-75-P-125-ISO8859-1
+tms38.fnt:FONT -Adobe-Times-Medium-R-Normal--34-240-100-100-P-170-ISO8859-1
+tms38b.fnt:FONT -Adobe-Times-Bold-R-Normal--34-240-100-100-P-177-ISO8859-1
+tms38bi.fnt:FONT -Adobe-Times-Bold-I-Normal--34-240-100-100-P-170-ISO8859-1
+tms38i.fnt:FONT -Adobe-Times-Medium-I-Normal--34-240-100-100-P-168-ISO8859-1
+xm12x24.fnt:FONT -Sony-Fixed-Medium-R-Normal--24-170-100-100-C-120-ISO8859-1
+xm4x6.fnt:FONT -Schumacher-Clean-Medium-R-Normal--6-60-75-75-C-40-ISO8859-1
+xm5x10.fnt:FONT -Schumacher-Clean-Medium-R-Normal--10-100-75-75-C-50-ISO8859-1
+xm5x6.fnt:FONT -Schumacher-Clean-Medium-R-Normal--6-60-75-75-C-50-ISO8859-1
+xm5x8.fnt:FONT -Schumacher-Clean-Medium-R-Normal--8-80-75-75-C-50-ISO8859-1
+xm6x10.fnt:FONT -Schumacher-Clean-Medium-R-Normal--10-100-75-75-C-60-ISO8859-1
+xm6x10b.fnt:FONT -Schumacher-Clean-Bold-R-Normal--10-100-75-75-C-60-ISO8859-1
+xm6x12.fnt:FONT -Schumacher-Clean-Medium-R-Normal--12-120-75-75-C-60-ISO8859-1
+xm6x12b.fnt:FONT -Schumacher-Clean-Bold-R-Normal--12-120-75-75-C-60-ISO8859-1
+xm6x12i.fnt:FONT -Schumacher-Clean-Medium-I-Normal--12-120-75-75-C-60-ISO8859-1
+xm6x13.fnt:FONT -Schumacher-Clean-Medium-R-Normal--13-130-75-75-C-60-ISO8859-1
+xm6x13b.fnt:FONT -Misc-Fixed-Bold-R-SemiCondensed--13-120-75-75-C-60-ISO8859-1
+xm6x6.fnt:FONT -Schumacher-Clean-Medium-R-Normal--6-60-75-75-C-60-ISO8859-1
+xm6x8.fnt:FONT -Schumacher-Clean-Medium-R-Normal--8-80-75-75-C-60-ISO8859-1
+xm6x9.fnt:FONT -Misc-Fixed-Medium-R-Normal--9-90-75-75-C-60-ISO8859-1
+xm7x10.fnt:FONT -Schumacher-Clean-Medium-R-Normal--10-100-75-75-C-70-ISO8859-1
+xm7x12.fnt:FONT -Schumacher-Clean-Medium-R-Normal--12-120-75-75-C-70-ISO8859-1
+xm7x13.fnt:FONT -Misc-Fixed-Medium-R-Normal--13-120-75-75-C-70-ISO8859-1
+xm7x13b.fnt:FONT -Misc-Fixed-Bold-R-Normal--13-120-75-75-C-70-ISO8859-1
+xm7x14.fnt:FONT -Schumacher-Clean-Medium-R-Normal--14-140-75-75-C-70-ISO8859-1
+xm7x8.fnt:FONT -Schumacher-Clean-Medium-R-Normal--8-80-75-75-C-70-ISO8859-1
+xm8x10.fnt:FONT -Schumacher-Clean-Medium-R-Normal--10-100-75-75-C-80-ISO8859-1
+xm8x10b.fnt:FONT -Schumacher-Clean-Bold-R-Normal--10-100-75-75-C-80-ISO8859-1
+xm8x12.fnt:FONT -Schumacher-Clean-Medium-R-Normal--12-120-75-75-C-80-ISO8859-1
+xm8x12b.fnt:FONT -Schumacher-Clean-Bold-R-Normal--12-120-75-75-C-80-ISO8859-1
+xm8x13.fnt:FONT -Schumacher-Clean-Medium-R-Normal--13-130-75-75-C-80-ISO8859-1
+xm8x13b.fnt:FONT -Schumacher-Clean-Bold-R-Normal--13-130-75-75-C-80-ISO8859-1
+xm8x14.fnt:FONT -Schumacher-Clean-Medium-R-Normal--14-140-75-75-C-80-ISO8859-1
+xm8x14b.fnt:FONT -Schumacher-Clean-Bold-R-Normal--14-140-75-75-C-80-ISO8859-1
+xm8x15.fnt:FONT -DEC-Terminal-Medium-R-Normal--14-140-75-75-C-80-ISO8859-1
+xm8x15b.fnt:FONT -DEC-Terminal-Bold-R-Normal--14-140-75-75-C-80-ISO8859-1
+xm8x16.fnt:FONT -Schumacher-Clean-Medium-R-Normal--16-160-75-75-C-80-ISO8859-1
+xm8x16b.fnt:FONT -Schumacher-Clean-Bold-R-Normal--16-160-75-75-C-80-ISO8859-1
+xm8x8.fnt:FONT -Schumacher-Clean-Medium-R-Normal--8-80-75-75-C-80-ISO8859-1
+xm8x8b.fnt:FONT -Schumacher-Clean-Bold-R-Normal--8-80-75-75-C-80-ISO8859-1
+xm8x8i.fnt:FONT -Schumacher-Clean-Medium-I-Normal--8-80-75-75-C-80-ISO8859-1
+xm9x15.fnt:FONT -Schumacher-Clean-Medium-R-Normal--15-150-75-75-C-90-ISO8859-1
+xm9x15b.fnt:FONT -Schumacher-Clean-Bold-R-Normal--15-150-75-75-C-90-ISO8859-1

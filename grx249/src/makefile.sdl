@@ -1,0 +1,223 @@
+#
+# GRX Library Makefile for SDL
+#
+.PHONY : clean cleanall install uninstall \
+	 install-bin uninstall-bin install-fonts uninstall-fonts
+         
+GRXVSDL=y
+
+include ../makedefs.grx
+
+INCDIR= -I. -I./include -I../include
+
+ifeq ($(EP),x)
+  INCDIR += $(X11INCS)
+  SDLDEFS = -D__XWIN__ -D__SDL__
+  LIBS = $(X11LIBS)
+  SDLLIBS = -lSDL -lpthread
+else
+  EX = .exe
+  SDLDEFS = -D__SDL__
+  LIBS =
+  SDLLIBS = -lSDL
+endif
+
+CCOPT += $(SDLDEFS)
+
+ifdef GRX_DEFAULT_FONT_PATH
+CCOPT += -DGRX_DEFAULT_FONT_PATH=\"$(GRX_DEFAULT_FONT_PATH)\"
+endif
+
+TAG = $(ANY_GCC_SDL_STATIC)
+
+GRX20ST    = ../lib/$(GRX_LIB_SUBDIR)/libgrx20S.a
+
+OX=.o
+OP=
+
+include ./stdobjs.mak
+
+# Keep things a little smaller when building the lib ...
+STD_Oa= $(STD_1) $(STD_2) $(STD_3)
+STD_Ob= $(STD_4) $(STD_5) $(STD_6)
+STD_Oc= $(STD_7) $(STD_8) $(STD_9)
+STD_Od= $(STD_10) $(STD_11) $(STD_12)
+BGI_Oa= $(BGI_1) $(BGI_2) $(BGI_3)
+BGI_Ob= $(BGI_4) $(BGI_5) $(BGI_6)
+
+ADDON_O=
+ifdef DEBUG
+ ADDON_O += $(DBG_1)
+endif
+
+ifeq ($(HAVE_LIBTIFF),y)
+  ADDON_O += $(TIF_1)
+endif
+
+ifeq ($(HAVE_LIBJPEG),y)
+  ADDON_O += $(JPG_1)
+else
+  ADDON_O += $(NOJPG_1)
+endif
+
+ifeq ($(HAVE_LIBPNG),y)
+  ADDON_O += $(PNG_1)
+else
+  ADDON_O += $(NOPNG_1)
+endif
+
+ifeq ($(INCLUDE_PRINTING_CODE),y)
+  ADDON_O += $(PRN_1)
+  INCDIR += -I../addons/print
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+  BGI_Ob += $(PRNBGI_1)
+endif
+endif
+
+ifeq ($(INCLUDE_BMP_CODE),y)
+  ADDON_O += $(BMP_1)
+  INCDIR  += -I../addons/bmp
+endif
+
+SDL_O = $(ADDON_O)              \
+	fdrivers/sdl8.o         \
+	fdrivers/sdl16.o        \
+	fdrivers/sdl24.o        \
+	fdrivers/sdl32l.o       \
+	fdrivers/sdl32h.o       \
+	fdrivers/lfbbltrv.o     \
+	fdrivers/lfbbltvr.o     \
+	fdrivers/lfbbltvv.o     \
+	fdrivers/ram24.o        \
+	fdrivers/ram32l.o       \
+	fdrivers/ram32h.o       \
+	mouse/sdlinp.o          \
+	mouse/sdlkeys.o         \
+	misc/sdlmisc.o          \
+	vdrivers/vd_sdl.o
+
+ifneq ($(EX),.exe)
+	SDL_O += fonts/fdv_xwin.o
+endif
+
+ALL_O = $(STD_Oa) $(STD_Ob) $(STD_Oc) $(STD_Od) $(SDL_O)
+
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+  ALL_O += $(BGI_Oa) $(BGI_Ob)
+endif
+
+UTILPC= ../bin/bin2c$(EX)      \
+	../bin/fnt2c$(EX)      \
+
+UTILPS= ../bin/$(EP)modetest$(EX)
+
+all:    $(GRX20ST) $(UTILPC) $(UTILPS)
+
+clean:
+	rm -f bgi/*.o draw/*.o fdrivers/*.o fonts/*.o image/*.o gformats/*.o
+	rm -f mouse/*.o misc/*.o pattern/*.o setup/*.o shape/*.o text/*.o
+	rm -f user/*.o utils/*.o utilprog/*.o vdrivers/*.o wideline/*.o
+	rm -f ../addons/*.o ../addons/print/*.o ../addons/bmp/*.o $(TAG)
+
+cleanall: clean
+	rm -f $(GRX20ST) $(UTILPC) $(UTILPS)
+
+install: $(GRX20ST)
+	mkdir -p $(DESTDIR)$(libdir)
+	mkdir -p $(DESTDIR)$(includedir)
+	cp $(GRX20ST) $(DESTDIR)$(libdir)
+	cp ../include/grx20.h ../include/grxkeys.h \
+	   ../include/libbcc.h $(DESTDIR)$(includedir)
+ifeq ($(INCLUDE_PRINTING_CODE),y)
+	cp ../addons/print/grxprint.h $(DESTDIR)$(includedir)
+endif
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	mkdir -p $(DESTDIR)$(unitsdir)
+	cp ../pascal/grx.pas ../pascal/bgi/graph.pas $(DESTDIR)$(unitsdir)
+endif
+
+uninstall:
+	rm -f $(DESTDIR)$(libdir)/$(notdir $(GRX20ST)) $(DESTDIR)$(includedir)/grx20.h \
+	      $(DESTDIR)$(includedir)/grxkeys.h $(DESTDIR)$(includedir)/libbcc.h
+ifeq ($(INCLUDE_PRINTING_CODE),y)
+	rm -f $(DESTDIR)$(includedir)/grxprint.h
+endif
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	rm -f $(DESTDIR)$(unitsdir)/grx.pas $(DESTDIR)$(unitsdir)/graph.pas
+endif
+
+install-bin: $(UTILPC) $(UTILPW)
+	mkdir -p $(DESTDIR)$(bindir)
+	cp ../bin/bin2c$(EX) ../bin/fnt2c$(EX) \
+	   ../bin/$(EP)modetest$(EX) $(DESTDIR)$(bindir)
+
+uninstall-bin:
+	rm -f $(DESTDIR)$(bindir)/bin2c$(EX) $(DESTDIR)$(bindir)/fnt2c$(EX) \
+	      $(DESTDIR)$(bindir)/$(EP)modetest$(EX)
+
+ifdef GRX_DEFAULT_FONT_PATH
+install-fonts:
+	mkdir -p $(DESTDIR)$(GRX_DEFAULT_FONT_PATH)
+	cp ../fonts/* $(DESTDIR)$(GRX_DEFAULT_FONT_PATH)
+
+uninstall-fonts:
+	rm -f $(DESTDIR)$(GRX_DEFAULT_FONT_PATH)/*
+endif
+
+dep:
+ifeq ($(HAVE_UNIX_TOOLS),y)
+	rm -f depend.tmp
+else
+	if exist depend.tmp del depend.tmp
+endif
+	gcc -MM $(CCOPT) $(INCDIR) $(ALL_O:.o=.c) >depend.tmp
+	sed 's#^.*: \(.*\)\.c#\1.o: \1.c#g'   <depend.tmp >depend.sdl
+ifeq ($(HAVE_UNIX_TOOLS),y)
+	rm -f depend.tmp
+else
+	if exist depend.tmp del depend.tmp
+endif
+
+depend.b: depend.new
+	sed "s#\.o:#.obj:#g" <depend.new >depend.b
+	sed "s#\.o:#.asm:#g" <depend.new >>depend.b
+
+$(GRX20ST): $(TAG) $(ALL_O)
+	rm -f $(GRX20ST)
+	$(AR) -r $(GRX20ST) $(STD_Oa)
+	$(AR) -r $(GRX20ST) $(STD_Ob)
+	$(AR) -r $(GRX20ST) $(STD_Oc)
+	$(AR) -r $(GRX20ST) $(STD_Od)
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(AR) -r $(GRX20ST) $(BGI_Oa)
+	$(AR) -r $(GRX20ST) $(BGI_Ob)
+endif
+	$(AR) -r $(GRX20ST) $(SDL_O)
+	$(RANLIB) $(GRX20ST)
+
+$(UTILPC): ../bin/%$(EX) : utilprog/%.o $(GRX20ST)
+	$(CC) $(LDOPT) -o $@ utilprog/$*.o $(GRX20ST) $(LIBS)
+
+$(UTILPS): ../bin/$(EP)%$(EX) : utilprog/%.o $(GRX20ST)
+	$(CC) $(LDOPT) -o $@ utilprog/$*.o $(GRX20ST) $(SDLLIBS) $(LIBS)
+
+$(ANY_GCC_SDL_STATIC):
+	$(MAKE) -f makefile.sdl clean
+	rm -f $(SYSTEM_TAG_PREFIX).*
+	echo ANY_GCC_SDL_STATIC_TARGET > $(ANY_GCC_SDL_STATIC)
+
+$(ALL_O): $(TAG)
+
+$(ALL_O:.o=.i) : %.i : %.c
+	$(CC) -E $(CCOPT) $(INCDIR) $*.c > $*.i
+
+$(ALL_O:.o=.dm) : %.dm : %.c
+	$(CC) -dM -E $(CCOPT) $(INCDIR) $*.c > $*.dm
+
+.c.s:
+	$(CC) -S $(CCOPT) $(INCDIR) $*.c -o $*.s
+
+.c.o:
+	$(CC) -c $(CCOPT) $(INCDIR) $*.c -o $*.o
+
+#include depend.sdl

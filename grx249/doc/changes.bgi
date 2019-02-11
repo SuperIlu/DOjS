@@ -1,0 +1,116 @@
+******* 2.3 --> 2.3.4
+- BCC2GRX is now part of the GRX graphics library.
+******* 2.0 --> 2.3
+- will use the floodfill() from GRX 2.25 or newer
+- Linux: can be compiled as shared library (make SHARED=1 in src/)
+- made all functions direct linkable (mostly for GPC support)
+- Pascal (GPC) support by Sven Hilscher included
+- updated for grx21 (patterns & custom lines)
+- No more warnings using LIBBCC.H in C++ programs
+******* 1.3 --> 2.0
+- new copyright terms, see readme
+- compiles with both grx v2.0 and v1.03
+- text.c splitted
+- added setactivepage(), setvisualpage() and helper func's
+  set_BGI_mode_pages(int p), get_BGI_mode_pages(),
+  getactivepage() and getvisualpage()  (functional only with
+  grx v2.0 or newer)
+- __gr_Y_page_offs disabled if compiled for grx 1.0x
+- restrict RGB values in setrgbpalette() to 0..63
+- added extended graphics modes from BC++ 4.5
+- few experimental custom line hacks for grx 2.0 (lnestyle.c)
+- more work on Makefiles, make in src or test subdir works
+- Due to limited stack space with DJGPP v2, complete rewrite
+  of floodfill() to avoid deep recursions.
+- DJGPP: libbcc2.a will work on v1 and v2 systems with grx10, no need
+  to keep libbccx.a any longer.
+- Link test: create dummy executable using all library objects. Nice to
+  check grx20fix.h settings.
+- Optimized makefiles and configuration
+- getdrivername() will report GRX driver name with GRX2
+- LINUX: saved some getpixel() calls for floodfill() under X11. Remains slow :-(
+- LINUX: No need to keep a seperate X11 directory any longer, binaries
+  are just linked with -lgrx20X -X11 instead of -lgrx20 -lvga
+- LINUX: Enhanced Linux support (svgalib && X11)
+- rewrote bgi font loading
+- libbcc.h won't include GRX stuff any more
+- rewrote floodfill(): Will use it's own dumb monochrome
+  context to keep track of drawn points. Uses less memory but
+  seems to be a little slower in few cases.
+- moved _ega_color, setrgbdefaults() and setrgbgray256() from libbcc?.a
+  to src/addons.a
+- added four new functions getmodemaxcolor(), getmodemaxx(), getmodemaxy()
+  and setrgbcolor().
+- added version check __BCC2GRX__ (equals to 0x21a for v2.1 alpha,
+  0x20b -> v2.0 beta, 0x230 -> v2.3 offical release, ...)
+
+******* 1.2 --> 1.3 (1.3 didn't made it to public)
+
+- Vector fonts may be plotted using the actual line style.
+  calling textlinestyle(1) enables and textlinestyle(0) disables
+  this feature.
+- corrected getmodename() TrueColor definition, name of actual
+  graphics mode valid now, will display 32K/64K/16M instead of
+  huge numbers
+- CGA/MCGA/ATT400 will be emulated by 16 color modes
+- EGA64HI sets 16 color mode on non EGA cards
+- named source files in a more functional way
+- circle() will use GrCircle() in "round" cases
+- graphdefaults(), setgraphmode() and initgraph() set up the
+  correct aspect ratio
+- added __gr_ prefix to several library functions called
+  by other bcc2grx functions. Protects against interference
+  with other libraries (problem reported by Axel Rohde)
+- updated for libgrx 1.03
+- should work with .vdr drivers now
+- uses GrGetLastArcCoords() instead of global variables
+- BLACK changed into constant
+- Pascal support improved. KeyPressed and ReadKey will
+  flush stdout first, updated Readme
+- bccbgi now uses random() instead of RANDOM_TP() for correct
+  support of >32768 colors modes. (Bad news: random() is much slower)
+- set_BGI_mode_whc translates 64K and 16M color values into
+  GRX internals 0xC010 and 0xC018 (grx1.0x only)
+- added _ega_color for EGA color emulation in HiColor/TrueColor modes
+- Corrected range check in setfillstyle() (bug found by Axel Rohde)
+- Corrected bugs/problems reported by Antonio Carlos Moreirao de Queiroz:
+  - initgraph won't crash if pathtodriver == NULL
+  - When loading a font failed, DEFAULT_FONT size 1 will be used
+  - font switching should be faster now
+  - if a font can't be found, grFontNotFound error will be set.
+- Correct name expansion in installuserfont()
+
+******* 1.1 --> 1.2
+
+- installuserfont() accepts GRX font names (name.fnt).
+- getmodename() supports modes >32768 colors
+- initgraph() has NATIVE_GRX driver entry. NATIVE_GRX supports
+  the default, biggest (noninterlaced), BGI_mode graphics and all valid
+  modes from .grn drivers
+- set_BGI_mode()/set_BGI_mode_whc() routines to emulate BGI driver resolutions
+- floodfill() doesn't uses second context in simple cases (much faster),
+  leaves viewport if no clipping required
+- getmoderange(), getmaxmode() and getpalettesize() will call
+  __gr_set_up_modes() first -->> returned values are initialized
+- closegraph() resets __gr_INIT flag
+- cleardevice(), clearviewport(), imagesize(), graphresult(), getmaxcolor(), getgraphmode(), getpixel() and
+  putpixel() are checking  __gr_INIT  flag now
+- setrgbpalette() check's initgraph(), moved from bccgrx.h -> bccgrx20.c
+- drawpoly() always closed the polygon -- fixed.
+- registerfarbgifont() now same as registerbgifont()
+- setgraphbufsize() returns a defined value
+- setwritemode() protects against setting color bits
+- detectgraph() returns the correct graphdriver info
+- graphdefaults() doesn't call setlinestyle() & setviewport() any more
+- bccgrx.c/__gr_set_up_modes() executed once only (fixes memory waste)
+
+******* 1.0 --> 1.1
+
+- initgraph() will set the requested graphmode if graphdriver != DETECT.
+- using GrHLineNC and GrPixelNC in bccgrx09.c / _floodfill()
+- BCC2GRX should run correct with old style drivers (.grd)
+  (bccgrx.c/__gr_set_up_modes changed)
+- Corrected detectgraph()/initgraph() problem calling Gr... funcs
+  before GrSetMode()
+- Used normal filled / solid line commands where ever possible
+- Text direction and justify setting compatible with Borland definition

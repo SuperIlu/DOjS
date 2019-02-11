@@ -1,0 +1,104 @@
+****************
+** README.NEW **
+****************
+
+Introduction
+------------
+
+This is an updated (beta) version of the GRX v2.0 graphics library.
+
+New features are :
+
+	- Pattern Filled functions
+
+		ex.: GrPatternFilledCircle(xc,yc,r,p);
+
+	- Patterned Line functions
+
+		ex.: GrPatternedCircle(xc,yc,r,lp);
+
+	- Custom Line functions
+
+		ex.: GrCustomLine(x1,y1,x2,y2,lo);
+
+	- User Coordinates functions
+
+		ex.: GrUsrFilledEllipse(xc,yc,xa,ya,c);
+
+These features have been ported to GRX v2.0 from previous versions
+in the GRX v1.03. However some functions had to be entirely rewritten
+for compatibility with the new version of the library.
+
+For more informations on these functions, see the documentation located
+in the 'doc/' subdirectory, or edit the 'grx20.h' file to see how to use
+the functions.
+
+
+Library
+-------
+
+A compiled version of the library (with Djgpp v2.01) is supplied with
+this upgrade and is located in the lib/ subdirectory as the 'libgrx20.a'
+file. The file 'libgrx20.bk2' also present is a backup of the library
+of the previous version of GRX20 (without the new features).
+
+The library can be recompiled by 'make' in the root directory :
+
+	make libs
+
+If you don't want these new features, you can compile the previous
+version of the library with the command line
+
+	make previous
+
+In case of bugs, this can be useful.
+
+After compiling the library, you can clean the directory (by deleting
+all the objects files in the 'src/' subdirectory with the command line
+
+	make clean
+
+so you keep only the archive file on your disk. It can save a little
+amount of memory.
+
+
+Installing
+----------
+
+With the line command
+
+	make install
+
+in the root directory of GRX20 'make' will copy the include files in the
+'include/' directory of DJGPP and the library file in the 'lib/' directory.
+
+
+Testing
+-------
+
+For compiling the tests programs, just type the line command
+
+	make test
+
+This will compile the library and the tests programs supplied in the
+'test/' subdirectory of GRX20. These tests are those supplied with the
+previous version. No tests are already available for the new features
+of the library. But testing these shouldn't be very difficult ...
+
+Check your bookmarks, maybe I can release some tests soon !
+
+
+Conclusion
+----------
+
+I have not completely tested the library, but it passed all the tests
+I made on it (and there were a lot of tests). However, if you encounter
+some problems in using these new functions, you may contact me at this
+address :
+	      goffioul@emic.ucl.ac.be
+
+Please send the most reduced code which shows the bug with your message,
+so I can test it for myself.
+
+I hope you'll enjoy these new features which I missed sometimes (and
+I think I was not the only one ...).

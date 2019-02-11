@@ -1,0 +1,69 @@
+#
+# GRX makefile for DJGPPv2 version
+#
+.PHONY : libs test bgitest clean cleanall install uninstall \
+	 install-bin uninstall-bin install-fonts uninstall-fonts \
+	 install-info uninstall-info
+
+GRXVDJ2=y
+
+include makedefs.grx
+
+all:   libs test bgitest
+
+libs:
+	$(MAKE) -C src -f makefile.dj2
+
+test:   libs
+	$(MAKE) -C test -f makefile.dj2
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	$(MAKE) -C pascal -f makefile.dj2
+endif
+
+bgitest:   libs
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C test/bgi -f makefile.dj2
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	$(MAKE) -C pascal/bgi -f makefile.dj2
+endif
+endif
+
+clean:
+	$(MAKE) -C test -f makefile.dj2 clean
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C test/bgi -f makefile.dj2 clean
+endif
+	$(MAKE) -C src  -f makefile.dj2 clean
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	$(MAKE) -C pascal -f makefile.dj2 clean
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C pascal/bgi -f makefile.dj2 clean
+endif
+endif
+
+cleanall: clean
+	$(MAKE) -C src -f makefile.dj2 cleanall
+
+install:
+	$(MAKE) -C src -f makefile.dj2 install
+
+uninstall:
+	$(MAKE) -C src -f makefile.dj2 uninstall
+
+install-info:
+	$(MAKE) -C src -f makefile.dj2 install-info
+
+uninstall-info:
+	$(MAKE) -C src -f makefile.dj2 uninstall-info
+
+install-bin:
+	$(MAKE) -C src -f makefile.dj2 install-bin
+
+uninstall-bin:
+	$(MAKE) -C src -f makefile.dj2 uninstall-bin
+
+install-fonts:
+	$(MAKE) -C src -f makefile.dj2 install-fonts
+
+uninstall-fonts:
+	$(MAKE) -C src -f makefile.dj2 uninstall-fonts

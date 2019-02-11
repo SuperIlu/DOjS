@@ -1,0 +1,140 @@
+ASCII FONT FORMAT
+
+This document describes the ascii font format, FNA, as found in GRX 1 font
+read/write-tool and GRX 2 FNA driver.
+
+FILE FORMAT
+
+An ascii font file consists of lines. Each line consists of zero or more
+8-bit characters and is terminated by a line feed, a carriage return or a
+carriage return followed by a line feed, depending on the operating system.
+Line length must not exceed 129 characters with the line terminators and 127
+characters without them. Trailing blanks are allowed (and ignored), while
+leading blanks are not allowed. Lines starting with semicolon are comments.
+They are ignored, and so are the blank lines.
+
+HEADER
+
+An ascii font file starts with a header. The header must specify at least 8
+font properties. Each property is on a separate line, can only be specified
+once and has the general form:
+
+<name><separator><value>
+
+where separator consists of one or more blanks.
+
+Required properties:
+
+name <string>
+
+Font name.
+
+family <string>
+
+Font family.
+
+isfixed <0|1>
+
+0 for proportional or 1 for monospaced fonts. Any non-zero value is treated
+as 1.
+
+width <number>
+
+Font width for monospaced fonts.
+
+avgwidth <number>
+
+Average font width for proportional fonts.
+
+Note: monospaced fonts should only specify width, and proportional fonts
+should only specify avgwidth. The GRX FNA driver does not check for that. It
+expects one width or avgwidth property for each font, no matter the spacing.
+
+height <number>
+
+Font height.
+
+minchar <number>
+
+The character with which the font starts. Usually 32 (ascii space).
+
+maxchar <number>
+
+The character with which the font ends. Must be > minchar. The number of
+characters in an ascii font file equals to maxchar - minchar + 1.
+
+baseline <number>
+
+Font baseline. 1-based.
+
+minwidth <number>
+
+The narrowest character width (proportional fonts only). Must be non-zero.
+Ignored by the driver.
+
+maxwidth <number>
+
+The widest character width (proportional fonts only). Must be <= 127. Ignored
+by the driver.
+
+Note: the driver does not require minwidth and maxwidth, but any proper ascii
+font header should include them when describing a proportional font.
+
+Optional properties:
+
+undwidth <number>
+
+Underline height in lines. The default is height / 15 rounded down, or 1 if
+the font height is < 15.
+
+note <string>
+
+Comment. May be empty. Any number of comments may be specified. The usual
+comments are the font XFDL name and copyright. Ignored by the driver.
+
+Note: the comments starting with semicolon are always ignored, while the note
+comments may be taken into account by a non-GRX driver or program.
+
+DATA
+
+The file header is followed by <height * number-of-characters> data lines.
+Each <height> data lines describe one character scan line by scan line. These
+lines must all be <width> characters long, where <width> is the width of the
+character being described. Each line describes one character scan line bit by
+bit from left to right: period for 0-bit, number sign for 1-bit. A blank line
+and a comment are usually placed before each <height> lines to make the file
+more readable. Hope my english was good enought, and here is an example:
+
+; character 36 ($) width = 8
+........
+...#....
+...#....
+.#####..
+#..#..#.
+#..#....
+#..#....
+.#####..
+...#..#.
+...#..#.
+#..#..#.
+.#####..
+...#....
+...#....
+
+If the character being described is less than 33 (exclamation) or greater
+than 96 (asciitilde), the comment is shorter:
+
+; character 255 width = 8
+
+Note: both the blank line and the comment are ignored and DO NOT act as
+character data separators. Do not let them fool you and check if there are
+exactly <height> data lines for each character. The driver will not read a
+file without enough data in it, but will silently ignore any extra data.
+
+THE END
+
+No non-blank lines should follow the data, except for semicolon comments. The
+driver does not check for that. Placing one blank line after the data is not
+a practice.
+
+For a full ascii font example, see ter-114n.fna in the GRX fonts directory.

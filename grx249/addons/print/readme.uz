@@ -1,0 +1,47 @@
+
+Das Paket enthaelt die komplette Distribution meines PRINTER BGI-Treibers mit
+allen Quellen.
+
+
+
+Bitte beachten:
+
+  * Fuer die Uebersetzung der Quellen wird Borland C++ in der Version
+    3.1 benoetigt.
+
+  * Die Adressen und Telefonnumern, die in README.TXT genannt sind, sind
+    nicht mehr gueltig.
+
+  * Ich will keine Anrufe, Briefe oder Mails bezueglich des Treibers
+    bekommen. Ich mache nichts mehr mit dem Treiber, und o.g. Dinge
+    stehlen mir nur meine Zeit. Eine Ausnahme mache ich nur, wenn mir
+    die anfallende Zeit bezahlt wird.
+
+  * Fuer die Quellen gilt folgendes Copyright:
+
+Die Software (sowohl die Quellcodes, als auch die Binaries) werden
+ohne jegliche Zusagen/Garantien bezglich Funktionalit„t oder
+Funktionsf„higkeit abgegeben. Weder die Autoren noch die Distributoren
+bernehmen eine Verantwortung fr Sch„den, die durch die Benutzung der
+Software verursacht werden.
+
+Die Software darf frei verwendet und weitergegeben werden, wobei
+"frei" ausdrcklich auch eine kommerzielle Nutzung/Weitergabe
+einschlieát, *vorausgesetzt* die folgenden Bedingungen werden
+eingehalten:
+
+  1. Die Herkunft der Software muá - wenn berhaupt - dann korrekt
+     angegeben werden. Es ist nicht erlaubt, die Software als Werk
+     eines anderen auszugeben. Wird die Software in Teilen oder als
+     Ganzes in einem Produkt benutzt, dann wrde ich mich ber einen
+     Hinweis auf die Herkunft in der Dokumentation freuen. Ein solcher
+     Hinweis ist aber nicht zwingend notwendig.
+
+  2. Ge„nderte Quellcodes mssen deutlich als solche gekennzeichnet
+     werden und drfen nicht ohne einen expliziten Hinweis auf die
+     durchgefhrten nderungen weiterverteilt werden.
+
+  3. Die Bedingungen ber die Nutzung/Weitergabe drfen nicht entfernt
+     oder ge„ndert werden.
+
+

@@ -1,0 +1,1047 @@
+
+
+                     PRINTER.BGI - BGI Treiber fÅr Drucker
+
+                         Version 4.00 vom Oktober 1995
+
+                    (C) 1990-1995 by Ullrich von Bassewitz
+                            ZwehrenbÅhlstra·e 33
+                              D-72070 TÅbingen
+
+                          E-Mail: uz@ibb.schwaben.com
+
+
+
+
+
+
+0. Vorwort
+
+Alle Rechte an der hier beschriebenen Software sowie der Dokumentaton liegen
+beim Autor. Die Verwendung von PRINTER.BGI in eigenen Programmen ist frei,
+sowohl fÅr private als auch fÅr kommerzielle Zwecke. Beachten Sie aber bitte
+folgendes:
+
+    Da die Verwendung von PRINTER.BGI kostenlos ist, erfolgt der Einsatz auf
+    auschlie·liche Gefahr des Anwenders. Jede Haftung fÅr direkte, indirekte,
+    verursachte oder gefolgte SchÑden, die durch die Verwendung von
+    PRINTER.BGI entstehen kînnen, ist ausgeschlossen.
+
+PRINTER.BGI darf unter folgenden Bedingungen beliebig weitergegeben werden:
+
+  * Die Weitergabe geschieht im kompletten Paket mit Dokumentation und
+    Beispielprogrammen.
+  * Die Weitergabe geschieht kostenlos. Dies bedeutet insbesondere, da· der
+    Treiber nicht ohne meine vorherige schriftliche Genehmigung auf CD-ROMS
+    vertrieben werden darf, genauso sind Mailboxen/FTP-Server ausgeschlossen,
+    bei denen der Zugang zum Treiber nicht frei fÅr jedermann ist.
+
+
+
+1. Einleitung
+
+Das Borland Graphics Interface (kurz BGI genannt) ist eine gerÑteunabhÑngige
+Schnittstelle zur Ausgabe von Grafiken auf (fast) beliebigen AusgabegerÑten. Zu
+den Borland-Compilern werden aber ausschlie·lich Treiber fÅr Grafik-Karten
+mitgeliefert.
+
+PRINTER.BGI ist ein zusÑtzlicher Treiber, mit dem Grafik auf einer Vielzahl von
+Druckern ausgegeben werden kann. Dabei wird (im Gegensatz zu Hardcopys) die
+volle Auflîsung des Druckers ausgenutzt.
+
+UnterstÅtzt werden beide Borland-Compiler (also Turbo-Pascal und Borland-C++),
+sowie die folgenden Drucker:
+
+  * Zum HP-LaserJet II kompatible Drucker.
+  * Zum HP-LaserJet IV kompatible Drucker. Der Treiber unterstÅtzt bei diesem
+    Drucker die zusÑtzlich verfÅgbare Auflîsung von 600 DPI.
+  * Der HP DeskJet 500 und Abkîmmlinge.
+  * Der HP DeskJet 500C und Nachfolger (z.B. HP DJ 550C). Hier werden 8 Farben
+    unterstÅtzt.
+  * HP PaintJet XL (nur 8 Farben).
+  * Nadeldrucker der Serien FX und LQ von EPSON sowie dazu kompatible. Dazu
+    gehîren z.T. auch Laser- und Tintenstrahldrucker, z.B. der BJ-300 und BJ330
+    von Canon.
+  * NEC P6/P6+/P60. Diese Drucker sind prinzipiell EPSON kompatibel,
+    unterscheiden sich jedoch im Modus 360 * 360 DPI und verfÅgen zusÑtzlich
+    noch Åber die Mîglichkeit zum Ausdruck in Farbe.
+  * IBM Proprinter X24 und kompatible.
+  * Benutzerdefinierte Nadeldrucker (Åber separat zu erstellende
+    Definitionsdateien).
+
+PRINTER.BGI unterstÅtzt alle im "Device Drivers Toolkit" angegebenen Funktionen
+einschliesslich FloodFill. Da keiner der unterstÅtzten Farbdrucker Åber eine
+einstellbare Palette verfÅgt, sind jedoch die Paletten-Funktionen nicht
+verfÅgbar.
+
+Der Treiber ist gleichzeitig auch im neuen Format verfÅgbar, das benîtigt wird,
+wenn das Programm im Protected-Mode arbeitet. NÑheres dazu weiter unten.
+
+
+
+2. Anforderungen
+
+2.1 Drucker
+
+Hardware-Voraussetzung ist ein Drucker der zu einer der oben erwÑhnten Familien
+gehîrt oder dazu kompatibel ist. Sollten Sie einen Nadeldrucker besitzen bei dem
+das nicht der Fall ist, lesen Sie bitte das Kapitel Åber benutzerdefinierte Modi
+weiter unten. Bitte beachten Sie, da· nicht alle Drucker alle Modi unterstÅtzen.
+Speziell die Modi mit Auflîsungen von 360 * 360 DPI sind nicht auf allen
+Nadeldruckern verfÅgbar.
+
+
+
+2.2 Rechner
+
+Prinzipiell reicht ein XT-kompatibler Rechner zur Benutzung von PRINTER.BGI
+aus. Da jedoch relativ gro·e Datenmengen bewegt werden wird die Verwendung erst
+ab einem AT-kompatiblen Rechner wirklich sinnvoll. Sind weder EMS noch XMS
+in ausreichendem Umfang vorhanden (siehe Abschnitt 2.4: Speicher), so ist
+die Verwendung einer schnellen Platte anzuraten.
+
+
+
+2.3 Compiler
+
+Der Treiber arbeitet problemlos mit allen Compilern ab Version 6.0 (Turbo
+Pascal) bzw. Version 2.0 (Borland-C++) zusammen.
+
+
+
+2.4 Speicher
+
+Da das Grafik-Paket eine beliebige Positionierung des Grafik-Cursors zulÑ·t, und
+zudem Funktionen zum RÅcklesen von Daten existieren (GetPixel, GetImage etc.),
+mu· der Treiber das komplette Bild bis zur Ausgabe zwischenspeichern. Dies
+geschieht
+
+  - im Real-Mode: Entweder im EMS-Speicher, im XMS-Speicher oder auf Platte.
+
+  - im Protected-Mode: Im DPMI-Speicher oder auf Platte. NÑheres siehe
+    Abschnitt 7.
+
+PRINTER.BGI entscheidet sich je nach vorhandener Hard- und Software
+selbststÑndig fÅr eine dieser Mîglichkeiten, wobei er (in dieser Reihenfolge)
+die Verwendungsmîglichkeit von EMS, XMS (bzw. DPMI-Speicher) und Platte prÅft.
+Die Daten kînnen dabei nicht aufgeteilt werden kînnen (also z.B. Verwendung von
+200 KB EMS, 89.5 KB XMS und der Rest auf Platte). Kann keines der oben genannten
+Speichermedien genug Speicher zur VerfÅgung stellen, so liefert PRINTER.BGI
+einen Fehlercode von -12 (grIOError) zurÅck.
+
+Wieviel Speicher fÅr eine bestimmte Auflîsung benîtigt wird, kann nach folgender
+Formel berechnet werden, wobei je nach Speichermedium evtl. auf volle 16 oder 64
+KB aufgerundet werden mu·:
+
+      Breite * X-Auflîsung (DPI) * Hîhe * Y-Auflîsung (DPI) * Farbbits
+     ------------------------------------------------------------------ Byte
+                                        8
+
+Der Wert von Farbbits betrÑgt 1 fÅr die Schwarz-Wei· Modi, 3 beim DeskJet
+500C/550C mit 8 Farben und 4 bei den Farbmodi der Nadeldrucker.
+
+Die Grî·e des bedruckbaren Bereichs ist je nach Modus unterschiedlich: In den
+Nadeldrucker-Modi betrÑgt die Breite immer 8, die LÑnge immer 11 Zoll. In den
+LaserJet-Modi betrÑgt die Breite 7.8 Zoll (neuere Laserdrucker haben des îfteren
+Probleme mit der vollen Breite von 8 Zoll), die LÑnge 10.5 Zoll. Beim DeskJekt
+500C/550C betrÑgt die Breite 8 Zoll und die LÑnge 10.33 Zoll.
+
+
+
+3. Die Einbindung des Treibers
+
+Die Einbindung des Treibers erfolgt Åber die Prozedur InstallUserDriver. Der
+erste Parameter von InstallUserDriver ist der Name des Treibers (ohne die
+Endung), der zweite Parameter ist ein Zeiger auf eine Detect-Routine, die prÅfen
+kann, ob der Rechner mit einer fÅr den Treiber passenden Hardware ausgestattet
+ist (was im Falle von Druckern natÅrlich schlecht geht, weswegen ein NIL-Zeiger
+Åbergeben wird).
+
+Ist der von InstallUserDriver zurÅckgegebene Integer-Wert < 0, so ist ein Fehler
+aufgetreten, ist er grî·er, so stellt er die Nummer des Treibers dar.
+
+Der folgende Ausschnitt zeigt, wie eine Einbindung in Turbo-Pascal aussehen
+kann.
+
+    VAR
+      GraphMode, GraphDriver : INTEGER;
+
+    BEGIN
+      { Grafiktreiber installieren }
+      GraphDriver := InstallUserDriver ('PRINTER', NIL);
+      IF (GraphDriver < 0) THEN BEGIN
+        { Fehlerbehandlung }
+        ...
+      END;
+
+      { GewÅnschten Modus festlegen und Grafik einschalten }
+      GraphMode := 2;         { Modus 2, 180*180 DPI }
+      InitGraph (GraphDriver, GraphMode, PathToDriver);
+      ...
+    END;
+
+Soll der Treiber als OBJ-Datei in das ausfÅhrbare Programm eingebunden werden,
+so mÅssen folgende Schritte in genau dieser Reihenfolge durchgefÅhrt werden:
+
+  * "Installierung" des Treibers mit InstallUserDriver. Diese Prozedur teilt
+    dem Grafik-Kernel mit, da· es einen Treiber mit dem Namen "PRINTER" gibt.
+
+  * "Registrierung" des Treibers mit RegisterBGIDriver. Diese Prozedur teilt
+    dem Grafik-Kernel mit, da· der Treiber (falls er verwendet werden sollte)
+    nicht von Platte zu laden ist, sondern da· er sich bereits im Speicher
+    befindet.
+
+  * Einschalten des Grafikmodus mit InitGraph.
+
+Der folgende Code-Ausschnitt zeigt beispielhaft, wie die Einbindung erfolgen
+kann. Es wird vorausgesetzt, da· der Treiber zuvor mittels
+
+        BINOBJ PRINTER.BGI PRINTER.OBJ PRINTERDRIVER
+
+in eine OBJ-Datei umgewandelt worden ist (C-Programmierer: Das entsprechende
+Programm hei·t BGIOBJ und ist etwas komplizierter zu bedienen. Es mÅssen beim
+Aufruf alle Parameter angegeben werden! Dazu einfach BGIOBJ ohne Parameter
+aufrufen und nach Hilfestellung vorgehen.)
+
+
+    { Der Treiber als Prozedur deklariert }
+    PROCEDURE PRINTERDriver; FAR; EXTERNAL;
+
+    { Einbinden des Treibers }
+    {$L PRINTER.OBJ}
+
+    VAR
+      GraphDriver : INTEGER;          { Nummer des Treibers }
+
+
+    PROCEDURE Install;
+    { FÅhrt die Installation des Treibers durch }
+    BEGIN
+      GraphDriver := InstallUserDriver ('PRINTER', NIL);
+      IF (GraphDriver < 0) THEN Error;
+      IF (RegisterBGIDriver (@PRINTERDriver) < 0) THEN Error;
+    END;
+
+
+    BEGIN                         { Hauptprogramm }
+      ....
+      Install;
+      GraphMode := 1;             { Autodetect }
+      InitGraph (GraphDriver, GraphMode, '');
+      { Fehlerauswertung muss folgen }
+      ....
+    END.
+
+
+Weitere Details finden Sie im Handbuch zur jeweiligen Programmiersprache.
+
+
+
+4. Grafik-Modi
+
+Folgende Grafik-Modi sind verfÅgbar:
+
+    Wert    Bedeutung                                           Anmerkungen
+   --------------------------------------------------------------------------
+      0     EPSON FX (8-Nadel), 240 * 72 DPI
+      1     EPSON FX (8-Nadel), 240 * 216 DPI
+      2     EPSON LQ (24-Nadel), 180 * 180 DPI
+      3     EPSON LQ (24-Nadel), 360 * 180 DPI
+      4     EPSON LQ (24-Nadel), 360 * 360 DPI
+      5     NEC P6, P6+, P60 (24-Nadel), 360 * 360 DPI              (1)
+      6     IBM Proprinter X24 (24-Nadel), 180 * 180 DPI
+      7     IBM Proprinter X24 (24-Nadel), 360 * 180 DPI
+      8     EPSON LQ / NEC P6, P6+, 180 * 180 DPI, 9 Farben         (6)
+      9     EPSON LQ / NEC P6, P6+, 360 * 180 DPI, 9 Farben         (6)
+     10     EPSON LQ, 360 * 360 DPI, 9 Farben                       (6)
+     11     NEC P6, P6+, 360 * 360 DPI, 9 Farben                    (6)
+     12     Reserviert
+     13     Benutzerdefinierter Modus 1                             (2)
+     14     Benutzerdefinierter Modus 2                             (2)
+     15     Benutzerdefinierter Modus 3                             (2)
+     16     HP LJ, 75 * 75 DPI                                      (3)
+     17     HP LJ, 100 * 100 DPI                                    (3)
+     18     HP LJ, 150 * 150 DPI                                    (3)
+     19     HP LJ, 300 * 300 DPI                                    (3)
+     20     HP LJ, 75 * 75 DPI, keine Kompression                   (4)
+     21     HP LJ, 100 * 100 DPI, keine Kompression                 (4)
+     22     HP LJ, 150 * 150 DPI, keine Kompression                 (4)
+     23     HP LJ, 300 * 300 DPI, keine Kompression                 (4)
+     24     HP DJ 500C, 75 * 75 DPI, 8 Farben, A4
+     25     HP DJ 500C, 100 * 100 DPI, 8 Farben, A4
+     26     HP DJ 500C, 150 * 150 DPI, 8 Farben, A4
+     27     HP DJ 500C, 300 * 300 DPI, 8 Farben, A4
+     28     HP DJ 550C, 75 * 75 DPI, 8 Farben, echtes Schwarz       (7)
+     29     HP DJ 550C, 100 * 100 DPI, 8 Farben, echtes Schwarz     (7)
+     30     HP DJ 550C, 150 * 150 DPI, 8 Farben, echtes Schwarz     (7)
+     31     HP DJ 550C, 300 * 300 DPI, 8 Farben, echtes Schwarz     (7)
+     32     HP LJ IV, 600 * 600 DPI                                 (5)
+     33     EPSON LQ (24-Nadel), 180 * 180 DPI, DIN A3
+     34     EPSON LQ (24-Nadel), 360 * 180 DPI, DIN A3
+     35     EPSON LQ (24-Nadel), 360 * 360 DPI, DIN A3
+     36     NEC P7 (24-Nadel), 360 * 360 DPI, DIN A3                (1)
+     37     EPSON LQ (24-Nadel), 180 * 180 DPI, DIN A3, 9 Farben    (6)
+     38     EPSON LQ (24-Nadel), 360 * 180 DPI, DIN A3, 9 Farben    (6)
+     39     EPSON LQ (24-Nadel), 360 * 360 DPI, DIN A3, 9 Farben    (6)
+     40     NEC P7 (24-Nadel), 360 * 360 DPI, DIN A3, 9 Farben    (1) (6)
+     41     HP PaintJet 300 XL, 75 * 75 DPI, 8 Farben, A3           (8)
+     42     HP PaintJet 300 XL, 100 * 100 DPI, 8 Farben, A3         (8)
+     42     HP PaintJet 300 XL, 150 * 150 DPI, 8 Farben, A3         (8)
+     42     HP PaintJet 300 XL, 300 * 300 DPI, 8 Farben, A3         (8)
+
+
+
+Alle anderen Modi erzeugen den Fehler -10 (grInvalidMode).
+
+Anmerkungen zur Tabelle:
+
+(1)
+In den niedrigeren Auflîsungen ist der Drucker EPSON kompatibel, d.h. es kînnen
+die Modi 2 und 3 zusÑtzlich verwendet werden.
+
+(2)
+Siehe Abschnitt 8 (Benutzerdefinierte Modi).
+
+(3)
+éltere Modelle des LaserJet II (und Nachbauten) beherrschen z.T. die vom Treiber
+verwendete Kompressionsmethode nicht. Bei Problemen ist auf die (ansonsten
+Ñquivalenten) Modi 20-23 auszuweichen, die keine Kompression verwenden.
+
+(4)
+Die Modi entsprechen den Modi 16-19, es wird jedoch keine Kompression der an den
+Drucker gesandten Daten durchgefÅhrt. Aus diesem Grund ist der Ausdruck
+normalerweise langsamer.
+
+(5)
+Der Drucker LaserJet IV kann auch mit geringeren Auflîsungen in den Modi 16-19
+betrieben werden.
+
+(6)
+Der Drucker mu· dazu mit einer Farboption ausgestattet sein.
+
+(7)
+Der Drucker verfÅgt Åber eine separate Schwarz-Patrone und wird vom Treiber so
+angesteuert, da· fÅr schwarze FlÑchen diese Patrone verwendet wird. Beachten Sie
+dazu bitte die Hinweise im Abschnitt 6.4.
+
+(8)
+Diese Modi entsprechen bis auf die Blattgrî·e den Modi 24-27. Der PaintJet
+300 XL lÑ·t sich auch in diesen Modi betreiben, wenn nur eine Ausgabe im
+DIN A4 Format gewÅnscht ist.
+
+
+
+5. Ausgabe der Grafik
+
+Die Ausgabe der Grafik erfolgt beim abschlie·enden CloseGraph. Sollen mehrere
+Seiten ausgegeben werden, so ist eine Ausgabe auch mittels Aufruf von
+ClearDevice mîglich. Nach Aufruf dieser Funktion ist die ZeichenflÑche wieder
+leer.
+
+Der Treiber schreibt die Daten auf das MS-DOS Datei-Handle Nr. 4, das
+normalerweise (von COMMAND.COM) vor Start des Programms mit dem GerÑt PRN
+(also dem ersten Drucker) verbunden wird. Das Device wird vor der Ausgabe auf
+"raw data" um- und danach wieder in den Orginalzustand geschaltet.
+
+Die Verwendung eines Standard-Handles hat den Vorteil, da· die Ausgabe leicht in
+eine Datei oder auf einen anderen Ausgabeport umgeleitet werden kann (letzteres
+z.B. mit Hilfe des MODE-Kommandos). Beispiele zur Umleitung finden Sie in den
+Beispielprogrammen.
+
+
+
+6. Besonderheiten der verschiedenen Drucker
+
+6.1 LaserJet II
+
+Bei Ñlteren Modellen dieses Druckers ist die vom Treiber verwendete Methode zur
+Kompression der Druckdaten nicht implementiert. Nachbauten verhalten sich hier
+unterschiedlich. Bei Problemen sind anstelle der Modi 16-19 die Modi 20-23 zu
+verwenden.
+
+
+
+6.2 DeskJet 500
+
+Beim DeskJet 500 und Nachfolgern (auch DeskJet 500C im Schwarz-Wei· Modus)
+kînnen Ausdruckparameter eingestellt werden. NÑheres dazu steht in Abschnitt
+9 (Optionen).
+
+
+
+6.3 DeskJet 500C
+
+Der Drucker DeskJet 500C und seine Nachfolger unterstÅtzten 8 Farben, die aus
+den drei Grundfarben Cyan, Gelb und Magenta zusammengesetzt werden. Da es sich
+hier um eine subtraktive Palette handelt, unterscheiden sich die Farben von
+denen des Bildschirmadapters (der eine additive Palette besitzt). Aus diesem
+Grund kînnen die vordefinierten Farb-Konstanten nicht verwendet werden. (Rein
+syntaktisch kînnen diese Konstanten natÅrlich verwendet werden, d.h. der
+Compiler meldet keinen Fehler, das Ergebnis sieht dann jedoch etwas anders aus
+als erwartet.) Die Zuordnung der Farben entnehmen Sie bitte der folgenden
+Tabelle:
+
+      Wert      Farbe
+     -------------------
+        0       Wei·
+        1       Cyan
+        2       Magenta
+        3       Blau
+        4       Gelb
+        5       GrÅn
+        6       Rot
+        7       Schwarz
+
+ZusÑtzlich kînnen beim DeskJet 500C Ausdruckparameter verÑndert werden, nÑheres
+dazu steht in Abschnitt 9 (Optionen).
+
+
+
+6.4 DeskJet 550C
+
+Der DeskJet 550C verfÅgt im Gegensatz zu seinem VorlÑufer Åber eine separate
+Schwarzpatrone, die gleichzeitig verwendet werden kann. In den Modi 28-31 ist
+es mîglich, diese separate Patrone zum Druck schwarzer FlÑchen zu benutzen.
+Beachten Sie dazu bitte den folgenden Hinweis aus dem Handbuch des Herstellers
+(im Orginal Englisch, von mir frei Åbersetzt):
+
+   Vorsicht ist geboten, wenn schwarze und farbige Tinte gleichzeitig auf
+   einer Seite verwendet wird. Die Tinten aus der Farb-Patrone haben eine
+   andere chemische Zusammensetzung als die Tinte aus der Schwarz-Patrone.
+   Wenn beide in direkten Kontakt miteinander kommen, kann es passieren, da·
+   sich die schwarze merklich mit der farbigen Tinte mischt. Das Problem
+   fÑllt am meisten auf, wenn viel Tinte aufgetragen wird. Die Verwendung
+   von Shingling beim Ausdruck kann dieses PhÑnomen verringern oder ganz
+   eliminieren. 25% Shingling kann die QualitÑt des Ausdrucks verbessern,
+   50% Shingling kann das Problem evtl. ganz zum Verschwinden bringen.
+   Alternativ kann mit geringerem Tintenauftrag gearbeitet werden (dÅnnere
+   Linien oder FÅllmuster), oder es kann durch geeigneten Ausdruck dafÅr
+   gesorgt werden, da· sich die FlÑchen mit unterschiedlichen Tinten nicht
+   berÅhren.
+
+Weiterhin sind alle Hinweise aus Abschnitt 6.3 gÅltig.
+
+
+
+6.5 PaintJet 300 XL
+
+Beim PaintJet 300 XL handelt es sich um einen A3 Farbdrucker, der auch mehr
+als 8 Farben unterstÅtzt. Dieser Drucker lÑsst sich in den Modi 24-27 (A4)
+und 41-44 (A3) betreiben. Modi mit mehr als 8 Farben stehen derzeit nicht
+zur VerfÅgung. FÅr die Farbzuordnung, siehe Abschnitt 6.3.
+
+
+
+6.6 HP DeskJet 1200
+
+Der Drucker mÅsste die Modi 24-27 "verstehen". Aufgund fehlender Hardware ist
+das bisher aber ungetestet. FÅr RÅckmeldungen wÑre ich dankbar.
+
+
+
+6.7 Canon BJ-300 und BJ-330
+
+Dieser Tintenstrahldrucker emuliert entweder die EPSON Drucker LQ850 bzw. LQ1050
+oder den IBM Proprinter X24. Je nach Einstellung am Drucker lassen sich deshalb
+die Modi 2-4 oder 8-9 des Treibers verwenden. Die Einstellung des
+Emulationsmodus ist im Druckerhandbuch beschrieben.
+
+
+
+6.8 Canon BJC-800
+
+Als Emulationsmodus sollte "EPSON LQ-2550" gewÑhlt werden. Der Drucker
+unterstÅtzt Farbe, die Farbmodi der EPSON-Drucker kînnen verwendet werden.
+
+
+
+6.9 NEC P6, P6+, P7, P7+, EPSON LQ Serie
+
+In den entsprechend gekennzeichneten Modi kann der Drucker als Farbdrucker
+verwendet werden. Dazu ist jedoch eine Hardware-AufrÅstung des Druckers
+notwendig.
+
+Die Farbzuordnung entnehmen Sie bitte folgender Tabelle:
+
+      Wert      Farbe
+     -------------------
+        0       Wei·
+        1       Cyan
+        2       Magenta
+        3       Blau
+        4       Gelb
+        5       GrÅn
+        6       Rot
+        7       Braun
+        8       Schwarz
+
+
+
+
+7. Der Treiber im Protected-Mode
+
+Aufgrund der Eigenheiten des Protected-Mode mu·te Borland das Format der Treiber
+beim öbergang auf die Version 7.0 von Turbo-Pascal Ñndern. Die neuen Versionen
+des Grafik-Kernels erkennen jedoch die alten Treiber und behandeln diese
+korrekt, vorausgesetzt, das Programm lÑuft im Real-Mode. Die folgende Auflistung
+zeigt, welcher Treiber mit welchem Compiler kompatibel ist:
+
+  * Turbo-Pascal bis Version 6.0 und Borland-C++ bis Version 3.1 laufen nur im
+    Real-Mode und kennen nur das alte Format der Treiber.
+
+  * Borland-Pascal 7.0 lÑuft sowohl im Real- als auch im Protected-Mode und
+    erkennt beide Treiberformate. Der Betrieb im Protected-Mode ist jedoch nur
+    mit dem neuen Format mîglich.
+
+  * Turbo-Pascal 7.0 ist eine abgespeckte Version von Borland-Pascal 7.0 und
+    lÑuft nur im Real-Mode, erkennt aber beide Treiberformate.
+
+Im Paket befinden sich der Treiber in beiden Formaten. Der Treiber fÅr das neue
+(DPMI-) Format trÑgt jedoch einen anderen Namen (PRINTER.BP7) und mu· vor
+Gebrauch umbenannt werden.
+
+Im Real-Mode unterscheiden sich beide Versionen des Treibers nicht. Im
+Protected-Mode ergeben sich jedoch folgende EinschrÑnkungen:
+
+  * Der Treiber unterstÅtzt kein EMS und kein XMS. Es kann nur in den
+    DPMI-Speicher und auf Platte ausgelagert werden. Bei Verwendung von
+    DPMI-Speicher ist der Treiber dafÅr wesentlich schneller, da ein direkter
+    Zugriff erfolgen kann.
+
+  * Der Runtime-Manager von Borland belegt beim Start sÑmtlichen verfÅgbaren
+    DPMI-Speicher, der dann dem Treiber nicht mehr zur VerfÅgung steht. Aus
+    diesem Grund mu· dem Runtime-Manager durch Setzen einer Environment-Variable
+    mitgeteilt werden, welchen Anteil des DPMI-Speichers er freizuhalten hat -
+    ansonsten wird prinzipiell auf Platte ausgelagert. Dieser Speicher steht
+    dann aber dem Programm nicht mehr zur VerfÅgung. (Zumindest nicht Åber die
+    Routinen des Borland-Pakets. öber DPMI-Funktionen kann der Speicher
+    selbstverstÑndlich belegt werden.) Soll DPMI-Speicher benutzt werden, so ist
+    vor Start des Programms auf DOS-Ebene
+
+                SET RTM=EXTLEAVE nnnn
+
+    einzugeben, wobei nnnn die Grî·e (in KB) des vom Runtime-Managers nicht zu
+    belegenden Speichers ist. Um z.B. 1MB Speicher fÅr den Treiber freizuhalten,
+    wird
+
+                SET RTM=EXTLEAVE 1024
+
+    verwendet. NÑheres dazu lesen Sie bitte in Ihrem Compiler-Handbuch nach.
+
+ACHTUNG: Borland hat mehrere Monate lang eine Version 7.00 des Borland-Pascal
+Compilers vertrieben die extrem fehlerhaft war (die spÑtere, fehlerbereinigte
+Version trÑgt die Versionsnummer 7.01). Falls Sie im Besitz dieser Ñlteren
+Version sind, sollten Sie auf jeden Fall ein Upgrade bei Borland erstehen (auch
+wenn dieses nicht kostenlos ist). Die korrekte Version erkennen Sie an der
+Uhrzeit der letzten énderung der Datei: Die richtige Version des Compilers zeigt
+hier 07:01, die falsche 07:00.
+
+
+
+8. Benutzerdefinierte Modi
+
+PRINTER.BGI lÑsst sich Åber Drucker-Definitionsdateien an fast alle Nadeldrucker
+anpassen. Dazu dient ein kleines öbersetzungsprogramm zusammen mit einigen dafÅr
+reservierten Modi im Treiber. Bei der Initialisierung sucht der Treiber nach den
+Dateien PRINTER1.PDF, PRINTER2.PDF und PRINTER3.PDF (fÅr die Modi 13-15). (Das
+".PDF" steht fÅr "Printer Definition File".) Der Treiber sucht in mehreren
+Verzeichnissen nach diesen Dateien, und zwar:
+
+  * Im aktuellen Verzeichnis.
+  * Im Verzeichnis, in dem sich die EXE-Datei befindet. Dieser Mechanismus
+    funktioniert erst ab DOS 3.0.
+  * Im Verzeichnis, das die Environment-Variable BGIPATH angibt. Sie kînnen
+    diese Variable auf DOS-Ebene mit
+
+                set BGIPATH=X:\YYY\ZZZ
+
+    setzen.
+
+Findet PRINTER.BGI eine oder mehrere dieser Dateien so wird/werden sie geladen
+und Modus wird entsprechend der in der Datei enthaltenen Angaben unterstÅtzt.
+
+Zur Erstellung dieser Dateien gehen Sie wie folgt vor:
+
+  * Erstellen Sie mit Ihrem Text-Editor eine ASCII-Datei mit den erforderlichen
+    Steuersequenzen. Lesen Sie dazu die Anleitung (PDFCOMP.DOC) und orientieren
+    Sie sich an den beigelegten Beispieldateien.
+  * öbersetzen Sie die ASCII-Datei mit Hilfe des Programms PDFCOMP in eine
+    BinÑrdatei.
+  * Benennen Sie die Datei um in PRINTERx.PDF, je nachdem welchen Modus Sie
+    verwenden wollen.
+  * Kopieren Sie die Datei in eines der oben genannten Verzeichnisse. Der
+    Treiber lÑdt diese Datei bei der Initialisierung und unterstÅtzt den Modus
+    dann wie einen eingebauten.
+  * Falls Sie mir und anderen Benutzern einen Gefallen tun wollen: Senden Sie
+    mir die Definitionsdatei (ASCII-Datei) zu, damit ich sie anderen Benutzern
+    zur VerfÅgung stellen kann. Vermerken Sie dazu in der Datei bitte Ihren
+    Namen (fÅr RÅckfragen) und die genaue Bezeichnung des Druckers, fÅr den die
+    Datei erstellt wurde.
+
+Findet der Treiber eine oder beide Dateien nicht in den oben genannten
+Verzeichnissen, so gibt der Treiber den Fehlercode grInvalidMode (-10) zurÅck.
+Je nachdem welche Dateien vorhanden sind kînnen die Modi 13-15 ganz normal
+angesprochen werden.
+
+
+
+9. Einstellen von Druck-Optionen
+
+Der Drucker unterstÅtzt bei Ausgabe auf Drucker vom Typ DeskJet (in den Modi
+16-31) Optionen zur Beeinflussung der AusgabequalitÑt. Bei Nadel- oder
+Laserdruckern haben die hier besprochenen Einstellungen keine Auswirkung, die
+entsprechenden Befehle werden ignoriert. Die Optionen werden Åber den Treiber
+durch einen "Mi·brauch" der Funktion SetAllPalette verfÅgbar gemacht. Diese
+Funktion ist speziell auf EGA-Karten bzw. VGA-Karten im 16-Farb Modus
+zugeschnitten und hat bereits bei Super-VGA's im Modus mit 256 Farben keine
+Bedeutung mehr, so da· die Verwendung zur öbergabe eines Kontrollblocks an den
+Treiber nahe lag.
+
+öblicherweise wird eine Variable vom Typ PaletteType Åbergeben, deren
+Deklaration wie folgt lautet:
+
+    CONST
+      MaxColor = 15;
+
+    TYPE
+      PaletteType = RECORD
+        Size      : BYTE;
+        Colors    : ARRAY [0..MaxColor] OF SHORTINT;
+      END;
+
+Size entspricht der Anzahl der Farben des Druckers, mu· also in den Schwarzwei·-
+Modi auf 2, in den Farbmodi des DeskJet dagegen auf 8 gesetzt werden. Im Array
+Colors sind die ersten Size Bytes gÅltig und werden bei einem Aufruf vom
+Grafik-Kernel an den Treiber weitergereicht.
+
+Die Bedeutung der Werte im Array Colors ergeben sich aus den folgenden Tabellen:
+
+Mîgliche Ausdruck-Optionen beim DeskJet 500:
+
+    Index   Defaultwert   Bedeutung
+   -----------------------------------------------------------------
+      0                   Reserviert
+      1         0         AusgabequalitÑt:
+                            0: QualitÑt wie am Drucker eingestellt
+                            1: Draft
+                            2: High
+
+
+Mîgliche Ausdruck-Optionen beim DeskJet 500C/550C:
+
+    Index   Defaultwert   Bedeutung
+   -----------------------------------------------------------------
+      0                   Reserviert
+      1         0         AusgabequalitÑt:
+                            0: QualitÑt wie am Drucker eingestellt
+                            1: Draft
+                            2: High
+      2         0         Shingling:
+                            0: Keines
+                            1: 50% Shingling (2 Druck-DurchgÑnge)
+                            2: 25% Shingling (4 Druck-DurchgÑnge)
+      3         1         Depletion:
+                            0: Keine
+                            1: 25%
+                            2: 50%
+     4-7                  Reserviert
+
+Beim "Shingling" wird die Ausgabe einer Zeile in mehrere DurchgÑnge aufgeteilt,
+um der Farbe zwischenzeitlich eine Mîglichkeit zum Antrocknen zu geben und so
+eine saubere Schichtung der Farben zu gewÑhrleisten. Der Defaultwert ist 0 (kein
+Shingling), die Werte 1 bzw. 2 verlangsamen die Ausgabe, da mehr DurchgÑnge
+erforderlich sind.
+
+Beim "Depletion"-Verfahren wird nach einem (mir unbekannten - ich zitiere nur
+das Handbuch) gleichnamigen Algorithmus ein Teil der Farb-Pixel entfernt um
+Farbe zu sparen und die QualitÑt der Druckausgabe zu verbessern. Default ist
+hier 1 (25% Depletion). Hinweis: Es werden keinesfalls die angegebene
+Prozentzahl an Pixeln entfernt, es handelt sich um die Vorbesetzung einer
+Variable im o.g. Algorithmus.
+
+Die Einstellung der Druck-Optionen erfolgt durch Deklaration einer Variablen
+(oder typisierten Konstanten) vom Typ PaletteType, Zuweisung der Werte Aufruf
+von SetAllPalette mit der deklarierten Variablen als Parameter. Werte die sich
+nicht Ñndern sollen (dazu gehîren auch die mit "Reserviert" gekennzeichneten
+EintrÑge) sollten mit -1 belegt werden (siehe Compiler-Handbuch).
+
+ACHTUNG: Sie mÅssen diese Werte nicht neu einstellen - der Treiber verwendet
+dann die unter "Defaultwert" stehenden Vorgaben. Diese Werte sind die
+Standard-Werte des Druckers und haben normalerweise eine saubere Druck-Ausgabe
+zur Folge. FÅr spezielle Anwendungen oder kommerzielle Programme kann es jedoch
+u.U. sinnvoll sein, die Ausgabe zu beeinflussen.
+
+
+
+10. Fehler im UNIT Graph
+
+10.1 Fehlercodes
+
+Durch einen Fehler im UNIT Graph werden die negativen Fehlercodes, die der
+Treiber zurÅckgibt positiv an die Anwendung durchgereicht: Das Status-Feld des
+Treibers, Åber das die Fehlercodes rÅckgemeldet werden ist 1 Byte gro·. Da die
+Fehlercodes negative Werte sind, hÑtte dieses Feld als SHORTINT deklariert
+werden mÅssen. Die Entwickler haben dies aber Åbersehen und das Feld als BYTE
+deklariert, was dazu fÅhrt, da· die Fehlercodes nicht vorzeichenrichtig
+erweitert werden. Abhilfe schafft eine Abfrage wie in der folgenden Abbildung.
+Unter UmstÑnden kann GraphResult entsprechend Åberdefiniert werden.
+
+    VAR
+      Result : INTEGER;
+
+    BEGIN
+      { Grafik einschalten }
+      InitGraph (GraphDriver, GraphMode, '');
+
+      { Fehlercode auswerten. Durch den Typecast werden die
+        obersten 8 Bits abgeschnitten, durch die Zuweisung
+        an einen INTEGER wird vorzeichenrichtig erweitert.
+      }
+      Result := SHORTINT (GraphResult);
+      IF (Result <> 0) THEN BEGIN
+        Writeln (GraphErrorMsg (Result));
+        Halt;
+      END;
+      ....
+    END;
+
+
+
+10.2 SetGraphMode
+
+Die Funktion SetGraphMode arbeitet fehlerhaft wenn Modusnummern grî·er 10
+angegeben werden. Von der Verwendung dieser Funktion wird abgeraten. Verwenden
+Sie stattdessen Aufrufe von CloseGraph und InitGraph. Siehe auch den folgenden
+Abschnitt.
+
+
+
+10.3 RestoreCRTMode und SetGraphMode
+
+Die Funktionen arbeiten unter Borland-Pascal 7.0 im Protected-Mode nicht
+korrekt, u.U. ist ein GP Fault die Folge.
+
+
+
+10.4 RegisterBGIDriver
+
+Manuell geladene (d.h. als .OBJ-File eingebundene oder aus einem Resource-File
+geladene) Treiber mÅssen unter Borland-Pascal 7.0 im Protected-Mode auf eine
+Adresse zu liegen kommen, die einen Offset von 0 hat. Ansonsten bricht das
+Grafik-Kernel beim zweiten Aufruf von InitGraph u.U. das Programm mit einer
+Fehlermeldung ab.
+
+Um sicherzustellen, da· der Treiber auf einer Adresse mit Offset 0 zu liegen
+kommt, wenn er als .OBJ-Datei eingebunden wird, erstellen Sie bitte ein
+separates Modul, in dem sich ausschlie·lich der Treiber befindet. Exportieren
+Sie die Adresse des Treibers und fÅhren Sie die Initialisierung der Grafik in
+einem anderen Modul durch.
+
+
+
+11. Zusammenfassung
+
+Nachdem in den vorigen Abschnitten nach und nach immer mehr Details dargestellt
+wurden, sollen diese Informationen hier nochmals kurz zusammengefa·t und anhand
+eines (diesmal vollstÑndigen) Beispiels in Turbo-Pascal demonstriert werden.
+Weitere Beispiele (auch in C) sind im Paket enthalten.
+
+  * Die Einbindung des Treibers geschieht mittels der Prozedur
+    InstallUserDriver, die die Nummer des Treibers zurÅckliefert. Diese Prozedur
+    mu· vor InitGraph aufgerufen werden.
+
+  * Die Abfrage von Fehlern mu· Åber den in Abschnitt 10 beschriebenen Umweg
+    erfolgen, falls die Nummer des Fehlers ausgewertet werden soll (z.B. bei
+    Aufruf von GraphErrorMsg zur Ausgabe einer Meldung).
+
+  * Die Ausgabe der Grafik erfolgt beim Aufruf von ClearDevice sowie beim
+    abschliessenden CloseGraph.
+
+  * Die Einstellung von Ausdruck-Optionen oder die ErklÑrungen zum Datei-Handle
+    kînnen Sie fÅr den Anfang getrost vergessen. Der Ausdruck funktioniert
+    normalerweise auch ohne da· Sie diese Optionen neu einstellen. (Falls Sie
+    nicht ein sehr speziell konfiguriertes System haben. Aber dann wissen Sie ja
+    sowieso, was mit diesen Dingen gemeint ist.)
+
+
+Komplettes Beispiel in Turbo-Pascal:
+
+    VAR
+      GraphDriver, GraphMode : INTEGER;
+      Result                 : INTEGER;
+
+    BEGIN
+      { Einbinden des Treibers }
+      GraphDriver := InstallUserDriver ('PRINTER', NIL);
+      IF (GraphDriver < 0) THEN BEGIN
+        { Fehlerbehandlung }
+        ....
+      END;
+
+      { Modus setzen und Einschalten der Grafik }
+      GraphMode := 11;          { Modus 11, LaserJet 300 DPI }
+      InitGraph (GraphDriver, GraphMode, '');
+      { Fehler auswerten }
+      Result := SHORTINT (GraphResult);
+      IF (Result <> 0) THEN BEGIN
+        { Fehlerbehandlung }
+        Writeln (GraphErrorMsg (Result));
+        Halt;
+      END;
+
+      { Grafik-Operationen }
+      Line (0, 0, GetMaxX, GetMaxY);
+      ....
+
+      { Grafik ausgeben }
+      ClearDevice;
+
+      { Neue Grafik }
+      Line (0, 0, GetMaxX, GetMaxY);
+      ....
+
+      { Grafik ausgeben und beenden }
+      CloseGraph;
+    END;
+
+
+
+12. ZusÑtzliche Informationen
+
+Dieser Abschnitt enthÑlt zusÑtzliche Informationen, die u.U. von Nutzen sein
+kînnen. Weitere Hinweise entnehmen Sie bitte der Datei README.TXT.
+
+  * Die Auswahl der Speichermîglichkeit erfolgt in der Reihenfolge der damit
+    erzielbaren Geschwindigkeit:
+
+      - Der schnellste Zugriff wird durch die Verwendung von DPMI-Speicher im
+        Protected-Mode erreicht.
+
+      - Direkt danach folgt EMS-Speicher, wobei der Unterschied zu DPMI fast
+        vollstÑndig auf die zur Seitenumschaltung benîtigte Zeit zurÅckzufÅhren
+        ist und sich je nach verwendetem EM-Manager unterscheiden kann.
+
+      - Bei Verwendung von XMS wird kein Speicher eingeblendet, sondern die
+        Daten werden zwischen normalem und erweiterten Speicher hin- und
+        herkopiert, was zusÑtzlich Zeit benîtigt.
+
+      - Die Verwendung einer temporÑren Datei auf Platte ist umso langsamer, je
+        hîher die Auflîsung ist (weil der interne Puffer des Treibers einen
+        immer kleineren Bereich der ZeichenflÑche umfa·t). Vor allem bei den
+        hohen Auflîsungen (ab 180 * 360 DPI) sollte die Verwendung von Platte
+        wenn mîglich vermieden werden. (Wobei sich dies nicht verallgemeinern
+        lÑsst: Wird ein gutes Plattenpufferprogramm verwendet, ist u.U. auch in
+        den hîheren Auflîsungen die Ausdruckzeit akzeptabel. Versuche in den
+        DOS-Boxen von OS/2 haben gezeigt, da· auch im Modus 19 mit 300 DPI noch
+        Ausdrucke mîglch sind, die benîtigte Zeit betrÑgt ca. 3-4 Minuten.)
+
+  * Die temporÑre Datei bei Auslagerung auf Platte wird beim Aufruf von
+    InitGraph im aktuellen Verzeichnis angelegt. Soll diese Datei in einem
+    bestimmten Verzeichnis liegen, so ist vor Aufruf von InitGraph dieses
+    Verzeichnis zum aktuellen Verzeichnis zu machen. SpÑtere Wechsel des
+    Verzeichnisses haben keinen Einfluss mehr auf die Lage der temporÑren Datei.
+    Die Auswertung einer Environment-Variable (wie z.B. TMP oder TEMP) erschien
+    mir problematisch, da diese Variable oft auf eine RAM-Disk mit beschrÑnkter
+    KapazitÑt zeigt. Durch o.g. Verfahren ist es jedoch mîglich, das Verzeichnis
+    festzulegen, in das die temporÑre Datei gelegt wird.
+
+  * Da RÅckmeldungen des Treibers nach durchgefÅhrten Operationen durch das
+    Borland Grafik-Modul grî·tenteils nicht ausgewertet werden, ist die RÅckgabe
+    eines Fehlercodes bei nicht eingeschaltetem Drucker nicht mîglich. Sie
+    sollten daher vor Beginn der Grafik-Ausgabe den Drucker-Status prÅfen.
+    PRINTER.BGI bricht bei Druckerfehlern (also auch bei ausgeschaltetem
+    Drucker) den Ausdruck sofort ab.
+
+  * CloseGraph ruft automatisch immer RestoreCRTMode auf, was zur Folge hat, da·
+    der Text-Bildschirm gelîscht wird. Sie mÅssen daher eventuelle Inhalte
+    retten und nach CloseGraph wiederherstellen (oder kurzfristig die
+    Modus-Umschaltung verhindern, indem Sie einen eigenen Handler fÅr den
+    Interrupt 10h installieren).
+
+  * FÅr die Verwendung von EMS wird eine UnterstÅtzung der EMS 3.2 kompatiblen
+    Funktionen vorausgesetzt (dies wird von allen mir bekannten EMS-Treibern
+    erfÅllt). FÅr den XMM (E<x>tended <M>emory <M>anager) erwartet PRINTER.BGI
+    zumindest eine Versionnummer von 2.0, das DPMI-Interface mu· Version 0.9
+    oder neuer entsprechen.
+
+  * Bei Auslagerung auf Platte ÅberprÅft der Treiber bei der Initialisierung den
+    zur VerfÅgung stehenden Platz auf dem aktuellen Laufwerk. Falls eine
+    Auslagerung in EMS oder XMS nicht mîglich ist, mu· also zum Zeitpunkt des
+    Aufrufs von InitGraph genÅgend Platz auf der Platte vorhanden sein.
+
+  * Wird das Programm vor dem Aufruf von CloseGraph unterbrochen, erhÑlt der
+    Treiber keine Gelegenheit mehr, das von ihm verwendete Speichermedium
+    "aufzurÑumen". Dies kann zum Beispiel beim Debuggen eines Programms
+    passieren, wenn das Programm nicht bis zu Ende ausgefÅhrt wird. Die Folge
+    davon sind belegte EMS-Seiten, belegter XMS-Speicher oder nicht gelîschte
+    temporÑre Dateien auf der Festplatte. Vor allem letztere sind Ñrgerlich,
+    weil sie beim Neustart des Systems nicht gelîscht werden und ob ihrer Grî·e
+    recht schnell die Platte fÅllen. Diese Dateien werden vom Treiber als
+    versteckte (Attribut Hidden) Dateien im aktuellen Verzeichnis angelegt. Sie
+    sollten also nach einem Programm-Abbruch prÅfen, ob solche Dateien vorhanden
+    sind (erkennbar an Namen wie AACGHFKL) und diese - falls vorhanden -
+    lîschen.
+
+  * Die Auflîsungen mit 240 * 72 DPI und 240 * 216 DPI funktionieren nicht auf
+    24-Nadeldruckern! Auf den ersten Blick scheinen auch die 24-Nadler Åber
+    diese Modi zu verfÅgen. Ein Test zeigt jedoch, da· Åber den unteren
+    Seitenrand hinausgedruckt wird. Dies liegt daran, da· 24-Nadel Drucker diese
+    Modi simulieren, indem nur jede dritte Nadel verwendet wird. Da der
+    Nadel-Abstand bei 1/180 Zoll liegt ergibt sich bei Verwendung jeder dritten
+    Nadel eine vertikale Auflîsung von 60 DPI (im Gegensatz zu 72 DPI bei den
+    8-Nadlern). Aufgrund dieser niedrigeren Auflîsung beansprucht das Bild in
+    vertikaler Richtung mehr Platz, was zum öberschreiten des unteren Bildrandes
+    fÅhrt.
+
+  * Der Modus 360 * 360 DPI wird nicht von allen Nadeldruckern unterstÅtzt.
+    ZusÑtzlich ist dieser Modus von unterschiedlichen Herstellern auch
+    unterschiedlich implementiert worden. Falls Ihr Drucker die Demo-Programme
+    in diesem Modus fehlerhaft ausdruckt, prÅfen Sie bitte erst anhand Ihres
+    Druckerhandbuchs, ob Ihr Drucker einen Befehl zum Einstellen des
+    Zeilenvorschubs in Einheiten von 1/360 Zoll kennt. Wenn dies nicht der Fall
+    ist, beherrscht Ihr Drucker diesen Modus nicht. Ist es der Fall, vergleichen
+    Sie den Befehl bitte mit den folgenden beiden:
+
+            Hersteller      Steuersequenz
+           -----------------------------
+            EPSON           ESC   '+' <n>
+            NEC             FS    '3' <n>
+
+    Verwenden Sie dann den entsprechenden Modus des Treibers (NEC 360 * 360 oder
+    EPSON 360 * 360).
+
+    Sollte Ihr Drucker einen vîllig anderen Befehl zur Einstellung verwenden,
+    mÅssen Sie eine Drucker-Definitionsdatei fÅr diesen Modus erzeugen. Lesen
+    Sie dazu bitte den entsprechenden Abschnitt.
+
+  * In der C-Version existiert eine undokumentierte Variable namens _BGI_auto,
+    die dazu verwendet werden kann, das Lîschen des Bildschirms bei initgraph()
+    und closegraph() zu verhindern. Diese Variable war im ursprÅnglichen
+    BGI-Konzept dafÅr vorgesehen war, das Lîschen des Bildschirms zu
+    unterdrÅcken, indem sie vom Treiber (PRINTER.BGI) auf einen "magischen" Wert
+    gesetzt wird. Aufgrund eines der vielen Fehler im Grafik-Kernel funktioniert
+    dies jedoch nicht, da das Lîschen des Bildschirms vor dem Aufruf des
+    Treibers geschieht, so da· ein spÑteres Setzen dieser Variable wirkungslos
+    ist. In der "C"-Version des Grafik-Kernels ist diese Variable jedoch
+    îffentlich zugÑnglich und kann so vor dem Einschalten des Grafik-Modus vom
+    Programm gesetzt werden. Es gibt keine Garantie dafÅr, da· dieses Vorgehen
+    mit spÑteren Versionen des Grafik-Kernels kompatibel ist (es ist jedoch
+    anzunehmen, da· sich an der GRAPHICS Library nicht mehr viel Ñndern wird).
+    Die Variable wird deklariert als
+
+                extern char _BGI_auto;
+
+    Nach der Zuweisung
+
+                   _BGI_auto = 0xA5;
+
+    lîscht das Grafik-Kernel den Bildschirm nicht mehr. Diese Variable existiert
+    auch in der Pascal-Version ist allerdings dort nicht zugÑnglich, da der Name
+    nur innerhalb von Graph bekannt ist.
+
+  * Wenn sowohl der Treiber als auch das Programm EMS verwenden kann es unter
+    UmstÑnden zu Problemen kommen. Das ist vor allem dann der Fall, wenn das
+    Programm Overlays ins EMS auslagert. Die einfachste Mîglichkeit, diese
+    Schwierigkeiten zu umgehen ist es, einem der beiden die Benutzung des EMS zu
+    untersagen. Das kann im Fall der Overlays durch Streichen des Aufrufs von
+    OvrInitEMS geschehen. Soll der Treiber kein EMS verwenden, so ist vor Aufruf
+    von InitGraph sÑmtlicher EMS-Speicher zu belegen.
+
+  * Beim FÅllen von komplexen Mustern mit FloodFill kann es u.U. notwendig sein,
+    den Puffer, den Graph dafÅr bereitstellt, mit der Prozedur SetGraphBufSize
+    *vor* dem Aufruf von InitGraph etwas zu vergroessern (Default sind 4KB).
+
+
+
+13. Bei Problemen und Fehlern
+
+Da sich leider in der Vergangenheit gezeigt hat, da· die wenigsten
+Schwierigkeiten tatsÑchlich am Treiber selber liegen, mîchte ich Sie bitten die
+folgenden Punkte zu beherzigen:
+
+  * Lesen Sie die komplette Anleitung sowie alle README-Dateien auf der Diskette
+    nochmals durch. Einige gÑngigere Fehlerquellen sind dort beschrieben.
+
+  * Falls der Treiber bei Ihnen Åberhaupt nicht funktionieren sollte ÅberprÅfen
+    Sie bitte anhand der beigelegten Beispielprogramme ob das Nicht-
+    Funktionieren an Ihrem Programm oder am Treiber liegt.
+
+  * Versuchen Sie herauszufinden, ob der Fehler evtl. an Ihrer Hardware liegt,
+    indem Sie Ihr Programm auf einem anderen Rechner testen.
+
+  * Versuchen Sie, herauszufinden, ob eine spezielle Rechnerkonfiguration fÅr
+    den Fehler verantwortlich ist. Entfernen Sie dazu GerÑtetreiber aus den
+    Konfigurationsdateien CONFIG.SYS und AUTOEXEC.BAT.
+
+  * Falls Sie tatsÑchlich vermuten, einen Fehler im Treiber gefunden zu haben,
+    versuchen Sie bitte, den Fehler einzukreisen und ein mîglichst kleines
+    Programm herzustellen, bei dem der Fehler auftritt. Entfernen Sie dazu allen
+    Code, der nicht unbedingt notwendig fÅr die Reproduktion des Fehlers ist.
+    Bitte senden Sie mir dieses Programm zusammen mit einer detailierten
+    Fehlerbeschreibung zu.
+
+
+
+14. Sonstiges
+
+Bei mir sind weitere BGI-Treiber fÅr Plotter, fÅr Super-VGA's und zur Ausgabe
+von PCX-Dateien zu denselben Bedingungen erhÑltlich. Die aktuellen Versionen
+erhalten Sie per Modem unter der Nummer 07071/440588, 8N1, V32bis.
+
+Falls Sie Interesse an weiteren Treibern, weiteren unterstÅtzten Druckern usw.
+haben, setzen Sie sich bitte mit mir in Verbindung. Speziell UnterstÅtzung von
+weiteren Druckern fÅr den Druckertreiber werden von mir Åblicherweise zu einem
+sehr gÅnstigen Festpreis durchgefÅhrt.
+
+
+
+15. Dateien im Paket
+
+Das vorliegende Archiv mu· folgende Dateien enthalten:
+
+
+Im Verzeichnis  PRINTER
+                PRINTER.BGI     Der BGI-Treiber.
+                PRINTER.BP7     BGI-Treiber fÅr Borland-Pascal 7.0.
+
+
+Im Verzeichnis  PDFCOMP
+                PDFCOMP.EXE     Der Definitions-Compiler.
+                PDFCOMP.DOC     Die Dokumentation dazu.
+                *.DEF           Diverse Definitionsdateien.
+
+
+Im Verzeichnis  PIXFONT
+                PIXFONT.PAS     Modul zur Ausgabe von Pixelfonts beliebiger
+                                Grî·e.
+                PIXFONT.DOC     Die Dokumentation dazu.
+                GETFONT.EXE     Programm zur Abspeicherung der VGA-Fonts
+                                (in den Grî·en 8x14 und 8x16) als Datei.
+                GETFONT.PAS     Quelltext dazu.
+                *.FNT           Einige Pixelfonts zur Verwendung mit dem
+                                Modul PixFont.
+                FONTDEMO.EXE    Beispielprogramm zu Anwendung von PIXFONT.
+                FONTDEMO.PAS    Quellcode zu PIXFONT.EXE.
+                FONTDEMO.DOC    Dokumentation zu FONTDEMO.
+
+
+Im Verzeichnis  C
+                DEMO.EXE        Kurzes Demo-Programm zur Verwendung des
+                                Treibers.
+                DEMO.C          Der Quellcode dazu.
+
+
+Im Verzeichnis  PASCAL
+                DEMO.EXE        Kurzes Demo-Programm zur Verwendung des
+                                Treibers.
+                DEMO.PAS        Der Quellcode dazu.
+                DEMO2.EXE       AusfÅhrliches Demo-Programm.
+                DEMO2.PAS       Quelltext zu DEMO.PAS.
+
+
+Im Verzeichnis  BGILIB
+                MAKELIB.BAT     Batch-Datei von Herrn Jung-Merkelbach zur
+                                Erzeugung zweier Libraries fÅr den C-Compiler,
+                                die die kompletten Fonts und Treiber als OBJ-
+                                Dateien enthalten.
+

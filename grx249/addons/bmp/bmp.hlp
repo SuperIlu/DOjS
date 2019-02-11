@@ -1,0 +1,190 @@
+==============================
+o  LOAD MS-WINDOWS BITMAP FILE
+==============================
+   Syntax
+   ------
+     GrBmpImage *GrLoadBmpImage ( char *_filename );
+
+   Description
+   -----------
+     This function load BMP file format ( 1, 4, 8 Bytes Per Pixel ) from
+     the file _filename into structure GrBmpImage*.
+
+   Return Value
+   ------------
+     On succes pointer to new GrBmpImage structure, otherwise NULL
+
+   Example
+   -------
+     GrBmpImage* bmp = GrLoadBmpImage("logogrx.bmp");
+
+==============================
+o  SETTING GrBmpImage COLORS
+==============================
+   Syntax
+   ------
+     int  GrAllocBmpImageColors ( GrBmpImage *_bmp, GrBmpImageColors *_col );
+
+   Description
+   -----------
+     This function setting GrBmpImage colors. (_bmp) is pointer to GrBmpImage
+     structure and (_pal) is pointer to structrure, where we want to store
+     information about BMP palette and colors. If (_col) is NULL, it set colors and into
+     (_bmp) structure write 1 for own destroing palette by GrUnloadBmpImage.
+     Otherwise palette will be destroy only by function GrEraseBmpImageColors.
+
+   Return Value
+   ------------
+     On succes 1, otherwise 0
+
+   Example 1 ( _col is NULL )
+   -------
+     GrBmpImage* bmp = GrLoadBmpImage("logogrx.bmp");
+     GrAllocBmpImageColors(bmp, NULL);
+     GrUnloadBmpImage(bmp);
+
+   Example 2 ( _col is pointer to structure )
+   -------
+     GrBmpImage* bmp = GrLoadBmpImage("logogrx.bmp");
+     GrBmpImageColors col;
+     GrAllocBmpImageColors(bmp, &col);
+     GrUnloadBmpImage(bmp);
+     GrFreeBmpImageColors(&pal);
+
+==============================
+o  FREE GrBmpImage COLORS
+==============================
+   Syntax
+   ------
+     int  GrFreeBmpImageColors ( GrBmpImageColors *_col );
+
+   Description
+   -----------
+     It destroy _col structure, free GrBmpImage Colors and set to NULL
+
+   Return Value
+   ------------
+     On succes 1, otherwise 0
+
+   Example
+   -------
+     GrBmpImage* bmp = GrLoadBmpImage("logogrx.bmp");
+     GrBmpImageColors bmpcolors;
+     GrAllocBmpImageColors(bmp, &bmpcolors);
+     GrUnloadBmpImage(bmp);
+     GrFreeBmpImageColors(&bmpcolors);
+
+===============================
+o  CONVERT GrBmpImage STRUCTURE
+===============================
+   Syntax
+   ------
+     GrPattern *GrConvertBmpImageToPattern ( GrBmpImage *_bmp );
+
+   Description
+   -----------
+     Make GrPattern structure from GrBmpImage pointer.
+
+   Return Value
+   ------------
+     On succes pointer to new GrPattern structure, else NULL
+
+   Example
+   -------
+     GrPattern  *bmppat;
+     GrBmpImage *bmp = GrLoadBmpImage("logogrx.bmp");
+     GrAllocBmpImageColors(bmp, NULL);
+     bmppat = GrConvertBmpImageToPattern(bmp);
+     if ( bmppat ) GrPatternFilledBox(0, 0, GrMaxX(), GrMaxY(), bmppat);
+     GrUnloadBmpImage(bmp);
+     if ( bmppat ) GrDestroyPattern(bmppat);
+
+ IN THE OTHER WAY
+
+   Syntax
+   ------
+     GrPattern *GrConvertBmpImageToStaticPattern ( GrBmpImage *_bmp );
+
+   Description
+   -----------
+     Make GrPattern structure from GrBmpImage pointer, AND GrBmpImage (_bmp)
+     structure unload.
+
+   Return Value
+   ------------
+     On succes pointer to new GrPattern structure, else NULL
+
+   Example
+   -------
+     GrPattern  *bmppat;
+     GrBmpImage *bmp = GrLoadBmpImage("logogrx.bmp");
+     GrAllocBmpImageColors(bmp, NULL);
+     bmppat = GrConvertBmpImageToStaticPattern(bmp);
+     if ( bmppat ) GrPatternFilledBox(0, 0, GrMaxX(), GrMaxY(), bmppat);
+     if ( bmppat ) GrDestroyPattern(bmppat);
+
+==============================
+o  UNLOAD GrBmpImage STRUCTURE
+==============================
+
+   Syntax
+   ------
+     int GrUnloadBmpImage ( GrBmpImage *_bmp );
+
+   Description
+   -----------
+     Free _bmp and BmpImage colors/palette (only if GrAllocBmpImagePalette
+                                            contains NULL in 2nd variable ).
+
+   Return Value
+   ------------
+     On succes 1, else 0
+
+   Example
+   -------
+     GrBmpImage* bmp = GrLoadBmpImage("logogrx.bmp");
+     GrUnloadBmpImage(bmp);
+
+=========================================
+o  SAVE CONTEXT TO MS-WINDOWS BITMAP FILE
+=========================================
+   Syntax
+   ------
+     int  GrSaveBmpImage ( char *_filename, GrContext *_c, int _x1, int _y1,
+                                                           int _x2, int _y2 );
+
+   Description
+   -----------
+     Save context from the position ( where _x1,_y1 is left  uppon origin &&
+                                            _x2,_y2    right bottom origin)
+     to BMP ( 8 or 24 bpp file ). The BMP file will be set to 8 Bits Per Line,
+     when GrNumColors() in GRXxx.H is set to 256, otherwise it'll be set to
+     24 Bits Per Line.
+     If _context is set to NULL, _c will be pointer to current context
+     structure.
+
+   Return Value
+   ------------
+     On succes 1, owtherwise 0
+
+   Example
+   -------
+     GrSaveBmpImage("logogrx.bmp", NULL, 100, 100, 400, 400);
+
+
+
+=========================================
+======= THE END =========================
+=========================================
+
+  Michal Stencl
+
+  <e-mail>    - [stenclpmd@ba.telecom.sk]
+
+
+
+
+
+
+
+

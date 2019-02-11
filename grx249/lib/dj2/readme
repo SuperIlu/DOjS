@@ -1,0 +1,6 @@
+GRX library for DJGPP v2.x
+
+Recompile: - go to the grx base dir (cd ..\..)
+           - edit the makedefs.grx file
+	   - run GNU make:
+	       make -f makefile.dj2 libs

@@ -1,0 +1,49 @@
+ 
+ BCC2GRX  -  Interfacing Borland based graphics programs to LIBGRX
+ Copyright (C) 1993-97 by Hartmut Schirmer
+
+ This library is now part of the GRX graphics library.
+
+ Contact :                Hartmut Schirmer
+			  Feldstrasse 118
+		  D-24105 Kiel
+			  Germany
+ e-mail : hsc@techfak.uni-kiel.de
+
+
+Pascal (GPC) demo Programs
+
+graph.pas is the unit import file, as far as possible a plug-in
+replacement for the BP unit of the same name
+(see doc/readme.bgi for differences)
+
+* small.pas opens and closes the graphics to check for improper installation.
+* modelist.pas prints out the available modes.
+* palette.pas prints out the colors in the default palette.
+* allmodes.pas for each available mode prints out mode number and its parameters
+   and displays one color rainbow.
+* colors.pas for each avalaible mode with nc>=256 prints out mode name
+   and displays red, green, blue gray degraded stripes.
+* demo.pas displays various demos to illustrate graphics possibilities. 
+   It supposes for some of them that borland .chr files have been put in 
+   the chr directory (otherwise it uses the always available default font).
+   
+Makefiles are supplied to build up the demo programs for 
+djgpp, mingw32, LINUX/svga and LINUX/X11.
+They should have been built with the library and C tests if you
+used the top level makefiles.
+If you want to rebuild only the demos type from this dir
+   make -f <your makefile>
+Pathes and parameters will be borrowed from corresponding top level
+makedefs files
+
+Have fun!
+
+
+
+
+
+
+ 
+
+

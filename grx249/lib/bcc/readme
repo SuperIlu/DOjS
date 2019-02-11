@@ -1,0 +1,10 @@
+GRX library for Turbo-C / Borland-C++
+
+Models supported:
+
+  large
+
+Recompile: - go to the grx base dir (cd ..\..)
+	   - edit the makedefs.bcc file
+	   - run Borland make:
+	       make -f makefile.bcc libs

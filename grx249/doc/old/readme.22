@@ -1,0 +1,157 @@
+Hi,
+
+the official public release GRX v2.2 is available from
+
+   http://www.techfak.uni-kiel.de/~hsc/GRX/grx22.zip
+
+and soon from any SimTel mirror in the DJGPP/v2tk
+directory.
+
+Thanks to a lot of work by
+
+   Csaba Biegl  (csaba@vuse.vanderbilt.edu)
+
+of course and
+
+   Mauro Condarelli (mc5686@mclink.it)
+   Christian Domp   (alma.student.uni-kl.de)
+   Michael Goffioul (goffioul@emic.ucl.ac.be)
+   Sven Hilscher    (Sven@rufus.central.de)
+   Andrzej Lawa     [FidoNet: Andrzej Lawa 2:480/19.77]
+   Ulrich Leodolter (ulrich@lab1.psy.univie.ac.at)
+   Hartmut Schirmer (hsc@techfak.uni-kiel.de)
+   Daniel Skarda    (0rfelyus@atrey.karlin.mff.cuni.cz)
+
+and others (see doc/credits.doc) the GRX library is now
+greatly enhanced.
+
+
+Compared with the grx20.zip from DJ-dirs this release provides:
+---------------------------------------------------------------
+  - user coordinates (by Michael)
+  - pattern filling (by Michael)
+  - custom lines (by Michael)
+  - Linux support [svgalib && X11 (Ulrich) support and other
+		   things Csaba mentions in credits.doc      ]
+  - reorganized font support (Csaba)
+  - linkable bitmap fonts (Csaba)
+  - Borland vector fonts (Csaba)
+  - VESA 2.0 and svgalib linear frame buffer support
+  - VESA 2.0 8bit DAC support
+  - various driver speed ups
+  - slightly changed color interface (by Michael for better
+    MGUI support)
+  - GNU-Pascal support (by Sven)
+
+
+What's currently untested:
+--------------------------
+  - LFB32H frame driver
+  - svgalib linear frame buffer support
+  - X11 driver is supposed to work but couldn't test this
+  - svgalib/X11 on non i386 platforms
+
+
+What's missing:
+---------------
+  - documentation
+  - VESA 2.0 protected mode virtual screen support
+
+
+Installation for DJGPP:
+-----------------------
+  Unpack the grx22.zip archive in your DJGPP v2 root directory
+  by 'pkunzip -d grx22.zip' or 'unzip grx22.zip'
+
+  Edit your DJGPP.ENV file.
+    a. delete all references to GRX v2.0 or v2.1
+    b. In the [cpp] section append
+	  ;%DJDIR%/contrib/grx22/include
+       to C_INCLUDE_PATH and CPLUS_INCLUDE_PATH variables
+    c. In the [gcc] section append
+	  ;%DJDIR%/contrib/grx22/lib
+       to the LIBRARY_PATH entry
+    d. GNU-Pascal users need to change [gpc-cpp] and
+       [gpc] sections too.
+    e. Make sure the GRXFONT environment variable is set,
+       otherwise add
+	 +GRXFONT=%DJDIR%/contrib/grx22/fonts
+       at top of DJGPP.ENV
+
+  Check GRX v2.2
+    a. go to DJDIR/contrib/grx22 and check makedefs.gnu and
+       makedefs.dj2 for your system requirements (default
+       should work well on average system )
+    b. go to the test subdir and build the test files:
+	 make -f makefile.dj2
+    c. run the tests
+
+  Recompile your own programs with GRX v2.2!
+
+
+Installation for Linux:
+-----------------------
+  Unpack the grx22.zip archive in a temporary directory
+  using  'unzip -L -a grx22.zip'. Make sure all .fnt
+  files where extracted in binary mode! Go to contrib
+  subdir and move the grx22 tree to /usr/src
+
+  Delete the DJGPP .a file in the grx22/lib subdir.
+
+  Many GRX based programs need to access the font file.
+  Either make the /usr/src/grx22/fonts subdir readable
+  to anyone running GRX programs or copy the fonts subdir
+  to a place where anyone can access it (I placed the
+  fonts in /usr/local/grx-fonts on my system)
+  Make sure the GRXFONT environment variable points to
+  the fonts directory.
+
+  In /usr/src/grx22 check the default settings in
+  makedefs.gnu and makedefs.x11
+
+  To build the SVGALIB based GRX v2.2 run
+    make -f makefile.lnx
+
+  To build the X11 based GRX v2.2 run
+    make -f makefile.x11
+
+  Check the by running the (static linked) test programs.
+
+  If everything works well, copy the .a and .so library
+  files to a system lib dir, eg. /usr/local/lib and
+  generate symbolic links for the shared libraries:
+	 libgrx20.so  -> libgrx20.so.2.2.0
+	 libgrx20X.so -> libgrx20X.so.2.2.0
+
+  Copy the files from grx22/include and grx22/compat to
+  an include dir (eg. /usr/local/include)
+
+  Make sure all installed files are readable everyone
+  compiling/running GRX based programs.
+
+  Now GRX v2.2 should be ready for your programs !
+
+
+Important:
+----------
+
+  Due to slight changes in grx20.h you'll have to recompile
+  your programs. Just relinking it won't work in most cases.
+
+
+Help:
+-----
+If you find a bug in GRX v2.2, if GRX doesn't work on
+your system or if you have any other question concerning
+GRX, please contact me by e-mail:
+
+     hsc@techfak.uni-kiel.de
+
+For DJGPP based systems you might also check the DJGPP
+news group:
+
+     comp.os.msdos.djgpp
+
+
+
+Hartmut Schirmer

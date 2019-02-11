@@ -1,0 +1,109 @@
+
+                  PRINTING FROM GRX GRAPHIC LIBRARY
+                            Version 0.7
+			    
+                           Andris Pavenis
+                  e-mail: pavenis@lanet.lv
+
+                           26 June 1998
+
+   This directory contains procedures that allows printing graphics
+from GRX graphic library. The source of this package is based on
+sources of printer BGI driver for Borland C and Pascal compilers
+developed by Ullrich von Bassevitz (see copying.uz).
+   Printing from GRX is tested under MS-DOS with DJGPP and under Linux.
+There is no plans to allow use it from MS-DOS real mode with Borland C++
+as the memory available to program is insufficient to allocate memory
+area necessary to build image in memory.
+
+
+
+int GrPrintSetMode (int mode)
+
+Initializes GRX with "memory only" driver with necessary image size to print
+the page. See grxprint.h for available modes.
+
+
+
+int GrDoPrinting (void)
+
+Outputs the image built with GRX functions after call to GrSetPrintMode to
+printer. In MS-DOS the output is done to file 'prn'. In Linux the output
+is written through pipe to lpr.
+
+
+
+int GrPrintToFile (const char * fName)
+
+The same as GrDoPrinting but the output is written to requested file. For Linux
+there is one more option: if filename begins with '|', the remaining part of
+name is interpretted as command for popen() (it is GrPrintToFile("|lpr") is 
+the equivalent with GrDoPrinting).
+
+
+
+int GrPrintGetAspectRatio ( unsigned * aspx , unsigned * aspy )
+
+Returns aspect ratio for image on printer. For example
+      unsigned AspX, AspY;
+      double   Asp;
+      int    MaxX, MaxY;
+      MaxX = GrSizeX ();
+      MaxY = GrSizeY ();
+      GrPrintGetAspectRatio (&AspX,&AspY);
+      Asp = ((double) AspX)/AspY;
+      GrEllipse (MaxX/2-100,MaxY/2,(int) (r*Asp), (int) r, 1);
+will draw circle (see test.cc)
+
+
+
+
+void    GrPrintGetDefaultOptions ( struct GrPrintOptionsType * opt )
+void    GrPrintGetCurrentOptions ( struct GrPrintOptionsType * opt )
+void    GrPrintSetOptions ( struct GrPrintOptionsType * opt )
+
+Allows to retrieve printing options. Works for LaserJet and DeskJet
+printers. Does nothing for dot matrix printers.
+
+
+------------------------   ChangeLog    -----------------------------
+
+
+98/05/13             H.Schirmer
+    - clean source for better portability / ANSI-C conformance
+
+98/05/10             H.Schirmer
+    - eleminated C++ style comments for better portability
+
+7 May 1998           H.Schirmer
+    - made cpp # start on first column
+
+9 March 1998         Andris Pavenis
+    - Version changed to 0.65
+    - Changed procedure GrPrintToFile(). Now under Linux the output is
+      written to pipe if the name begins with '|'
+      
+3 March 1998         Andris Pavenis
+    - Fixed problem when printing directly to printer (DJGPP version).
+      The opened file was opened in text mode (old bug in libc, it is told
+      to be fixed, but the workaround mentioned for that worked OK so
+      I didn't study it more).
+    - Get rid of most of warnings that appears with -Wall
+
+26 February 1998         Andris Pavenis
+    - Version changed to 0.6
+    - Many bugfixes. The first tests appeared to be incomplete.
+      Therefore a mirrored image were printed before. FIXED
+
+24 February 1998         Andris Pavenis
+    - Changed names of functions: GrDoPrinting() to GrPrintToFile()
+    - A new function added to print to PRN under MS-DOS and
+      to pipe output to lpr under Linux  
+      
+18 February 1998         Andris Pavenis
+    - Fixes to allow to work under Linux (still printing to file only)
+    
+26 January 1998         Andris Pavenis
+    - Initial version. Only some preliminary tests were done so this
+      version still were very buggy.
+        

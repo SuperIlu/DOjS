@@ -1,0 +1,73 @@
+#
+# GRX test programs makefile for SDL. Uses GNU make.
+#
+.PHONY : clean
+
+GRXVSDL=y
+
+include ../../makedefs.grx
+
+INCDIR= -I. -I../../include
+
+GRX20ST    = ../../lib/$(GRX_LIB_SUBDIR)/libgrx20S.a
+
+ifeq ($(EP),x)
+  INCDIR += $(X11INCS)
+  SDLDEFS = -D__XWIN__
+  SDLLIBS = -lSDL -lpthread $(X11LIBS) 
+else
+  EX = .exe
+  SDLDEFS =
+  SDLLIBS = -lSDL
+endif
+
+#ifeq ($(HAVE_LIBTIFF),y)
+#  ADDON_LIBS += -ltiff
+#endif
+
+#ifeq ($(HAVE_LIBJPEG),y)
+#  ADDON_LIBS += -ljpeg
+#endif
+
+#ifeq ($(HAVE_LIBPNG),y)
+#  ADDON_LIBS += -lpng
+#endif
+
+#ifeq ($(NEED_ZLIB),y)
+#  ADDON_LIBS += -lz
+#endif
+
+LIBS= $(GRX20ST) $(ADDON_LIBS) $(SDLLIBS) -lm
+
+CCOPT += $(SDLDEFS)
+
+PROGS=				\
+	$(EP)bgilink$(EX)	\
+	$(EP)bccbgi$(EX)	\
+	$(EP)colortst$(EX)	\
+	$(EP)fontplay$(EX)	\
+	$(EP)small$(EX)		\
+	$(EP)tellipse$(EX)	\
+	$(EP)tfill$(EX)		\
+	$(EP)tmodes$(EX)	\
+	$(EP)tpoly$(EX)		\
+	$(EP)ttext$(EX)
+
+all: $(PROGS)
+
+$(PROGS): $(EP)%$(EX) : %.o $(GRX20ST)
+	$(CC) $(LDOPT) -o $@ $*.o $(LIBS)
+
+.c.o:
+	$(CC) -c $(CCOPT) $(INCDIR) $*.c -o $*.o
+
+.c.s:
+	$(CC) -S $(CCOPT) $(INCDIR) $*.c
+
+clean:
+	rm -f *.o $(PROGS)
+
+depend.new:
+	$(CC) -MM $(CCOPT) $(INCDIR) $(PROGS:$(EP)%$(EX)=%.c) > depend.new
+
+#include depend.gnu

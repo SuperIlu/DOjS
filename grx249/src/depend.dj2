@@ -1,0 +1,10 @@
+# This is just a dummy file
+# If you really work on GRX and need a working
+# rebuild, create a real dependencies file by
+#
+# make -f makefile.dj2 dep
+#
+# If you want to use utils/watmake to create
+# a Watcom makefile you have to create a valid
+# DJGPP v2 dependencies file first (see above)
+

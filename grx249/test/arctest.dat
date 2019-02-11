@@ -1,0 +1,9 @@
+arc xc=300 yc=200 xa=50  ya=50  start=10   end=40
+arc xc=300 yc=200 xa=250 ya=150 start=10   end=200
+arc xc=300 yc=200 xa=250 ya=150 start=10   end=2000
+arc xc=300 yc=200 xa=250 ya=150 start=1000 end=200
+arc xc=300 yc=200 xa=25  ya=15  start=3500 end=800
+arc xc=300 yc=200 xa=25  ya=15  start=10   end=100
+arc xc=300 yc=200 xa=25  ya=15  start=3500 end=10
+arc xc=300 yc=200 xa=25  ya=15  start=0    end=900
+

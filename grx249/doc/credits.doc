@@ -1,0 +1,123 @@
+CONTRIB.DOC
+===========
+
+GRX was original written by Csaba Biegl <csaba@vuse.vanderbilt.edu>
+for DJ Delorie's DOS port of the GCC compiler.
+
+Michael Goffioul <goffioul@emic.ucl.ac.be> released GRX 2.1a
+(first full API implementation).
+
+Starting from version v2.2 GRX was maintained by Hartmut Schirmer
+<hsc@techfak.uni-kiel.de>.
+
+Peter Gerwinski <peter@gerwinski.de> released GRX 2.3.1 and 2.3.2.
+
+Mariano Alvarez Fernandez (malfer@telefonica.net) released GRX 2.3.3,
+2.3.4 and the 2.4.0-6 series.
+
+Maurice Lombardi <Maurice.Lombardi@ujf-grenoble.fr> packed together
+various contributions to release GRX 2.4.7-9
+
+Credits for GRX > v2.0 in alphabetical order
+============================================
+
+Csaba Biegl <csaba@vuse.vanderbilt.edu> for the post v2.0 developers
+source code (and of course: MANY THANKS FOR THE GREAT GRX LIB !).
+
+N. D. Culver <ndc@alum.mit.edu> for suggesting the bpp based color
+spec with GrSetMode().
+
+Thomas Demmer <TDemmer@krafteurope.com> for inprovements and good ideas
+with the win32 driver.
+
+Frank Donahoe <fdonahoe@wilkes1.wilkes.edu> for bug reports and patches.
+
+Vicente Fuentes Gea <vfg@servidor.unam.mx> for the info version of the
+user's manual.
+
+Michael Goffioul <goffioul@emic.ucl.ac.be> for his GREAT work:
+	- Pattern Filled functions
+	- Patterned Line functions
+	- Custom Line functions
+	- User Coordinates functions
+
+Gernot Graeff <gernot.graeff@t-online.de> for the Win32 driver.
+
+Thomas Hahn <hahn@itpaxp5.physik.uni-karlsruhe.de> for the ALPHA
+processor patches (64bit support).
+
+Frank Heckenbach <frank@g-n-u.de> for Pascal interface updates,
+configure script and many others inprovements.
+
+Sven Hilscher <Sven@rufus.lan-ks.de> for GNU-Pascal interface and
+bug reports.
+
+Eike Lange <eike.lange@uni-essen.de> for Pascal updates.
+
+Andrzej Lawa [FidoNet: Andrzej Lawa 2:480/19.77] for linear framebuffer
+support.
+
+Maurice Lombardi <Maurice.Lombardi@ujf-grenoble.fr> for many patches
+and bug reports.
+
+Peter C. Mehlitz <peter@transvirtual.com> for his suggestions on
+Linux and X11 event time handling
+
+Vincenzo Morello <morellov@tin.it> continous using GRX as base
+graphics API for his MGUI lib. He submitted many suggestions,
+found lots of bugs and contributed the SaveContextToJpeg() code.
+
+Josu Onandia <jonandia@fagorautomation.es> for patches, bug reports
+and lot of inprovements to the Win32 driver.
+
+Andris Pavenis <pavenis@acad.latnet.lv> for many suggestions, the
+memory driver, printing support, variable X11 resolution, patches
+and bug reports.
+
+Gary Sands <gsands@stbni.co.uk> did the Watcom C++ port.
+
+Daniel Skarda <0rfelyus@atrey.karlin.mff.cuni.cz> for Linux shared
+libraries and bug reports.
+
+Anton Norup Soerensen <norup@ursa.astro.ku.dk> for patches and bug reports.
+
+Michal Stencl <stenclpmd@bratislava.telecom.sk> for the pattern text
+output, BMP handling and image display functions.
+
+Waldemar Schultz <schultz@mathematik.tu-muenchen.de> for bug reports.
+
+Michael <mh@conrad.chem.uni-potsdam.de> for bug reports.
+
+Dimitar Zhekov <jimmy@is-vn.bg> for three new font drivers, makefile
+fixes for the bcc version, bgi updates, X11 fixes and the Xfree86 DGA2
+video driver.
+
+###########################################################################
+This is the original contrib.doc by Csaba Biegl (csaba@vuse.vanderbilt.edu)
+###########################################################################
+
+This is a (far from complete) list of people who sent me ideas, bug reports
+or useful code pieces during the development of GRX 2.0.
+
+This file is under construction (I need to go back in my e-mail records to
+see who sent me bug reports, ideas, etc...). Currently it has only the most
+recent contributions. If you think you sent me something for which you should
+be mentioned here, but you don't see your name in the list, drop me an e-mail.
+I may have lost same of the older correspondence.
+
+Hartmut Schirmer (hsc@techfak.uni-kiel.de) for many good ideas, bug reports,
+the BGI font loader sources and the protected mode VESA paging code.
+
+Christian Domp (alma.student.uni-kl.de) for bug reports, the 90x30, 94x30
+90x34 and 94x34 text modes in the stdvga driver and for fixing the HiColor
+and TrueColor modes in the et4000 driver.
+
+Ulrich Leodolter (ulrich@lab1.psy.univie.ac.at) for the wonderful X11
+video, frame and font drivers, bug reports and the DOS Hercules video
+driver.
+
+Daniel Skarda (DSKA4435@novell.karlin.mff.cuni.cz) for bug reports.
+
+Mauro Condarelli (mc5686@mclink.it) for the Linux SVGA version keyboard
+enhancements.
+

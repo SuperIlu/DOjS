@@ -1,0 +1,51 @@
+
+Welcome to the wonderful world of GRX for pascal-users.
+=======================================================
+
+If you are interested in GNU-Pascal (gpc), visit
+http://gnu-pascal.de/gpc/h-index.html
+There is a mailinglist available.
+
+This directory contains several test-programs for GRX
+and GNU-Pascal.
+
+* blt_test.pas draws some circles
+* modetest.pas prints out the available modes
+* keytest.pas prints out the character-codes. Use "Q" to quit.
+* txt_test.pas prints out some text. Press Return to exit.
+* vir_test.pas lets you draw something.
+  Press "1", to place some sqares with the mouse.
+  Press "2" to draw some lines
+  Press "3" to copy some drawings from one place to another
+    ("<" and ">" change the size of your "copy-area")
+  Press "4" to draw whatever you like :-)
+  Press "0" to leave drawing-mode
+  "Q" leaves vir_test.
+* polytest.pas draws some polygons
+* jpgtest.pas loads/saves jpeg images
+* imgview.pas loads png and jpeg images
+* colortst.pas tests allocating many colors
+
+To build up the programs, either
+
+- use the generic makefile and edit the paths, then type
+   make 
+
+- For djgpp, mingw32, LINUX/svga and LINUX/X11, sdl, they should 
+have been built with the library and C tests from top level makefile,
+if you used them. 
+If you want to rebuild only the tests type from this dir
+   make -f <your makefile>
+Pathes and parameters will be borrowed from corresponding top level
+makedefs files
+
+Have fun!
+
+
+
+
+
+
+ 
+
+

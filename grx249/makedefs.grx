@@ -1,0 +1,261 @@
+### CONFIGURATION ########################################################
+
+# This file sets variables that direct the libary build for the
+# programmer needs. The file is used for the four standard plattforms
+
+# Specify version of GRX
+# Currently only used to generate name of shared libraries for linux
+GRX_VERSION=2.4.9
+
+# Specify if you have libtiff.a and corresponding .h files.
+# Change setting to 'y' if you have it, or to 'n' if not.
+HAVE_LIBTIFF=n
+
+# Specify if you have libjpeg.a and corresponding .h files.
+HAVE_LIBJPEG=n
+
+# Specify if you have libpng.a and corresponding .h files.
+HAVE_LIBPNG=n
+
+# Specify if one of the above libs requires the
+# zlib compression library
+NEED_ZLIB=n
+
+# Specify if you want to include printing code from addons
+INCLUDE_PRINTING_CODE=n
+
+# Specify if you want to include bmp image code from addons
+INCLUDE_BMP_CODE=y
+
+# Specify if you want to include GNU_Pascal (gpc) support
+INCLUDE_GPC_SUPPORT=n
+
+# Specify if you want shared library support (Linux console and X11)
+INCLUDE_SHARED_SUPPORT=y
+
+# Specify if you want to include BGI support
+INCLUDE_BGI_SUPPORT=n
+
+# For cross-compiling, specify prefix for tools including the trailing dash
+# (e.g.   i386-mingw32-   for using i386-mingw32-gcc instead of just gcc)
+CROSS_PLATFORM?=
+
+# Specify if you want to use Unix tools on DOS-like platforms
+HAVE_UNIX_TOOLS=y
+
+# Specify in linux if you want to build the library for x86_64
+BUILD_X86_64=y
+
+# For SDL driver the executable prefix EP is used to discriminate 
+# between linux X11 and mingw32. Set
+#EP=x         ... For linux X11.
+#EP=          ... For mingw32
+EP=x
+
+### SYSTEM SETTINGS ######################################################
+
+CC     = $(CROSS_PLATFORM)gcc
+PC     = $(CROSS_PLATFORM)gpc
+AR     = $(CROSS_PLATFORM)ar
+RANLIB = $(CROSS_PLATFORM)ranlib
+STRIP  = $(CROSS_PLATFORM)strip
+
+# Different systems / setups may generate .o files
+# this tag files will show what version is present
+SYSTEM_TAG_PREFIX     = systag
+LINUX_i386_CONSOLE    = $(SYSTEM_TAG_PREFIX).000
+LINUX_i386_X11        = $(SYSTEM_TAG_PREFIX).002
+DOS_DJGPP_V2          = $(SYSTEM_TAG_PREFIX).004
+WIN32_GCC_i386_STATIC = $(SYSTEM_TAG_PREFIX).006
+ANY_GCC_SDL_STATIC    = $(SYSTEM_TAG_PREFIX).008
+
+ifdef   DEBUG
+CCOPT = -O2 -fno-strict-aliasing -Wall -g -DDEBUG=$(DEBUG)
+LDOPT = -g
+else
+CCOPT = -O2 -fno-strict-aliasing -Wall
+LDOPT = -s
+endif
+
+ifdef PROFILE
+CCOPT += -pg
+endif
+
+# Additional warnings for development
+WARNOPTS = -W -Wshadow -Wpointer-arith -Wbad-function-cast \
+	   -Wcast-align -Wconversion -Wmissing-prototypes  \
+	   -Wnested-externs -Wstrict-prototypes
+#CCOPT += $(WARNOPTS)
+
+# Some systems can't allocate big arrays on stack.
+# If test/xcirctest fails on bigger diameters, try
+#CCOPT += -DSMALL_STACK
+
+# You may want to enable one (or both) of the following
+# switches if your get lots of warnings when compiling GRX
+#CCOPT += -DNO_LEFTSIDE_LVALUE_CAST
+#CCOPT += -DNO_LEFTSIDE_PTR_CAST
+
+##########################################################################
+
+ifdef GRXVSDL
+ifeq ($(EP),x)
+GRXVX11=y
+else
+GRXVW32=y
+endif
+endif
+
+ifdef GRXVLNX
+GRXVUNX=y
+endif
+
+ifdef GRXVX11
+GRXVUNX=y
+endif
+
+### UNIX SPECIFIC ########################################################
+
+ifdef GRXVUNX
+
+# Put libgrx20.a, libgrx20.so, libgrx20X.a, libgrx20X.so and libgrx20S.a
+# in lib/unix
+GRX_LIB_SUBDIR=unix
+
+# Set here the default destination dirs for install and uninstall targets
+prefix=/usr/local
+
+# Set the default GRX font path
+#GRX_DEFAULT_FONT_PATH=${datadir}/grx/fonts
+
+# check for i386 or x86_64 build
+ifeq ($(BUILD_X86_64),y)
+CCOPT += -m64
+LDOPT += -m64
+else
+CCOPT += -m32
+LDOPT += -m32
+endif
+
+endif
+
+### LINUX CONSOLE SPECIFIC ###############################################
+
+ifdef GRXVLNX
+
+# Use direct PS/2 mouse driver instead the svgalib one
+USE_DIRECT_MOUSE_DRIVER=n
+
+# Set the videodrivers to be included, you can set both or only one of them
+# (remember to set USE_DIRECT_MOUSE_DRIVER to 'y' if you set only the
+# framebuffer driver)
+USE_SVGALIB_DRIVER=y
+USE_FRAMEBUFFER_DRIVER=y
+
+# Set or not set suid root. This is required for the svgalib 1.4.x stable
+# release, it can be set to 'n' if you use the framebuffer driver only or
+# the svgalib 1.9.x alpha release without the 1 and 4 bpp resolutions
+# (see bellow)
+SET_SUIDROOT=y
+
+# Set to 'y' this variable if you want to add the framedrivers that use
+# inport/outport instructions: 1 and 4 bpp modes and the 8 bpp mode X. But
+# beware this works only with svgalib 1.4.x (not with 1.9.x) and without
+# the linux framebuffer enabled
+USE_INOUTP_FRAMEDRIVERS=n
+
+endif
+
+### LINUX X11 SPECIFIC ###################################################
+
+ifdef GRXVX11
+
+# The X11 base dir on your system
+X11BASE=/usr/X11R6
+
+# Add directories with X11 include files here
+X11INCS=-I$(X11BASE)/include
+
+# put X11 required libraries and directories here
+# note: some systems need -lsocket added
+X11LIB=$(X11BASE)/lib
+X11LIBS=-L$(X11LIB) -lX11
+
+# Set to try to use the XFree86 Direct Graphics Access driver (DGA2)
+# (if DGA2 is not available, fall back to the windowed X11 driver)
+# As of XFree-4.3.99.5 DGA/DGA2 seems stable, but use with caution.
+USE_XF86DGA_DRIVER=n
+# Set to 'y' this variable if you want the DGA2 driver to use direct
+# framebuffer access. That should not make DGA2 more unstable and is
+# faster. If this setting is 'y', the DGA2 driver (see above) must
+# also be 'y', or you will get compilation/linkage errors.
+USE_XF86DGA_FRAMEBUFFER=n
+# Set or not set suid root for X11. This is required for the DGA2
+# framebuffer access, it can be set to 'n' if you use the standard
+# X11 driver only or DGA2 without framebuffer access.
+SET_XSUIDROOT=n
+
+endif
+
+### DOS DJGPPv2 SPECIFIC #################################################
+
+ifdef GRXVDJ2
+
+# Put libgrx20.a to lib/dj2
+GRX_LIB_SUBDIR=dj2
+
+# Set here the destination dir for install and uninstall targets
+prefix=/dev/env/DJDIR
+
+# Set the default GRX font path
+#GRX_DEFAULT_FONT_PATH=/dev/env/DJDIR/share/grx/fonts
+
+# If you want to use 'upx.exe' compressor
+# disable the echo line and enable upx line.
+EXE_COMPRESS = -echo
+#EXE_COMPRESS = upx --best
+
+# Default compiler switches.  In djgpp.env. under [make],
+# add the line "BUTT=-mcpu=i386", if that is your target,
+# or directly add -mcpu here.
+# At present gcc supports 'i386', 'i486', 'i586' ('pentium'),
+# 'i686' ('pentiumpro') and 'k6'.
+#CCOPT += $(BUTT)
+#CCOPT += -mcpu=i586
+
+# GRX uses "uclock" to gets 1 ms resolution in the input code,
+# this can causes problems in Win3.1, so you may want to enable
+# the following switch
+#CCOPT += -DNO_REPROGRAM_TIMER
+
+endif
+
+### WIN32 MINGW SPECIFIC #################################################
+
+ifdef GRXVW32
+
+# Put libgrx20.a and libgrx20S.a to lib/win32
+GRX_LIB_SUBDIR=win32
+
+# Set here the destination dir for install and uninstall targets
+prefix=C:\MINGW
+
+# Set the default GRX font path
+#GRX_DEFAULT_FONT_PATH=c:/grxfonts
+
+endif
+
+### COMMON  ##############################################################
+
+exec_prefix=${prefix}
+
+bindir=${exec_prefix}/bin
+libdir=${exec_prefix}/lib
+datadir=${prefix}/share
+
+infodir=${prefix}/info
+includedir=${prefix}/include
+unitsdir=${exec_prefix}/units
+
+##########################################################################
+

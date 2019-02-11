@@ -1,0 +1,18 @@
+BCCROOT =c:\comp\bc
+BCC     =$(BCCROOT)\bin\bcc
+TLIB    =$(BCCROOT)\bin\tlib
+TASM    =$(BCCROOT)\bin\tasm
+STRIP   =$(BCCROOT)\bin\tdstrip
+MAKE    =$(BCCROOT)\bin\maker -fmakefile.bcc
+
+MODEL=  l
+
+GRX_LIB_SUBDIR=bcc
+
+!if $d(DEBUG)
+CCOPT=  -O -G -Z -2 -m$(MODEL) -w -w-par -w-stv -d -v -DDEBUG=$(DEBUG)
+LDOPT=  -m$(MODEL) -v
+!else
+CCOPT=  -O -G -Z -2 -m$(MODEL) -w -w-par -w-stv -d -k-
+LDOPT=  -m$(MODEL)
+!endif

@@ -1,0 +1,108 @@
+#
+# GRX test programs makefile for LINUX/X11. Uses GNU make.
+#
+.PHONY : clean setsuid
+
+GRXVX11=y
+
+include ../makedefs.grx
+
+INCDIR=  -I../include
+
+# Enable this line for static linked test progs (default)
+GRX20X = ../lib/$(GRX_LIB_SUBDIR)/libgrx20X.a
+# or this if you've already installed the shared libs
+#GRX20X = -L../lib/$(GRX_LIB_SUBDIR) -lgrx20X
+
+ifeq ($(SET_XSUIDROOT),y)
+EXECBITS = 4755
+else
+EXECBITS = 0755
+endif
+
+ADDON_LIBS=
+
+ifeq ($(USE_XF86DGA_DRIVER),y)
+  ADDON_LIBS += -lXxf86dga -lXext
+endif
+
+ifeq ($(HAVE_LIBTIFF),y)
+  ADDON_LIBS += -ltiff
+endif
+
+ifeq ($(HAVE_LIBJPEG),y)
+  ADDON_LIBS += -ljpeg
+endif
+
+ifeq ($(HAVE_LIBPNG),y)
+  ADDON_LIBS += -lpng
+endif
+
+ifeq ($(NEED_ZLIB),y)
+  ADDON_LIBS += -lz
+endif
+
+LIBS= $(GRX20X) $(ADDON_LIBS) $(X11LIBS) -lm
+
+PROGS=  xarctest     \
+	xbb1test     \
+	xblittest    \
+	xcirctest    \
+	xcliptest    \
+	xcolorops    \
+	xcurstest    \
+	xfontdemo    \
+	xfonttest    \
+	ximgtest     \
+	xjpgtest     \
+	xkeys        \
+	xlife        \
+	xlinetest    \
+	xmemtest     \
+	xmousetst    \
+	xpcirctst    \
+	xpnmtest     \
+	xpngtest     \
+	xpolytest    \
+	xrgbtest     \
+	xsbctest     \
+	xscroltst    \
+	xspeedtst    \
+	xtextpatt    \
+	xwinclip     \
+	xwintest
+
+all: $(PROGS) xdemogrx
+
+xdemogrx: demogrx.o gfaz.o $(GRX20X)
+	$(CC) $(LDOPT) -o xdemogrx demogrx.o gfaz.o $(LIBS)
+	chmod $(EXECBITS) xdemogrx
+
+$(PROGS): x%: %.o $(GRX20X)
+	$(CC) $(LDOPT) -o $@ $*.o $(LIBS)
+	chmod $(EXECBITS) $@
+
+$(PROGS:x%=%.o): %.o : %.c
+	$(CC) -c $(CCOPT) -D__XWIN__ $(INCDIR) $*.c -o $*.o
+
+.c.o:
+	$(CC) -c $(CCOPT) -D__XWIN__ $(INCDIR) $*.c
+
+.c.s:
+	$(CC) -S $(CCOPT) $(INCDIR) $*.c
+
+clean:
+	rm -f *.o $(PROGS) xdemogrx
+
+setsuid: $(PROGS) xdemogrx
+ifeq ($(SET_XSUIDROOT),y)
+	chown root $(PROGS) xdemogrx
+	chmod $(EXECBITS) $(PROGS) xdemogrx
+else
+	@echo "Nothing to do, SET_XSUIDROOT is not set to 'y' in makedefs.grx"
+endif
+
+depend.new:
+	$(CC) -MM $(CCOPT) $(INCDIR) $(PROGS:x%=%.c) > depend.new
+
+include depend.gnu

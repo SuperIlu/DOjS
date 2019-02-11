@@ -1,0 +1,728 @@
+This file lists the history of changes to the grx source files from
+the 2.2 version.
+-------------------------------------------------------------------
+
+Date     Changes
+
+12/07/10 ----------- GRX v2.4.9 released (Maurice Lombardi)
+12/07/04 Change configure script and makedefs.grx to conform to recent
+         GNU practice. Honours DESTDIR to ease building binary distributions.
+	 INSTALLDIR is no more present in makedefs.grx, but prefix is there
+	 to replace it. (Extension of a patch by Guillem Jover to all targets
+	 by M. Lombardi)
+11/11/23 All drivers generate button4 and button5 mouse events (the scroll
+         wheel scrolled up or down). Extended from MGRX by M. Lombardi.
+11/11/18 Add GrFlush(). Useful only on X11 when when switching  between
+         graphics and console windows open simultaneously. (M. Lombardi)
+10/08/17 Add GrMsecTime(). Adapted from MGRX.
+09/04/02 Synchronisation of windows and grx mouse cursors by Richard Sanders
+         <richard@dogcreek.ca>
+08/12/12 Fix a race condition with the loadcolor SetDIBColorTable function 
+	 call, which happens sometimes on fast multiprocessor machines
+	 This affects only 8 bpp modes (Peter Schauer <peterschauer@gmx.net>)
+08/11/05 Added GrClearContextC function, by Richard Sanders.
+08/08/01 fdrivers/fd_xwin.c: Sanitized pixel cache code.
+         New faster and specific for X11 putscanline function, this change
+         accelerates a lot displaying pnm, png and jpeg images.
+         Backports from MGRX of M.Alvarez <malfer@telefonica.net>
+08/05/15 Fix a conflict between underline and XOR char writing reported by 
+         Al-Junaid H. Walker (M. Lombardi)
+07/12/27 Added GrFloodSpill functions, by Richard Sanders <richard@dogcreek.ca>
+07/12/01 vd_xwin: go to fullscreen if w,h == X resolution, GR_biggest_graphics
+         is honored. Modes higher than X resolution are made no-present.
+         Added videomodes for wide monitors in x11 and w32 drivers.
+         Backports from MGRX of M.Alvarez <malfer@telefonica.net>
+07/08/11 Fix a keyboard bug reported by A. Moreira. It was a bug produced by
+         the optimiser for gcc >= 4 when using asm: memory clobber. 
+         If not corrected it could pop up at other places. (M. Lombardi)
+
+07/08/29 ----------- GRX v2.4.8 released (Maurice Lombardi)
+07/08/29 Sanitized win32, eliminating WM_SIZE events
+07/08/27 Add Sleep(5) to setrgbpalette for win32 which sends WM_PAINT to 
+         redraw whole screen. Compare PlayRGBpalette() in test/bgi/bccbgi.c
+         Add Sleep(1) when no more W32events queued to yield control
+         when looking for grx events by M. Lombardi.
+07/08/21 Correction to WM_PAINT in vdrivers/vd_win32.c: GetUpdateRect() gave
+         wrong UpdateRect -> few missing chars in text drawing, by M. Lombardi
+07/08/17 Change to text/fontpath.c and text/loadfont.c to allow the syntax
+         /dev/env/DJDIR in djgpp when loading fonts by M. Lombardi
+07/08/07 Correction to test/test.h to enable test/scroltst to run as expected.
+07/08/05 Eliminate WM_PAINT in mouse/w32inp.c to enqueue GR_OS_DRAW_REQUEST.
+         Too frequents, they produced saturation of the GRX event queue and 
+         gobbling of keybord/mouse events. Compare responsivity of
+         test/mousetst.c, test/bgi/bccbgi.c, pascal/bgi/demo.pas by M. Lombardi
+07/08/01 The X11 driver now responds to Expose events by using a pixmap 
+         for backing store. But this slows it down. You can recover
+         previous behaviour (faster but no response to Expose) by editing 
+         src/include/libxwin.h and setting USE_PIXMAP_FOR_BS to 0.
+	 Backported from Mariano's MGRX by M. Lombardi.
+07/07/30 various improvements in makefiles, demo.pas, test/speedtst.c 
+         by M. Lombardi.
+
+07/04/06 ----------- GRX v2.4.7 released (Maurice Lombardi)
+07/04/06 updates in test/speedtst.c
+07/04/05 change to bgi/bccgrx.c, so that all 32 bpp modes are considered
+         by BGI as 16M modes (the extra byte is only for padding): this was
+         the case for older drivers up to VESA which gave GrVideoMode->bpp=24
+         in these cases (see lines 246-258 in vdrivers/vesa.c).
+07/03/25 SDL driver (sdl-rc4-support.zip) by Dimitar Zhekov 28 May 2004
+            with changes to makefiles/makedefs/configure
+            and pascal support by Maurice Lombardi
+07/03/16 inclusion of various corrections submitted to the list
+            grx.diff-byteorder by Frank Heckenbach 31 May 2006
+            grx-exitprocess.diff GRX app termination bug (winXP) 
+               by Mario Zagar 15 Feb 2005
+            grxfixes.zip by Dimitar Zhekov 24 Sep 2004
+               fontdemo-res-fix.diff
+               fontdemo-Y-fix.diff
+               test-changes.diff
+               win32-8bpp-cls-fix.diff (win32 setmode() clear screen problem)
+               xfdga-detect-once.diff (xfdga avoid double detection)
+            grx-w32events.diff (more W32 event handling) 
+               by Peter Gerwinski 19 Jun 2004
+            graphresult.diff by Andris Pavenis 8 Jan 2004
+07/01/05 introduction of GR_PtrInt (integer of same length as a pointer)
+         to suppress warnings (in fact errors) when compiling with
+         x86_64 platforms,
+         renaming sincos() to GrSinCos() in genellip.c to avoid
+         name conflict with builtin, by M. Lombardi.
+06/09/19 correction to bgi/text4.c to correct update of graphics
+         pointer in vertical writing with outtext (was going in
+         the wrong direction. BP does not update it at all,
+         but this is stupid), by M. Lombardi.
+06/09/11 correction to grx.pas (bar3d)
+06/02/10 Better understanding of x86_64. Now by default an i386
+         library is built even on x86_64 platforms. If you set
+         BUILD_X86_64 to 'y' in makdefs.grx a x86_64 library is
+         built, and the install target go to the lib64 subdir
+         (backport from MGRX by M. Lombardi)
+04/09/24 Added x86_64 support (backport from MGRX by M. Lombardi)
+xx/09/05 Florian Xaver updated GRX to make it compatible with latest
+         DJGPP/GCC.
+05/03/08 correction to polytest.pas
+04/09/27 more changes to graph.pas, jpgtest.pas, imgview.pas,
+         by Frank Heckenbach.
+04/09/17 more changes to grx.pas and graph.pas, by Frank Heckenbach.
+04/06/06 more changes for same purpose by Peter Gerwinski.
+04/04/25 changes to introduce:
+         HAVE_UNIX_TOOLS, CROSS_PLATFORM in makefefs.grx and configure
+         w32 (mingw32) target in configure
+         corresponding changes in makefiles,
+         by Frank Heckenbach and Peter Gerwinski.
+04/03/28 changes in grx.pas to make it compile with recent versions of
+         gpc, by Frank Heckenbach.
+03/12/27 Close the framebuffer if DGA is compiled with framebuffer
+         support, not without it, by Dimitar Zhekov.
+03/12/27 Version 2 of the raw driver. Support for psf2. Better
+         support for RAW: up to 16x32, assuming width:height 1:2
+         (the previous code was always assuming width = 8),
+         by Dimitar Zhekov.
+03/12/27 Small bug in grxprint.c, by Andris Pavenis.
+03/12/27 Version 2 of the libGRX DGA2 driver. Features set mode
+         via DGA2 and rendering via Xlib or linear framebuffer,
+         by Dimitar Zhekov.
+03/12/27 Up to 200 the possible modes in the DGA2 driver, by Dimitar
+         Zhekov.
+03/12/27 A batch mode for speedtst. Usage: run speedtst to see the
+         mode numbers, then "time speedtst MODE" or [4dos] "timer ^
+         speedtst ^timer". Maybe "first" should be named "prompt",
+         by Dimitar Zhekov.
+
+03/07/17 ----------- GRX v2.4.6 released (Mariano Alvarez Fernandez)
+03/07/15 fdv_win.c: the resource header fields must be swapped,
+         not the data they "point" to, by Dimitar Zhekov.
+03/07/15 Changed the default to 'n' for the USE_INOUTP_FRAMEDRIVERS
+         switch in makedefs.grx
+03/06/25 In the svgalib driver don't re-setting the initial mode if
+         it's already set, by Dimitar Zhekov.
+03/06/23 define alloca to __builtin_alloca in src/include/allocate.h
+         to avoid warnings in Mingw with gcc 3.x. src/makefile.lnx,
+         src/makefile.x11: don't link ADDON_LIBS for UTILP.
+         src/stdobjs.mak: remove any duplicate definitions and
+         trailing \-s. src/text/buildfnt.c: produce a more readable
+         bdump() DEBUG output, by Dimitar Zhekov.
+03/06/23 The GRX raw keyboard I/O can't be safely used in text mode.
+         Fixed it in test/bgi/, by Dimitar Zhekov.
+03/06/10 Small fixes, replaced some printf with DBGPRINTF, removed
+         GrKeyPressed test in debug mode, it can't be used in all
+         plattforms, by Dimitar Zhekov.
+03/06/10 Small chamges to fdv_win.c, better name/family supportm, avoid
+         possible overflow, by Dimitar Zhekov.
+03/06/10 More Pascal updates, by Frank Heckenbach.
+03/05/31 Small fixes to fdv_fna.c and fdv_xwin.c, by Dimitar Zhekov.
+03/05/31 Pascal demos updates, by Eike Lange.
+03/05/03 Added a InvalidateRect in the loadcolor function in the Win32
+         videodriver, now the play-palette bgi demo works properly.
+         I think the Win32 driver is now very usable, not more in alpha.
+03/05/03 Faster w32_drawpixel function in the Win32 framedrivers.
+03/05/02 Small patch for the next GPC version, by Frank Heckenbach.
+03/05/02 Small test fixes, by Dimitar Zhekov.
+03/05/02 Added a cleanall target to the borland makefile,
+         by Dimitar Zhekov.
+03/04/02 Added new video driver for Xfree86 DGA2 (Direct Graphics Access),
+         experimental, not compiled by default, you must activate it in
+         makedefs.grx, by Dimitar Zhekov.
+03/03/31 New 8bpp frame driver (by Josu) and 24 bpp frame driver (by me)
+         for Win32. They use the standard GRX framedirvers plus the
+         necesary InvalidateRects. Now the Win32 version is faster and
+         reliable.
+03/03/31 With the Thomas idea of using a DIB in the win32 video driver,
+         we can now use the DIB like a linear frame buffer, so the new
+         win32 framedrivers can take advantage of the standard GRX frame
+         drivers, by Josu Onandia.
+03/03/31 Use a DIB for the hDCMem in the win32 video driver,
+         by Thomas Demmer
+03/03/11 The alternate linux console input driver now calls
+         _LnxfbSwitchConsoleAndWait if _lnxfb_waiting_to_switch_console
+         is set.
+03/03/11 Changes to the linuxfb driver. Added code to catch a signal
+         when user wants to change virtual terminals. The driver sets
+         _lnxfb_waiting_to_switch_console and the input driver must
+         calls _LnxfbSwitchConsoleAndWait then.
+         Previous function _SwitchConsoleLnxfbDriver renamed to
+         _LnxfbSwitchConsoleVt, not used,is here only for possible
+         future use.
+03/03/10 Some more adjustments to GPC changes. This time, however,
+         there will be backward-incompatible changes (WRT …smname'
+         etc.). Therefore, I'm using a compiler version check, so it
+         should work with old and new GPC versions. At this occasion,
+         I'm also removing the old-style external variable syntax
+         (of GPC versions prior to 2000-04-12) from graph.pas, by
+         Frank Heckenbach.
+03/03/10 Changes the x11 font driver to use it's own X11 display
+         and window. It allows X11 fonts to be loaded before GrSetMode()
+         and makes the font driver independent from the X11 video and
+         frame drivers, by Dimitar Zhekov.
+03/03/10 Syncs ulheight/ulpos calculation in the X11 font driver with
+         all other drivers for which ulheight isn't known, by
+         Dimitar Zhekov.
+03/02/27 Changes to the .fna font driver: undpos is not supported and
+         fix driver inability to read fonts with 2+ nonempty "note",
+         by Dimitar Zhekov.
+03/02/26 Get rid of GRXMain in test programs, we use main now.
+03/02/12 Sanitize the Thomas changes.
+03/02/12 Changes to the win32 videodriver. Instead of begin with WinMain
+         and start a thread with the main GRX program, do it backward:
+         begin in main and start a thread to handle the Windows window.
+         With this change we get rid of the awful GRXMain special entry
+         point and GRX compiles now with CygWin, added the new platform
+         to grx20.h, by Thomas Demmer <TDemmer@krafteurope.com>
+03/02/11 Some small bugfixes for the Pascal units, by Frank Heckenbach.
+03/01/14 Pascal units rewritten, this is to make the formatting more in
+         line with the GPC conventions, by Frank Heckenbach.
+02/12/29 The alternate linux console input driver now works with PS2 and
+         IMPS2 mice (but the whell is not used).
+02/12/21 Added function to change virtual terminals in the linuxfb
+         driver, _SwitchConsoleLnxfbDriver to be called from the input
+         driver (it doesn't work yet).
+02/12/21 Some cleanups to the linuxfb driver, now the text screen restart
+         ok on exit.
+02/12/13 Added 8bpp paletted mode to the linuxfb driver,
+         by Josu Onandia.
+02/11/24 In fdrivers/lfb8.c, lfbbltrv.c, lfbbltvr.c and lfbbltvv.c
+         there was a erroneous test on LBF_BY_NEAR_POINTER instead
+         LFB_BY_NEAR_POINTER, reported by <YaoXiaoxi@elong.com>.
+02/11/24 Changes avoid some warnings given by `-W' in graph.pas, by
+         Frank Heckenbach.
+02/11/24 The test program launcher, demogrx, has now two pages. Added
+         some fontdemos.
+02/10/27 Modetest shows the actual resolution when in graphics mode.
+02/10/26 Corrected bug in fdrives/ram4.c, if the GR_UNDERLINE_TEXT
+         flag was set colors were wrong, reported by Alex.
+02/10/26 Corrected bug in draw/bitblt1b.c, bad source origin if the
+         destination origin was negative, by Alex <alexbodn@012.net.il>
+         Changed bb1test.c test program to see the efect.
+
+02/10/20 ----------- GRX v2.4.5 released (Mariano Alvarez Fernandez)
+02/10/18 Changed __MINGW32__ to _WIN32 in Pascal units, by
+         Frank Heckenbach.
+02/10/16 Updated the configure script, by Frank Heckenbach.
+02/10/02 Corrected bugs in GrFloodFill, before it didn't paint the
+         righter point (causing ocasionall aborts too) and didn't
+         work on subcontexts.
+02/08/27 Updates to the fdv_raw font driver, the loadfont source
+         now does a cleanup to close the font file, fontdemo test
+         program updated, by Dimitar Zhekov.
+02/08/10 Make the test/bgi programs depend of a unique file header
+         for input and delay functions.
+02/08/10 New api functions with a unique color parameter in 0xRRGGBB
+         format:
+         GrColor GrAllocColor2(long hcolor);
+         GrColor GrAllocColor2ID(long hcolor);
+         void    GrQueryColor2(GrColor c,long *hcolor);
+         void    GrQueryColor2ID(GrColor c,long *hcolor);
+02/08/06 Added 'setsuid' target to test/makefile.lnx and
+         test/bgi/makefile.lnx. Now you can run 'make -f makefile.lnx'
+         in the grx base directory an them become root and run
+         'make -f makefile.lnx setsuid'.
+02/08/06 Use the SET_SUIDROOT variable in test/bgi/makefile.lnx,
+         by Dimitar Zhekov.
+02/08/06 Fontdemo update, by Dimitar Zhekov.
+02/08/02 Modifications to acomodate new options in makedefs.grx,
+         for the four standard platforms:
+           INCLUDE_BGI_SUPPORT, 'y' by default
+         for the linux console platform:
+           USE_SVGALIB_DRIVER, 'y' by default
+           USE_FRAMEBUFFER_DRIVER, 'y' by default
+           SET_SUIDROOT, 'y' by default
+           USE_INOUTP_FRAMEDRIVERS, 'y' by default
+         Added a note about "Suidroot in the Linux console platform"
+         in the readme file.
+02/07/29 Revert some changes in the bgi test demos to compile again
+         with DJGPP.
+02/07/29 Corrected an off-by-one error in the raw font driver, by
+         Dimitar Zhekov.
+02/07/29 16-bit fix for BGI and GRX. __gr_WR must match GrColor, by
+         Dimitar Zhekov.
+02/07/29 Changes to the BGI interface, by Dimitar Zhekov.
+         Inline functions defined as macro and non-inline versions.
+         BGI number of colors for DOS / BCC limited to < 15bpp.
+         BGI aspect ratio fixed for 16-bit systems (DOS / BCC).
+         _BGI_INLINE_ moved to fldfill.c, the only module that uses it now.
+         Inline functions in text4.c replaced with macros.
+         Test\bgi\colortst.c fixed to use getch() not getchar().
+02/07/21 Make bccbgi works with Borland C, by Dimitar Zhekov.
+02/06/17 Added fontdemo test program, by Dimitar Zhekov.
+02/06/17 Added the GrDumpFnaFont fucntion, to save a fon in a ascii
+         fna file, by Dimitar Zhekov.
+02/06/12 Three new font drivers by Dimitar Zhekov:
+         * RAW driver - for RAW data and Linux PSF (not PCF) files. RAW
+         data files must be 8 points wide. 512 character PSF files are
+         supported. For the PSF files contained in Linux systems to be
+         readable with GRX, you'll have to unzip them.
+         * FNA driver - for the ascii font format used by grx 1 font
+         read/write tool. A doc about this format was added to the doc
+         subdirectory.
+         * WIN driver - for MS Windows FNT and RES files. FNT versions 2
+         and 3 are supported, 32-bit RES and FON files are not. The first
+         resource from RES is used. As far as I know, all MS Windows-es
+         from 2.0 to NT 4.0 use FNT version 2 and 16-bit resources packed
+         into FON for raster fonts. To use the MS Windows .FON files,
+         split them into .FNT or .RES files using a resource editor.
+         Note. Big endian support is untested.
+02/06/12 Fixes for src/makefile.bcc and test/makefile.bcc,
+         by Dimitar Zhekov <jimmy@is-vn.bg>
+02/04/29 GrResizeSubContext uses now the parent context coordinates.
+02/04/29 Reverted some 'const' that didn't make sense.
+02/03/31 The win32 driver accepts arbitrary (user defined) resolution.
+02/03/14 A new global switch _GR_textattrintensevideo (false by default)
+         permits the use (when true) of 16 background colors in
+         GR_ATTR_TEXT strings.
+02/03/13 When the close icon is pressed in the w32 version a dialog
+         is issued warning it aborts the program.
+02/03/12 Fixed some bugs introduced with the new win32 input queue.
+02/02/11 The makefile install target installs the grxprint.h file
+         if printer support is activate
+02/02/11 Inprovements to the win32 driver:
+         Now the GRX window is properly closed, so the previous app
+         gets the focus.
+02/02/02 Inprovements to the win32 driver:
+         The w32 imput queue implemented as a circular queue.
+         All the input related code moved to w32inp.c from vd_win32.c
+         The main window is created in WinMain, so the grx program
+         can use other videodrivers like the memory one.
+         Now the printer stuff compiles and run, checked with the
+         DeskJet driver, printing to a file and them "copy file lpt1",
+         but the printout is not totally correct (?).
+
+02/01/11 ----------- GRX v2.4.4 released (Mariano Alvarez Fernandez)
+02/01/09 Modified the demogrx test program to center the image when
+         a mode bigger than 640x480 is selected
+02/01/09 Added an alternate linux console input driver, it handles
+         the mouse directly openning /dev/psaux, but note only PS/2
+         mouses work by now. It must be activate explicitly by
+         uncomenting the switch "USE_DIRECT_MOUSE_DRIVER=y" in
+         "makedefs.grx"
+02/01/09 The linux framebuffer video driver now set the console in
+         graphics or text mode when necesary. Now the text cursor is
+         not show, and the svgalib mouse input driver doesn't collide
+         with GPM, so, surprise!, it works!
+02/01/09 Small changes to improve the linux console input driver
+02/01/07 More patches to the Pascal interface, by Frank Heckenbach and
+         Maurice Lombardi
+02/01/02 Go to full screen in the Win32 driver if the requested framemode
+         dimensions are equal to the screen dimensions (setting the
+         client start area at 0,0).
+01/12/22 More patches to the Pascal interface, by Frank Heckenbach and
+         Maurice Lombardi
+01/12/22 Added an optional configure script, by Frank Heckenbach
+01/12/21 The linuxfb driver now open /dev/fb0 by default. An alternative
+         frame buffer device can be specified setting the environment
+         variable $FRAMEBUFFER
+01/12/21 pascal ega colors are now functions, by Frank Heckenbach
+01/12/21 fixed some borland bgi incompatibilities, by Frank Heckenbach
+01/12/21 added 'const' (C) and 'protected' (Pascal) to some
+         function parameters, to make them a little "safer",
+         by Frank Heckenbach
+01/12/16 Added imgview.pas and colortst.pas demo programs, by
+         Frank Heckenbach
+01/12/16 Change in the pascal interface: GrAllocEgaColors, GrGetScanline,
+         etc. return a pointer to an array of GrColor, rather than to a
+         single GrColor, by Frank Heckenbach
+01/12/16 Make installation of shared libraries optional on Linux/X11
+         by Frank Heckenbach
+01/12/16 GrSaveContextToGrayJpeg added to the pascal interface, by
+         Maurice Lombardi
+01/11/29 better w32 keyboard handling. Now most special keys with
+         shift, alt and control combinations works
+01/11/29 added jpeg functions to grx.pas and jpgtest.pas demo, by
+         Maurice Lombardi
+01/11/29 patch to define gpc-main in grx.pas and graph.pas, by
+         Frank Heckenbach
+01/11/29 patch to remove warnings on unix in test/bgi programs, by
+         Frank Heckenbach
+01/11/16 Added new function: GrSaveContextToGrayJpeg. Now
+         GrLoadContextFromJpeg can load grayscale jpeg files
+01/11/08 jpgtest test program added. It works too without jpeg support
+         and shows a message
+01/11/08 New jpeg functions (GrSaveContextToJpeg, GrLoadContextFromJpeg,
+         GrQueryJpeg, GrJpegSupport). Added dummy functions if there
+         isn't jpeg support
+01/11/07 Added new targets to makefiles: install-info, unisntall-info.
+         Now install doesn't install info (readme file updated)
+01/09/08 Applied additional patches to update Pascal interface, new
+         polytest.pas demo, by Maurice Lombardi
+01/09/07 Applied patches to update the Pascal interface, by
+         Frank Heckenbach. Note, the "bgi2grx" unit was renamed to
+         "Graph", so it will be BP compatible and more natural to
+         Pascal programmers
+
+01/06/28 ----------- GRX v2.4.3 released (Mariano Alvarez Fernandez)
+01/06/27 Added new targets to makefiles: install-bin, uninstall-bin,
+         install-fonts and uninstall-fonts (readme file updated)
+01/06/26 Moved bin2c, fnt2c, vesainfo, lfbinfo and modetest to
+         src/utilprog. They are build in the source makefile.
+01/06/22 Except for the w32 version the install target installs the
+         info manual. As suggested by Maurice Lombardi and Waldemar
+         Schultz
+01/06/21 pngtest test program added. It works too without png support
+         and shows a message
+01/06/20 Changed BCCGRX cleardevice function to clear the screen to
+         the current BACKGROUND color instead of black. Suggested by
+         Waldemar Schultz
+01/06/19 ctx2png functions (GrSaveContextToPng, GrLoadContextFromPng,
+         GrQueryPng, GrPngSupport) integrated in GRX. src/pnm subdir
+         renamed to src/gformats. Added dummy functions if there isn't
+         png support
+01/06/18 New API functions: GrLoadContextFromPnmBuffer and
+         GrQueryPnmBuffer
+
+01/06/15 ----------- GRX v2.4.2 released (Mariano Alvarez Fernandez)
+01/06/12 Modified win32 input code for GrMouseGetEvent and GrKeyRead
+         work at the same time, when GrMouseEventEnable(1,0) is set
+01/06/07 Merged makedefs.gnu, makedefs.x11, makedefs.dj2 and
+         makedefs.w32 in makedefs.grx (readme file updated)
+01/06/06 Now we can use "GRXMain" for all GRX versions, grx20.h defines
+         it like "main" except for the win32 version. Deleted the ugly
+         "#ifdef __WIN32__ ..." in test programs (except for BGI tests)
+01/06/05 Added the Linux framebuffer videodriver (vdrivers/vd_lnxfb.c)
+         alpha stage, only in 16 or 24 bpp. To use it set GRX20DRV to
+         "linuxfb" in the GRX Linux version. The mouse doesn't work
+01/06/05 Some minimal changes to compile ok with gcc 2.96 and
+         Linux 2.4.x
+01/05/30 Applied patch to sanity bgi code for gcc 3.0, by Andris
+         Pavenis
+01/05/28 Modified makefiles for linux and x11. Now they build
+         shared and static libs at the same time. Added install and
+         uninstall targets.
+01/05/16 Applied patch to add standard pascal makefiles for dj2, w32,
+         x11 and lnx. pascal/bgi/test and pascal/bgi/demo merged in
+         pascal/bgi. Pascal readme updated. By Maurice Lombardi
+01/05/09 Applied patch to produce makefiles for mingw32 pascal tests
+         by Maurice Lombardi
+
+01/04/26 ----------- GRX v2.4.1 released (Mariano Alvarez Fernandez)
+01/04/25 User's guide (info) updated, by Vicente Fuentes Gea
+01/04/20 User's guide (html) updated
+01/04/19 Applied partially patches to make GRX compile with MS-VC
+         by Hartmut Schirmer
+01/04/18 Added install and uninstall targets to src/makefile.dj2 and
+         src/makefile.w32
+01/04/18 Patched src/bgi/text7.c to compile Ok with GCC 3.0
+         by Andris Pavenis
+01/04/14 New API routine: GrBitBlt1bpp, contributed by Josu Onandia
+         Added bb1test.c test program
+01/04/01 Changed compiler options from "-O6 -fomit-frame-pointer" to
+         "-O2" only. Suggested by Andris Pavenis.
+01/03/27 drawpattern and bltr2v_24 added to fdrivers/fd_win32.c
+01/03/26 Fixed a bug in pnm/ctx2pnm.c, when grx == NULL the actual context
+         must be used. Reported by Vicente Fuentes Gea
+01/03/25 The dj2 version uses now "uclock" in mouse/input.h to get 1ms
+         resolution in input code. Because "uclock" can be unsafe in W3.1
+         when NO_REPROGRAM_TIMER is defined the old code is used. A
+         comment has been added to makedefs.dj2
+01/03/25 Changed CLOCKS_PER_SECOND by CLK_TCK for linux in mouse/input.h
+         to get real ticks per second
+01/03/24 New API routines: GrSetWindowTitle and GrSleep
+01/03/22 Changed DJGPP test macro from __GO32__ to __DJGPP__
+           by Andris Pavenis
+
+01/03/18 ----------- GRX v2.4 released (Mariano Alvarez Fernandez)
+01/03/16 Win32 drivers improved again by Josu Onandia
+01/03/15 Make bccbgi to use ../rand.h to work with the Win32 drivers
+01/03/14 Added ifdef to demo programs to use GRXMain with the Win32 drivers
+01/03/12 Fixed a bug in mouse/xwinkeys.c, preventing getkey & kbhit work
+         together (Now bccbgi demo works properly in X, except restoring
+         from text mode)
+01/03/10 Support for DJGPP v1 removed (really only removed makefiles by now)
+01/03/10 Optimized pnm/ctx2pnm.c, contributed by Josu Onandia
+01/03/10 Improved frame and video drivers for win32, by Josu Onandia
+           <jonandia@fagorautomation.es>
+01/03/06 Integrated the win32 version written by Gernot Graeff
+           <gernot.graeff@t-online.de>
+01/03/05 Fixed bug in modetest.c preventing 32 bpp modes to work.
+01/03/04 Applied patch to solve 32bpp problems, by Hartmut Schirmer
+01/03/03 Applied patch to make GRX compile with gcc 3.0, by Andris Pavenis
+01/03/03 Fixed bug in pattern/fillpatt.c
+01/02/26 Modified setmode.c and svgalib.c to set frame pointer dinamicaly
+         and fix the svgalib video driver.
+01/02/22 Applied some patches by Maurice Lombardi
+           <Maurice.Lombardi@ujf-grenoble.fr>
+01/02/20 Fixed bug in pattern/patfbox.c
+01/02/14 Fixed bug preventing GrLoadFont work with BGI fonts
+
+01/02/12 ----------- GRX v2.3.4 released (Mariano Alvarez Fernandez)
+01/02/06 user's manual in info format contributed by Vicente Fuentes Gea
+           <vfg@servidor.unam.mx>
+01/02/01 new WIN32 Mingw32 target (memory driver only)
+01/01/28 ctx2pnm functions added.
+01/01/28 user's manual updated again.
+01/01/28 new test programs added: pnmtest and demogrx.
+01/01/28 some test programs bug fixes.
+01/01/28 pascal subdirectory update contributed by Eike Lange
+           <eike.lange@uni-essen.de>
+
+01/01/24 ----------- GRX v2.3.3 released (Mariano Alvarez Fernandez)
+01/01/21 BGI test programs moved to test/bgi
+01/01/21 Added the updated GRX user's guide.
+01/01/20 BCC2GRX license comments changed to point to the GRX license.
+01/01/20 Sources changed to point to the copying.grx file
+01/01/10 Applied some patches by Andris Pavenis.
+
+00/09/14 ----------- GRX v2.3.2 released (Peter Gerwinski)
+
+00/06/21 ----------- GRX v2.3.1 released (Peter Gerwinski)
+00/06/21 Some bug fixes (solved problems induced by the update).
+
+00/05/20 ----------- GRX update released (Hartmut Schirmer)
+00/05/20 Added AIX support in grx20.h, xwininp.c, allocate.h as
+         suggested by Andris Pavenis <pavenis@lanet.lv>.
+         Added BGI-Support from BCC2GRX.
+00/05/19 Don't use GCC/i386 asm in highlow.h on gcc after v2.8.x
+00/05/17 Added test/sbctest.c contributed by
+           Mariano Alvarez Fernandez <malfer@teleline.es>
+         Fixed additional subcontext bugs in GrPatternFilledLine
+           and GrPatternFilledPlot (reported by Mariano Alvarez
+           Fernández <malfer@teleline.es>)
+         Applied the 32bit X11 patch by Ulrich Leodolter
+00/04/23 Applied some changes suggested by Josu Onandia
+           <jonandia@fagorautomation.es>
+         - pattern/patfbox.c: Context offset wasn't added
+             to drawing coordinates
+         - text/buildfnt.c: Fixed a typo, pointer to passed
+             free() not same as returned by malloc()
+         - mouse/drawcurs.c: Incorrect calculation of mouse
+             cursor work area
+         Applied asm bugfixes by Ian Miller <Ian@shelob.f9.co.uk>
+           required for EGCS/GCC compilers after v2.8.x
+           and for binutils after v2.9.1
+         Changed GRX internal version to 0x0231
+         Changed return type of main in test/textpatt.c to int
+00/04/06 Fixed an uninitialized variable reported by Josu Onandia
+           <jonandia@fagorautomation.es>n wideline/drwcpoly.c
+98/06/28 Updated addons/print test files
+         Added a note to DJGPP & BCC src/makefiles that command.com
+           is required as shell
+98/06/08 GCC asm enhancements (arith.h,ioport.h,highlow.h)
+98/06/07 fine tuning mach64 banking functions
+98/06/06 Fixed a typo in addons/ctx2jpeg.c
+         DJGPP&BCC didn't cleanup the addons subdir's
+         DJGPP v1 failed on grxprint.c compilation
+         Added optimized GCC/i386 asm repfill_b code
+
+98/06/03 ----------- GRX v2.3 released (Hartmut Schirmer)
+98/05/26 Fixed a bug in gcc/highlow.h
+98/05/24 Printing code synced with Andris
+         Some additional files needed memcopy.h
+         X11R6 driver was broken (XInitImage) -- fixed
+98/05/20 DOS _GrUpdateInputs() still used getxkey -- fixed
+         ram3x8, ega4, herc1 & dosinput didn't include memcopy.h
+         System endian can now be defined by -D_BIG_ENDIAN or
+           -D_LITTLE_ENDIAN at compile time
+98/05/19 GrSetFontPath() still used alloca -- fixed
+         Again fixed minor problems in printing code:
+           - some functions where declared extern but
+             implemented static
+           - signed / unsigned problem in RepeatByte()
+98/05/18 Update printing support.
+         There were no RAM drivers for 1 & 4bpp in X11
+           build.
+         Fixed a bug on short hlines in ram1 & ram4
+         GRX uses it's own memcopy now
+98/05/17 Watcom makefiles changed for DEBUG support and
+           .dat copy from test/ to bin/
+98/05/14 Some code fixes to avoid warnings fron SUN cc
+98/05/13 Minor changes to avoid warnings on several platforms
+           (eg, eliminated C++ style comments, non ASCII chars, ...)
+98/05/11 Fixed LFB frame buffer address handling when
+           LFB_BY_NEAR_POINTER active
+         JPEG & TIFF save now use GrGetScanlineC() and
+           malloc() instead of alloca()
+98/05/10 Fixed a typo in watcom/memfill.h
+         GCC v2.8.1 broke dependency file creation under
+           DJGPP v2, no subdir information was included for
+           the target. The gcc -MM output is now passed through
+           a new sed script and the created dep-file should be
+           ok on any version GCC. Same change for Linux and X11
+           makefile. This change makes Watcom makefile creation
+           by utils/watmake work again.
+         Again fixed Watcom makefiles
+         Added -DGRX_DEFAULT_FONT_PATH="...." configuration for
+           default font path when no GRXFONT environment entry
+           specified. This is mostly useful on Unix platforms.
+         Getting scanline changed for GrPixel / GrPixelC
+           like naming: GrGetScanline && GrGetScanlineC
+98/05/07 Watcom updates (bmp/printing/makefiles)
+         Minor BMP & printing updates for better Unix support
+98/05/06 Fixed a bug in _GrFrDrvGenericStretchBlt()
+         Fixed potential bug in GrImageFilledBoxAlign()
+98/05/05 GrGetScanline && GrPutScanline functions added
+98/05/04 GCC/i386 peek_24 was broken
+         Image streching fixes and imgtest prog
+98/05/03 Added getindexscanline() and putscanline() to frame
+           drivers and implemented generic versions.
+         Added _GrFrDrvGenericStretchBlt() using integer
+           arithmetic and the new scanline functions.
+         Fixed dynamic memory allocation bugs im image code.
+         GrImageStretch() now uses _GrFrDrvGenericStretchBlt()
+98/04/30 Pascal definition for GrGetLibrarySystem
+         Changed VBE2 memory mapped IO support so a buggy BIOS
+           won't break the code that easily
+98/04/28 Pattern filling uses predefined _GrPatternFiller instead
+           of local initialized var
+         S3 drivers banking functions enhanced
+         Unified DJGPP & Watcom VBE2 code
+98/04/27 Fixed problems in font loading code on big endian systems
+         Updated Watcom support
+         Again eliminated some empty macro args
+         Added GrGetLibrarySystem() returning GRX_VERSION for
+           portable runtime system check
+98/04/26 Fixed a bug introduced when changing pattern filled text
+           code
+98/04/22 (Pattern-) fill code unified & simplified.
+         Fixed a filling bug on big endian systems.
+         Makefiles updated (printing, zlib)
+         Configuration switches for 'noisy' compilers
+         Code cleanups and splitted some files
+98/04/21 Better cooperation between X11 and GRX in Pseudocolor mode
+         Added GrAllocEgaColors() for allocation standard EGA colors
+         Borland-C++ 4bpp blit was broken.
+         Relaxed some macro argument handlings for older BCC versions
+98/04/20 GRX should work on X11R5 systems now.
+         Added some new key definitions (shift left/right/up/down).
+         Changed inline -> INLINE for portability.
+         Removed empty arguments in clipping.h
+         Again fixed minor problems.
+98/04/15 Added X11 driver changes by Ulrich. Fixes the XGetImage problem.
+         Fixed several portability problems, mainly removed cast
+           to (unsigned) int of assigned variables.
+         Fixed some bugs Thomas found in the ALPHA code
+         Changed temp. memory allocation. New function ALLOC()
+           will use malloc if SMALL_STACK defined of alloca otherwise.
+         Watcom assembler code didn't work. Changed the #pragma
+           definitions so they don't use macros.
+         Fixed several minor bugs
+98/04/13 Fixed minor bugs in X11 driver.
+98/04/06 Checked GNU-Pascal support (basic functions only)
+98/04/05 Minor bugfixes and some GCC/386 speedups (copy & fill
+         loops aligned on 16byte boundary for optimal performance)
+         Changed the mouse timing information to real world time
+         instead of user process time (X11 & Linux)
+         GrMouseGetEventT will only return a valid ev.dtime if
+         any event occured
+98/04/02 Faster VGA8X line drawing
+         The far (eg. to video ram) peek and poke operations
+         won't get optimized away any more (solves 4bpp blit bug)
+98/03/31 Added 64 bit support (_h)
+         Fixed a bug in egavga1.c/drawvline
+98/03/30 Integrated Gary's Watcom changes.
+         Watcom port now defined LFB_BY_NEAR_POINTER
+         Added _n as near/normal opposite of _f in macro names to
+         avoid empty arguments in macro calls
+98/03/27 Borland port now uses RAM3x8 in 24bpp and 32bpp modes
+         Fast and robust colfill_... functions for Borland
+         Updated image support
+98/03/19 24bpp mode changed:
+         - Added repfill_24 and optimized peek_24/poke_24
+         - dropped access24.h (only color component access left)
+         - LFB24 and RAM24 now use the same code.
+         - Optimization for black/grey/white filling: done by repfill_b
+         Fixed some Linux/386 shared lib problems (can't use EBX with -fPIC)
+98/03/17 Major code rearrangement: (Watcom port may be broken :((
+         - A lot of frame driver now share code and use much
+           more optimized (!= generic) drawing functions
+         - Generic and asm fwdcopy/revcopy functions for blitting
+         - splitted header files to individual system files
+           (filling, copying, ...) for better maintaince and
+           easier optimization
+         - much work on BCC speed & stability
+         - Expect the Watcom port to be broken :((
+         Added Andris latest changes to the printing system
+98/02/25 Fixed X11 keyboard handling
+         minor changes for BSD compilation
+         updates to printing system
+98/02/24 Fixed a bug in GrDestroyPattern() when freeing the
+         bitmap planes (found&patched by Michal).
+         access24.h needed another fix for linux shared lib :(
+98/02/20 Added BMP file read && image display contributed
+         by Michal Stencl
+         Added JPEG context save by Vincenzo Morello
+98/02/19 Watcom makefiles, fixes to print system
+         Changed access24.h for shared library compilation
+         on Linux-i386 systems
+98/02/17 Watcom fixes and addons by Gary
+         Fixed svga4, lfb8 and vga8x blit functions
+         Added color selection by bpp to GrSetMode
+         Added patterned text output by Stencl Peter
+         Added printing support (thanks again Andris!)
+98/01/13 fast RAM to video blit to 16 color driver
+         fast hline for 16 color RAM driver
+98/01/08 Watcom support integrated. Code cleanup (eg. gcc
+         multi line strings cleaned for other compilers)
+         Added platform dependent lib-subdirs
+         Fixed some Linux/svgalib keyboard bugs
+98/01/01 Revised keyboard support as suggested by Andris and
+         Vincenzo. See new grxkeys.h file in include dir!
+97/12/21 Updated DJGPP (v1&v2) makefiles again.
+         Fixed some GCC warnings with additional -W... switches
+         (WARNOPTS in makedefs.gnu)
+         Fixed a BCC problem with the new 16 color blit function
+         Some local functions didn't have a static :(
+         Fixed some Linux && X11 keyboard problems (input got
+         desynced on heavy load / high keyrates)
+97/12/18 updated Pascal support
+         BCC allocates from heap instead of stack for big blocks
+         eliminated some unchecked malloc's
+         Splitted several code files for smarter linking
+         BCC arithmetic moved from assembler macro to optimized
+         function for more reliable results
+97/12/16 ported the flood fill function from BCC2GRX. See grx20.h
+         for ...FloodFill
+97/12/15 changed ulong, ushort, etc to GR_int32u, GR_int16u, etc
+         for better portability and to avoid warnings on Linux
+97/12/08 Integrated code (variable X11 window size & memory driver)
+         and patches (genellip & SaveContextToTiff & other) by Andris
+97/11/16 Updated Linux and X11 makefiles
+97/11/02 Makefiles for DJGPP v1 compilation
+         New (much faster) 16 color video to video blit routine
+97/11/01 Fixed some far pointers to RAM area in the video drivers
+97/10/29 Added ALPHA processor support
+97/10/01 Fixed DJGPP systag generation in SRC makefile
+97/09/30 Updated makefiles and makedefs
+         Added the addons directory and the SaveContextToTiff
+           function
+         Fixed some BCC specific warnings
+         S3 driver banking doesn't work for 16 color modes, at
+           least for my card. Uses VESA banking for < 256 colors
+         Fixed BCC __emit__() code in arith.h (thanks, Andris)
+------- grx v2.2 release

@@ -1,0 +1,403 @@
+#!/bin/sh
+
+# Configure script for GRX
+#
+# NOTE: This script is completely OPTIONAL. If you don't know what
+#       to do with it, just ignore it and follow the normal install
+#       instructions.
+#
+# Copyright (C) 2001-2002,2004 Frank Heckenbach <frank@pascal.gnu.de>
+#                              Peter Gerwinski <peter@gerwinski.de>
+#
+# Parts copied from some version of GCC's configure script,
+# Copyright (C) 1992, 93, 94, 95, 96 Free Software Foundation, Inc.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, version 2.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; see the file COPYING. If not, write to
+# the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
+
+silent=n
+
+default_prefix=/usr/local
+prefix=$default_prefix
+exec_prefix='${prefix}'
+bindir='${exec_prefix}/bin'
+datadir='${prefix}/share'
+libdir='${exec_prefix}/lib'
+includedir='${prefix}/include'
+infodir='${prefix}/info'
+
+# "Detect" default target (wrong for cross-compiling)
+if [ x"$COMSPEC" != x ]; then
+  default_target=DJGPP
+else
+  default_target=x11
+fi
+target=$default_target
+
+default_fontpath='${datadir}/grx/fonts'
+fontpath=""
+
+default_x11base=/usr/X11R6
+x11base="$default_x11base"
+
+default_x11lib='$(X11BASE)/lib'
+x11lib="$default_x11lib"
+
+default_unitspath='${exec_prefix}/units'
+unitspath="$default_unitspath"
+
+HAVE_LIBJPEG=n
+HAVE_LIBPNG=n
+NEED_ZLIB=n
+HAVE_LIBTIFF=n
+# if you are able to run this script you have (ba)sh
+# we suppose you have other needed unix tools as well
+HAVE_UNIX_TOOLS=y
+INCLUDE_BMP_CODE=y
+INCLUDE_PRINTING_CODE=y
+INCLUDE_GPC_SUPPORT=n
+INCLUDE_SHARED_SUPPORT=y
+INCLUDE_BGI_SUPPORT=y
+USE_DIRECT_MOUSE_DRIVER=n
+USE_SVGALIB_DRIVER=y
+USE_FRAMEBUFFER_DRIVER=y
+SET_SUIDROOT=y
+USE_INOUTP_FRAMEDRIVERS=y
+BUILD_X86_64=n
+lsocket=""
+subst_EP=""
+
+ac_prev=
+for ac_option do
+
+  # If the previous option needs an argument, assign it.
+  if test -n "$ac_prev"; then
+    eval "$ac_prev=\$ac_option"
+    ac_prev=
+    continue
+  fi
+
+  case "$ac_option" in
+  -*=*) ac_optarg=`echo "$ac_option" | sed 's/[-_a-zA-Z0-9]*=//'`;;
+  *) ac_optarg=;;
+  esac
+
+  case "$ac_option" in
+
+  -s | --silent | --silen | --sile | --sil | --si | --s)
+    silent=y;;
+
+  -prefix | --prefix | --prefi | --pref | --pre | --pr | --p)
+    ac_prev=prefix;;
+  -prefix=* | --prefix=* | --prefi=* | --pref=* | --pre=* | --pr=* | --p=*)
+    prefix="$ac_optarg";;
+
+  -exec-prefix | --exec_prefix | --exec-prefix | --exec-prefi \
+  | --exec-pref | --exec-pre | --exec-pr | --exec-p | --exec- \
+  | --exec | --exe | --ex)
+    ac_prev=exec_prefix ;;
+  -exec-prefix=* | --exec_prefix=* | --exec-prefix=* | --exec-prefi=* \
+  | --exec-pref=* | --exec-pre=* | --exec-pr=* | --exec-p=* | --exec-=* \
+  | --exec=* | --exe=* | --ex=*)
+    exec_prefix=$ac_optarg ;;
+
+  -bindir | --bindir | --bindi | --bind | --bin | --bi)
+    ac_prev=bindir ;;
+  -bindir=* | --bindir=* | --bindi=* | --bind=* | --bin=* | --bi=*)
+    bindir=$ac_optarg ;;
+
+  -libdir | --libdir | --libdi | --libd)
+    ac_prev=libdir ;;
+  -libdir=* | --libdir=* | --libdi=* | --libd=*)
+    libdir=$ac_optarg ;;
+
+  -datadir | --datadir | --datadi | --datad | --data | --dat | --da)
+    ac_prev=datadir ;;
+  -datadir=* | --datadir=* | --datadi=* | --datad=* | --data=* | --dat=* \
+  | --da=*)
+    datadir=$ac_optarg ;;
+
+  -includedir | --includedir | --includedi | --included | --include \
+  | --includ | --inclu | --incl | --inc)
+    ac_prev=includedir ;;
+  -includedir=* | --includedir=* | --includedi=* | --included=* | --include=* \
+  | --includ=* | --inclu=* | --incl=* | --inc=*)
+    includedir=$ac_optarg ;;
+
+  -infodir | --infodir | --infodi | --infod | --info | --inf)
+    ac_prev=infodir ;;
+  -infodir=* | --infodir=* | --infodi=* | --infod=* | --info=* | --inf=*)
+    infodir=$ac_optarg ;;
+
+  -target | --target | --targe | --targ | --tar | --ta | --t)
+    ac_prev=target;;
+  -target=* | --target=* | --targe=* | --targ=* | --tar=* | --ta=* | --t=*)
+    target="$ac_optarg";;
+
+  # Don't complain about unknown enable, disable, with and without options
+  -enable-* | --enable-* | -en-* | --en-*)
+    case "`echo "$ac_option" | sed -e 's/^-*enable-//;s/^-*en-//'`" in
+      x86_64)          BUILD_X86_64=y;;
+      jpeg)            HAVE_LIBJPEG=y;;
+      png)             HAVE_LIBPNG=y;;
+      z | zlib)        NEED_ZLIB=y;;
+      png-z)           HAVE_LIBPNG=y; NEED_ZLIB=y;;
+      tiff)            HAVE_LIBTIFF=y;;
+      bmp)             INCLUDE_BMP_CODE=y;;
+      print)           INCLUDE_PRINTING_CODE=y;;
+      pascal | gpc)    INCLUDE_GPC_SUPPORT=y;;
+      shared)          INCLUDE_SHARED_SUPPORT=y;;
+      bgi)             INCLUDE_BGI_SUPPORT=y;;
+      direct-mouse)    USE_DIRECT_MOUSE_DRIVER=y;;
+      svgalib)         USE_SVGALIB_DRIVER=y;;
+      framebuffer)     USE_FRAMEBUFFER_DRIVER=y;;
+      suidroot)        SET_SUIDROOT=y;;
+      io-framedrivers) USE_INOUTP_FRAMEDRIVERS=y;;
+      lsocket)         lsocket=" -lsocket";;
+    esac;;
+  -disable-* | --disable-* | -di-* | --di-*)
+    case "`echo "$ac_option" | sed -e 's/^-*disable-//;s/^-*di-//'`" in
+      x86_64)          BUILD_X86_64=n;;
+      jpeg)            HAVE_LIBJPEG=n;;
+      png)             HAVE_LIBPNG=n;;
+      z | zlib)        NEED_ZLIB=n;;
+      png-z)           HAVE_LIBPNG=n; NEED_ZLIB=n;;
+      tiff)            HAVE_LIBTIFF=n;;
+      bmp)             INCLUDE_BMP_CODE=n;;
+      print)           INCLUDE_PRINTING_CODE=n;;
+      pascal | gpc)    INCLUDE_GPC_SUPPORT=n;;
+      shared)          INCLUDE_SHARED_SUPPORT=n;;
+      bgi)             INCLUDE_BGI_SUPPORT=n;;
+      direct-mouse)    USE_DIRECT_MOUSE_DRIVER=n;;
+      svgalib)         USE_SVGALIB_DRIVER=n;;
+      framebuffer)     USE_FRAMEBUFFER_DRIVER=n;;
+      suidroot)        SET_SUIDROOT=n;;
+      io-framedrivers) USE_INOUTP_FRAMEDRIVERS=n;;
+      lsocket)         lsocket="";;
+    esac;;
+  -with-* | --with-*)
+    case "`echo "$ac_option" | sed -e 's/^-*with-//'`" in
+      fontpath=*)  fontpath="$ac_optarg";;
+      fontpath)    fontpath="$default_fontpath";;
+      x11-base=*)  x11base="$ac_optarg";;
+      x11-base)    echo "$0: \`--with-x11-base' requires an argument" >&2; exit 1;;
+      x11-lib=*)   x11lib="$ac_optarg";;
+      x11-base)    echo "$0: \`--with-x11-lib' requires an argument" >&2; exit 1;;
+      unitspath=*)  unitspath="$ac_optarg";;
+      unitspath)    echo "$0: \`--with-unitspath' requires an argument" >&2; exit 1;;
+    esac;;
+  -without-* | --without-*)
+    case "`echo "$ac_option" | sed -e 's/^-*without-//'`" in
+      fontpath)    fontpath="";;
+    esac;;
+  -h | -help | --help | --hel | --he)
+    cat << EOF
+Usage: $0 [options]
+Options: [defaults in brackets after descriptions]
+  --help                    print this message and exit
+  --version                 print version information and exit
+  --silent                  silent operation
+  --prefix=PREFIX           install architecture-independent files in PREFIX
+                            [$default_prefix]
+  --exec-prefix=EPREFIX     install architecture-dependent files in EPREFIX
+                            [PREFIX]
+  --bindir=DIR              user executables [EPREFIX/bin]
+  --datadir=DIR             read-only architecture-independent data
+                            [PREFIX/share]
+  --libdir=DIR              object code libraries [EPREFIX/lib]
+  --includedir=DIR          C header files [PREFIX/include]
+  --infodir=DIR             info documentation [PREFIX/info]
+  --target=TARGET           configure for TARGET [$default_target]
+                            possible values: djgpp,x11,console,w32,sdlx,sdlw
+                            or GCC-style ("i386-mingw32") for cross-compiling
+  --enable-x86_64           build for x86_64 architecture [no]
+  --enable-jpeg             include JPEG support [no]
+  --enable-png              include PNG support [no]
+  --enable-zlib             use zlib [no]
+  --enable-png-z            include PNG support and use zlib [no]
+  --enable-tiff             include TIFF support [no]
+  --enable-bmp              include BMP support [yes]
+  --enable-print            include printing code [yes]
+  --enable-pascal or        include Pascal support [no]
+    --enable-gpc
+  --enable-shared           build shared libraries [yes]
+  --enable-bgi              include BGI support [yes]
+  --enable-lsocket          link lsocket [no]
+  --disable-FOO             opposite of --enable-FOO
+  --with-fontpath=PATH      set GRX font path to PATH
+  --with-fontpath           set GRX font path to $default_fontpath
+  --without-fontpath        use no GRX font path [default]
+  --with-x11-base=DIR       use DIR as X11 base directory [$default_x11base]
+  --with-x11-lib=DIR        use DIR as X11 lib directory [$default_x11lib]
+  --with-unitspath=PATH     set GPC units path to PATH [$default_unitspath]
+The following options apply to the Linux console (not X11) target only:
+  --enable-direct-mouse     use PS/2 instead of svgalib mouse driver [no]
+  --enable-svgalib          use svgalib driver [yes]
+  --enable-framebuffer      use framebuffer driver [yes]
+  --enable-suidroot         create suid root executables (required with svgalib
+                            1.4.x) [yes]
+  --enable-io-framedrivers  use frame drivers that require suid root
+                            executables under newer versions of svgalib [yes]
+Some options can be abbreviated, e.g. \`--p' for \`--prefix',
+\`--en-FOO' for \`--enable-FOO' and \`--di-FOO' for \`--disable-FOO'.
+NOTE: This script is completely OPTIONAL. If you don't know what to do with it,
+      just ignore it and follow the normal install instructions.
+EOF
+    exit 0;;
+  -v | -version | --version | --versio | --versi | --vers)
+    echo "Optional GRX configure script"
+    exit 0;;
+  *) { echo "$0: error: $ac_option: invalid option; use --help to show usage" 1>&2; exit 1; }
+    ;;
+  esac
+done
+
+case "`echo "$target" | tr A-Z a-z`" in
+  *djgpp*)        cfgsection=GRXVDJ2; target_makefile=makefile.dj2;;
+  x | x11)        cfgsection=GRXVX11; target_makefile=makefile.x11;;
+  console)        cfgsection=GRXVLNX; target_makefile=makefile.lnx;;
+  *w32 | *mingw*) cfgsection=GRXVW32; target_makefile=makefile.w32;;
+  sdlx)           cfgsection=GRXVX11; target_makefile=makefile.sdl; subst_EP="/^EP=/s/=.*/=x/";;
+  sdlw)           cfgsection=GRXVW32; target_makefile=makefile.sdl; subst_EP="/^EP=/s/=.*/=/";;
+  *)              echo "$0: invalid target" >&2; exit 1;;
+esac
+
+case "$target" in
+  *[A-Za-z0-9]-[A-Za-z0-9]*|mingw32)
+     CROSS_PLATFORM="`echo "$target" | tr A-Z a-z`-"
+     exec_prefix="$prefix/$target";;
+  *)
+     CROSS_PLATFORM=""
+     exec_prefix='${prefix}';;
+esac
+
+if [ $USE_SVGALIB_DRIVER != y ] && [ $USE_FRAMEBUFFER_DRIVER != y ]; then
+  echo "$0: either \`--enable-svgalib' or \`--enable-framebuffer' must be set" >&2
+  exit 1
+fi
+
+if [ $USE_SVGALIB_DRIVER != y ] && [ $USE_DIRECT_MOUSE_DRIVER != y ]; then
+  echo "$0: if \`--disable-svgalib' is unset then \`--enable-direct-mouse' must be set" >&2
+  exit 1
+fi
+
+if [ -r Makefile ]; then
+  if cmp Makefile makefile.lnx > /dev/null 2>&1 ||
+     cmp Makefile makefile.dj2 > /dev/null 2>&1 ||
+     cmp Makefile makefile.w32 > /dev/null 2>&1 ||
+     cmp Makefile makefile.x11 > /dev/null 2>&1 ||
+     cmp Makefile makefile.sdl > /dev/null 2>&1; then
+    rm -f Makefile
+  else
+    echo "$0: Makefile exists already. Not overwriting!" >&2
+    exit 1
+  fi
+fi
+
+if [ ! -r "$target_makefile" ]; then
+  echo "$0: $target_makefile not found (please run in source directory)" >&2
+  exit 1
+fi
+
+# On DJGPP, `ln -s' creates `makefile.exe', so copy in this case
+{ ln -s "$target_makefile" Makefile && [ -r Makefile ]; } ||
+  { rm -f makefile.exe; cp "$target_makefile" Makefile; }
+[ $silent = y ] || echo "Created Makefile"
+
+cfgfile="makedefs.grx"
+cfgorigfile="makedefs.orig"
+if [ ! -r "$cfgfile" ]; then
+  echo "$0: $cfgfile not found" >&2
+  exit 1											    
+fi
+
+if [ ! -r "$cfgorigfile" ]; then
+  cp "$cfgfile" "$cfgorigfile"
+fi
+
+if [ x"$fontpath" = x ]; then
+  subst_fontpath="/^#*GRX_DEFAULT_FONT_PATH=/s/^#*/#/"
+else
+  subst_fontpath="/^#*GRX_DEFAULT_FONT_PATH=/{s/^#*//;s|=.*|=$fontpath|;}"
+fi
+
+if [ "$cfgsection" = GRXVLNX ] || [ "$cfgsection" = GRXVX11 ]; then
+  extra_unix="/^ifdef GRXVUNX\$/,/^endif\$/{/^prefix=/s|=.*|=$prefix|;$subst_fontpath;}"
+else
+  extra_unix=
+fi
+
+if sed -e "/^BUILD_X86_64=/s/=.*/=$BUILD_X86_64/;
+           $subst_EP;
+           /^HAVE_LIBTIFF=/s/=.*/=$HAVE_LIBTIFF/;
+           /^HAVE_LIBJPEG=/s/=.*/=$HAVE_LIBJPEG/;
+           /^HAVE_LIBPNG=/s/=.*/=$HAVE_LIBPNG/;
+           /^HAVE_UNIX_TOOLS=/s/=.*/=$HAVE_UNIX_TOOLS/;
+           /^NEED_ZLIB=/s/=.*/=$NEED_ZLIB/;
+           /^INCLUDE_PRINTING_CODE=/s/=.*/=$INCLUDE_PRINTING_CODE/;
+           /^INCLUDE_BMP_CODE=/s/=.*/=$INCLUDE_BMP_CODE/;
+           /^INCLUDE_GPC_SUPPORT=/s/=.*/=$INCLUDE_GPC_SUPPORT/;
+           /^INCLUDE_SHARED_SUPPORT=/s/=.*/=$INCLUDE_SHARED_SUPPORT/;
+           /^INCLUDE_BGI_SUPPORT=/s/=.*/=$INCLUDE_BGI_SUPPORT/;
+           /^CROSS_PLATFORM=/s/=.*/=$CROSS_PLATFORM/;
+           /^USE_DIRECT_MOUSE_DRIVER=/s/=.*/=$USE_DIRECT_MOUSE_DRIVER/;
+           /^USE_SVGALIB_DRIVER=/s/=.*/=$USE_SVGALIB_DRIVER/;
+           /^USE_FRAMEBUFFER_DRIVER=/s/=.*/=$USE_FRAMEBUFFER_DRIVER/;
+           /^SET_SUIDROOT=/s/=.*/=$SET_SUIDROOT/;
+           /^USE_INOUTP_FRAMEDRIVERS=/s/=.*/=$USE_INOUTP_FRAMEDRIVERS/;
+           /^exec_prefix=/s|=.*|=$exec_prefix|;
+           /^bindir=/s|=.*|=$bindir|;
+           /^libdir=/s|=.*|=$libdir|;
+           /^datadir=/s|=.*|=$datadir|;
+           /^includedir=/s|=.*|=$includedir|;
+           /^unitsdir=/s|=.*|=$unitspath|;
+           /^infodir=/s|=.*|=$infodir|;
+           $extra_unix;
+           /^ifdef $cfgsection\$/,/^endif\$/{
+             /^prefix=/s|=.*|=$prefix|;
+             $subst_fontpath;
+             /^X11BASE=/s|=.*|=$x11base|;
+             /^X11LIB=/s|=.*|=$x11lib|;
+             /^X11LIBS=/s/\$/$lsocket/;
+           }" "$cfgorigfile" > "$cfgfile"; then
+  [ $silent = y ] || echo "Modified $cfgfile"
+else
+  cp -f "$cfgorigfile" "$cfgfile"
+  exit 1
+fi
+
+if [ x"$INCLUDE_GPC_SUPPORT" = x"y" ]; then
+  for file in pascal/grx.pas pascal/bgi/graph.pas; do
+    if [ ! -r "$file" ]; then
+      echo "$0: $file not found" >&2
+      exit 1
+    fi
+    if sed -e "s/{.*\\\$define LINUX_CONSOLE}/{`if [ x"$target" != x"console" ]; then echo .; fi`\$define LINUX_CONSOLE}/;
+               s/{.*\\\$define SVGALIB}/{`if [ x"$target" != x"console" -o $USE_SVGALIB_DRIVER != y ]; then echo .; fi`\$define SVGALIB}/;
+               s/{.*\\\$define __SDL__}/{`if [ x"$target" != x"sdlx" -a x"$target" != x"sdlw" ]; then echo .; fi`\$define __SDL__}/;
+               s/{.*\\\$L socket}/{`if [ x"$lsocket" = x ]; then echo .; fi`\$L socket}/
+              " "$file" > "$file.new" &&
+       sed -e "s/{.*\\\$L tiff}/{`if [ $HAVE_LIBTIFF != y ]; then echo .; fi`\$L tiff}/;
+               s/{.*\\\$L jpeg}/{`if [ $HAVE_LIBJPEG != y ]; then echo .; fi`\$L jpeg}/;
+               s/{.*\\\$L png}/{`if [ $HAVE_LIBPNG != y ]; then echo .; fi`\$L png}/;
+               s/{.*\\\$L z}/{`if [ $NEED_ZLIB != y ]; then echo .; fi`\$L z}/;
+              " "$file.new" > "$file" &&
+       rm -f "$file.new" ; then
+      [ $silent = y ] || echo "Modified $file"
+    else
+      rm -f "$file.new"
+      exit 1
+    fi
+  done
+fi

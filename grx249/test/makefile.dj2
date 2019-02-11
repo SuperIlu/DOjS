@@ -1,0 +1,87 @@
+#
+# GRX test programs makefile for DJGPP v2.
+# Uses GNU make.
+#
+.SUFFIXES: .exe
+.PHONY: clean install uninstall
+
+GRXVDJ2=y
+
+include ../makedefs.grx
+
+INCDIR=  -I../include
+GRX20 = ../lib/$(GRX_LIB_SUBDIR)/libgrx20.a
+
+ADDON_LIBS=-lpc
+ifeq ($(HAVE_LIBTIFF),y)
+  ADDON_LIBS += -ltiff
+endif
+
+ifeq ($(HAVE_LIBJPEG),y)
+  ADDON_LIBS += -ljpeg
+endif
+
+ifeq ($(HAVE_LIBPNG),y)
+  ADDON_LIBS += -lpng
+endif
+
+ifeq ($(NEED_ZLIB),y)
+  ADDON_LIBS += -lz
+endif
+
+LIBS= $(GRX20) $(ADDON_LIBS)
+
+PROGS=  arctest.exe     \
+	bb1test.exe     \
+	blittest.exe    \
+	circtest.exe    \
+	cliptest.exe    \
+	colorops.exe    \
+	curstest.exe    \
+	fontdemo.exe    \
+	fonttest.exe    \
+	imgtest.exe     \
+	jpgtest.exe     \
+	keys.exe        \
+	life.exe        \
+	linetest.exe    \
+	memtest.exe     \
+	mousetst.exe    \
+	pcirctst.exe    \
+	pnmtest.exe     \
+	pngtest.exe     \
+	polytest.exe    \
+	rgbtest.exe     \
+	sbctest.exe     \
+	scroltst.exe    \
+	speedtst.exe    \
+	textpatt.exe    \
+	winclip.exe     \
+	wintest.exe
+
+all: $(PROGS) demogrx.exe
+
+demogrx.exe: demogrx.o gfaz.o $(GRX20)
+	$(CC) $(LDOPT) -o demogrx.exe demogrx.o gfaz.o $(LIBS) -lm
+
+$(PROGS): %.exe : %.o $(GRX20)
+	$(CC) $(LDOPT) -o $*.exe $*.o $(LIBS) -lm
+
+.c.o:
+	$(CC) -c $(CCOPT) $(INCDIR) $*.c -o $*.o
+
+.c.s:
+	$(CC) -S $(CCOPT) $(INCDIR) $*.c
+
+clean:
+ifeq ($(HAVE_UNIX_TOOLS),y)
+	rm -f *.o *.exe
+else
+	if exist *.o del *.o
+	if exist *.exe del *.exe
+endif
+
+depend.new:
+	$(CC) -MM $(CCOPT) $(INCDIR) $(PROGS:.exe=.c) >depend.new
+
+include depend.gnu

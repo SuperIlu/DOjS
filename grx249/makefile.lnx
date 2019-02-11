@@ -1,0 +1,77 @@
+#
+# GRX makefile for LINUX/console version
+#
+.PHONY : libs test bgitest clean cleanall install uninstall setsuid \
+	 install-bin uninstall-bin install-fonts uninstall-fonts \
+	 install-info uninstall-info
+
+GRXVLNX=y
+
+include makedefs.grx
+
+all: libs test bgitest
+
+libs:
+	$(MAKE) -C src -f makefile.lnx
+
+test: libs
+	$(MAKE) -C test   -f makefile.lnx
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	$(MAKE) -C pascal -f makefile.lnx
+endif
+
+bgitest: libs
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C test/bgi   -f makefile.lnx
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	$(MAKE) -C pascal/bgi -f makefile.lnx
+endif
+endif
+
+clean:
+	$(MAKE) -C test       -f makefile.lnx clean
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C test/bgi   -f makefile.lnx clean
+endif
+	$(MAKE) -C src        -f makefile.lnx clean
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	$(MAKE) -C pascal     -f makefile.lnx clean
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C pascal/bgi -f makefile.lnx clean
+endif
+endif
+
+cleanall: clean
+	$(MAKE) -C src -f makefile.lnx cleanall
+
+install:
+	$(MAKE) -C src -f makefile.lnx install
+ 
+uninstall:
+	$(MAKE) -C src -f makefile.lnx uninstall 
+
+install-info:
+	$(MAKE) -C src -f makefile.lnx install-info
+ 
+uninstall-info:
+	$(MAKE) -C src -f makefile.lnx uninstall-info
+
+install-bin:
+	$(MAKE) -C src -f makefile.lnx install-bin
+
+uninstall-bin:
+	$(MAKE) -C src -f makefile.lnx uninstall-bin
+
+install-fonts:
+	$(MAKE) -C src -f makefile.lnx install-fonts
+
+uninstall-fonts:
+	$(MAKE) -C src -f makefile.lnx uninstall-fonts
+
+setsuid:
+	$(MAKE) -C src -f makefile.lnx setsuid
+	$(MAKE) -C test -f makefile.lnx setsuid
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C test/bgi -f makefile.lnx setsuid
+endif
+

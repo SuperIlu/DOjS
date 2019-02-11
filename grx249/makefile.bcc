@@ -1,0 +1,35 @@
+#
+# GRX 2.0 makefile for Borland C distribution version
+#
+!include "makedefs.bcc"
+
+all:    libs test bgitest
+
+libs:
+	cd src
+	$(MAKE)
+	cd ..
+
+test:   libs
+	cd test
+	$(MAKE)
+	cd ..
+
+bgitest:   libs
+	cd test\bgi
+	$(MAKE)
+	cd ..\..
+
+clean:
+	cd src
+	$(MAKE) clean
+	cd ..\test
+	$(MAKE) clean
+	cd bgi
+	$(MAKE) clean
+	cd ..\..
+
+cleanall: clean
+	cd src
+	$(MAKE) cleanall
+	cd ..

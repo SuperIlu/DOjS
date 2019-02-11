@@ -1,0 +1,336 @@
+This is from VGADOC 4b
+
+I changed the 104F0A description hsc@techfak.uni-kiel.de
+********************************************************
+
+The VESA BIOS interface is a software interface for detection capabilities,
+setting modes and setting the bank register.
+
+VESA 1.0   VESA Standard #VS891001
+VESA 1.1   VESA Standard #VS900602
+VESA 1.2   VESA Standard #VS911022
+VESA 2.0   VESA Standard
+
+----------104F00-----------------------------
+INT 10 - VESA SuperVGA BIOS - GET SuperVGA INFORMATION
+	AX = 4F00h
+	ES:DI -> 256-byte buffer for SuperVGA information (see below)
+Return: AL = 4Fh function supported
+	AH = status
+	     00h successful
+	     01h failed
+	     02h (VBE 2) function not supported by current hardware config
+	     03h (VBE 2) function invalid in current mode
+
+Format of SuperVGA information:
+Offset  Size      Description
+ 00h   4 BYTEs    Signature ('VESA'). For VBE 2.0 this field must be set to
+		  "VBE2" before the call to fill in the version 2.0 fields
+ 04h    WORD      VESA version number
+ 06h    DWORD     pointer to OEM name
+ 0Ah   4 BYTEs    capabilities.
+		  Bit  0  Set if the DAC can switch width, clear if it is
+			  fixed 6bits per primary color
+		       1  (VBE2) non-VGA controller
+		       2  (VBE2) Programmed DAC with blank bit
+ 0Eh    DWORD     pointer to list of supported VESA and OEM video modes
+		  Terminated with 0FFFFh.
+ 12h    WORD      Video memory in 64k blocks
+--- VBE v2.0 ---
+ 14h    WORD      OEM software version
+ 16h    DWORD     Pointer to vendor name
+ 1Ah    DWORD     Pointer to product name
+ 1Eh    DWORD     Pointer to product revision string
+100h  256 BYTEs   OEM scratchpad
+The buffer is defined as 256bytes for version 1.0 & 1.2, 262 bytes for version
+ 1.1 and 512 bytes for version 2.0. Note: Some VESA drivers have been known to
+ write beoynd the end of the official buffer.
+----------104F01-----------------------------
+INT 10 - VESA SuperVGA BIOS - GET SuperVGA MODE INFORMATION
+	AX = 4F01h
+	CX = SuperVGA video mode
+	ES:DI -> 256-byte buffer mode information (see below)
+Return: AL = 4Fh function supported
+	AH = status
+	     00h successful
+	     01h failed
+
+Format of mode information:
+Offset Size     Description
+ 00h   WORD     mode attributes
+		bit 0: mode supported if set
+		    1: optional information available if set
+		    2: BIOS output supported if set
+		    3: set if color, clear if monochrome
+		    4: set if graphics mode, clear if text mode
+		    5: (VBE2) non-VGA mode
+		    6: (VBE2) No bank swiotching supported
+		    7: (VBE2) Linear framebuffer mode supported
+ 02h   BYTE     window A attributes
+		bit 0: exists if set
+		    1: readable if set
+		    2: writable if set
+		bits 3-7 reserved
+ 03h   BYTE     window B attributes (as for window A)
+ 04h   WORD     window granularity in K
+ 06h   WORD     window size in K
+ 08h   WORD     start segment of window A
+ 0Ah   WORD     start segment of window B
+ 0Ch   DWORD -> FAR window positioning function (equivalent to AX=4F05h)
+ 10h   WORD     bytes per scan line
+---remainder is optional for VESA modes, needed for OEM modes---
+ 12h   WORD     width in pixels
+ 14h   WORD     height in pixels
+ 16h   BYTE     width of character cell in pixels
+ 17h   BYTE     height of character cell in pixels
+ 18h   BYTE     number of memory planes
+ 19h   BYTE     number of bits per pixel
+ 1Ah   BYTE     number of banks
+ 1Bh   BYTE     memory model type
+		   0 Text
+		   1 CGA graphics
+		   2 Hercules Graphics
+		   3 EGA 16 color
+		   4 Packed pixels
+		   5 Non chain 4 256 color modes
+		   6 Direct 15/16/24 bit
+		   7 YUV (luminance-chrominance, alos called YIQ)
+	       8-0Fh Reserved for VESA
+	    10h-0FFh Reserved for OEM
+ 1Ch   BYTE     size of bank in K
+ 1Dh   BYTE     number of image pages
+ 1Eh   BYTE     reserved(1)
+------VBE v1.2+ --------------------------
+ 1Fh   BYTE     Red mask size
+ 20h   BYTE     Red mask position
+ 21h   BYTE     Green mask size
+ 22h   BYTE     Green mask position
+ 23h   BYTE     Blue mask size
+ 24h   BYTE     Blue mask position
+ 25h   BYTE     Reserved mask size
+ 26h   BYTE     Reserved mask position
+ 27h   BYTE     Direct Screen mode info
+		Bit  0  If set the color ramp is programmable, if clear fixed
+		     1  If set the reserved field (as defined by Bytes 25-26h)
+			can be used by the application, if clear the field is
+			truly reserved.
+--- VBE v2.0 ---
+ 28h   DWORD    Physical address of linear video buffer
+ 2Ch   DWORD    Pointer to start of offscreen memory
+ 30h   WORD     Offscreen memory in Kbytes
+The buffer is defined as 256bytes
+----------104F02-----------------------------
+INT 10 - VESA SuperVGA BIOS - SET SuperVGA VIDEO MODE
+	AX = 4F02h
+	BX = mode
+	     bit 15 set means don't clear video memory
+	     bit 14 (VBE2) set to enable linear framebuffer mode
+Return: AL = 4Fh function supported
+	AH = status
+	     00h successful
+	     01h failed
+
+Values for VESA video mode:
+  00h-FFh OEM video modes (see AH=00h)
+ 100h 640x400x256
+ 101h 640x480x256
+ 102h 800x600x16
+ 103h 800x600x256
+ 104h 1024x768x16
+ 105h 1024x768x256
+ 106h 1280x1024x16
+ 107h 1280x1024x256
+ 108h 80x60 text
+ 109h 132x25 text
+ 10Ah 132x43 text
+ 10Bh 132x50 text
+ 10Ch 132x60 text
+ ------------ VBE v1.2+ ------------------
+ 10Dh 320x200 32k
+ 10Eh 320x200 64k
+ 10Fh 320x200 16M
+ 110h 640x480 32k
+ 111h 640x480 64k
+ 112h 640x480 16M
+ 113h 800x600 32k
+ 114h 800x600 64k
+ 115h 800x600 16M
+ 116h 1024x768 32k
+ 117h 1024x768 64k
+ 118h 1024x768 16M
+ 119h 1280x1024 32k
+ 11Ah 1280x1024 64k
+ 11Bh 1280x1024 16M
+ ------------ VBE 2.0 --------------------
+81FFh Special full-memory access mode
+      Mode 81FFh preserves the contents of video memory and gives access to
+      the entire video memory. It is recommanded that mode 81FFh should be a
+      packed pixel mode.
+
+----------104F03-----------------------------
+INT 10 - VESA SuperVGA BIOS - GET CURRENT VIDEO MODE
+	AX = 4F03h
+Return: AL = 4Fh function supported
+	AH = status
+	     00h successful
+	     01h failed
+	BX = video mode (see AX=4F02h)
+----------104F04-----------------------------
+INT 10 - VESA SuperVGA BIOS - SAVE/RESTORE SuperVGA VIDEO STATE
+	AX = 4F04h
+	DL = subfunction
+	     00h get state buffer size
+		 Return: BX = number of 64-byte blocks needed
+	     01h save video states
+		 ES:BX -> buffer
+	     02h restore video states
+		 ES:BX -> buffer
+	CX = flags for states to save/restore
+	      bit 0: video hardware state
+	      bit 1: video BIOS data state
+	      bit 2: video DAC state
+	      bit 3: SuperVGA state
+Return: AL = 4Fh function supported
+	AH = status
+	     00h successful
+	     01h failed
+----------104F05-----------------------------
+INT 10 - VESA SuperVGA BIOS - CPU VIDEO MEMORY CONTROL
+	AX = 4F05h
+	BH = subfunction
+	     00h select video memory window
+		 DX = window address in video memory (in granularity units)
+	     01h get video memory window
+		 Return: DX = window address in video memory (in gran. units)
+	BL = window number
+	     00h window A
+	     01h window B
+Return: AL = 4Fh function supported
+	AH = status
+	     00h successful
+	     01h failed
+----------104F06-----------------------------
+INT 10 - VESA SuperVGA BIOS 1.1+ - GET/SET LOGICAL SCAN LINE LENGTH
+	AX = 4F06h
+	BL = function
+	     00h set scan line length
+		 CX = desired width in pixels
+	     01h get scan line length
+	     02h (VBE 2) set scan line length
+		 CX = desired width in bytes
+	     03h (VBE 2) get maximum scan line length
+Return: AL = 4Fh if function supported
+	AH = status
+	     00h successful
+	     01h failed
+	BX = bytes per scan line
+	     Maximum bytes per scan line for function 03h
+	CX = number of pixels per scan line
+	     Maximum pixels per scan line for function 03h
+	DX = maximum number of scan lines
+	     Unchaqnged for function 03h
+Notes: if the desired width is not achievable, the next larger width will be
+       set. The scan line may be wider than the visible area of the screen
+       this function is valid in text modes, provided that values are
+       multiplied by the character cell width/height
+----------104F07BH00-------------------------
+INT 10 - VESA SuperVGA BIOS 1.1+ - GET/SET DISPLAY START
+	AX = 4F07h
+	BH = 00h (reserved)
+	BL = 00h (or 80h) set display start
+		 CX = leftmost displayed pixel in scan line
+		 DX = first displayed scan line
+	   = 01h get display start
+		 Return: BH = 00h
+			 CX = leftmost displayed pixel in scan line
+			 DX = first displayed scan line
+Return: AL = 4Fh if function supported
+	AH = status
+	     00h successful
+	     01h failed
+Note: this function is valid in text modes, provided that values are
+      multiplied by the character cell width/height
+----------104F08-----------------------------
+INT 10 - VESA SuperVGA BIOS v1.2+ - GET/SET DAC PALETTE CONTROL
+	AX = 4F08h
+	BL = function
+	     00h  Set DAC palette width
+		  BH = desired number of bits per primary color.
+	     01h  Get DAC palette width
+Return: AL = 4Fh if function supported
+	AH = status
+	BH = Current number of bits per primary color (6 = Standard VGA)
+----------104F09-----------------------------
+INT 10 - VESA SuperVGA BIOS v2.0+ - GET/SET PALETTE ENTRIES
+	AX = 4F09h
+	BL = function
+	    00h set palette
+	    01h get palette
+	    02h set secondary palette data
+	    03h get secondary palette data
+	    80h set palette during vertical retrace
+	CX = number of entries to change
+	DX = starting palette index
+	ES:DI -> palette buffer (array of 4 bytes per entry)
+		 Offset  Size   Description
+		   00h   BYTE   Red byte
+		   01h   BYTE   Green byte
+		   02h   BYTE   Blue byte
+		   03h   BYTE   Alpha or alignment byte
+Return: AL = 4Fh if function supported
+	AH = status
+	    00h successful
+	    01h failed
+----------104F0A-----------------------------
+INT 10 - VESA SuperVGA BIOS v2.0+ - GET PROTECTED-MODE CODE
+	AX = 4F0Ah
+	BX = subfunction code
+	     0000h  Return protected mode table
+
+Return: AL = 4Fh if function supported
+	AH = status
+	    00h successful
+		BX=0000h
+		  CX = total number of bytes in table
+		  ES:DI -> base address of PM info table :
+			+00 word off. to PM set window func, see 104F05
+			+02 word off. to PM set display start func, see 104F07
+			+04 word off. to PM set primary palette func, see 104F09
+			+06 word off. to PM resource table (word,word,...):
+				<required port addr>,...,<0xFFFF>,
+				<mem seg>,<no of bytes>,...,<0xFFFF>
+	    01h failed
+----------104F10-----------------------------
+INT 10 - VESA DPMS - Display Power Management Extensions
+	AX = 4F10h
+	BL = 00h  Report VBE/PM Capabilities
+		  ES:DI = 0000h:0000h
+		  Return: BH = Power saving state signals supported:
+			       Bit 0  STAND BY supported if set
+				   1  SUSPEND supported if set
+				   2  OFF supported if set
+				   3  REDUCED On supported if set
+				      (Not supported in DPMS 1.0)
+			  BL = VBE/PM Version number:
+			       Bit 0-3  Minor version
+				   4-7  Major version
+	     01h  Set Display Power State
+		  BH = Requested Power State:
+		       00h  ON
+		       01h  STAND BY
+		       02h  SUSPEND
+		       04h  OFF
+		       08h  REDUCED ON (for flat screens)
+	     02h  Get Display Power State
+		  Return: BH = Display Power State
+			       00h  ON
+			       01h  STAND BY
+			       02h  SUSPEND
+			       04h  OFF
+			       08h  REDUCED ON (for flat screens)
+Return: AL = 4Fh if function supported
+	AH = status
+----------104FFF-----------------------------
+INT 10 - VESA SuperVGA BIOS - Everex - TURN VESA ON/OFF
+	AX = 4FFFh
+	DL = new state (00h off, 01h on)

@@ -1,0 +1,61 @@
+#
+# GRX test programs makefile for LINUX/X11. Uses GNU make.
+# Uses GNU make.
+#
+.SUFFIXES: .exe
+.PHONY: clean
+
+GRXVX11=y
+
+include ../makedefs.grx
+
+# The following line is useful only in this makefile to force recompilation
+GRXLIB = ../lib/$(GRX_LIB_SUBDIR)/libgrx20X.a
+# In normal use  the library libgrx20X.a or libgrx20X.so is linked in through 
+# {$L grx20X} contained in the unit grx.pas called by "uses grx".
+# The same is valid for other ADDON libraries.
+# If the library is NOT installed give its path
+# (default when first compiling/testing the library)
+GRXLIBPATH = -L../lib/$(GRX_LIB_SUBDIR)
+# When it is installed in a standard system location
+# (normal use) this is no more necessary
+
+ifeq ($(SET_XSUIDROOT),y)
+EXECBITS = 4755
+else
+EXECBITS = 0755
+endif
+
+ADDON_LIBS=
+
+ifeq ($(USE_XF86DGA_DRIVER),y)
+  ADDON_LIBS += -lXxf86dga -lXext      #NOT included in grx.pas
+endif
+
+LIBS= $(GRXLIBPATH) $(ADDON_LIBS)
+
+# Compiler and options on your system  
+COMPILER = $(PC) --automake
+
+
+PROGS= 			\
+	xblt_test 	\
+	xmodetest 	\
+	xkeytest	\
+	xtxt_test 	\
+	xvir_test	\
+	xpolytest	\
+	xjpgtest	\
+	xcolortst	\
+	ximgview
+
+all: $(PROGS)
+
+$(PROGS): x% : %.pas $(GRXLIB) grx.pas
+	$(COMPILER) $(CCOPT) -o $@ $*.pas $(LIBS)
+	chmod $(EXECBITS) $@
+
+clean:
+	rm -f *.o *.gpi *.gpm $(PROGS)
+
+

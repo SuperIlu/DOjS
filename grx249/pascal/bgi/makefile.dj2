@@ -1,0 +1,49 @@
+#
+# GRX test programs makefile for DJGPP v2.
+# Uses GNU make.
+#
+.SUFFIXES: .exe
+.PHONY: clean
+
+GRXVDJ2=y
+
+include ../../makedefs.grx
+
+# The following line is useful only in this makefile to force recompilation
+GRXLIB = ../../lib/$(GRX_LIB_SUBDIR)/libgrx20.a
+# In normal use the library libgrx20.a is linked in through 
+# {$L grx20} contained in the unit graph.pas called by "uses graph".
+# The same is valid for other ADDON libraries.
+# If the library is NOT installed give its path
+# (default when first compiling/testing the library)
+GRXLIBPATH = -L../../lib/$(GRX_LIB_SUBDIR)
+# When it is installed in a standard system location
+# (normal use) this is no more necessary
+
+LIBS= $(GRXLIBPATH)
+
+# Compiler and options on your system  
+COMPILER = $(PC) --automake
+
+PROGS= 			\
+	allmodes.exe	\
+	modelist.exe	\
+	colors.exe	\
+	demo.exe	\
+	small.exe	\
+	palette.exe
+
+all: $(PROGS)
+
+$(PROGS): %.exe : %.pas $(GRXLIB) graph.pas
+	$(COMPILER) $(CCOPT) -o $*.exe $*.pas $(LDOPT) $(LIBS)
+
+clean:
+ifeq ($(HAVE_UNIX_TOOLS),y)
+	rm -f *.o *.exe *.gpi *.gpm
+else
+	if exist *.o del *.o
+	if exist *.exe del *.exe
+	if exist *.gpi del *.gpi
+	if exist *.gpm del *.gpm
+endif

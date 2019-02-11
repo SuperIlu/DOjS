@@ -1,0 +1,62 @@
+#
+# GRX makefile for SDL version
+#
+.PHONY : libs test bgitest clean cleanall install uninstall \
+	 install-bin uninstall-bin install-fonts uninstall-fonts
+
+GRXVSDL=y
+
+include makedefs.grx
+
+all:   libs test bgitest
+
+libs:
+	$(MAKE) -C src -f makefile.sdl
+
+test:   libs
+	$(MAKE) -C test -f makefile.sdl
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	$(MAKE) -C pascal -f makefile.sdl
+endif
+
+bgitest:   libs
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C test/bgi -f makefile.sdl
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	$(MAKE) -C pascal/bgi -f makefile.sdl
+endif
+endif
+
+clean:
+	$(MAKE) -C test -f makefile.sdl clean
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C test/bgi -f makefile.sdl clean
+endif
+	$(MAKE) -C src  -f makefile.sdl clean
+ifeq ($(INCLUDE_GPC_SUPPORT),y)
+	$(MAKE) -C pascal -f makefile.sdl clean
+ifeq ($(INCLUDE_BGI_SUPPORT),y)
+	$(MAKE) -C pascal/bgi -f makefile.sdl clean
+endif
+endif
+
+cleanall: clean
+	$(MAKE) -C src -f makefile.sdl cleanall
+
+install:
+	$(MAKE) -C src -f makefile.sdl install
+
+uninstall:
+	$(MAKE) -C src -f makefile.sdl uninstall
+
+install-bin:
+	$(MAKE) -C src -f makefile.sdl install-bin
+
+uninstall-bin:
+	$(MAKE) -C src -f makefile.sdl uninstall-bin
+
+install-fonts:
+	$(MAKE) -C src -f makefile.sdl install-fonts
+
+uninstall-fonts:
+	$(MAKE) -C src -f makefile.sdl uninstall-fonts

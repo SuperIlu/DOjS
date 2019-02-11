@@ -1,0 +1,63 @@
+#
+# GRX test programs makefile for Mingw
+# Uses GNU make.
+#
+.SUFFIXES: .exe
+.PHONY: clean install uninstall
+
+GRXVW32=y
+
+include ../../makedefs.grx
+
+INCDIR=  -I../../include
+GRX20 = ../../lib/$(GRX_LIB_SUBDIR)/libgrx20.a
+
+#ifeq ($(HAVE_LIBTIFF),y)
+#  ADDON_LIBS += -ltiff
+#endif
+
+#ifeq ($(HAVE_LIBJPEG),y)
+#  ADDON_LIBS += -ljpeg
+#endif
+
+#ifeq ($(NEED_ZLIB),y)
+#  ADDON_LIBS += -lz
+#endif
+
+LIBS= $(GRX20) $(ADDON_LIBS)
+
+PROGS=                  \
+	bgilink.exe     \
+	bccbgi.exe      \
+	colortst.exe    \
+	fontplay.exe    \
+	small.exe       \
+	tellipse.exe    \
+	tfill.exe       \
+	tmodes.exe      \
+	tpoly.exe       \
+	ttext.exe
+
+all: 	$(PROGS) \
+
+$(PROGS): %.exe : %.o $(GRX20)
+	$(CC) $(LDOPT) -o $*.exe $*.o $(LIBS) -lm -mwindows -mconsole
+
+.c.o:
+	$(CC) -c $(CCOPT) $(INCDIR) $*.c -o $*.o
+
+.c.s:
+	$(CC) -S $(CCOPT) $(INCDIR) $*.c
+
+clean:
+ifeq ($(HAVE_UNIX_TOOLS),y)
+	rm -f *.o *.exe
+else
+	if exist *.o del *.o
+	if exist *.exe del *.exe
+endif
+
+#depend.new:
+#	$(CC) -MM $(CCOPT) $(INCDIR) $(PROGS:.exe=.c) >depend.new
+
+#include depend.gnu

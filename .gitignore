@@ -1,0 +1,36 @@
+# Object files
+*.o
+*.lo
+*.ko
+*.obj
+*.elf
+DOjS
+*.exe
+*.EXE
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+JSLOG.TXT
+grx249/bin/fnt2c
+grx249/bin/bin2c
+grx249/bin/xmodetest
+grx249/src/systag.002
+grx249/src/systag.004
+
+jsboot/fonts

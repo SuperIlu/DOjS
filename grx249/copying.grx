@@ -1,0 +1,53 @@
+This is file "copying.grx".
+
+This document describes the terms for distributing the source code of and any
+derived work based on the GRX graphics library. Such source code is marked
+with the next text:
+
+ ** Copyright (c) [year] [author], [author information]
+ **
+ ** This file is part of the GRX graphics library.
+ **
+ ** The GRX graphics library is free software; you can redistribute it
+ ** and/or modify it under some conditions; see the "copying.grx" file
+ ** for details.
+
+Source code with the above copyright is distributed under the following terms:
+
+ (1) The test programs for the graphics library (code in the 'test'
+     sub-directory) is distributed without restrictions. This code
+     is free for use in commercial, shareware or freeware applications.
+
+ (2) The GRX graphics library is distributed under the terms of the
+     GNU LGPL (Library General Public License) with the following amendments
+     and/or exceptions:
+
+     -  Using the DOS versions (DOS only! this exception DOES NOT apply to
+	the Linux version) you are permitted to distribute an application
+	linked with GRX in binary only, provided that the documentation
+	of the program:
+
+	   a)	informs the user that GRX is used in the program, AND
+
+	   b)	provides the user with the necessary information about
+		how to obtain GRX. (i.e. ftp site, etc..)
+
+ (3) Fonts (in the 'fonts' sub-directory). Most of the fonts included with
+     the GRX library were derived from fonts in the MIT X11R4 distribution.
+     They are distributed according to the terms in the file "COPYING.MIT"
+     (X license). Exceptions are:
+     - The fonts "ter-114b.res", "ter-114n.fna" and "ter-114v.psf" are
+       Copyright (C) 2002 Dimitar Zhekov, but are distributed under the
+       X license too.
+     - The "pc" BIOS font family, which is distributed without restrictions.
+
+A copy of the GNU GPL (in the file "COPYING") and the GNU LGPL (in
+the file "COPYING.LIB") is included with this document. If you did
+not receive a copy of "COPYING" or "COPYING.LIB", you may obtain one 
+from where this document was obtained, or by writing to:
+
+  Free Software Foundation
+  675 Mass Ave
+  Cambridge, MA 02139
+  USA
+

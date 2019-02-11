@@ -1,0 +1,96 @@
+Software in this distribution of the X Window System is covered by copyrights;
+see the file LABELS in this directory for a list.
+
+The MIT distribution of the X Window System is publicly available, but is NOT
+in the public domain.  The difference is that copyrights granting rights for
+unrestricted use and redistribution have been placed on all of the software to
+identify its authors.  You are allowed and encouraged to take this software and
+build commerical products.
+
+Individuals or organizations wishing to contribute software to the public
+releases should use a copyright notice that is no more restrictive than 
+the sample given below.  In particular, 
+
+     o  Do not place any restictions on what can be done with this software
+	(this includes using the GNU "copyleft").
+
+     o  Do not include the words "All rights reserved" unless you have had a 
+	lawyer verify that you have also explicitly given away all of the 
+	necessary rights shown in the samples.
+
+     o  Spell out the word "Copyright"; the phrase "(c)" is NOT a legal
+	alternative to the c-in-circle symbol.
+
+     o  Put at least a one-line copyright at the top of EVERY source file, if
+	not the full copyright.  Also, the copyright line or full notice MUST
+	physically appear in each file.  Using the preprocessor to #include the
+	copyright from some other file has no legal meaning (it can be used to
+	incorporate common strings into the binary, but has no effect on the
+	status of the source code).
+
+     o  Things that are copyrighted are, by definition, not in the public
+	domain.
+
+A copyright notice similar to the following is strongly recommended (replacing
+MIT with your organization's name and putting your name and address at the
+bottom).
+
+/*
+ * Copyright 1989 Massachusetts Institute of Technology
+ *
+ * Permission to use, copy, modify, distribute, and sell this software and its
+ * documentation for any purpose is hereby granted without fee, provided that
+ * the above copyright notice appear in all copies and that both that
+ * copyright notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in advertising or
+ * publicity pertaining to distribution of the software without specific,
+ * written prior permission.  M.I.T. makes no representations about the
+ * suitability of this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
+ *
+ * M.I.T. DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL M.I.T.
+ * BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
+ * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN 
+ * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ *
+ * Author:  Your Name, Name of your organization
+ */
+
+
+         X Window System, Version 11
+                  Release 4
+
+            contents copyrighted by
+
+
+     Massachusetts Institute of Technology
+	      Adobe Systems, Inc.
+	     Apollo Computer Inc.
+	     Apple Computer, Inc.
+		  AT&T, Inc.
+		  Don Bennett
+	       Bigelow & Holmes
+		Bitstream, Inc.
+		 Adam de Boor
+		Cognition Corp.
+	 Digital Equipment Corporation
+    Evans & Sutherland Computer Corporation
+		   Franz Inc
+	    Hewlett-Packard Company
+		IBM Corporation
+	Network Computing Devices, Inc.
+	 O'Reilly and Associates, Inc.
+		Dale Schumacher
+		Marvin Solomon
+		  Sony Corp.
+		      SRI
+	    Sun Microsystems, Inc.
+		Tektronix, Inc.
+	Texas Instruments Incorporated
+		UniSoft Systems
+  The Regents of the University of California
+	    University of Wisconsin
+		  Larry Wall
+	     Wyse Technology, Inc.

@@ -1,0 +1,5 @@
+# This is just a dummy file
+# If you really work on GRX and need a working
+# rebuild, create a real dependencies file by
+# make -f makefile.x11 dep
+

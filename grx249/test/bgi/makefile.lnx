@@ -1,0 +1,87 @@
+#
+# GRX test programs makefile for LINUX/console. Uses GNU make.
+#
+.PHONY : clean setsuid
+
+GRXVLNX=y
+
+include ../../makedefs.grx
+
+INCDIR=  -I../../include
+
+CCOPT += -pipe
+
+# Enable this line for static linked test progs (default)
+GRX20 = ../../lib/$(GRX_LIB_SUBDIR)/libgrx20.a
+# or this if you've already installed the shared libs
+#GRX20 = -L../../lib/$(GRX_LIB_SUBDIR) -lgrx20
+
+ifeq ($(USE_SVGALIB_DRIVER),y)
+  ADDON_LIBS= -lvga
+endif
+
+#ifeq ($(HAVE_LIBTIFF),y)
+#  ADDON_LIBS += -ltiff
+#endif
+#
+#ifeq ($(HAVE_LIBJPEG),y)
+#  ADDON_LIBS += -ljpeg
+#endif
+#
+#ifeq ($(NEED_ZLIB),y)
+#  ADDON_LIBS += -lz
+#endif
+
+ifeq ($(SET_SUIDROOT),y)
+EXECBITS = 4755
+else
+EXECBITS = 0755
+endif
+
+LIBS= $(GRX20) $(ADDON_LIBS) -lm
+
+PROGS=              \
+	bgilink     \
+	bccbgi      \
+	colortst    \
+	fontplay    \
+	small       \
+	tellipse    \
+	tfill       \
+	tmodes      \
+	tpoly       \
+	ttext
+
+all:    $(PROGS)
+
+$(PROGS): % : %.o $(GRX20)
+
+clean:
+	rm -f *.o $(PROGS)
+
+setsuid: $(PROGS)
+ifeq ($(SET_SUIDROOT),y)
+	chown root $(PROGS)
+	chmod $(EXECBITS) $(PROGS)
+else
+	@echo "Nothing to do, SET_SUIDROOT is not set to 'y' in makedefs.grx"
+endif
+
+.o:
+	$(CC) $(LDOPT) -o $* $*.o $(LIBS)
+	chmod $(EXECBITS) $*
+
+.oo:
+	$(CC) $(LDOPT) -o $* $*.o $(LIBS)
+	$(STRIP) $*
+
+.c.o:
+	$(CC) -c $(CCOPT) $(INCDIR) $*.c -o $*.o
+
+.c.s:
+	$(CC) -S $(CCOPT) $(INCDIR) $*.c
+
+depend.new:
+	$(CC) -MM $(CCOPT) $(INCDIR) $(PROGS:=.c) >depend.new
+
+#include depend.gnu

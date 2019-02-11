@@ -1,0 +1,76 @@
+Introduction
+============
+
+This document gives a brief description of the test programs in the
+'tests' sub-directory.
+
+The test programs were not intended as a flashy demo of the capabilities
+of LIBGRX. Their purpose is to test the various services of the library.
+The general syntax of their usage is:
+
+    go32 <prog> [<width> <height> [<color>]] <additional arguments>
+		    -- or for the Turbo C tests --
+    <prog> [<width> <height> [<color>]] <additional arguments>
+
+The test programs typically display several screens, hitting any key
+will advance to the next screen. In a few cases the keyboard is used
+differently, these programs will be described below.
+
+
+Description of the test programs:
+=================================
+
+    MODETEST:
+	perform video adapter speed test and test the basic primitives
+	of the library.
+
+    WINTEST, WINCLIP, CLIPTEST:
+	test graphics contexts sub-contexts and clipping
+
+    FRAMTEST:
+	demo of the framed box primitive
+
+    BLITTEST:
+	test the bit block transfer function. First it tests the bitblt
+	primitive for 64 possible alignment cases in planar modes (8
+	possible alignments for the source and destination each). It does
+	this test both for forward and backward copy (it depends on
+	whether the source address is bigger than the destination) and
+	for a system RAM graphics context source. A wide and a narrow
+	test pattern is used. After finishing the basic tests the program
+	gives a demo of tiling the screen with a pattern similar to the
+	one in FRAMTEST.
+
+    RGBTEST:
+	tests the 256 color RGB mode.
+
+    COLOROPS:
+	tests the four write modes: SET, XOR, OR, AND
+
+    CURSTEST:
+	tests the graphics cursor drawing routines, Keyboard usage:
+	   u U		(up)		\
+	   d D		(down)		  move the cursor
+	   l L		(left)		  capitals faster
+	   r R		(right)		/
+	   q				exit program
+
+    MOUSETST:
+	test the mouse cursor and the rubberband cursor options.
+
+    POLYTEST:
+	test the polygon filling algorithm. It takes the coordinates
+	of the polygons from the data file "polytest.dat"
+
+    CIRCTEST:
+	test the circle drawing algorithm with a circle, horizontal and
+	vertical main axis ellipse. It draws the exact points (calculated
+	using FP arithmetics) in red. The 'q' key aborts the test.
+
+    TESTPATT:
+	tests the pattern filled graphics primitives.
+
+
+NOTE: these programs can also be used as examples for the usage of the
+library. As always: CONSULT THE SOURCE!!!!
+

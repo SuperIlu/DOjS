@@ -1,0 +1,96 @@
+#
+# GRX test programs makefile for SDL. Uses GNU make.
+#
+.PHONY : clean
+
+GRXVSDL=y
+
+include ../makedefs.grx
+
+INCDIR= -I. -I../include
+
+GRX20ST    = ../lib/$(GRX_LIB_SUBDIR)/libgrx20S.a
+
+ifeq ($(EP),x)
+  INCDIR += $(X11INCS)
+  SDLDEFS = -D__XWIN__
+  SDLLIBS = -lSDL -lpthread $(X11LIBS)
+else
+  EX = .exe
+  SDLDEFS =
+  SDLLIBS = -lSDL
+endif
+
+ifeq ($(HAVE_LIBTIFF),y)
+  ADDON_LIBS += -ltiff
+endif
+
+ifeq ($(HAVE_LIBJPEG),y)
+  ADDON_LIBS += -ljpeg
+endif
+
+ifeq ($(HAVE_LIBPNG),y)
+  ADDON_LIBS += -lpng
+endif
+
+ifeq ($(NEED_ZLIB),y)
+  ADDON_LIBS += -lz
+endif
+
+LIBS= $(GRX20ST) $(ADDON_LIBS) $(SDLLIBS) -lm
+
+CCOPT += $(SDLDEFS)
+
+PROGS=  $(EP)arctest$(EX)	\
+	$(EP)bb1test$(EX)	\
+	$(EP)blittest$(EX)	\
+	$(EP)circtest$(EX)	\
+	$(EP)cliptest$(EX)	\
+	$(EP)colorops$(EX)	\
+	$(EP)curstest$(EX)	\
+	$(EP)fontdemo$(EX)	\
+	$(EP)fonttest$(EX)	\
+	$(EP)imgtest$(EX)	\
+	$(EP)jpgtest$(EX)	\
+	$(EP)keys$(EX)		\
+	$(EP)linetest$(EX)	\
+	$(EP)mousetst$(EX)	\
+	$(EP)pcirctst$(EX)	\
+	$(EP)pnmtest$(EX)	\
+	$(EP)pngtest$(EX)	\
+	$(EP)polytest$(EX)	\
+	$(EP)rgbtest$(EX)	\
+	$(EP)sbctest$(EX)	\
+	$(EP)scroltst$(EX)	\
+	$(EP)textpatt$(EX)	\
+	$(EP)winclip$(EX)	\
+	$(EP)wintest$(EX)	\
+	$(EP)fswwtest$(EX)
+
+all: $(PROGS) $(EP)demogrx$(EX) $(EP)speedtst$(EX) $(EP)memtest$(EX)
+
+$(EP)demogrx$(EX): demogrx.o gfaz.o $(GRX20ST)
+	$(CC) $(LDOPT) -o $(EP)demogrx$(EX) demogrx.o gfaz.o $(LIBS)
+
+$(EP)speedtst$(EX): speedtst.o $(GRX20ST)
+	$(CC) $(LDOPT) -o $(EP)speedtst$(EX) speedtst.o $(LIBS)
+
+$(EP)memtest$(EX): memtest.o $(GRX20ST)
+	$(CC) $(LDOPT) -o $(EP)memtest$(EX) memtest.o $(LIBS)
+
+$(PROGS): $(EP)%$(EX) : %.o $(GRX20ST)
+	$(CC) $(LDOPT) -o $@ $*.o $(LIBS)
+
+.c.o:
+	$(CC) -c $(CCOPT) $(INCDIR) $*.c -o $*.o
+
+.c.s:
+	$(CC) -S $(CCOPT) $(INCDIR) $*.c
+
+clean:
+	rm -f *.o $(PROGS) $(EP)demogrx$(EX) $(EP)speedtst$(EX) $(EP)memtest$(EX)
+
+depend.new:
+	$(CC) -MM $(CCOPT) $(INCDIR) $(PROGS:$(EP)%$(EX)=%.c) >depend.new
+
+include depend.gnu

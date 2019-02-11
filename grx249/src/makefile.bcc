@@ -1,0 +1,205 @@
+#
+# GRX 2.0 Library Makefile for Turbo C.
+# Uses Turbo C Make (v3.7 worked for me)
+# Make sure your shell is command.com !
+#
+.AUTODEPEND
+
+!include "../makedefs.bcc"
+
+# The library may get too complex ...
+#LIBPAGE=/P32
+
+# -w-sig : Don't warn "conversion may lose significant digits"
+# -DGRX_USE_RAM3x8 : Use planed ram driver for TrueColor modes (24/32bpp)
+ADDOPT = -w-sig -DGRX_USE_RAM3x8
+
+!ifdef   DEBUG
+ADDOPT = -DDEBUG=$(DEBUG) $(ADDOPT)
+!endif
+
+# SMALL_STACK: Turbo-C / Borland-C++ have only a small stack.
+#              It's usually better to get memory from heap
+#              instead of alloca()-ing it from stack.
+ADDOPT = -DSMALL_STACK $(ADDOPT)
+
+GRX20ST = ..\lib\$(GRX_LIB_SUBDIR)\grx20$(MODEL).lib
+# Borland make fails on long lines, build lib in stages
+GRX20STa= ..\lib\$(GRX_LIB_SUBDIR)\temp1.lib
+GRX20STb= ..\lib\$(GRX_LIB_SUBDIR)\temp2.lib
+GRX20STc= ..\lib\$(GRX_LIB_SUBDIR)\temp3.lib
+GRX20STd= ..\lib\$(GRX_LIB_SUBDIR)\temp4.lib
+GRX20STe= ..\lib\$(GRX_LIB_SUBDIR)\temp5.lib
+TEMP_LIB= ..\lib\$(GRX_LIB_SUBDIR)\temp?.lib
+
+INCDIR= -I. -I./include -I../include -I$(BCCROOT)/include\
+	-I./vdrivers -I./bgi
+LIBDIR= -L$(BCCROOT)/lib
+
+OP=+
+OX=.obj
+
+!include "./stdobjs.mak"
+
+!ifdef   DEBUG
+DBG_O = +utils\dbgprint.obj
+!else
+DBG_O =
+!endif
+
+BCCOBJ= +fdrivers\egavga1.obj  \
+	+fdrivers\ega4.obj     \
+	+fdrivers\herc1.obj    \
+	+fdrivers\ram3x8.obj   \
+	+fdrivers\svga16.obj   \
+	+fdrivers\svga24.obj   \
+	+fdrivers\svga32h.obj  \
+	+fdrivers\svga32l.obj  \
+	+fdrivers\svga4.obj    \
+	+fdrivers\svga8.obj    \
+	+fdrivers\vga8x.obj    \
+	+mouse\dosinput.obj    \
+	+mouse\doskeys.obj     \
+	+misc\dosmisc.obj      \
+	+utils\bccarith.obj    \
+	+utils\bcccopy.obj     \
+	+utils\bccfil08.obj    \
+	+utils\bccfil16.obj    \
+	+utils\bccfil24.obj    \
+	+utils\bccfil32.obj    \
+	+vdrivers\ati28800.obj \
+	+vdrivers\cl5426.obj   \
+	+vdrivers\et4000.obj   \
+	+vdrivers\herc.obj     \
+	+vdrivers\mach64.obj   \
+	+vdrivers\s3.obj       \
+	+vdrivers\stdega.obj   \
+	+vdrivers\stdvga.obj   \
+	+vdrivers\u_egavga.obj \
+	+vdrivers\u_vesa.obj   \
+	+vdrivers\u_vsvirt.obj \
+	+vdrivers\vesa.obj
+
+
+# Borland make and librarian don't like very long lines ...
+LOBJ1=$(STD_1:/=\) $(STD_2:/=\) $(STD_3:/=\) $(STD_4:/=\)
+LOBJ2=$(STD_5:/=\) $(STD_6:/=\) $(STD_7:/=\) $(STD_8:/=\)
+LOBJ3=$(STD_9:/=\) $(STD_10:/=\)
+LOBJ4=$(BGI_1:/=\) $(BGI_2:/=\) $(BGI_3:/=\)
+LOBJ5=$(BGI_4:/=\) $(BGI_5:/=\) $(BGI_6:/=\)
+LOBJ6=$(STD_11:/=\) $(BCCOBJ) $(DBG_O)
+
+UTILP = \
+	..\bin\vesaif16.exe \
+	..\bin\fnt2c16.exe \
+	..\bin\modtst16.exe \
+	..\bin\bin2c16.exe
+
+all:    config.bcc $(GRX20ST) $(UTILP)
+
+clean:
+	if exist bgi\*.obj      del bgi\*.obj
+	if exist draw\*.obj     del draw\*.obj
+	if exist fdrivers\*.obj del fdrivers\*.obj
+	if exist fonts\*.obj    del fonts\*.obj
+	if exist gformats\*.obj del gformats\*.obj
+	if exist image\*.obj    del image\*.obj
+	if exist misc\*.obj     del misc\*.obj
+	if exist mouse\*.obj    del mouse\*.obj
+	if exist pattern\*.obj  del pattern\*.obj
+	if exist setup\*.obj    del setup\*.obj
+	if exist shape\*.obj    del shape\*.obj
+	if exist text\*.obj     del text\*.obj
+	if exist user\*.obj     del user\*.obj
+	if exist utils\*.obj    del utils\*.obj
+	if exist vdrivers\*.obj del vdrivers\*.obj
+	if exist wideline\*.obj del wideline\*.obj
+	if exist ..\addons\*.obj       del ..\addons\*.obj
+	if exist ..\addons\print\*.obj del ..\addons\print\*.obj
+	if exist ..\addons\bmp\*.obj   del ..\addons\bmp\*.obj
+	if exist config.bcc del config.bcc
+	if exist *.asm del *.asm
+	if exist *.obj del *.obj
+	if exist $(TEMP_LIB) del $(TEMP_LIB)
+
+cleanall: clean
+	if exist $(GRX20ST) del $(GRX20ST)
+ 	if exist ..\bin\*.exe del ..\bin\*.exe
+
+# the & tells TLIB to continue on next line
+$(GRX20ST): $(GRX20STa) $(GRX20STb) $(GRX20STc) $(GRX20STd) $(GRX20STe) $(LOBJ6:+=)
+	if exist $(GRX20ST) del $(GRX20ST)
+	$(TLIB) $(LIBPAGE) /C $(GRX20ST) @&&!
+	+$(GRX20STa) &
+	+$(GRX20STb) &
+	+$(GRX20STc) &
+	+$(GRX20STd) &
+	+$(GRX20STe) &
+	$(LOBJ6)
+!
+
+$(GRX20STa): $(LOBJ1:+=)
+	if exist $(GRX20STa) del $(GRX20STa)
+	$(TLIB) $(LIBPAGE) /C $(GRX20STa) @&&!
+	$(LOBJ1)
+!
+
+$(GRX20STb): $(LOBJ2:+=)
+	if exist $(GRX20STb) del $(GRX20STb)
+	$(TLIB) $(LIBPAGE) /C $(GRX20STb) @&&!
+	$(LOBJ2)
+!
+
+$(GRX20STc): $(LOBJ3:+=)
+	if exist $(GRX20STc) del $(GRX20STc)
+	$(TLIB) $(LIBPAGE) /C $(GRX20STc) @&&!
+	$(LOBJ3)
+!
+
+$(GRX20STd): $(LOBJ4:+=)
+	if exist $(GRX20STd) del $(GRX20STd)
+	$(TLIB) $(LIBPAGE) /C $(GRX20STd) @&&!
+	$(LOBJ4)
+!
+
+$(GRX20STe): $(LOBJ5:+=)
+	if exist $(GRX20STe) del $(GRX20STe)
+	$(TLIB) $(LIBPAGE) /C $(GRX20STe) @&&!
+	$(LOBJ5)
+!
+
+..\bin\vesaif16.exe: utilprog\vesainfo.c $(GRX20ST) config.bcc
+	$(BCC) +config.bcc -e..\bin\vesaif16 @&&!
+	utilprog\vesainfo.c $(GRX20ST)
+!
+
+..\bin\fnt2c16.exe: utilprog\fnt2c.c $(GRX20ST) config.bcc
+	$(BCC) +config.bcc -e..\bin\fnt2c16 @&&!
+	utilprog\fnt2c.c $(GRX20ST)
+!
+
+..\bin\modtst16.exe: utilprog\modetest.c $(GRX20ST) config.bcc
+	$(BCC) +config.bcc -I..\test -e..\bin\modtst16 @&&!
+	utilprog\modetest.c $(GRX20ST)
+!
+
+..\bin\bin2c16.exe: utilprog\bin2c.c $(GRX20ST) config.bcc
+	$(BCC) +config.bcc -e..\bin\bin2c16 @&&!
+	utilprog\bin2c.c $(GRX20ST)
+!
+
+.c.obj:
+	$(BCC) +config.bcc -c -o$*.obj $*.c
+
+.c.asm:
+	$(BCC) +config.bcc -S -o$*.asm $*.c
+
+
+config.bcc: makefile.bcc ../makedefs.bcc
+	copy &&!
+	 $(CCOPT) $(ADDOPT)
+	 $(INCDIR)
+	 $(LIBDIR)
+! config.bcc
+
+#!include "depend.bcc"

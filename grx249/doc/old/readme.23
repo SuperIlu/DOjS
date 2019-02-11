@@ -1,0 +1,120 @@
+GRX installation instructions
+=============================
+
+Requirements:
+-------------
+
+  The source files: grx23.zip
+  The fonts       : grx23fnt.zip
+  This document   : grx23rme.1st
+
+  Currently GRX directly supports the following platforms:
+
+     DOS     / DJGPP v1.12     (GCC 2.6.3)
+     DOS     / DJGPP v2.01     (GCC 2.6.3, 2.7.2 and 2.8.1)
+     DOS     / Borland C++     (v2.0, v3.1 and v4.52 checked)
+     DOS     / Turbo C         (v1.0)
+     DOS     / Watcom C++      (v11.0 checked, 32bit only)
+     Linux   / svgalib         (GCC 2.7.2, 2.8.1)
+     Linux   / X11R6           (GCC 2.7.2, 2.8.1)
+     Solaris / X11R5           (GCC 2.7.2, SUN cc v4.1)
+
+  GRX should work on any X11R5 (or later) system after a few 
+  changes in makedefs.gnu and makedefs.x11
+
+  Most makefiles (DJGPP and Unix systems) require GNU make
+
+
+A. Unzip the GRX archives
+-------------------------
+
+  1) create a directory for the GRX file tree. Examples:
+       DJGPP: eg. DJGPP/contrib/grx23
+       Linux: /usr/src/grx-2.3
+  2) unzip the GRX source archive in the GRX dir:
+       DOS  : pkunzip -d grx23.zip
+       Unix : unzip grx23.zip 
+  3) unzip the GRX font archive in the same base dir:
+       DOS  : pkunzip -d grx2fnt.zip
+       Unix : unzip grx2fnt.zip
+
+
+B. Set the environment variables
+--------------------------------
+
+  1) set the default driver and graphics mode info:
+       SET GRX20DRV=<driver> gw <width> gh <height> nc <colors>
+     (very useful but not required)
+     Available drivers are for
+       DOS  : stdvga, stdega, et4000, cl5426, mach64, ati28800, VESA,
+	      memory
+       Linux: svgalib, memory
+       X11  : xwin, memory
+
+  2) set the GRX font dir.
+       SET GRXFONT=<directory for the GRX fonts>
+     This is required for GRX graphics text output. Path: <GRX base>/fonts
+     NOTE: You can define a default font directory when compiling GRX.
+	   E.g, if you installed the fonts in /usr/local/lib/grx/fonts add
+	     CCOPT += -DGRX_DEFAULT_FONT_PATH=\"/usr/local/lib/grx/fonts\"
+	   to makedefs.gnu (Linux / GNU-make example)
+
+
+C. Compiling GRX
+----------------
+
+  This is only required if there's no pre-compiled GRX for your system
+  or you want to change GRX or the library configuration.
+
+  1) Go to GRX base dir and check the makefile and makedefs file
+     for your system setup
+  2) Switch to src sub dir and check the makefile
+  3) run make -f <your makefile>
+     (some system may need additional arguments here !)
+  4) if every thing worked fine go to <GRX base>/test, check the makefile
+     and build all test files / examples:
+	 make -f <your makefile>
+
+
+D. Testing GRX
+--------------
+
+  1) go to <GRX base>/bin and run the modetest program. If you don't have
+     a modetest (or modtst16) binary, do step C4 first.
+  2) Build and run the other examples (see C4)
+
+
+E. Installing GRX for your compiler
+-----------------------------------
+
+  You'll either need to 1: copy some GRX files to places where your compiler
+  will find them or 2: change your compiler setup so it will find the GRX
+  files in there default place.
+
+  1) Copy the library from <GRX base>/lib/<your system> to the compiler
+     library directory.
+     Copy the header files from <GRX base>/include to your compiler include
+     directory
+  2) See compiler documentation. Either change the default compiler behaviour
+     (eg., change djgpp.env) or use command line switches to tell the
+     compiler where to find the GRX files.
+
+
+F. Problems
+-----------
+
+  If you have problems installing or running GRX check
+
+    http://www.techfak.uni-kiel.de/~hsc/GRX/
+
+  for updates, pre-compiled libs, ...
+
+  If this doesn't help, check your system/compiler FAQ (eg., the
+  DJGPP v2 FAQ is at http://www.delorie.com/djgpp/v2faq)
+
+  Check out the DJGPP newsgroup comp.os.msdos.djgpp (archive at
+  http://www.delorie.com/djgpp/mail-archives)
+
+  Send a problem report to comp.os.msdos.djgpp or me 
+  (hsc@techfak.uni-kiel.de)
+

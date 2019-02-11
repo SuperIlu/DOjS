@@ -1,0 +1,50 @@
+#
+# GRX test programs makefile for LINUX/console.
+# Uses GNU make.
+#
+.SUFFIXES: .exe
+.PHONY: clean
+
+GRXVLNX=y
+
+include ../../makedefs.grx
+
+# The following line is useful only in this makefile to force recompilation
+GRXLIB = ../../lib/$(GRX_LIB_SUBDIR)/libgrx20.a
+# In normal use the library libgrx20.a or libgrx20.so is linked in through 
+# {$L grx20} contained in the unit graph.pas called by "uses graph".
+# The same is valid for other ADDON libraries.
+# If the library is NOT installed give its path
+# (default when first compiling/testing the library)
+GRXLIBPATH = -L../../lib/$(GRX_LIB_SUBDIR)
+# When it is installed in a standard system location
+# (normal use) this is no more necessary
+
+ifeq ($(SET_SUIDROOT),y)
+EXECBITS = 4755
+else
+EXECBITS = 0755
+endif
+
+LIBS= $(GRXLIBPATH)
+
+# Compiler and options on your system  
+COMPILER = $(PC) --automake
+
+PROGS= 			\
+	allmodes	\
+	modelist	\
+	colors		\
+	demo		\
+	small		\
+	palette
+
+all: $(PROGS)
+
+$(PROGS): % : %.pas $(GRXLIB) graph.pas
+	$(COMPILER) $(CCOPT) -o $* $*.pas $(LIBS)
+	chmod $(EXECBITS) $@
+
+clean:
+	rm -f *.o *.gpi *.gpm $(PROGS)
+

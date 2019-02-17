@@ -55,7 +55,7 @@ function Setup() {
 }
 
 function Loop() {
-	TextXY(SizeX(), SizeY(), "Hello World", pink);
+	TextXY(SizeX()/2, SizeY()/2, "Hello World", pink);
 }
 ```
 Run this with `DOjS.EXE tests\exampl.js`.

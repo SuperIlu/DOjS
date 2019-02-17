@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "Makefile.unix": "makefile",
+        "sbsound.h": "c",
+        "stdbool.h": "c"
+    },
+    "editor.formatOnSave": true,
+    "editor.tabSize": 8,
+    "editor.insertSpaces": false,
+    "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, ColumnLimit: 180, IndentWidth: 4 }",
+}

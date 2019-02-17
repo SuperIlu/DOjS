@@ -27,14 +27,15 @@ SOFTWARE.
 #include <strings.h>
 
 #include "DOjS.h"
-#include "bitmap.h"
+#include "color.h"
+#include "font.h"
 
 /************
 ** structs **
 ************/
 //! font userdata definition
 typedef struct __font {
-  GrFont *font; //!< GrFont data
+    GrFont *font;  //!< GrFont data
 } font_t;
 
 /*********************
@@ -46,9 +47,9 @@ typedef struct __font {
  * @param J VM state.
  */
 static void Font_Finalize(js_State *J, void *data) {
-  font_t *f = (font_t *)data;
-  GrUnloadFont(f->font);
-  free(f);
+    font_t *f = (font_t *)data;
+    GrUnloadFont(f->font);
+    free(f);
 }
 
 /**
@@ -58,34 +59,34 @@ static void Font_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_Font(js_State *J) {
-  const char *fname = js_tostring(J, 1);
+    const char *fname = js_tostring(J, 1);
 
-  font_t *f = malloc(sizeof(font_t));
-  if (!f) {
-    js_error(J, "No memory for font '%s'", fname);
-    return;
-  }
+    font_t *f = malloc(sizeof(font_t));
+    if (!f) {
+        js_error(J, "No memory for font '%s'", fname);
+        return;
+    }
 
-  f->font = GrLoadFont((char *)fname);
-  if (!f->font) {
-    js_error(J, "Can't load font '%s'", fname);
-    free(f);
-    return;
-  }
+    f->font = GrLoadFont((char *)fname);
+    if (!f->font) {
+        js_error(J, "Can't load font '%s'", fname);
+        free(f);
+        return;
+    }
 
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, TAG_FONT, f, Font_Finalize);
+    js_currentfunction(J);
+    js_getproperty(J, -1, "prototype");
+    js_newuserdata(J, TAG_FONT, f, Font_Finalize);
 
-  // add properties
-  js_pushstring(J, fname);
-  js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    // add properties
+    js_pushstring(J, fname);
+    js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
-  js_pushnumber(J, f->font->minwidth);
-  js_defproperty(J, -2, "minwidth", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_pushnumber(J, f->font->minwidth);
+    js_defproperty(J, -2, "minwidth", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
-  js_pushnumber(J, f->font->maxwidth);
-  js_defproperty(J, -2, "maxwidth", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_pushnumber(J, f->font->maxwidth);
+    js_defproperty(J, -2, "maxwidth", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 }
 
 /**
@@ -96,30 +97,30 @@ static void new_Font(js_State *J) {
  * @param J VM state.
  */
 static void Font_DrawString(js_State *J) {
-  GrTextOption opt;
+    GrTextOption opt;
 
-  font_t *f = js_touserdata(J, 0, TAG_FONT);
-  int x = js_toint16(J, 1);
-  int y = js_toint16(J, 2);
+    font_t *f = js_touserdata(J, 0, TAG_FONT);
+    int x = js_toint16(J, 1);
+    int y = js_toint16(J, 2);
 
-  const char *str = js_tostring(J, 3);
+    const char *str = js_tostring(J, 3);
 
-  GrColor *fg = js_touserdata(J, 4, TAG_COLOR);
-  GrColor *bg = js_touserdata(J, 5, TAG_COLOR);
+    GrColor *fg = js_touserdata(J, 4, TAG_COLOR);
+    GrColor *bg = js_touserdata(J, 5, TAG_COLOR);
 
-  int dir = js_toint16(J, 6);
-  int xalign = js_toint16(J, 7);
-  int yalign = js_toint16(J, 8);
+    int dir = js_toint16(J, 6);
+    int xalign = js_toint16(J, 7);
+    int yalign = js_toint16(J, 8);
 
-  opt.txo_font = f->font;
-  opt.txo_bgcolor.v = *bg;
-  opt.txo_fgcolor.v = *fg;
-  opt.txo_direct = dir;
-  opt.txo_xalign = xalign;
-  opt.txo_yalign = yalign;
-  opt.txo_chrtype = GR_BYTE_TEXT;
+    opt.txo_font = f->font;
+    opt.txo_bgcolor.v = *bg;
+    opt.txo_fgcolor.v = *fg;
+    opt.txo_direct = dir;
+    opt.txo_xalign = xalign;
+    opt.txo_yalign = yalign;
+    opt.txo_chrtype = GR_BYTE_TEXT;
 
-  GrDrawString((char *)str, strlen(str), x, y, &opt);
+    GrDrawString((char *)str, strlen(str), x, y, &opt);
 }
 
 /**
@@ -129,10 +130,10 @@ static void Font_DrawString(js_State *J) {
  * @param J VM state.
  */
 static void Font_StringWidth(js_State *J) {
-  font_t *f = js_touserdata(J, 0, TAG_FONT);
-  const char *str = js_tostring(J, 1);
+    font_t *f = js_touserdata(J, 0, TAG_FONT);
+    const char *str = js_tostring(J, 1);
 
-  js_pushnumber(J, GrFontStringWidth(f->font, str, strlen(str), GR_BYTE_TEXT));
+    js_pushnumber(J, GrFontStringWidth(f->font, str, strlen(str), GR_BYTE_TEXT));
 }
 
 /**
@@ -142,10 +143,10 @@ static void Font_StringWidth(js_State *J) {
  * @param J VM state.
  */
 static void Font_StringHeight(js_State *J) {
-  font_t *f = js_touserdata(J, 0, TAG_FONT);
-  const char *str = js_tostring(J, 1);
-  (void)str;
-  js_pushnumber(J, GrFontStringHeight(f->font, str, strlen(str), GR_BYTE_TEXT));
+    font_t *f = js_touserdata(J, 0, TAG_FONT);
+    const char *str = js_tostring(J, 1);
+    (void)str;
+    js_pushnumber(J, GrFontStringHeight(f->font, str, strlen(str), GR_BYTE_TEXT));
 }
 
 /***********************
@@ -157,13 +158,12 @@ static void Font_StringHeight(js_State *J) {
  * @param J VM state.
  */
 void init_font(js_State *J) {
-  js_getglobal(J, "Object");
-  js_getproperty(J, -1, "prototype");
-  {
-    PROTDEF(J, Font_DrawString, TAG_FONT, "DrawString", 6);
-    PROTDEF(J, Font_StringWidth, TAG_FONT, "StringWidth", 1);
-    PROTDEF(J, Font_StringHeight, TAG_FONT, "StringHeight", 1);
-  }
-  js_newcconstructor(J, new_Font, new_Font, TAG_FONT, 1);
-  js_defglobal(J, TAG_FONT, JS_DONTENUM);
+    js_newobject(J);
+    {
+        PROTDEF(J, Font_DrawString, TAG_FONT, "DrawString", 6);
+        PROTDEF(J, Font_StringWidth, TAG_FONT, "StringWidth", 1);
+        PROTDEF(J, Font_StringHeight, TAG_FONT, "StringHeight", 1);
+    }
+    js_newcconstructor(J, new_Font, new_Font, TAG_FONT, 1);
+    js_defglobal(J, TAG_FONT, JS_DONTENUM);
 }

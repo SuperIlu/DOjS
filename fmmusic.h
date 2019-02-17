@@ -10,13 +10,12 @@
 #ifndef __FMMUSIC_H__
 #define __FMMUSIC_H__
 
-#include "DOjS.h"
 #include <mujs.h>
+#include "DOjS.h"
 
-#define JSINC_FMMUSIC                                                          \
-  BOOT_DIR "fmmusic.js" //!< boot script for fm music subsystem
+#define JSINC_FMMUSIC BOOT_DIR "fmmusic.js"  //!< boot script for fm music subsystem
 
 extern bool init_fmmusic(js_State *J);
 extern void shutdown_fmmusic();
 
-#endif // __FMMUSIC_H__
+#endif  // __FMMUSIC_H__

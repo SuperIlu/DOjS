@@ -1,22 +1,24 @@
-var scale = 10;
+scale = 5;
 
-var W = SizeX() / scale;
-var H = SizeY() / scale;
+W = SizeX() / scale;
+H = SizeY() / scale;
 
-var c = [EGA.BLACK, EGA.WHITE];
-var old = [];
-var cur = [];
+c = [EGA.BLACK, EGA.WHITE];
+old = [];
+cur = [];
 
-for (var y = 0; y < H; y++) {
-    old[y] = []
-    cur[y] = [];
-    for (var x = 0; x < W; x++) {
-        cur[y][x] = old[y][x] = Math.random() <= 0.5 ? 1 : 0;
-        FilledBox(x * scale, y * scale, x * scale + scale, y * scale + scale, c[old[y][x]]);
+function Setup() {
+    for (var y = 0; y < H; y++) {
+        old[y] = []
+        cur[y] = [];
+        for (var x = 0; x < W; x++) {
+            cur[y][x] = old[y][x] = Math.random() <= 0.5 ? 1 : 0;
+            FilledBox(x * scale, y * scale, x * scale + scale, y * scale + scale, c[old[y][x]]);
+        }
     }
 }
 
-do {
+function Loop() {
     for (var y = 0; y < H; y++) {
         for (var x = 0; x < W; x++) {
             var cell = cur[y][x];
@@ -61,8 +63,9 @@ do {
     var tmp = old;
     old = cur;
     cur = tmp;
-} while (!KeyPressed());
 
-while (KeyPressed()) { KeyRead(); }
-
-
+    if (KeyPressed()) {
+        while (KeyPressed()) { KeyRead(); }
+        Stop();
+    }
+}

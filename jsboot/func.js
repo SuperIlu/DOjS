@@ -20,6 +20,32 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+function Require(name) {
+	var cache = Require.cache;
+	if (name in cache) { return cache[name]; }
+	var exports = {};
+	cache[name] = exports;
+	Function('exports', Read(name + '.js'))(exports);
+	return exports;
+}
+Require.cache = Object.create(null);
+
+Error.prototype.toString = function () {
+	if (this.stackTrace) { return this.name + ': ' + this.message + this.stackTrace; }
+	return this.name + ': ' + this.message;
+};
+
+function StartupInfo() {
+	var mode = GetScreenMode();
+	var adapter = GetScreenAdapter();
+	var width = SizeX();
+	var height = SizeY();
+	var colors = NumColors();
+
+	Print(">>> Screen size=" + width + "x" + height + " with " + colors + " colors, mode=" + mode + ", adapter=" + adapter);
+}
+StartupInfo();
+
 //! arc style definition
 ARC = {
 	OPEN: 0,
@@ -29,6 +55,12 @@ ARC = {
 
 //! mouse/event constants
 MOUSE = {
+	Mode: {
+		NORMAL: 0,	/* MOUSE CURSOR modes: just the cursor */
+		RUBBER: 1,	/* rect. rubber band (XOR-d to the screen) */
+		LINE: 2,	/* line attached to the cursor */
+		BOX: 3		/* rectangular box dragged by the cursor */
+	},
 	Flags: {
 		MOTION: 0x001,
 		LEFT_DOWN: 0x002,

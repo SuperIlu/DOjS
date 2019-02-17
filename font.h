@@ -24,9 +24,11 @@ SOFTWARE.
 #define __FONT_H__
 
 #include <mujs.h>
+#include "DOjS.h"
 
-#define JSINC_FONT BOOT_DIR "font.js" //!< boot script for font subsystem
+#define JSINC_FONT BOOT_DIR "font.js"  //!< boot script for font subsystem
+#define TAG_FONT "Font"                //!< class name for Font()
 
 extern void init_font(js_State *J);
 
-#endif // __BITMAP_H__
+#endif  // __FONT_H__

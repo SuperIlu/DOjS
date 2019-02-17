@@ -6,15 +6,15 @@
 ** by Steven Don.
 ** This is a derived/modified version by Andre Seidelt <superilu@yahoo.com>
 */
-#ifndef __SBSOUND_H__
-#define __SBSOUND_H__
+#ifndef __MIDIPLAY_H__
+#define __MIDIPLAY_H__
 
 #include <mujs.h>
 #include <stdbool.h>
 
-#define TAG_SBSOUND "Sound"  //!< class name for Sound()
+#define TAG_MIDI "Midi"  //!< class name for Midi()
 
-extern bool init_sbsound(js_State *J);
-extern void shutdown_sbsound(void);
+extern bool init_midi(js_State *J);
+extern void shutdown_midi(void);
 
-#endif  // __SBSOUND_H__
+#endif  // __MIDIPLAY_H__

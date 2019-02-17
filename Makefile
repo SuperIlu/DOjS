@@ -9,7 +9,7 @@ MUJS=mujs-1.0.5
 GRX=grx249
 
 INCLUDES=-I$(MUJS) -I$(GRX)/include -I$(GRX)/src/include -I$(GRX)/addons/bmp
-LIBS=-lgrx20 -lmujs -lm
+LIBS=-lgrx20 -lmujs -lm -lemu
 
 CFLAGS=-Wall -pedantic -O2 $(INCLUDES) -DPLATFORM_MSDOS -DDEBUG_ENABLED
 LDFLAGS=-L$(MUJS)/build/release -L$(GRX)/lib/dj2
@@ -22,6 +22,7 @@ CROSS_PLATFORM=i586-pc-msdosdjgpp-
 CC=$(DJGPP)/$(CROSS_PLATFORM)gcc
 AR=$(DJGPP)/$(CROSS_PLATFORM)ar
 LD=$(DJGPP)/$(CROSS_PLATFORM)ld
+STRIP=$(DJGPP)/$(CROSS_PLATFORM)strip
 export
 
 PARTS= \
@@ -32,7 +33,11 @@ PARTS= \
 	sbdet.o \
 	fmmusic.o \
 	sbsound.o \
-	font.o
+	font.o \
+	file.o \
+	midiplay.o \
+	dosbuff.o \
+	ipx.o
 
 all: $(MUJS)/build/release/libmujs.a $(GRX)/lib/unix/libgrx20.a $(EXE)
 
@@ -46,6 +51,7 @@ $(GRX)/lib/unix/libgrx20.a:
 
 $(EXE): $(PARTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(STRIP) $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^

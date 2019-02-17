@@ -37,10 +37,10 @@ SOFTWARE.
  * @param J VM state.
  */
 static void Color_Finalize(js_State *J, void *data) {
-  GrColor *color = (GrColor *)data;
-  // DEBUGF("Finalizing Color 0x%08X\n", *color);
-  GrFreeColor(*color);
-  free(color);
+    GrColor *color = (GrColor *)data;
+    // DEBUGF("Finalizing Color 0x%08X\n", *color);
+    GrFreeColor(*color);
+    free(color);
 }
 
 /**
@@ -50,25 +50,25 @@ static void Color_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_Color(js_State *J) {
-  if (js_isundefined(J, 1) || js_isundefined(J, 1) || js_isundefined(J, 1)) {
-    js_error(J, "Color constructor needs three integer arguments");
-  } else {
-    GrColor *color = malloc(sizeof(GrColor));
-    if (!color) {
-      js_error(J, "Can't alloc color");
+    if (js_isundefined(J, 1) || js_isundefined(J, 1) || js_isundefined(J, 1)) {
+        js_error(J, "Color constructor needs three integer arguments");
+    } else {
+        GrColor *color = malloc(sizeof(GrColor));
+        if (!color) {
+            js_error(J, "Can't alloc color");
+        }
+
+        *color = GrAllocColor(js_toint16(J, 1), js_toint16(J, 2), js_toint16(J, 3));
+        js_currentfunction(J);
+        js_getproperty(J, -1, "prototype");
+        js_newuserdata(J, TAG_COLOR, color, Color_Finalize);
+
+        // add properties
+        js_pushnumber(J, *color);
+        js_defproperty(J, -2, "value", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+
+        // DEBUGF("Created Color 0x%08X\n", *color);
     }
-
-    *color = GrAllocColor(js_toint16(J, 1), js_toint16(J, 2), js_toint16(J, 3));
-    js_currentfunction(J);
-    js_getproperty(J, -1, "prototype");
-    js_newuserdata(J, TAG_COLOR, color, Color_Finalize);
-
-    // add properties
-    js_pushnumber(J, *color);
-    js_defproperty(J, -2, "value", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
-
-    // DEBUGF("Created Color 0x%08X\n", *color);
-  }
 }
 
 /**
@@ -78,10 +78,10 @@ static void new_Color(js_State *J) {
  * @param J VM state.
  */
 static void Color_getRed(js_State *J) {
-  int r, g, b;
-  GrColor *color = js_touserdata(J, 0, TAG_COLOR);
-  GrQueryColor(*color, &r, &g, &b);
-  js_pushnumber(J, r);
+    int r, g, b;
+    GrColor *color = js_touserdata(J, 0, TAG_COLOR);
+    GrQueryColor(*color, &r, &g, &b);
+    js_pushnumber(J, r);
 }
 
 /**
@@ -91,10 +91,10 @@ static void Color_getRed(js_State *J) {
  * @param J VM state.
  */
 static void Color_getGreen(js_State *J) {
-  int r, g, b;
-  GrColor *color = js_touserdata(J, 0, TAG_COLOR);
-  GrQueryColor(*color, &r, &g, &b);
-  js_pushnumber(J, g);
+    int r, g, b;
+    GrColor *color = js_touserdata(J, 0, TAG_COLOR);
+    GrQueryColor(*color, &r, &g, &b);
+    js_pushnumber(J, g);
 }
 
 /**
@@ -104,10 +104,10 @@ static void Color_getGreen(js_State *J) {
  * @param J VM state.
  */
 static void Color_getBlue(js_State *J) {
-  int r, g, b;
-  GrColor *color = js_touserdata(J, 0, TAG_COLOR);
-  GrQueryColor(*color, &r, &g, &b);
-  js_pushnumber(J, b);
+    int r, g, b;
+    GrColor *color = js_touserdata(J, 0, TAG_COLOR);
+    GrQueryColor(*color, &r, &g, &b);
+    js_pushnumber(J, b);
 }
 
 /***********************
@@ -119,13 +119,12 @@ static void Color_getBlue(js_State *J) {
  * @param J VM state.
  */
 void init_color(js_State *J) {
-  js_getglobal(J, "Object");
-  js_getproperty(J, -1, "prototype");
-  {
-    PROTDEF(J, Color_getRed, TAG_COLOR, "GetRed", 0);
-    PROTDEF(J, Color_getGreen, TAG_COLOR, "GetGreen", 0);
-    PROTDEF(J, Color_getBlue, TAG_COLOR, "GetBlue", 0);
-  }
-  js_newcconstructor(J, new_Color, new_Color, TAG_COLOR, 3);
-  js_defglobal(J, TAG_COLOR, JS_DONTENUM);
+    js_newobject(J);
+    {
+        PROTDEF(J, Color_getRed, TAG_COLOR, "GetRed", 0);
+        PROTDEF(J, Color_getGreen, TAG_COLOR, "GetGreen", 0);
+        PROTDEF(J, Color_getBlue, TAG_COLOR, "GetBlue", 0);
+    }
+    js_newcconstructor(J, new_Color, new_Color, TAG_COLOR, 3);
+    js_defglobal(J, TAG_COLOR, JS_DONTENUM);
 }

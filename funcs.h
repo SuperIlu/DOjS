@@ -23,11 +23,11 @@ SOFTWARE.
 #ifndef __FUNCS_H__
 #define __FUNCS_H__
 
-#include "DOjS.h"
 #include <mujs.h>
+#include "DOjS.h"
 
-#define JSINC_FUNC BOOT_DIR "func.js" //!< boot script for grx subsystem
+#define JSINC_FUNC BOOT_DIR "func.js"  //!< boot script for grx subsystem
 
 extern void init_funcs(js_State *J);
 
-#endif // __FUNCS_H__
+#endif  // __FUNCS_H__

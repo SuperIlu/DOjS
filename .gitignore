@@ -27,6 +27,9 @@ DOjS
 *.hex
 
 JSLOG.TXT
+TEST.TXT
+stderr.txt
+stdout.txt
 grx249/bin/fnt2c
 grx249/bin/bin2c
 grx249/bin/xmodetest
@@ -34,3 +37,6 @@ grx249/src/systag.002
 grx249/src/systag.004
 
 jsboot/fonts
+todo
+upx
+cylindrix

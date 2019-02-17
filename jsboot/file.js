@@ -20,15 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef __COLOR_H__
-#define __COLOR_H__
-
-#include <mujs.h>
-#include "DOjS.h"
-
-#define JSINC_COLOR BOOT_DIR "color.js"  //!< boot script for color subsystem
-#define TAG_COLOR "Color"                //!< class name for Color()
-
-extern void init_color(js_State *J);
-
-#endif  // __COLOR_H__
+FILE = {
+	READ: "r",
+	WRITE: "w",
+	APPEND: "a"
+};

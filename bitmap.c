@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 #include <grx20.h>
-#include <grxbmp.h> // broken include file, can only be included once!
+#include <grxbmp.h>  // broken include file, can only be included once!
 #include <mujs.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,8 +34,8 @@ SOFTWARE.
 ************/
 //! bitmap userdata definition
 typedef struct __bitmap {
-  GrPattern *pat;        //!< GrPattern for the image
-  GrBmpImageColors *pal; //!< allocated colors for the image
+    GrPattern *pat;         //!< GrPattern for the image
+    GrBmpImageColors *pal;  //!< allocated colors for the image
 } bitmap_t;
 
 /*********************
@@ -47,10 +47,10 @@ typedef struct __bitmap {
  * @param J VM state.
  */
 static void Bitmap_Finalize(js_State *J, void *data) {
-  bitmap_t *bm = (bitmap_t *)data;
-  GrFreeBmpImageColors(bm->pal);
-  GrDestroyPattern(bm->pat);
-  free(bm);
+    bitmap_t *bm = (bitmap_t *)data;
+    GrFreeBmpImageColors(bm->pal);
+    GrDestroyPattern(bm->pat);
+    free(bm);
 }
 
 /**
@@ -60,37 +60,37 @@ static void Bitmap_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_Bitmap(js_State *J) {
-  const char *fname = js_tostring(J, 1);
+    const char *fname = js_tostring(J, 1);
 
-  bitmap_t *bm = malloc(sizeof(bitmap_t));
-  if (!bm) {
-    js_error(J, "No memory for image '%s'", fname);
-    return;
-  }
+    bitmap_t *bm = malloc(sizeof(bitmap_t));
+    if (!bm) {
+        js_error(J, "No memory for image '%s'", fname);
+        return;
+    }
 
-  GrBmpImage *bmp = GrLoadBmpImage((char *)fname);
-  if (!bmp) {
-    js_error(J, "Can't load image '%s'", fname);
-    free(bm);
-    return;
-  }
-  GrAllocBmpImageColors(bmp, bm->pal);
-  GrPattern *pat = GrConvertBmpImageToStaticPattern(bmp);
-  bm->pat = pat;
+    GrBmpImage *bmp = GrLoadBmpImage((char *)fname);
+    if (!bmp) {
+        js_error(J, "Can't load image '%s'", fname);
+        free(bm);
+        return;
+    }
+    GrAllocBmpImageColors(bmp, bm->pal);
+    GrPattern *pat = GrConvertBmpImageToStaticPattern(bmp);
+    bm->pat = pat;
 
-  js_currentfunction(J);
-  js_getproperty(J, -1, "prototype");
-  js_newuserdata(J, TAG_BITMAP, bm, Bitmap_Finalize);
+    js_currentfunction(J);
+    js_getproperty(J, -1, "prototype");
+    js_newuserdata(J, TAG_BITMAP, bm, Bitmap_Finalize);
 
-  // add properties
-  js_pushstring(J, fname);
-  js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    // add properties
+    js_pushstring(J, fname);
+    js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
-  js_pushnumber(J, pat->gp_pixmap.pxp_width);
-  js_defproperty(J, -2, "width", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_pushnumber(J, pat->gp_pixmap.pxp_width);
+    js_defproperty(J, -2, "width", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
-  js_pushnumber(J, pat->gp_pixmap.pxp_height);
-  js_defproperty(J, -2, "height", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_pushnumber(J, pat->gp_pixmap.pxp_height);
+    js_defproperty(J, -2, "height", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 }
 
 /**
@@ -100,10 +100,10 @@ static void new_Bitmap(js_State *J) {
  * @param J VM state.
  */
 static void Bitmap_Draw(js_State *J) {
-  bitmap_t *bm = js_touserdata(J, 0, TAG_BITMAP);
-  int x = js_toint16(J, 1);
-  int y = js_toint16(J, 2);
-  GrImageDisplay(x, y, GrImageFromPattern(bm->pat));
+    bitmap_t *bm = js_touserdata(J, 0, TAG_BITMAP);
+    int x = js_toint16(J, 1);
+    int y = js_toint16(J, 2);
+    GrImageDisplay(x, y, GrImageFromPattern(bm->pat));
 }
 
 /***********************
@@ -115,10 +115,9 @@ static void Bitmap_Draw(js_State *J) {
  * @param J VM state.
  */
 void init_bitmap(js_State *J) {
-  // define the Image() object
-  js_getglobal(J, "Object");
-  js_getproperty(J, -1, "prototype");
-  { PROTDEF(J, Bitmap_Draw, TAG_BITMAP, "Draw", 2); }
-  js_newcconstructor(J, new_Bitmap, new_Bitmap, TAG_BITMAP, 1);
-  js_defglobal(J, TAG_BITMAP, JS_DONTENUM);
+    // define the Image() object
+    js_newobject(J);
+    { PROTDEF(J, Bitmap_Draw, TAG_BITMAP, "Draw", 2); }
+    js_newcconstructor(J, new_Bitmap, new_Bitmap, TAG_BITMAP, 1);
+    js_defglobal(J, TAG_BITMAP, JS_DONTENUM);
 }

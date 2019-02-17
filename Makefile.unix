@@ -22,7 +22,8 @@ PARTS= \
 	sbdet.o \
 	fmmusic.o \
 	sbsound.o \
-	font.o
+	font.o \
+	file.o
 
 all: $(GRX)/lib/unix/libgrx20X.a $(MUJS)/build/release/libmujs.a $(EXE)
 
@@ -37,7 +38,7 @@ $(GRX)/lib/unix/libgrx20X.a:
 $(EXE): $(PARTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-%.o: %.c *.h
+%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 clean:

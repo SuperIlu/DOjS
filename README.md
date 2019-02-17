@@ -17,16 +17,16 @@ DOjS was only possible due to the work of these people/projects:
 ## Preparation
 Setup Windows Subsystem for Linux (WSL) according to [this](https://docs.microsoft.com/en-us/windows/wsl/install-win10) guide (I used Ubuntu 18.04 LTS).
 
-Build and install DJGPP 7.2.0 acording to [this](https://github.com/andrewwutw/build-djgpp) guide.
+Build and install DJGPP 7.2.0 according to [this](https://github.com/andrewwutw/build-djgpp) guide.
 I used the following command lines to update/install my dependencies:
-```
+```bash
 sudo apt-get update
 sudo apt-get dist-upgrade
 sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev g++ unzip htop screen git bash-completion build-essential
 ```
 
 And the following commands to build and install DJGPP to `/home/ilu/djgpp`.:
-```
+```bash
 git clone https://github.com/andrewwutw/build-djgpp.git
 cd build-djgpp
 export DJGPP_PREFIX=/home/ilu/djgpp
@@ -38,39 +38,54 @@ Open a PowerShell command line in the directory where you want the source to res
 Run WLS to start the Linux Subsystem.
 
 Checkout DOjS from Github:
-```
+```bash
 git clone https://github.com/SuperIlu/DOjS.git
 ```
 
-Open the Makefile in a text editor and change the path to DJGPP accoring to your installation.
+Open the Makefile in a text editor and change the path to DJGPP according to your installation.
 
 Now you are ready to compile DOjS with `make clean all`. This might take some time as GRX is quite a large project.
 `make distclean` will clean MuJS and GRX as well.
 
+## A minimal script
+You can find the following example in `tests/exampl.js`:
+```javascript
+function Setup() {
+	pink = new Color(241, 66, 244);	// define the color pink
+}
+
+function Loop() {
+	TextXY(SizeX(), SizeY(), "Hello World", pink);
+}
+```
+Run this with `DOjS.EXE tests\exampl.js`.
+
 # Known bugs/limitations
 * SoundBlaster IRQ detection only works for IRQs 3, 5 and 7. I could not figure out why the system locks up when 2, 10 and 11 are tried as well.
 * There seems to be a bug in the FM sound system. Sounds created by DOjS sound different to the ones created by Steven Dons original code.
-* The JavaScript API is not stable yet. The current naming scheme is inconsistent to say the least...
-* All script-code has to be in a single file, no `include()` function yet.
+* ~~The JavaScript API is not stable yet. The current naming scheme is inconsistent to say the least...~~
+* ~~All script-code has to be in a single file, no `include()` function yet.~~
 * Some (nice) functions from GRX are still missing.
 * Scripts are responsible to provide a way to exit DOjS, no general exit mechanism like with Processing is implemented yet.
-* Error handling is a nightmare. So far I could neither find a way to display a propper stack trace nor the offending line!
+* ~~Error handling is a nightmare. So far I could neither find a way to display a propper stack trace nor the offending line!~~
 * WAV files need to be 11025Hz, 8bit, mono. Different sample rates produce a warning in the logfile (and sound weird). Different formats are outright refused.
 * BMPs must be read 2, 4, 8 bpp.
 * The Makefile does not honor the include files for dependencies.
+* `MouseShowCursor(false)` does not work
 
 # Planed work
 * Fix bugs!
-* Add text-file reading/writing.
-* Add including other JS files.
+* ~~Add text-file reading/writing.~~
+* ~~Add including other JS files.~~
 * Add more GRX functions to JavaScript API.
 * split up `func.c` into `grx.c` and `func.c`.
-* Straigten/cleanup the JavaScript API.
-* Rework the way scripts are started to the `setup()/loop()` solution known from Processing/Arduino.
+* ~~Straighten/cleanup the JavaScript API.~~
+* ~~Rework the way scripts are started to the `setup()/loop()` solution known from Processing/Arduino.~~
 * Include an in-system text editor like [KeXted](https://github.com/abelidze/KeXted) to change the scripts.
 * Make scripts restartable.
 * Include PNG loading.
 * Improve sound loading/output.
+* Add IXP network code.
 
 # Licenses
 ## DOjS
@@ -82,8 +97,13 @@ MuJS is released under **ISC license**. See *COPYING* in the MuJS folder for det
 ## GRX
 GRX itself is released under **LGPL**, the fonts are under **MIT and other licenses**. See *copying.grx* in the grx folder for details.
 
-## SoundBlaster DMA, FM sound and SoundBlaster detection code
-This code (modified by me) is (c) bei [Steven Don](http://www.shdon.com/). It is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) with kind permission of Steven.
+## SoundBlaster MIDI, DMA, FM sound and SoundBlaster detection code
+This code (modified by me) is (c) bei [Steven Don](http://www.shdon.com/). It is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) with kind permission of Steven. `FM.DAT` is released under [WTFPL](http://www.wtfpl.net/).
+
+## IPX and dosbuffer sub-system
+This code is taken from the game [Cylindrix](https://www.allegro.cc/depot/Cylindrix) by Hotwarez LLC, Goldtree Enterprises.
+It was [released](https://sourceforge.net/projects/cylindrix/) under GPLv2.
+
 
 ## CWSDPMI.EXE
 CWSDPMI(http://sandmann.dotster.com/cwsdpmi/) DPMI host is licensed under GPL. The documentation states:
@@ -92,7 +112,59 @@ CWSDPMI(http://sandmann.dotster.com/cwsdpmi/) DPMI host is licensed under GPL. T
 # JS API description
 A very minimal API documentation.
 
-## Colors
+## Script format
+Scripts need to provide two functions: `Setup()` and `Loop()`. Scripts are loaded and executed top-own. After that `Setup()` is called once and then `Loop()` repeatedly.
+
+### Setup()
+This function is called once at startup. It can initialize variables, setup hardware, etc.
+
+### Loop()
+This function is called after setup repeatedly until `Stop()` is called. After calling `Stop()` the program ends when `Loop()` exits.
+
+## File
+### f = new File(filename:string, mode:string)
+Open a file and store it as userdata in JS object. For file modes see `jsboot/file.js`. Files can only either be read or written, never both. Writing to a closed file throws an exception.
+
+### f.ReadByte():number
+Read a single byte from file and return it as number.
+
+### f.WriteByte(ch:number)
+Write a single byte to
+
+### f.ReadLine():string
+Read a line of text from file. The maximum line length is 4096 byte.
+
+### f.WriteLine(txt:string)
+Write a NEWLINE terminated string to a file.
+
+### f.WriteString(txt:string)
+Write a string to a file.
+
+### f.Close()
+Close the file.
+
+## IPX networking
+DOjS supports IPX networking.
+
+### IpxSocketOpen(num:number)
+Open an IPX socket.
+
+### IpxSocketClose()
+Close IPX socket (if any).
+
+### IpxSendPacket(data:string, dest:array[6:number])
+Send packet via IPX. Max length 79 byte.
+
+### IpxCheckPacket():boolean
+Check for packet in receive buffer
+
+### IpxGetPacket():{data:string, source:array[6:number]}
+Get packet from receive buffer (or NULL).
+
+### IpxGetLocalAddress():array[6:number]
+Get the local address.
+
+## Color
 See *jsboot/color.js* for predefined EGA colors.
 
 ### c = new Color(red:number, green:number, blue:number)
@@ -150,8 +222,21 @@ Calculate string width for this font.
 ### f.StringHeight(text:string):number
 Calculate string height for this font.
 
+## Midi
+### mid = new Midi(filename:string)
+Load a midi file.
+
+### mid.Play()
+Play the midi file.
+
+### MidiIsPlaying():boolean
+Check if the file is still playing
+
+### MidiStop()
+Stop playing midi.
+
 ## Sound
-### snd = Sound(filename:string)
+### snd = new Sound(filename:string)
 Load a WAV (11025Hz, 8bit, mono).
 
 ### snd.filename
@@ -279,10 +364,10 @@ draw a filled polygon.
 draw a filled convex polygon.
 
 ### MouseSetSpeed(spmul:number, spdiv:number)
-set mosue speed
+set mouse speed
 
 ### MouseSetAccel(thresh:number, accel:number)
-set mosue acceleration
+set mouse acceleration
 
 ### MouseSetLimits(x1:number, y1:number, x2:number, y2:number)
 set mouse limits
@@ -310,7 +395,14 @@ Enable/disable mouse/keyboard events
 
 ### MouseSetColors(fg:Color, bg:Color)
 Set mouse pointer colors.
- 
+
+## MouseSetCursorMode(mode:int, ...)
+change mode of the cursor.
+MouseSetCursorMode(MOUSE.Mode.NORMAL) or
+MouseSetCursorMode(MOUSE.Mode.RUBBER,xanchor,yanchor,GrColor) or
+MouseSetCursorMode(MOUSE.Mode.LINE,xanchor,yanchor,GrColor) or
+MouseSetCursorMode(MOUSE.Mode.BOX,dx1,dy1,dx2,dy2,GrColor) or
+
 ### TextXY(x:number, y:number, text:string, fg:Color, bg:Color)
 Draw a text with the default font.
 
@@ -324,11 +416,21 @@ Draw a text with the default font.
 ### MOUSE_AVAILABLE: boolean
 `true` if mouse is available.
 
+### MIDI_AVAILABLE: boolean
+`true` if midi is available.
+
 ### Print(a, ...)
 Write data to `JSLOG.TXT` logfile.
 
-### Quit()
-Exit DOsJ.
+### Stop()
+DOjS will exit after the current call to `Loop()`.
 
 ### Sleep(ms:number)
 Sleep for the given number of ms.
+
+### Read(filename:string):string
+Load the contents of a file into a string.
+
+### Require(filename:string):module
+Used to load a module. The functions from this module can be accessed using the returned value.
+

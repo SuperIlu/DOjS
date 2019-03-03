@@ -501,7 +501,7 @@ static void SBSound_play(js_State *J) {
  *
  * @param J VM state.
  */
-bool init_sbsound(js_State *J) {
+bool init_sbsound(js_State *J, char *sb_set) {
     sblaster_t blaster;
 
     js_newobject(J);
@@ -509,7 +509,35 @@ bool init_sbsound(js_State *J) {
     js_newcconstructor(J, new_SBSound, new_SBSound, TAG_SBSOUND, 1);
     js_defglobal(J, TAG_SBSOUND, JS_DONTENUM);
 
-    if (detect_sb(&blaster)) {
+    bool ret;
+    if (sb_set) {
+        if (sscanf(sb_set, "%X:%u:%u", &blaster.port, &blaster.irq, &blaster.dma) == 3) {
+            ret = true;
+            if (blaster.port < 0x220 || blaster.port > 0x280) {
+                LOGF("SBlaster: Port out of range: 0x%03X\n", blaster.port);
+                ret = false;
+            }
+            if (blaster.irq < 2 || blaster.irq > 11) {
+                LOGF("SBlaster: IRQ out of range: %d\n", blaster.irq);
+                ret = false;
+            }
+            if (blaster.dma < 0 || blaster.dma > 7) {
+                LOGF("SBlaster: DMA out of range: %d\n", blaster.dma);
+                ret = false;
+            }
+        } else {
+            LOGF("SBlaster: autodetection override failed: Wrong format in '%s'", sb_set);
+            ret = false;
+        }
+        if (ret) {
+            LOGF("SBlaster: autodetection override with port 0x%3X, irq %d, dma %d\n", blaster.port, blaster.irq, blaster.dma);
+        }
+    } else {
+        // try to detect
+        ret = detect_sb(&blaster);
+    }
+
+    if (ret) {
         bool ret = snd_ResetDSP(blaster.port, blaster.irq, blaster.dma);
 
         snd_StartPlayBack();
@@ -522,7 +550,11 @@ bool init_sbsound(js_State *J) {
 /**
  * @brief shutdown WAV subsystem.
  */
-void shutdown_sbsound() { snd_FreeBuffer(); }
+void shutdown_sbsound() {
+    if (sound_available) {
+        snd_FreeBuffer();
+    }
+}
 #else
 
 bool init_sbsound(js_State *J) { return false; }

@@ -12,9 +12,15 @@
 #include <mujs.h>
 #include <stdbool.h>
 
+/************
+** defines **
+************/
 #define TAG_SBSOUND "Sound"  //!< class name for Sound()
 
-extern bool init_sbsound(js_State *J);
+/***********************
+** exported functions **
+***********************/
+extern bool init_sbsound(js_State *J, char *sb_set);
 extern void shutdown_sbsound(void);
 
 #endif  // __SBSOUND_H__

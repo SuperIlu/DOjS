@@ -83,10 +83,13 @@ static void new_Font(js_State *J) {
     js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
     js_pushnumber(J, f->font->minwidth);
-    js_defproperty(J, -2, "minwidth", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "minwidth", 0);
 
     js_pushnumber(J, f->font->maxwidth);
-    js_defproperty(J, -2, "maxwidth", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "maxwidth", 0);
+
+    js_pushnumber(J, f->font->h.height);
+    js_defproperty(J, -2, "height", 0);
 }
 
 /**
@@ -149,6 +152,33 @@ static void Font_StringHeight(js_State *J) {
     js_pushnumber(J, GrFontStringHeight(f->font, str, strlen(str), GR_BYTE_TEXT));
 }
 
+/**
+ * @brief resize font to new width/height.
+ * font.Resize(w:number, h:number)
+ *
+ * @param J VM state.
+ */
+static void Font_Resize(js_State *J) {
+    font_t *f = js_touserdata(J, 0, TAG_FONT);
+    int w = js_toint16(J, 1);
+    int h = js_toint16(J, 2);
+
+    GrFont *new = GrBuildConvertedFont(f->font, GR_FONTCVT_RESIZE, w, h, 0, 0);
+    if (new) {
+        GrUnloadFont(f->font);
+        f->font = new;
+    }
+
+    js_pushnumber(J, f->font->minwidth);
+    js_setproperty(J, 0, "minwidth");
+
+    js_pushnumber(J, f->font->maxwidth);
+    js_setproperty(J, 0, "maxwidth");
+
+    js_pushnumber(J, f->font->h.height);
+    js_setproperty(J, 0, "height");
+}
+
 /***********************
 ** exported functions **
 ***********************/
@@ -163,6 +193,7 @@ void init_font(js_State *J) {
         PROTDEF(J, Font_DrawString, TAG_FONT, "DrawString", 6);
         PROTDEF(J, Font_StringWidth, TAG_FONT, "StringWidth", 1);
         PROTDEF(J, Font_StringHeight, TAG_FONT, "StringHeight", 1);
+        PROTDEF(J, Font_Resize, TAG_FONT, "Resize", 2);
     }
     js_newcconstructor(J, new_Font, new_Font, TAG_FONT, 1);
     js_defglobal(J, TAG_FONT, JS_DONTENUM);

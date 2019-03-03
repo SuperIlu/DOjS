@@ -26,8 +26,14 @@ SOFTWARE.
 #include <mujs.h>
 #include "DOjS.h"
 
+/************
+** defines **
+************/
 #define TAG_BITMAP "Bitmap"  //!< class name for Bitmap()
 
+/***********************
+** exported functions **
+***********************/
 extern void init_bitmap(js_State *J);
 
 #endif  // __BITMAP_H__

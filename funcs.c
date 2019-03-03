@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <dirent.h>
 #include <errno.h>
 #include <grx20.h>
 #include <grxkeys.h>
@@ -27,11 +28,19 @@ SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <time.h>
+
+#include <grxbmp.h>  // broken include file, can only be included once!
 
 #include "DOjS.h"
 #include "color.h"
 #include "funcs.h"
+#include "util.h"
 
+/************
+** structs **
+************/
 //! polygon data as needed by the drawing functions.
 typedef struct poly_array {
     int len;    //!< number of entries
@@ -39,55 +48,147 @@ typedef struct poly_array {
 } poly_array_t;
 
 /**
- * @brief read a whole string as file.
- * read(fname:string):string
+ * @brief read a whole file as string.
+ * Read(fname:string):string
  *
  * @param J the JS context.
  */
 static void f_Read(js_State *J) {
-    const char *filename = js_tostring(J, 1);
+    const char *fname = js_tostring(J, 1);
     FILE *f;
     char *s;
     int n, t;
 
-    f = fopen(filename, "rb");
+    f = fopen(fname, "rb");
     if (!f) {
-        js_error(J, "cannot open file '%s': %s", filename, strerror(errno));
+        js_error(J, "Can't open file '%s': %s", fname, strerror(errno));
+        return;
     }
 
     if (fseek(f, 0, SEEK_END) < 0) {
         fclose(f);
-        js_error(J, "cannot seek in file '%s': %s", filename, strerror(errno));
+        js_error(J, "Can't seek in file '%s': %s", fname, strerror(errno));
+        return;
     }
 
     n = ftell(f);
     if (n < 0) {
         fclose(f);
-        js_error(J, "cannot tell in file '%s': %s", filename, strerror(errno));
+        js_error(J, "Can't tell in file '%s': %s", fname, strerror(errno));
+        return;
     }
 
     if (fseek(f, 0, SEEK_SET) < 0) {
         fclose(f);
-        js_error(J, "cannot seek in file '%s': %s", filename, strerror(errno));
+        js_error(J, "Can't seek in file '%s': %s", fname, strerror(errno));
+        return;
     }
 
     s = malloc(n + 1);
     if (!s) {
         fclose(f);
         js_error(J, "out of memory");
+        return;
     }
 
     t = fread(s, 1, n, f);
     if (t != n) {
         free(s);
         fclose(f);
-        js_error(J, "cannot read data from file '%s': %s", filename, strerror(errno));
+        js_error(J, "Can't read data from file '%s': %s", fname, strerror(errno));
+        return;
     }
     s[n] = 0;
 
     js_pushstring(J, s);
     free(s);
     fclose(f);
+}
+
+/**
+ * @brief get directory listing.
+ * List(dname:string):[f1:string, f1:string, ...]
+ *
+ * @param J the JS context.
+ */
+static void f_List(js_State *J) {
+    const char *dirname = js_tostring(J, 1);
+    DIR *dir = opendir(dirname);
+    if (!dir) {
+        js_error(J, "Cannot open dir '%s': %s", dirname, strerror(errno));
+        return;
+    }
+
+    struct dirent *de;
+    js_newarray(J);
+    int idx = 0;
+    while ((de = readdir(dir)) != NULL) {
+        js_pushstring(J, de->d_name);
+        js_setindex(J, -2, idx);
+        idx++;
+    }
+
+    closedir(dir);
+}
+
+/**
+ * @brief convert time_t into something like a javascript time string.
+ *
+ * @param t the time_t
+ *
+ * @return char* pointer to a static buffer with the conversion result.
+ */
+static char *f_formatTime(time_t *t) {
+    static char buf[100];
+    struct tm *tm = localtime(t);
+    strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%S.000", tm);
+    return buf;
+}
+
+/**
+ * @brief file/directory info.
+ * Stat(name:string):{}
+ *
+ * @param J the JS context.
+ */
+static void f_Stat(js_State *J) {
+    const char *name = js_tostring(J, 1);
+
+    struct stat s;
+    if (stat(name, &s) != 0) {
+        js_error(J, "Cannot stat '%s': %s", name, strerror(errno));
+        return;
+    }
+
+    char *drive = "A:";
+    drive[0] += s.st_dev;
+
+    js_newobject(J);
+    {
+        js_pushstring(J, drive);
+        js_setproperty(J, -2, "drive");
+        js_pushstring(J, f_formatTime(&s.st_atime));
+        js_setproperty(J, -2, "atime");
+        js_pushstring(J, f_formatTime(&s.st_ctime));
+        js_setproperty(J, -2, "ctime");
+        js_pushstring(J, f_formatTime(&s.st_mtime));
+        js_setproperty(J, -2, "mtime");
+        js_pushnumber(J, s.st_size);
+        js_setproperty(J, -2, "size");
+        js_pushnumber(J, s.st_blksize);
+        js_setproperty(J, -2, "blksize");
+        js_pushnumber(J, s.st_nlink);
+        js_setproperty(J, -2, "nlink");
+
+        js_pushboolean(J, S_ISREG(s.st_mode));
+        js_setproperty(J, -2, "is_regular");
+        js_pushboolean(J, S_ISDIR(s.st_mode));
+        js_setproperty(J, -2, "is_directory");
+        js_pushboolean(J, S_ISCHR(s.st_mode));
+        js_setproperty(J, -2, "is_chardev");
+        js_pushboolean(J, S_ISBLK(s.st_mode));
+        js_setproperty(J, -2, "is_blockdev");
+    }
 }
 
 /**
@@ -197,6 +298,17 @@ static poly_array_t *f_convertArray(js_State *J, int idx) {
 static void f_Stop(js_State *J) { keep_running = false; }
 
 /**
+ * @brief do garbage collection.
+ * Gc(report:boolean)
+ *
+ * @param J the JS context.
+ */
+static void f_Gc(js_State *J) {
+    bool report = js_toboolean(J, 1);
+    js_gc(J, report);
+}
+
+/**
  * @brief get number of possible colors.
  * NumColors():number
  *
@@ -210,7 +322,7 @@ static void f_NumColors(js_State *J) { js_pushnumber(J, GrNumColors()); }
  *
  * @param J
  */
-static void f_GetScreenMode(js_State *J) { js_pushstring(J, getModeString()); }
+static void f_GetScreenMode(js_State *J) { js_pushstring(J, ut_getModeString()); }
 
 /**
  * @brief get name of grafics adapter.
@@ -218,7 +330,7 @@ static void f_GetScreenMode(js_State *J) { js_pushstring(J, getModeString()); }
  *
  * @param J
  */
-static void f_GetScreenAdapter(js_State *J) { js_pushstring(J, getAdapterString()); }
+static void f_GetScreenAdapter(js_State *J) { js_pushstring(J, ut_getAdapterString()); }
 
 /**
  * @brief get number of remaining free colors.
@@ -236,23 +348,29 @@ static void f_NumFreeColors(js_State *J) { js_pushnumber(J, GrNumFreeColors()); 
  */
 static void f_Sleep(js_State *J) { GrSleep(js_toint32(J, 1)); }
 
+/**
+ * @brief get current time in ms.
+ * MsecTime():number
+ *
+ * @param J the JS context.
+ */
 static void f_MsecTime(js_State *J) { js_pushnumber(J, GrMsecTime()); }
 
 /**
- * @brief wait for keypress and return the keycode.
- * KeyRead():number
+ * @brief get current framerate.
+ * GetFramerate():number
  *
  * @param J the JS context.
  */
-static void f_KeyRead(js_State *J) { js_pushnumber(J, GrKeyRead()); }
+static void f_GetFramerate(js_State *J) { js_pushnumber(J, current_frame_rate); }
 
 /**
- * @brief check for keypress.
- * KeyPressed():boolean
+ * @brief set wanted framerate.
+ * SetFramerate(wanted:number)
  *
  * @param J the JS context.
  */
-static void f_KeyPressed(js_State *J) { js_pushboolean(J, GrKeyPressed()); }
+static void f_SetFramerate(js_State *J) { wanted_frame_rate = (float)js_tonumber(J, 1); }
 
 /**
  * @brief get the width of the drawing area.
@@ -898,58 +1016,6 @@ static void f_MouseSetCursorMode(js_State *J) {
 static void f_MouseCursorIsDisplayed(js_State *J) { js_pushboolean(J, GrMouseCursorIsDisplayed()); }
 
 /**
- * @brief check if there are pending events
- * MousePendingEvent():boolean
- *
- * @param J the JS context.
- */
-static void f_MousePendingEvent(js_State *J) { js_pushboolean(J, GrMousePendingEvent()); }
-
-/**
- * @brief get the next event filtered by flags.
- * MouseGetEvent(flags:number):{x:number, y:number, flags:number,
- * buttons:number, key:number, kbstat:number, dtime:number}
- *
- * @param J the JS context.
- */
-static void f_MouseGetEvent(js_State *J) {
-    GrMouseEvent event;
-    int flags = js_toint16(J, 1);
-    GrMouseGetEvent(flags, &event);
-
-    js_newobject(J);
-    {
-        js_pushnumber(J, event.x);
-        js_setproperty(J, -2, "x");
-        js_pushnumber(J, event.y);
-        js_setproperty(J, -2, "y");
-        js_pushnumber(J, event.flags);
-        js_setproperty(J, -2, "flags");
-        js_pushnumber(J, event.buttons);
-        js_setproperty(J, -2, "buttons");
-        js_pushnumber(J, event.key);
-        js_setproperty(J, -2, "key");
-        js_pushnumber(J, event.kbstat);
-        js_setproperty(J, -2, "kbstat");
-        js_pushnumber(J, event.dtime);
-        js_setproperty(J, -2, "dtime");
-    }
-}
-
-/**
- * @brief enable/disable mouse/keyboard events
- * MouseEventEnable(kb:boolean, ms:boolean)
- *
- * @param J the JS context.
- */
-static void f_MouseEventEnable(js_State *J) {
-    bool kb = js_toboolean(J, 1);
-    bool ms = js_toboolean(J, 2);
-
-    GrMouseEventEnable(kb, ms);
-}
-
-/**
  * @brief set mouse pointer colors.
  * MouseSetColors(fg:Color, bg:Color)
  *
@@ -978,6 +1044,44 @@ static void f_TextXY(js_State *J) {
     GrColor *bg = js_touserdata(J, 5, TAG_COLOR);
 
     GrTextXY(x, y, (char *)str, *fg, *bg);
+}
+
+/**
+ * @brief change the exit-key for the script. Default: ESCAPE.
+ * SetExitKey(key:number)
+ *
+ * @param J the JS context.
+ */
+static void f_SetExitKey(js_State *J) { exit_key = js_toint32(J, 1); }
+
+/**
+ * @brief save current screen to file.
+ * SaveBmpImage(fname:string)
+ *
+ * @param J the JS context.
+ */
+static void f_SaveBmpImage(js_State *J) {
+    const char *fname = js_tostring(J, 1);
+
+    GrContext *ctx = GrScreenContext();
+
+    if (!GrSaveBmpImage((char *)fname, ctx, 0, 0, ctx->gc_xmax, ctx->gc_ymax)) {
+        js_error(J, "Can't save screen to BMP file '%s'", fname);
+    }
+}
+
+/**
+ * @brief save current screen to file.
+ * SavePngImage(fname:string)
+ *
+ * @param J the JS context.
+ */
+static void f_SavePngImage(js_State *J) {
+    const char *fname = js_tostring(J, 1);
+
+    if (GrSaveContextToPng(GrScreenContext(), (char *)fname) != 0) {
+        js_error(J, "Can't save screen to PNG file '%s'", fname);
+    }
 }
 
 #ifdef DEBUG_ENABLED
@@ -1026,12 +1130,15 @@ void init_funcs(js_State *J) {
 
     // define global functions
     FUNCDEF(J, f_Read, "Read", 1);
+    FUNCDEF(J, f_List, "List", 1);
+    FUNCDEF(J, f_Stat, "Stat", 1);
     FUNCDEF(J, f_Print, "Print", 0);
-    FUNCDEF(J, f_Stop, "Stop", 1);
+    FUNCDEF(J, f_Stop, "Stop", 0);
+    FUNCDEF(J, f_Gc, "Gc", 1);
     FUNCDEF(J, f_Sleep, "Sleep", 1);
     FUNCDEF(J, f_MsecTime, "MsecTime", 0);
-    FUNCDEF(J, f_KeyPressed, "KeyPressed", 0);
-    FUNCDEF(J, f_KeyRead, "KeyRead", 0);
+    FUNCDEF(J, f_SetFramerate, "SetFramerate", 1);
+    FUNCDEF(J, f_GetFramerate, "GetFramerate", 0);
 
     FUNCDEF(J, f_GetScreenAdapter, "GetScreenAdapter", 0);
     FUNCDEF(J, f_GetScreenMode, "GetScreenMode", 0);
@@ -1075,11 +1182,12 @@ void init_funcs(js_State *J) {
     FUNCDEF(J, f_MouseWarp, "MouseWarp", 2);
     FUNCDEF(J, f_MouseShowCursor, "MouseShowCursor", 1);
     FUNCDEF(J, f_MouseCursorIsDisplayed, "MouseCursorIsDisplayed", 0);
-    FUNCDEF(J, f_MousePendingEvent, "MousePendingEvent", 0);
-    FUNCDEF(J, f_MouseGetEvent, "MouseGetEvent", 1);
-    FUNCDEF(J, f_MouseEventEnable, "MouseEventEnable", 2);
     FUNCDEF(J, f_MouseSetColors, "MouseSetColors", 2);
     FUNCDEF(J, f_MouseSetCursorMode, "MouseSetCursorMode", 1);
+
+    FUNCDEF(J, f_SetExitKey, "SetExitKey", 1);
+    FUNCDEF(J, f_SaveBmpImage, "SaveBmpImage", 1);
+    FUNCDEF(J, f_SavePngImage, "SavePngImage", 1);
 
 #ifdef DEBUG_ENABLED
     FUNCDEF(J, f_Test, "TestFunc", 1);

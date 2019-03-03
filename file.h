@@ -26,9 +26,15 @@ SOFTWARE.
 #include <mujs.h>
 #include "DOjS.h"
 
+/************
+** defines **
+************/
 #define JSINC_FILE BOOT_DIR "file.js"  //!< boot script for file subsystem
 #define TAG_FILE "File"                //!< class name for File()
 
+/***********************
+** exported functions **
+***********************/
 extern void init_file(js_State *J);
 
 #endif  // __FILE_H__

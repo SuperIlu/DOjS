@@ -20,14 +20,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <errno.h>
 #include <mujs.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "DOjS.h"
 #include "file.h"
 
+/************
+** defines **
+************/
 #define MAX_LINE_LENGTH 4096  //!< read at max 4KiB
 
 /************
@@ -83,7 +88,7 @@ static void new_File(js_State *J) {
 
     f->file = fopen(fname, mode);
     if (!f->file) {
-        js_error(J, "cannot open file: '%s'", fname);
+        js_error(J, "cannot open file '%s': %s", fname, strerror(errno));
     }
 
     js_currentfunction(J);

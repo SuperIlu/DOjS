@@ -33,6 +33,8 @@
 #define ADDRESS_SIZE 6
 #define IPX_DELAY 3 /* Amount we delay between sending packets */
 
+#define JSINC_IPX BOOT_DIR "ipx.js"  //!< boot script for ipx subsystem
+
 /*************
 ** typedefs **
 *************/
@@ -95,8 +97,9 @@ typedef struct {
     unsigned short buffer_pos;                    /* The most recent packet */
 } packet_buffer_t;
 
-#define JSINC_IPX BOOT_DIR "ipx.js"  //!< boot script for ipx subsystem
-
+/***********************
+** exported functions **
+***********************/
 extern bool init_ipx(js_State *J);
 extern void shutdown_ipx();
 

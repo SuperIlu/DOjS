@@ -12,8 +12,14 @@
 #include <mujs.h>
 #include <stdbool.h>
 
+/************
+** defines **
+************/
 #define TAG_MIDI "Midi"  //!< class name for Midi()
 
+/*********************
+** static functions **
+*********************/
 extern bool init_midi(js_State *J);
 extern void shutdown_midi(void);
 

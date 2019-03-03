@@ -45,7 +45,7 @@ static void Color_Finalize(js_State *J, void *data) {
 
 /**
  * @brief create a color and store it as userdata in JS object.
- * new Color(red:number, green:number, blue:number)
+ * new Color(red:number, green:number, blue:number [, mask:number])
  *
  * @param J VM state.
  */
@@ -59,6 +59,20 @@ static void new_Color(js_State *J) {
         }
 
         *color = GrAllocColor(js_toint16(J, 1), js_toint16(J, 2), js_toint16(J, 3));
+
+        // mask the color if wanted
+        int mask = js_tryinteger(J, 4, -1);
+        switch (mask) {
+            case 1:
+                *color = GrXorModeColor(*color);
+                break;
+            case 2:
+                *color = GrOrModeColor(*color);
+                break;
+            case 3:
+                *color = GrAndModeColor(*color);
+                break;
+        }
         js_currentfunction(J);
         js_getproperty(J, -1, "prototype");
         js_newuserdata(J, TAG_COLOR, color, Color_Finalize);
@@ -66,8 +80,6 @@ static void new_Color(js_State *J) {
         // add properties
         js_pushnumber(J, *color);
         js_defproperty(J, -2, "value", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
-
-        // DEBUGF("Created Color 0x%08X\n", *color);
     }
 }
 

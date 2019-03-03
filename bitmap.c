@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include "DOjS.h"
 #include "bitmap.h"
+#include "util.h"
 
 /************
 ** structs **
@@ -36,6 +37,7 @@ SOFTWARE.
 typedef struct __bitmap {
     GrPattern *pat;         //!< GrPattern for the image
     GrBmpImageColors *pal;  //!< allocated colors for the image
+    GrContext *ctx;         //!< context data in case of a PNG
 } bitmap_t;
 
 /*********************
@@ -50,6 +52,9 @@ static void Bitmap_Finalize(js_State *J, void *data) {
     bitmap_t *bm = (bitmap_t *)data;
     GrFreeBmpImageColors(bm->pal);
     GrDestroyPattern(bm->pat);
+    if (bm->ctx) {
+        GrDestroyContext(bm->ctx);
+    }
     free(bm);
 }
 
@@ -68,15 +73,41 @@ static void new_Bitmap(js_State *J) {
         return;
     }
 
-    GrBmpImage *bmp = GrLoadBmpImage((char *)fname);
-    if (!bmp) {
-        js_error(J, "Can't load image '%s'", fname);
+    if (ut_endsWith(fname, ".BMP") || ut_endsWith(fname, ".bmp")) {
+        GrBmpImage *bmp = GrLoadBmpImage((char *)fname);
+        if (!bmp) {
+            js_error(J, "Can't load BMP image '%s'", fname);
+            free(bm);
+            return;
+        }
+        GrAllocBmpImageColors(bmp, bm->pal);
+        GrPattern *pat = GrConvertBmpImageToStaticPattern(bmp);
+        bm->pat = pat;
+    } else if (ut_endsWith(fname, ".PNG") || ut_endsWith(fname, ".png")) {
+        int width, height;
+        if (GrQueryPng((char *)fname, &width, &height) != 0) {
+            js_error(J, "Can't determine size of PNG image '%s'", fname);
+            free(bm);
+            return;
+        }
+        bm->ctx = GrCreateContext(width, height, NULL, NULL);
+        if (!bm->ctx) {
+            js_error(J, "No memory for PNG image '%s'", fname);
+            free(bm);
+            return;
+        }
+        if (GrLoadContextFromPng(bm->ctx, (char *)fname, 1) != 0) {
+            js_error(J, "Can't load PNG image '%s'", fname);
+            GrDestroyContext(bm->ctx);
+            free(bm);
+            return;
+        }
+        bm->pat = GrConvertToPixmap(bm->ctx);
+    } else {
+        js_error(J, "Filename does not end with .BMP or .PNG '%s'", fname);
         free(bm);
         return;
     }
-    GrAllocBmpImageColors(bmp, bm->pal);
-    GrPattern *pat = GrConvertBmpImageToStaticPattern(bmp);
-    bm->pat = pat;
 
     js_currentfunction(J);
     js_getproperty(J, -1, "prototype");
@@ -86,10 +117,10 @@ static void new_Bitmap(js_State *J) {
     js_pushstring(J, fname);
     js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
-    js_pushnumber(J, pat->gp_pixmap.pxp_width);
+    js_pushnumber(J, bm->pat->gp_pixmap.pxp_width);
     js_defproperty(J, -2, "width", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
-    js_pushnumber(J, pat->gp_pixmap.pxp_height);
+    js_pushnumber(J, bm->pat->gp_pixmap.pxp_height);
     js_defproperty(J, -2, "height", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 }
 

@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <conio.h>
 #include <grx20.h>
 #include <grxkeys.h>
 #include <jsi.h>
@@ -27,10 +28,12 @@ SOFTWARE.
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "DOjS.h"
 #include "bitmap.h"
 #include "color.h"
+#include "edit.h"
 #include "file.h"
 #include "fmmusic.h"
 #include "font.h"
@@ -38,6 +41,7 @@ SOFTWARE.
 #include "ipx.h"
 #include "midiplay.h"
 #include "sbsound.h"
+#include "util.h"
 
 /**************
 ** Variables **
@@ -54,7 +58,12 @@ bool ipx_available;    //!< indicates if ipx is available
 
 bool keep_running;  //!< indicates that the script should keep on running
 
+float current_frame_rate;  //!< current frame rate
+float wanted_frame_rate;   //!< wanted frame rate
+
 const char *lastError;
+
+GrKeyType exit_key = GrKey_Escape;  //!< the exit key that will stop the script
 
 /*********************
 ** static functions **
@@ -63,7 +72,20 @@ const char *lastError;
  * @brief show usage on console
  */
 static void usage() {
-    fprintf(stderr, "Usage: DOjS <script>\n");
+    fputs("Usage: DOjS.EXE [-r] [-s <p>:<i>:<d>] <script>\n", stderr);
+    fputs("    -r             : Do not invoke the editor, just run the script.\n", stderr);
+    fputs("    -w <width>     : Screen width: 320 or 640, Default: 640.\n", stderr);
+    fputs("    -b <bbp>       : Bit per pixel:8, 16, 24, 32. Default: 24.\n", stderr);
+    fputs("    -s <p>:<i>:<d> : Override sound card auto detection with given values.\n", stderr);
+    fputs("                     p := Port (220h - 280h).\n", stderr);
+    fputs("                     i := IRQ  (2 - 11).\n", stderr);
+    fputs("                     d := DMA  (0 - 7).\n", stderr);
+    fputs("                     Example: -s 220:5:1\n", stderr);
+    fputs("\n", stderr);
+    fputs("This is DOjS " DOSJS_VERSION "\n", stderr);
+    fputs("(c) 2019 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
+    fputs("See LICENSE for detailed licensing information.\n", stderr);
+    fputs("\n", stderr);
     exit(1);
 }
 
@@ -72,170 +94,111 @@ static void usage() {
  *
  * @param J VM state.
  */
-static void Panic(js_State *J) { LOGF("In line %d of %s\n!!! PANIC !!!\n", J->line, J->filename); }
+static void Panic(js_State *J) { LOGF("!!! PANIC in %s !!!\n", J->filename); }
 
 /**
  * @brief write 'report' message.
  *
  * @param J VM state.
  */
-static void Report(js_State *J, const char *message) { LOGF("In line %d of %s\n%s\n", J->line, J->filename, message); }
+static void Report(js_State *J, const char *message) {
+    lastError = message;
+    LOGF("%s\n", message);
+}
 
+/**
+ * @brief call a globally define JS function.
+ *
+ * @param J VM state.
+ * @param name function name.
+ *
+ * @return true if the function was found.
+ * @return false if the function was not found.
+ */
 static bool callGlobal(js_State *J, const char *name) {
     js_getglobal(J, name);
     js_pushnull(J);
     if (js_pcall(J, 0)) {
         lastError = js_trystring(J, -1, "Error");
-        LOGF("%s\n", lastError);
+        LOGF("Error calling %s: %s\n", name, lastError);
         return false;
     }
     js_pop(J, 1);
     return true;
 }
 
-/***********************
-** exported functions **
-***********************/
-const char *getAdapterString() {
-    switch (GrAdapterType()) {
-        case GR_VGA:
-            return ("GR_VGA");
-        case GR_EGA:
-            return ("GR_EGA");
-        case GR_HERC:
-            return ("GR_HERC");
-        case GR_8514A:
-            return ("GR_8514A");
-        case GR_S3:
-            return ("GR_S3");
-        case GR_XWIN:
-            return ("GR_XWIN");
-        case GR_WIN32:
-            return ("GR_WIN32");
-        case GR_LNXFB:
-            return ("GR_LNXFB");
-        case GR_SDL:
-            return ("GR_SDL");
-        case GR_MEM:
-            return ("GR_MEM");
-        default:
-            return ("Unknown");
-    }
-}
-
-const char *getModeString() {
-    switch (GrCurrentMode()) {
-        case GR_80_25_text:
-            return ("GR_80_25_text");
-        case GR_default_text:
-            return ("GR_default_text");
-        case GR_width_height_text:
-            return ("GR_width_height_text");
-        case GR_biggest_text:
-            return ("GR_biggest_text");
-        case GR_320_200_graphics:
-            return ("GR_320_200_graphics");
-        case GR_default_graphics:
-            return ("GR_default_graphics");
-        case GR_width_height_graphics:
-            return ("GR_width_height_graphics");
-        case GR_biggest_noninterlaced_graphics:
-            return ("GR_biggest_noninterlaced_graphics");
-        case GR_biggest_graphics:
-            return ("GR_biggest_graphics");
-        case GR_width_height_color_graphics:
-            return ("GR_width_height_color_graphics");
-        case GR_width_height_color_text:
-            return ("GR_width_height_color_text");
-        case GR_custom_graphics:
-            return ("GR_custom_graphics");
-        case GR_NC_80_25_text:
-            return ("GR_NC_80_25_text");
-        case GR_NC_default_text:
-            return ("GR_NC_default_text");
-        case GR_NC_width_height_text:
-            return ("GR_NC_width_height_text");
-        case GR_NC_biggest_text:
-            return ("GR_NC_biggest_text");
-        case GR_NC_320_200_graphics:
-            return ("GR_NC_320_200_graphics");
-        case GR_NC_default_graphics:
-            return ("GR_NC_default_graphics");
-        case GR_NC_width_height_graphics:
-            return ("GR_NC_width_height_graphics");
-        case GR_NC_biggest_noninterlaced_graphics:
-            return ("GR_NC_biggest_noninterlaced_graphics");
-        case GR_NC_biggest_graphics:
-            return ("GR_NC_biggest_graphics");
-        case GR_NC_width_height_color_graphics:
-            return ("GR_NC_width_height_color_graphics");
-        case GR_NC_width_height_color_text:
-            return ("GR_NC_width_height_color_text");
-        case GR_NC_custom_graphics:
-            return ("GR_NC_custom_graphics");
-        case GR_width_height_bpp_graphics:
-            return ("GR_width_height_bpp_graphics");
-        case GR_width_height_bpp_text:
-            return ("GR_width_height_bpp_text");
-        case GR_custom_bpp_graphics:
-            return ("GR_custom_bpp_graphics");
-        case GR_NC_width_height_bpp_graphics:
-            return ("GR_NC_width_height_bpp_graphics");
-        case GR_NC_width_height_bpp_text:
-            return ("GR_NC_width_height_bpp_text");
-        case GR_NC_custom_bpp_graphics:
-            return ("case GR_NC_custom_bpp_graphics");
-        default:
-            return ("Unknown");
-    }
-}
-
 /**
- * @brief cleanly shut down the system by freeing resources.
+ * @brief handle input.
+ *
+ * @param J VM state.
+ *
+ * @return true if the found event was exit_key.
+ * @return false if no or any other event occured.
  */
-void cleanup() {
-    LOG("DOjS Shutdown...\n");
-    shutdown_midi();
-    shutdown_sbsound();
-    shutdown_fmmusic();
-    shutdown_ipx();
-#ifndef PLATFORM_UNIX
-    fclose(logfile);
-#endif
-    GrSetMode(GR_default_text);
+static bool callInput(js_State *J) {
+    GrMouseEvent event;
+    bool ret = false;
+
     if (mouse_available) {
-        GrMouseUnInit();
-    }
-    if (lastError) {
-        fputs(lastError, stderr);
-        fputs("\nDOjS ERROR\n", stderr);
+        GrMouseGetEvent(GR_M_EVENT | GR_M_POLL, &event);
     } else {
-        fputs("DOjS OK\n", stderr);
+        event.flags = 0;
+        event.x = 0;
+        event.y = 0;
+        event.buttons = 0;
+        event.key = 0;
+        event.kbstat = 0;
+        event.dtime = 0;
+        if (GrKeyPressed()) {
+            event.key = GrKeyRead();
+            event.flags = GR_M_KEYPRESS;
+        }
     }
+
+    if (event.flags) {
+        ret = event.key == exit_key;
+        js_getglobal(J, CB_INPUT);
+        js_pushnull(J);
+        js_newobject(J);
+        {
+            js_pushnumber(J, event.x);
+            js_setproperty(J, -2, "x");
+            js_pushnumber(J, event.y);
+            js_setproperty(J, -2, "y");
+            js_pushnumber(J, event.flags);
+            js_setproperty(J, -2, "flags");
+            js_pushnumber(J, event.buttons);
+            js_setproperty(J, -2, "buttons");
+            js_pushnumber(J, event.key);
+            js_setproperty(J, -2, "key");
+            js_pushnumber(J, event.kbstat);
+            js_setproperty(J, -2, "kbstat");
+            js_pushnumber(J, event.dtime);
+            js_setproperty(J, -2, "dtime");
+        }
+        if (js_pcall(J, 1)) {
+            lastError = js_trystring(J, -1, "Error");
+            LOGF("Error calling Input(): %s\n", lastError);
+        }
+        js_pop(J, 1);
+    }
+    return ret;
 }
 
 /**
- * @brief main entry point.
+ * @brief run the given script.
  *
- * @param argc command line parameters.
- * @param argv number of parameters.
- *
- * @return int exit code.
+ * @param sb_set soundblaster override string.
+ * @param script the script filename.
+ * @param width screen width.
+ * @param bbp bit per pixel.
  */
-int main(int argc, char **argv) {
+static void run_script(char *sb_set, char *script, int width, int bbp) {
     js_State *J;
-
-    // check parameters
-    if (argc != 2) {
-        usage();
-    }
-
 #ifndef PLATFORM_UNIX
-    // make sure all stdout is redirected to logfile
+    // create logfile
     logfile = fopen(LOGFILE, "a");
     setbuf(logfile, 0);
-    freopen(LOGFILE, "a", stdout);
-    setbuf(stdout, 0);
 #endif
 
     // create VM
@@ -245,7 +208,10 @@ int main(int argc, char **argv) {
 
     // write startup message
     LOG("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
-    LOGF("DOjS %s starting with file %s\n", DOSJS_VERSION, argv[1]);
+    LOGF("DOjS %s starting with file %s\n", DOSJS_VERSION, script);
+#ifdef DEBUG_ENABLED
+    // ut_dumpVideoModes();
+#endif
 
     // detect hardware and initialize subsystems
     if (GrMouseDetect()) {
@@ -258,7 +224,7 @@ int main(int argc, char **argv) {
     }
     synth_available = init_fmmusic(J);
     midi_available = init_midi(J);
-    sound_available = init_sbsound(J);
+    sound_available = init_sbsound(J, sb_set);
     ipx_available = init_ipx(J);
     init_funcs(J);  // must be called after initalizing the booleans above!
     init_color(J);
@@ -268,7 +234,11 @@ int main(int argc, char **argv) {
 
     // create canvas
 #ifndef PLATFORM_UNIX
-    GrSetMode(GR_width_height_bpp_graphics, 640, 480, 24);
+    if (width == 640) {
+        GrSetMode(GR_width_height_bpp_graphics, 640, 480, bbp);
+    } else {
+        GrSetMode(GR_width_height_bpp_graphics, 320, 240, bbp);
+    }
 #else
     GrSetMode(GR_default_graphics);
 #endif
@@ -283,19 +253,134 @@ int main(int argc, char **argv) {
     js_dofile(J, JSINC_IPX);
 
     // load main file
-    js_dofile(J, argv[1]);
-
-    // call setup()
-    keep_running = true;
     lastError = NULL;
-    if (callGlobal(J, "Setup")) {
-        // call loop() until someone calls Stop()
-        while (keep_running) {
-            if (!callGlobal(J, "Loop")) {
-                break;
+    if (js_dofile(J, script) == 0) {
+        // call setup()
+        keep_running = true;
+        wanted_frame_rate = 30;
+        if (callGlobal(J, CB_SETUP)) {
+            // call loop() until someone calls Stop()
+            while (keep_running) {
+                long start = GrMsecTime();
+                if (!callGlobal(J, CB_LOOP)) {
+                    lastError = "Loop() not found.";
+                    LOG("Loop() not found.");
+                    break;
+                }
+                if (callInput(J)) {
+                    keep_running = false;
+                }
+                long end = GrMsecTime();
+                long runtime = (end - start) + 1;
+                current_frame_rate = 1000 / runtime;
+                if (current_frame_rate > wanted_frame_rate) {
+                    long delay = (1000 / wanted_frame_rate) - runtime;
+                    GrSleep(delay);
+                }
+                end = GrMsecTime();
+                runtime = (end - start) + 1;
+                current_frame_rate = 1000 / runtime;
             }
+        } else {
+            lastError = "Setup() not found.";
+            LOG("Setup() not found.");
         }
     }
-    // clean exit
-    cleanup();
+
+    LOG("DOjS Shutdown...\n");
+    shutdown_midi();
+    shutdown_sbsound();
+    shutdown_fmmusic();
+    shutdown_ipx();
+#ifndef PLATFORM_UNIX
+    fclose(logfile);
+#endif
+    if (mouse_available) {
+        GrMouseUnInit();
+    }
+    GrSetMode(GR_default_text);
+    if (lastError) {
+        fputs(lastError, stdout);
+        fputs("\nDOjS ERROR\n", stdout);
+    } else {
+        fputs("DOjS OK\n", stdout);
+    }
+    fflush(stdout);
+}
+
+/**
+ * @brief main entry point.
+ *
+ * @param argc command line parameters.
+ * @param argv number of parameters.
+ *
+ * @return int exit code.
+ */
+int main(int argc, char **argv) {
+    char *sb_set = NULL;
+    char *script = NULL;
+    bool run = false;
+    int width = 640;
+    int bpp = 24;
+    int opt;
+
+    // check parameters
+    while ((opt = getopt(argc, argv, "rs:w:b:")) != -1) {
+        switch (opt) {
+            case 'w':
+                width = atoi(optarg);
+                break;
+            case 'b':
+                bpp = atoi(optarg);
+                break;
+            case 'r':
+                run = true;
+                break;
+            case 's':
+                sb_set = optarg;
+                break;
+            default: /* '?' */
+                usage();
+                exit(EXIT_FAILURE);
+        }
+    }
+
+    if (optind >= argc) {
+        fprintf(stderr, "Script name missing.\n");
+        usage();
+        exit(EXIT_FAILURE);
+    } else {
+        script = argv[optind];
+    }
+
+    if (width != 640 && width != 320) {
+        fprintf(stderr, "Screen width must be 640 or 320 pixel, not %d.\n", width);
+        usage();
+        exit(EXIT_FAILURE);
+    }
+
+    if (bpp != 8 && bpp != 16 && bpp != 24 && bpp != 32) {
+        fprintf(stderr, "Bits per pixel must be 8, 16, 24 or 32 pixel, not %d.\n", bpp);
+        usage();
+        exit(EXIT_FAILURE);
+    }
+
+    while (true) {
+        edi_exit_t exit = EDI_KEEPRUNNING;
+        if (!run) {
+            exit = edi_edit(script);
+        } else {
+            exit = EDI_RUNSCRIPT;
+        }
+
+        if (exit == EDI_RUNSCRIPT) {
+            run_script(sb_set, script, width, bpp);
+        }
+
+        if (run || exit == EDI_QUIT || exit == EDI_ERROR) {
+            break;
+        }
+    }
+
+    exit(0);
 }

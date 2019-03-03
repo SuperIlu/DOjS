@@ -411,6 +411,7 @@ bool detect_sb(sblaster_t *blaster) {
     det_WriteDSP(0xDA);
 
     // Display results
+    LOG("SBlaster: Detection result\n");
     LOGF("Card                : %s\n", det_CType);
     LOGF("Base port           : 0x%03X\n", det_Base);
     blaster->port = det_Base;

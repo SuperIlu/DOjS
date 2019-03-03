@@ -13,8 +13,14 @@
 #include <mujs.h>
 #include "DOjS.h"
 
+/************
+** defines **
+************/
 #define JSINC_FMMUSIC BOOT_DIR "fmmusic.js"  //!< boot script for fm music subsystem
 
+/***********************
+** exported functions **
+***********************/
 extern bool init_fmmusic(js_State *J);
 extern void shutdown_fmmusic();
 

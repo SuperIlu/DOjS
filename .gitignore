@@ -26,8 +26,18 @@ DOjS
 *.x86_64
 *.hex
 
+# dependencies
+*.d
+
+# other files
+edi.js
+req.js
+NEW.JS
+DOJS.ZIP
 JSLOG.TXT
+EDILOG.TXT
 TEST.TXT
+CWSDPMI.SWP
 stderr.txt
 stdout.txt
 grx249/bin/fnt2c
@@ -35,8 +45,10 @@ grx249/bin/bin2c
 grx249/bin/xmodetest
 grx249/src/systag.002
 grx249/src/systag.004
+lpng1636/pnglibconf.h
 
-jsboot/fonts
-todo
-upx
-cylindrix
+# other dirs
+upx/
+cylindrix/
+jsboot/fonts/
+build/

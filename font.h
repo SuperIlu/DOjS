@@ -26,9 +26,15 @@ SOFTWARE.
 #include <mujs.h>
 #include "DOjS.h"
 
+/************
+** defines **
+************/
 #define JSINC_FONT BOOT_DIR "font.js"  //!< boot script for font subsystem
 #define TAG_FONT "Font"                //!< class name for Font()
 
+/***********************
+** exported functions **
+***********************/
 extern void init_font(js_State *J);
 
 #endif  // __FONT_H__

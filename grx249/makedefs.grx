@@ -15,11 +15,11 @@ HAVE_LIBTIFF=n
 HAVE_LIBJPEG=n
 
 # Specify if you have libpng.a and corresponding .h files.
-HAVE_LIBPNG=n
+HAVE_LIBPNG=y
 
 # Specify if one of the above libs requires the
 # zlib compression library
-NEED_ZLIB=n
+NEED_ZLIB=y
 
 # Specify if you want to include printing code from addons
 INCLUDE_PRINTING_CODE=n
@@ -53,6 +53,7 @@ BUILD_X86_64=y
 EP=x
 
 ### SYSTEM SETTINGS ######################################################
+INCLUDES=-I../../zlib-1.2.11 -I../../lpng1636
 
 CC     = $(CROSS_PLATFORM)gcc
 PC     = $(CROSS_PLATFORM)gpc
@@ -70,10 +71,10 @@ WIN32_GCC_i386_STATIC = $(SYSTEM_TAG_PREFIX).006
 ANY_GCC_SDL_STATIC    = $(SYSTEM_TAG_PREFIX).008
 
 ifdef   DEBUG
-CCOPT = -O2 -fno-strict-aliasing -Wall -g -DDEBUG=$(DEBUG)
+CCOPT = -O2 -fno-strict-aliasing -Wall -g -DDEBUG=$(DEBUG) $(INCLUDES)
 LDOPT = -g
 else
-CCOPT = -O2 -fno-strict-aliasing -Wall
+CCOPT = -O2 -fno-strict-aliasing -Wall $(INCLUDES)
 LDOPT = -s
 endif
 

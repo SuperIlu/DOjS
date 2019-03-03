@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 FILE = {
-	READ: "r",
-	WRITE: "w",
-	APPEND: "a"
+	READ: "rb",
+	WRITE: "wb",
+	APPEND: "ab"
 };

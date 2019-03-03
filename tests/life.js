@@ -63,9 +63,4 @@ function Loop() {
     var tmp = old;
     old = cur;
     cur = tmp;
-
-    if (KeyPressed()) {
-        while (KeyPressed()) { KeyRead(); }
-        Stop();
-    }
 }

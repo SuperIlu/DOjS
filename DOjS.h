@@ -23,6 +23,8 @@ SOFTWARE.
 #ifndef __DOJS_H__
 #define __DOJS_H__
 
+#include <grx20.h>
+#include <grxkeys.h>
 #include <mujs.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -30,14 +32,18 @@ SOFTWARE.
 /************
 ** defines **
 ************/
-#define SYSINFO ">>> "
+#define CB_SETUP "Setup"  //!< name of setup function
+#define CB_LOOP "Loop"    //!< name of loop function
+#define CB_INPUT "Input"  //!< name of input function
 
-#define DOSJS_VERSION "V0.6"  //!< version number
+#define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define BOOT_DIR "jsboot/"  //!< directory with boot files.
+#define DOSJS_VERSION "V0.7"  //!< version number
+
+#define BOOT_DIR "JSBOOT/"  //!< directory with boot files.
 
 #ifndef PLATFORM_UNIX
-#define LOGFILE "jslog.txt"  //!< filename for logfile
+#define LOGFILE "JSLOG.TXT"  //!< filename for logfile
 
 #define LOGSTREAM logfile  //!< output stream for logging on DOS
 #else
@@ -121,13 +127,10 @@ extern bool mouse_available;  //!< indicates if the mouse is available
 extern bool midi_available;   //!< indicates if midi is available
 extern bool ipx_available;    //!< indicates if ipx is available
 
-extern bool keep_running;  //!< indicates that the script should keep on running
+extern float current_frame_rate;  //!< current frame rate
+extern float wanted_frame_rate;   //!< wanted frame rate
 
-/***********************
-** exported functions **
-***********************/
-extern void cleanup();
-const char *getModeString();
-const char *getAdapterString();
+extern bool keep_running;   //!< indicates that the script should keep on running
+extern GrKeyType exit_key;  //!< the exit key that will stop the script
 
 #endif  // __DOJS_H__

@@ -12,19 +12,28 @@
 
 #include <stdbool.h>
 
+/*************
+** typedefs **
+*************/
 //! sound blaster type enum
 typedef enum _blaster_type { SB_NONE, SB_UNKOWN, SBLASTER, SBLASTER_15, SBLASTER_PRO2, SBLASTER_PRO3, SBLASTER_AWE } blaster_type_t;
 
+/************
+** structs **
+************/
 //! sound blaster parameter struct
 typedef struct _sblaster {
-    unsigned int port;
-    unsigned int irq;
-    unsigned int dma;
-    unsigned int dma_high;
-    bool bit16;
-    blaster_type_t type;
+    unsigned int port;      //!< port
+    unsigned int irq;       //!< irq
+    unsigned int dma;       //!< low dma channel
+    unsigned int dma_high;  //!< high dma channel
+    bool bit16;             //!< TRUE if a 16bit card was detected
+    blaster_type_t type;    //!< card type description
 } sblaster_t;
 
+/*********************
+** static functions **
+*********************/
 extern bool detect_sb(sblaster_t *blaster);
 
 #endif  // __SBDET_H__

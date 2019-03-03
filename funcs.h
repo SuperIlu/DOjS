@@ -26,8 +26,14 @@ SOFTWARE.
 #include <mujs.h>
 #include "DOjS.h"
 
+/************
+** defines **
+************/
 #define JSINC_FUNC BOOT_DIR "func.js"  //!< boot script for grx subsystem
 
+/***********************
+** exported functions **
+***********************/
 extern void init_funcs(js_State *J);
 
 #endif  // __FUNCS_H__

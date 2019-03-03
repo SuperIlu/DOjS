@@ -20,6 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+COLOR = {
+        XOR: 1,
+        OR: 2,
+        AND: 3
+};
+
 //! some EGA color definitions
 EGA = {
         BLACK: new Color(0, 0, 0),
@@ -41,3 +47,5 @@ EGA = {
         YELLOW: new Color(255, 255, 85),
         WHITE: new Color(255, 255, 255)
 };
+
+NO_COLOR = new Color(0, 0, 0, COLOR.XOR);

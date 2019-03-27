@@ -20,13 +20,41 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * Color flags.
+ * @namespace COLOR
+ * @property {*} XOR XOR the color onto the screen.
+ * @property {*} OR OR the color onto the screen.
+ * @property {*} AND AND the color onto the screen.
+ */
 COLOR = {
         XOR: 1,
         OR: 2,
         AND: 3
 };
 
-//! some EGA color definitions
+/**
+ * EGA Color definition.
+ * @namespace EGA
+ * @property {Color} BLACK EGA color.
+ * @property {Color} BLUE EGA color.
+ * @property {Color} GREEN EGA color.
+ * @property {Color} CYAN EGA color.
+ * @property {Color} RED EGA color.
+ * @property {Color} MAGENTA EGA color.
+ * @property {Color} BROWN EGA color.
+ * @property {Color} LIGHT_GRAY EGA color.
+ * @property {Color} LIGHT_GREY EGA color.
+ * @property {Color} DARK_GRAY EGA color.
+ * @property {Color} DARK_GREY EGA color.
+ * @property {Color} LIGHT_BLUE EGA color.
+ * @property {Color} LIGHT_GREEN EGA color.
+ * @property {Color} LIGHT_CYAN EGA color.
+ * @property {Color} LIGHT_RED EGA color.
+ * @property {Color} LIGHT_MAGENTA EGA color.
+ * @property {Color} YELLOW EGA color.
+ * @property {Color} WHITE EGA color.
+ */
 EGA = {
         BLACK: new Color(0, 0, 0),
         BLUE: new Color(0, 0, 170),
@@ -48,4 +76,7 @@ EGA = {
         WHITE: new Color(255, 255, 255)
 };
 
+/**
+ * @property {Color} NO_COLOR the transparent Color.
+ */
 NO_COLOR = new Color(0, 0, 0, COLOR.XOR);

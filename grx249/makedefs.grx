@@ -74,7 +74,7 @@ ifdef   DEBUG
 CCOPT = -O2 -fno-strict-aliasing -Wall -g -DDEBUG=$(DEBUG) $(INCLUDES)
 LDOPT = -g
 else
-CCOPT = -O2 -fno-strict-aliasing -Wall $(INCLUDES)
+CCOPT = -O2 -fno-strict-aliasing -Wall $(INCLUDES) -march=i386 -mtune=i586
 LDOPT = -s
 endif
 

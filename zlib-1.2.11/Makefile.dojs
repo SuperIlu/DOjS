@@ -11,7 +11,7 @@
 INCLUDE_PATH=.
 
 CFLAGS=-MMD -O3 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
-             -Wstrict-prototypes -Wmissing-prototypes -I$(INCLUDE_PATH)
+             -Wstrict-prototypes -Wmissing-prototypes -I$(INCLUDE_PATH) -march=i386 -mtune=i586
 
 INCL=zlib.h zconf.h
 LIBS=libz.a

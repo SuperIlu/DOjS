@@ -21,6 +21,7 @@ SOFTWARE.
 */
 
 #include <dirent.h>
+#include <dpmi.h>
 #include <errno.h>
 #include <grx20.h>
 #include <grxkeys.h>
@@ -192,6 +193,25 @@ static void f_Stat(js_State *J) {
 }
 
 /**
+ * @brief print to stdout with newline.
+ * Println(t1, t2, ...)
+ *
+ * @param J the JS context.
+ */
+static void f_Println(js_State *J) {
+    int i, top = js_gettop(J);
+    for (i = 1; i < top; ++i) {
+        const char *s = js_tostring(J, i);
+        if (i > 1) {
+            putc(' ', LOGSTREAM);
+        }
+        fputs(s, LOGSTREAM);
+    }
+    putc('\n', LOGSTREAM);
+    js_pushundefined(J);
+}
+
+/**
  * @brief print to stdout.
  * Print(t1, t2, ...)
  *
@@ -206,7 +226,6 @@ static void f_Print(js_State *J) {
         }
         fputs(s, LOGSTREAM);
     }
-    putc('\n', LOGSTREAM);
     js_pushundefined(J);
 }
 
@@ -306,6 +325,26 @@ static void f_Stop(js_State *J) { keep_running = false; }
 static void f_Gc(js_State *J) {
     bool report = js_toboolean(J, 1);
     js_gc(J, report);
+}
+
+/**
+ * @brief get memory info
+ * MemoryInfo():{"used":XXX, "available":XXX}
+ *
+ * @param J the JS context.
+ */
+static void f_MemoryInfo(js_State *J) {
+    _go32_dpmi_meminfo info;
+
+    js_newobject(J);
+    {
+        if ((_go32_dpmi_get_free_memory_information(&info) == 0) && (info.total_physical_pages != -1)) {
+            js_pushnumber(J, info.total_physical_pages * 4096);
+            js_setproperty(J, -2, "total");
+            js_pushnumber(J, _go32_dpmi_remaining_physical_memory());
+            js_setproperty(J, -2, "remaining");
+        }
+    }
 }
 
 /**
@@ -440,7 +479,7 @@ static void f_arcReturn(js_State *J) {
 static void f_ClearScreen(js_State *J) {
     GrColor *color = js_touserdata(J, 1, TAG_COLOR);
 
-    GrClearScreen(*color);
+    GrClearContext(*color);
 }
 
 /**
@@ -565,6 +604,7 @@ static void f_CircleArc(js_State *J) {
  *    xc:number,
  *    yc:number,
  *    xa:number,
+ *    ya:number,
  *    start:number,
  *    end:number,
  *    style:number,
@@ -609,7 +649,7 @@ static void f_FilledBox(js_State *J) {
 
 /**
  * @brief draw a framed box.
- * FramedBox(x1:number, y1:number, x2:number, y2:number, [
+ * FramedBox(x1:number, y1:number, x2:number, y2:number, wdt:number, [
  *    intcolor:Color,
  *    topcolor:Color,
  *    rightcolor:Color,
@@ -815,7 +855,7 @@ static void f_FloodSpill2(js_State *J) {
 
 /**
  * @brief draw a polyline.
- * PolyLine(c:Color, [[x1, x2], [..], [xN, yN]])
+ * PolyLine([[x1, x2], [..], [xN, yN]], c:Color)
  *
  * @param J the JS context.
  */
@@ -830,7 +870,7 @@ static void f_PolyLine(js_State *J) {
 
 /**
  * @brief draw a polygon.
- * Polygon(c:Color, [[x1, x2], [..], [xN, yN]])
+ * Polygon([[x1, x2], [..], [xN, yN]], c:Color)
  *
  * @param J the JS context.
  */
@@ -845,7 +885,7 @@ static void f_Polygon(js_State *J) {
 
 /**
  * @brief draw a filled polygon.
- * FilledPolygon(c:Color, [[x1, x2], [..], [xN, yN]])
+ * FilledPolygon([[x1, x2], [..], [xN, yN]], c:Color)
  *
  * @param J the JS context.
  */
@@ -860,7 +900,7 @@ static void f_FilledPolygon(js_State *J) {
 
 /**
  * @brief draw a filled convex polygon.
- * FilledConvexPolygon(c:Color, [[x1, x2], [..], [xN, yN]])
+ * FilledConvexPolygon([[x1, x2], [..], [xN, yN]], c:Color)
  *
  * @param J the JS context.
  */
@@ -964,7 +1004,6 @@ static void f_MouseWarp(js_State *J) {
  */
 static void f_MouseShowCursor(js_State *J) {
     bool show = js_toboolean(J, 1);
-    DEBUGF("Cursor=%d\n", show);
     if (show) {
         GrMouseDisplayCursor();
     } else {
@@ -1123,6 +1162,9 @@ static void f_Test(js_State *J) {
  */
 void init_funcs(js_State *J) {
     // define some global properties
+    js_pushglobal(J);
+    js_setglobal(J, "global");
+
     PROPDEF_B(J, sound_available, "SOUND_AVAILABLE");
     PROPDEF_B(J, synth_available, "SYNTH_AVAILABLE");
     PROPDEF_B(J, mouse_available, "MOUSE_AVAILABLE");
@@ -1133,8 +1175,10 @@ void init_funcs(js_State *J) {
     FUNCDEF(J, f_List, "List", 1);
     FUNCDEF(J, f_Stat, "Stat", 1);
     FUNCDEF(J, f_Print, "Print", 0);
+    FUNCDEF(J, f_Println, "Println", 0);
     FUNCDEF(J, f_Stop, "Stop", 0);
     FUNCDEF(J, f_Gc, "Gc", 1);
+    FUNCDEF(J, f_MemoryInfo, "MemoryInfo", 0);
     FUNCDEF(J, f_Sleep, "Sleep", 1);
     FUNCDEF(J, f_MsecTime, "MsecTime", 0);
     FUNCDEF(J, f_SetFramerate, "SetFramerate", 1);

@@ -31,7 +31,7 @@ else ifeq "$(build)" "sanitize"
   CFLAGS += -pipe -g -fsanitize=address -fno-omit-frame-pointer
   LDFLAGS += -fsanitize=address
 else
-  CFLAGS += -O2
+  CFLAGS += -O2 -march=i386 -mtune=i586 -ffast-math 
   LDFLAGS += -Wl,-s
 endif
 

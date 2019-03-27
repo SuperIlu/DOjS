@@ -37,6 +37,8 @@ DOJS.ZIP
 JSLOG.TXT
 EDILOG.TXT
 TEST.TXT
+TEST.JS
+TEST2.JS
 CWSDPMI.SWP
 stderr.txt
 stdout.txt
@@ -52,3 +54,8 @@ upx/
 cylindrix/
 jsboot/fonts/
 build/
+allegro-4.2.2-xc-master/
+p5.js-master/
+tests/p5.js/
+doc/html/
+.vscode/ipch

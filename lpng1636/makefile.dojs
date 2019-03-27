@@ -13,7 +13,7 @@ INCPATH=$(prefix)/include
 LIBPATH=$(prefix)/lib
 
 CPPFLAGS=-I../zlib-1.2.11/ -DPNG_NO_SNPRINTF
-CFLAGS=-O2
+CFLAGS=-O2 -march=i386 -mtune=i586
 LDFLAGS=-L. -L../zlib-1.2.11/ -lpng -lz -lm
 
 RANLIB=ranlib

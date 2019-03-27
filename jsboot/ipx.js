@@ -20,7 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-//! constants for IPX
+/**
+ * IPX definitions.
+ * @namespace IPX
+ * @property {*} DEFAULT_SOCKET default socket number for DOjS.
+ * @property {*} BROADCAST broadcast address
+ */
 IPX = {
 	DEFAULT_SOCKET: 0x2342,
 	BROADCAST: [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]

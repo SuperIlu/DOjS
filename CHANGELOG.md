@@ -1,3 +1,19 @@
+**Version 0.8 (the fourth forecoming)**
+* Tuned the compiler flags to pentium class CPUs
+* Added command line option to turn off SoundBlaster code
+* Added double buffering to video output to reduce the flickering
+* Added more examples
+* Added `MemoryInfo()`
+* Changed `Print()` to `Println()`, added `Print()` w/o NEWLINE.
+* Added `Include()` which loads a module into top level context.
+* Added `Debug()` and `DEBUG` to support conditional debug output.
+* Changed `Require()` to search modules in `jsboot/` and the current directory.
+* `File.ReadByte()` now returns `null` at EOF.
+* Improved documentation.
+* Improved detection of missing SoundBlaster.
+* Added Processing/p5js compatibility layer.
+* Added some examples from the p5js example library.
+
 **Version 0.7 (the third installment)**
 * Wrote a text editor for in-line script editing.
 * Added inline-help and logfile viewer.
@@ -14,6 +30,7 @@
 * Added `List()` and `Stat()` for directory traversal.
 * Shortened key codes in `jsboot/func.js` and added `CharCode()`
 * DOjS now has a mascot.
+* Makefile now had ZIP target.
 
 **Version 0.6 (the 2nd coming)**
 * Added CHANGELOG

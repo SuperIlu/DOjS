@@ -20,6 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/**
+ * file mode definition.
+ * @namespace FILE
+ * @property {*} READ open file in read mode.
+ * @property {*} WRITE open file in write mode (truncating existing contents)
+ * @property {*} APPEND open file in append mode.
+ */
 FILE = {
 	READ: "rb",
 	WRITE: "wb",

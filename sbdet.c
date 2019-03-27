@@ -332,7 +332,7 @@ bool detect_sb(sblaster_t *blaster) {
     }
     if (Temp == 9) {
         // or none at all
-        DEBUG("No Sound Blaster found %d\n");
+        DEBUG("No Sound Blaster found\n");
         blaster->type = SB_NONE;
         return false;
     }
@@ -409,6 +409,13 @@ bool detect_sb(sblaster_t *blaster) {
     // Stops DMA-transfer
     det_WriteDSP(0xD0);
     det_WriteDSP(0xDA);
+
+    if (det_IRQ == 0) {
+        // or none at all
+        DEBUG("No Sound Blaster found %d\n");
+        blaster->type = SB_NONE;
+        return false;
+    }
 
     // Display results
     LOG("SBlaster: Detection result\n");

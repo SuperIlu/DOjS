@@ -511,7 +511,10 @@ bool init_sbsound(js_State *J, char *sb_set) {
 
     bool ret;
     if (sb_set) {
-        if (sscanf(sb_set, "%X:%u:%u", &blaster.port, &blaster.irq, &blaster.dma) == 3) {
+        if (strcmp(sb_set, "none") == 0) {
+            LOG("SBlaster: DISABLED\n");
+            ret = false;
+        } else if (sscanf(sb_set, "%X:%u:%u", &blaster.port, &blaster.irq, &blaster.dma) == 3) {
             ret = true;
             if (blaster.port < 0x220 || blaster.port > 0x280) {
                 LOGF("SBlaster: Port out of range: 0x%03X\n", blaster.port);

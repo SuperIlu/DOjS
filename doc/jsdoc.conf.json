@@ -1,0 +1,24 @@
+{
+	"source": {
+		"include": [
+			"internal.js",
+			"objects.js",
+			"classes.js",
+			"../jsboot/func.js",
+			"../jsboot/color.js",
+			"../jsboot/file.js",
+			"../jsboot/fmmusic.js",
+			"../jsboot/font.js",
+			"../jsboot/ipx.js",
+			"../jsboot/p5.js",
+			"../jsboot/p5math.js",
+			"../jsboot/p5typo.js",
+			"../jsboot/p5util.js",
+			"../jsboot/p5vect.js"
+		],
+		"excludePattern": ""
+	},
+	"opts": {
+		"template": "/usr/local/lib/node_modules/tui-jsdoc-template"
+	}
+}

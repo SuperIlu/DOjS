@@ -81,6 +81,7 @@ static void usage() {
     fputs("                     i := IRQ  (2 - 11).\n", stderr);
     fputs("                     d := DMA  (0 - 7).\n", stderr);
     fputs("                     Example: -s 220:5:1\n", stderr);
+    fputs("                              -s none to disable sound\n", stderr);
     fputs("\n", stderr);
     fputs("This is DOjS " DOSJS_VERSION "\n", stderr);
     fputs("(c) 2019 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
@@ -242,7 +243,12 @@ static void run_script(char *sb_set, char *script, int width, int bbp) {
 #else
     GrSetMode(GR_default_graphics);
 #endif
+
+    // create context to use for drawing, will be blitted to the screen after Loop()
     GrClearScreen(GrBlack());
+    GrContext *ctx = GrCreateContext(GrSizeX(), GrSizeY(), NULL, NULL);
+    GrSetContext(ctx);
+    GrClearContext(GrBlack());
 
     // do some more init from JS
     js_dofile(J, JSINC_FUNC);
@@ -267,6 +273,7 @@ static void run_script(char *sb_set, char *script, int width, int bbp) {
                     LOG("Loop() not found.");
                     break;
                 }
+                GrBitBltNC(GrScreenContext(), 0, 0, ctx, 0, 0, GrMaxX(), GrMaxY(), GrWRITE);
                 if (callInput(J)) {
                     keep_running = false;
                 }
@@ -298,6 +305,8 @@ static void run_script(char *sb_set, char *script, int width, int bbp) {
     if (mouse_available) {
         GrMouseUnInit();
     }
+    GrSetContext(NULL);
+    GrDestroyContext(ctx);
     GrSetMode(GR_default_text);
     if (lastError) {
         fputs(lastError, stdout);

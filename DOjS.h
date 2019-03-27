@@ -38,7 +38,7 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION "V0.7"  //!< version number
+#define DOSJS_VERSION "V0.8"  //!< version number
 
 #define BOOT_DIR "JSBOOT/"  //!< directory with boot files.
 

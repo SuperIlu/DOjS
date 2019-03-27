@@ -20,22 +20,76 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/* @module other */
+
+/**
+ * @property {boolean} DEBUG enable/disable Debug() output.
+ */
+DEBUG = false;
+
+
+/**
+ * print javascript debug output if DEBUG is true.
+ * @param {string} str the message to print.
+ */
+function Debug(str) {
+	if (DEBUG) {
+		var str = "";
+		for (var i = 0; i < arguments.length; i++) {
+			str += arguments[i] + " ";
+		};
+		Println("-=> ", str);
+	}
+}
+
 /**
  * import a module.
- * 
- * @param {*} name module file name.
- * 
+ * @param {string} name module file name.
  * @returns the imported module.
  */
 function Require(name) {
-	var cache = Require.cache;
-	if (name in cache) { return cache[name]; }
-	var exports = {};
-	cache[name] = exports;
-	Function('exports', Read(name + '.js'))(exports);
-	return exports;
+	// look in cache
+	if (name in Require.cache) {
+		Debug("Require(cached)", name);
+		return Require.cache[name];
+	}
+
+	var names = [name, name + '.JS', 'JSBOOT/' + name, 'JSBOOT/' + name + '.JS'];
+	Debug("Require(names)", JSON.stringify(names));
+
+	for (var i = 0; i < names.length; i++) {
+		var n = names[i];
+		Debug("Require()", 'Trying "' + n + '"');
+		var content;
+		try {
+			content = Read(n);
+		} catch (e) {
+			Debug("Require()", n + " Not found");
+			continue;
+		}
+		var exports = {};
+		Require.cache[name] = exports;
+		Function('exports', content)(exports);
+		return exports;
+	};
+
+
+	throw 'Could not load "' + name + '"';
 }
 Require.cache = Object.create(null);
+
+/**
+ * include a module. The exported functions are copied into global scope.
+ * 
+ * @param {string} name module file name.
+ */
+function Include(name) {
+	var e = Require(name);
+	for (var key in e) {
+		Debug("Include(toGlobal)", key);
+		global[key] = e[key];
+	}
+}
 
 /**
  * add toString() to Error class.
@@ -55,34 +109,78 @@ function StartupInfo() {
 	var height = SizeY();
 	var colors = NumColors();
 
-	Print(">>> Screen size=" + width + "x" + height + " with " + colors + " colors, mode=" + mode + ", adapter=" + adapter);
+	Debug("Screen size=" + width + "x" + height + " with " + colors + " colors, mode=" + mode + ", adapter=" + adapter);
+	Debug("Memory=" + JSON.stringify(MemoryInfo()));
 }
 StartupInfo();
 
 /**
  * get char code.
  * 
- * @param {*} s a string
+ * @param {string} s a string
  * @returns the ASCII-code of the first character.
  */
 function CharCode(s) {
 	return s.charCodeAt(0);
 }
 
-//! arc style definition
+/**
+ * arc style definition
+ * @namespace ARC
+ * @property {*} OPEN Open arc.
+ * @property {*} CLOSE1 closes the arc with a line between his start and end point.
+ * @property {*} CLOSE2 draws the typical cake slice.
+ */
 ARC = {
 	OPEN: 0,
 	CLOSE1: 1,
 	CLOSE2: 2
 };
 
-//! mouse/event constants
+/* @module */
+
+/**
+ * event interface.
+ * @namespace MOUSE
+ * @property {*} Mode.NORMAL just the cursor
+ * @property {*} Mode.RUBBER rect. rubber band (XOR-d to the screen)
+ * @property {*} Mode.LINE line attached to the cursor
+ * @property {*} Mode.BOX rectangular box dragged by the cursor
+ * @property {*} Flags event flags
+ * @property {*} Buttons mouse button definitions
+ * @property {*} Flags.MOTION
+ * @property {*} Flags.LEFT_DOWN
+ * @property {*} Flags.LEFT_UP
+ * @property {*} Flags.RIGHT_DOWN
+ * @property {*} Flags.RIGHT_UP
+ * @property {*} Flags.MIDDLE_DOWN
+ * @property {*} Flags.MIDDLE_UP
+ * @property {*} Flags.P4_DOWN
+ * @property {*} Flags.P4_UP
+ * @property {*} Flags.P5_DOWN
+ * @property {*} Flags.P5_UP
+ * @property {*} Flags.BUTTON_DOWN
+ * @property {*} Flags.BUTTON_UP
+ * @property {*} Flags.BUTTON_CHANGE
+ * @property {*} Flags.KEYPRESS
+ * @property {*} Flags.POLL
+ * @property {*} Flags.NOPAINT
+ * @property {*} Flags.COMMAND
+ * @property {*} Flags.EVENT
+ * @property {*} Buttons.LEFT
+ * @property {*} Buttons.RIGHT
+ * @property {*} Buttons.MIDDLE
+ * @property {*} Buttons.P4
+ * @property {*} Buttons.WHEEL_UP
+ * @property {*} Buttons.P5
+ * @property {*} Buttons.WHEEL_DOWN
+ */
 MOUSE = {
 	Mode: {
-		NORMAL: 0,	/* MOUSE CURSOR modes: just the cursor */
-		RUBBER: 1,	/* rect. rubber band (XOR-d to the screen) */
-		LINE: 2,	/* line attached to the cursor */
-		BOX: 3		/* rectangular box dragged by the cursor */
+		NORMAL: 0,
+		RUBBER: 1,
+		LINE: 2,
+		BOX: 3
 	},
 	Flags: {
 		MOTION: 0x001,
@@ -117,7 +215,12 @@ MOUSE = {
 	}
 };
 
-//! keycode/state constants
+/**
+ * keyboard input.
+ * @namespace KEY
+ * @property {*} State kbdstate definitions.
+ * @property {*} Code key definitions.
+ */
 KEY = {
 	State: {
 		RIGHTSHIFT: 0x01,	/* Keybd states: right shift key depressed */

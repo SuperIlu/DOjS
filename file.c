@@ -113,7 +113,12 @@ static void File_ReadByte(js_State *J) {
         js_error(J, "File was opened for writing!");
         return;
     } else {
-        js_pushnumber(J, getc(f->file));
+        int ch = getc(f->file);
+        if (ch != EOF) {
+            js_pushnumber(J, ch);
+        } else {
+            js_pushnull(J);
+        }
     }
 }
 

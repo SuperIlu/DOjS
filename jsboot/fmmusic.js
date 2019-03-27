@@ -7,7 +7,26 @@
 ** This is a derived/modified version by Andre Seidelt <superilu@yahoo.com>
 */
 
-//! some constants for notes and instruments in the FM subsystem
+
+/**
+ * Intrument and frequency definition for FM sound system.
+ * @namespace FMMUSIC
+ * @property {*} Notes.C note definition.
+ * @property {*} Notes.CSharp note definition.
+ * @property {*} Notes.D note definition.
+ * @property {*} Notes.DSharp note definition.
+ * @property {*} Notes.E note definition.
+ * @property {*} Notes.F note definition.
+ * @property {*} Notes.FSharp note definition.
+ * @property {*} Notes.G note definition.
+ * @property {*} Notes.GSharp note definition.
+ * @property {*} Notes.A note definition.
+ * @property {*} Notes.ASharp note definition.
+ * 
+ * @property {*} Harp a harp like instrument
+ * @property {*} Piano a piano like instrument
+ * @property {*} Flute a flute like instrument
+ */
 FMMUSIC = {
     Notes: {
         C: 343,

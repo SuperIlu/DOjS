@@ -246,13 +246,13 @@ draw an ellipse.
 ### CircleArc(x:number, y:number, r:number, start:number, end:number, style:number, c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
 Draw a circle arc. Returns an object with coordinates of the drawn arc: `{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}`.
 
-### EllipseArc(xc:number, yc:number, xa:number, start:number, end:number, style:number, c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
+### EllipseArc(xc:number, yc:number, xa:number, ya:number, start:number, end:number, style:number, c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
 Draw an ellipse arc. Returns an object with coordinates of the drawn arc: `{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}`.
 
 ### FilledBox(x1:number, y1:number, x2:number, y2:number, c:Color)
 draw a filled box.
 
-### FramedBox(x1:number, y1:number, x2:number, y2:number, [intcolor:Color, topcolor:Color, rightcolor:Color, bottomcolor:Color, leftcolor:Color])
+### FramedBox(x1:number, y1:number, x2:number, y2:number, wdt:number, [intcolor:Color, topcolor:Color, rightcolor:Color, bottomcolor:Color, leftcolor:Color])
 draw a framed box (3D effect box). The last parameter is an array with the colors to use for the borders.
 
 ### FilledCircle(x1:number, y1:number, r:number, c:Color)
@@ -276,16 +276,16 @@ do a flood spill.
 ### FloodSpill2(x1:number, y1:number, x2:number, y2:number, old1:Color, new1:Color, old2:Color, new2:Color)
 do a flood spill2.
 
-### PolyLine(c:Color, [[x1, x2], [..], [xN, yN]])
+### PolyLine([[x1, x2], [..], [xN, yN]], c:Color)
 draw a polyline.
 
-### Polygon(c:Color, [[x1, x2], [..], [xN, yN]])
+### Polygon([[x1, x2], [..], [xN, yN]], c:Color)
 draw a polygon.
 
-### FilledPolygon(c:Color, [[x1, x2], [..], [xN, yN]])
+### FilledPolygon([[x1, x2], [..], [xN, yN]], c:Color)
 draw a filled polygon.
 
-### FilledConvexPolygon(c:Color, [[x1, x2], [..], [xN, yN]])
+### FilledConvexPolygon([[x1, x2], [..], [xN, yN]], c:Color)
 draw a filled convex polygon.
 
 ### MouseSetSpeed(spmul:number, spdiv:number)
@@ -344,6 +344,9 @@ Save current screen to file.
 ### Print(a, ...)
 Write data to `JSLOG.TXT` logfile.
 
+### Println(a, ...)
+Write data to `JSLOG.TXT` logfile.
+
 ### Stop()
 DOjS will exit after the current call to `Loop()`.
 
@@ -364,6 +367,9 @@ Used to load a module. The functions exported from this module can be accessed u
 
 ### Gc(info:boolean)
 Run garbage collector, print statistics to logfile if `info==true`.
+
+### MemoryInfo():{"used":XXX, "available":XXX}
+Get memory statistics.
 
 ### SetFramerate(rate:number)
 Set maximum frame rate. If `Loop()` takes longer than `1/rate` seconds then the framerate will not be reached.

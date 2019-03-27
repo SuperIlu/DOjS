@@ -19,7 +19,7 @@ function Setup() {
     fntW = fnt.maxwidth;
     fntH = fnt.height;
 
-    Print("stepX=" + stepX + ", stepY=" + stepY);
+    Println("stepX=" + stepX + ", stepY=" + stepY);
 }
 
 function Loop() {

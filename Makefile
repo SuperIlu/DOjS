@@ -14,13 +14,15 @@ PNG=lpng1636
 INCLUDES=-I$(MUJS) -I$(GRX)/include -I$(GRX)/src/include -I$(GRX)/addons/bmp -I$(ZLIB) -I$(PNG)
 LIBS=-lgrx20 -lpng -lz -lmujs -lm -lemu
 
-CFLAGS=-MMD -Wall -pedantic -O2 $(INCLUDES) -DPLATFORM_MSDOS -DDEBUG_ENABLED
+CFLAGS=-MMD -Wall -pedantic -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -DPLATFORM_MSDOS -DDEBUG_ENABLED
 LDFLAGS=-L$(MUJS)/build/release -L$(GRX)/lib/dj2 -L$(ZLIB) -L$(PNG)
 
 EXE=DOjS.EXE
 
 FONTDIR=jsboot/fonts
 BUILDDIR=build
+
+DOCDIR=doc/html
 
 CROSS_PLATFORM=i586-pc-msdosdjgpp-
 CC=$(DJGPP)/$(CROSS_PLATFORM)gcc
@@ -79,24 +81,29 @@ $(EXE): $(PARTS)
 $(BUILDDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-zip: all
-	zip -9 -v -r DOJS.ZIP DOjS.EXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ tests/
+zip: all doc
+	zip -9 -v -r DOJS.ZIP DOjS.EXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ tests/ $(DOCDIR)
+
+doc:
+	rm -rf $(DOCDIR)
+	mkdir -p $(DOCDIR)
+	cd doc && jsdoc -c jsdoc.conf.json -d ../$(DOCDIR)
 
 init:
 	mkdir -p $(BUILDDIR)
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) $(KEX) DOJS.ZIP
+	rm -f $(EXE) DOJS.ZIP
 
 distclean: clean
 	$(MAKE) -C $(MUJS) clean
 	$(MAKE) -C $(GRX) cleanall -f makefile.dj2
 	$(MAKE) -C $(ZLIB) -f Makefile.dojs clean
 	$(MAKE) -C $(PNG) -f makefile.dojs clean
-	rm -rf $(FONTDIR) TEST.TXT JSLOG.TXT
+	rm -rf $(FONTDIR) $(DOCDIR) TEST.TXT JSLOG.TXT
 
-.PHONY: clean distclean init
+.PHONY: clean distclean init doc
 
 DEPS := $(wildcard $(BUILDDIR)/*.d)
 ifneq ($(DEPS),)

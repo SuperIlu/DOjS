@@ -20,22 +20,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-//! constants for text direction and alignment
+/**
+ * constants for text direction and alignment
+ * @namespace FONT
+ * @property {*} Direction drawing directions
+ * @property {*} Align text alignment
+ * @property {*} Direction.DEFAULT
+ * @property {*} Direction.RIGHT normal
+ * @property {*} Direction.DOWN downward
+ * @property {*} Direction.LEFT upside down, right to left
+ * @property {*} Direction.UP upward
+ * @property {*} Align.DEFAULT
+ * @property {*} Align.LEFT X only
+ * @property {*} Align.TOP Y only
+ * @property {*} Align.CENTER X, Y
+ * @property {*} Align.RIGHT X only
+ * @property {*} Align.BOTTOM Y only
+ * @property {*} Align.BASELINE Y only
+ */
 FONT = {
 	Direction: {
 		DEFAULT: 0,
-		RIGHT: 0,       /* normal */
-		DOWN: 1,       /* downward */
-		LEFT: 2,       /* upside down, right to left */
-		UP: 3       /* upward */
+		RIGHT: 0,
+		DOWN: 1,
+		LEFT: 2,
+		UP: 3
 	},
 	Align: {
 		DEFAULT: 0,
-		LEFT: 0,       /* X only */
-		TOP: 0,       /* Y only */
-		CENTER: 1,       /* X, Y   */
-		RIGHT: 2,       /* X only */
-		BOTTOM: 2,       /* Y only */
-		BASELINE: 3       /* Y only */
+		LEFT: 0,
+		TOP: 0,
+		CENTER: 1,
+		RIGHT: 2,
+		BOTTOM: 2,
+		BASELINE: 3
 	}
 };

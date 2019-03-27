@@ -5,7 +5,7 @@ It was inspired by [Processing](https://processing.org/) which is described on [
 
 > Processing is an open-source graphical library and integrated development environment (IDE) / playground built for the electronic arts, new media art, and visual design communities with the purpose of teaching non-programmers the fundamentals of computer programming in a visual context.
 
-It also has a p5js compatibility mode where some of 
+It also has a p5js compatibility mode where some of the functions of [p5js](https://p5js.org/) are available and scripts can have a similar structure to Processing sketches.
 
 You can type in a script with the builtin or your favorite text editor and then run it on a DOS command prompt.
 

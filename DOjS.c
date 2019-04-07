@@ -24,6 +24,7 @@ SOFTWARE.
 #include <grx20.h>
 #include <grxkeys.h>
 #include <jsi.h>
+#include <mikmod.h>
 #include <mujs.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -40,7 +41,7 @@ SOFTWARE.
 #include "funcs.h"
 #include "ipx.h"
 #include "midiplay.h"
-#include "sbsound.h"
+#include "sound.h"
 #include "util.h"
 
 /**************
@@ -56,7 +57,8 @@ bool mouse_available;  //!< indicates if the mouse is available
 bool midi_available;   //!< indicates if midi is available
 bool ipx_available;    //!< indicates if ipx is available
 
-bool keep_running;  //!< indicates that the script should keep on running
+bool mouse_visible;  //!< indicates if the cursor should be visible.
+bool keep_running;   //!< indicates that the script should keep on running
 
 float current_frame_rate;  //!< current frame rate
 float wanted_frame_rate;   //!< wanted frame rate
@@ -76,14 +78,8 @@ static void usage() {
     fputs("    -r             : Do not invoke the editor, just run the script.\n", stderr);
     fputs("    -w <width>     : Screen width: 320 or 640, Default: 640.\n", stderr);
     fputs("    -b <bbp>       : Bit per pixel:8, 16, 24, 32. Default: 24.\n", stderr);
-    fputs("    -s <p>:<i>:<d> : Override sound card auto detection with given values.\n", stderr);
-    fputs("                     p := Port (220h - 280h).\n", stderr);
-    fputs("                     i := IRQ  (2 - 11).\n", stderr);
-    fputs("                     d := DMA  (0 - 7).\n", stderr);
-    fputs("                     Example: -s 220:5:1\n", stderr);
-    fputs("                              -s none to disable sound\n", stderr);
     fputs("\n", stderr);
-    fputs("This is DOjS " DOSJS_VERSION "\n", stderr);
+    fputs("This is DOjS " DOSJS_VERSION_STR "\n", stderr);
     fputs("(c) 2019 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
     fputs("See LICENSE for detailed licensing information.\n", stderr);
     fputs("\n", stderr);
@@ -144,8 +140,6 @@ static bool callInput(js_State *J) {
         GrMouseGetEvent(GR_M_EVENT | GR_M_POLL, &event);
     } else {
         event.flags = 0;
-        event.x = 0;
-        event.y = 0;
         event.buttons = 0;
         event.key = 0;
         event.kbstat = 0;
@@ -189,12 +183,11 @@ static bool callInput(js_State *J) {
 /**
  * @brief run the given script.
  *
- * @param sb_set soundblaster override string.
  * @param script the script filename.
  * @param width screen width.
  * @param bbp bit per pixel.
  */
-static void run_script(char *sb_set, char *script, int width, int bbp) {
+static void run_script(char *script, int width, int bbp) {
     js_State *J;
 #ifndef PLATFORM_UNIX
     // create logfile
@@ -209,7 +202,7 @@ static void run_script(char *sb_set, char *script, int width, int bbp) {
 
     // write startup message
     LOG("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
-    LOGF("DOjS %s starting with file %s\n", DOSJS_VERSION, script);
+    LOGF("DOjS %s starting with file %s\n", DOSJS_VERSION_STR, script);
 #ifdef DEBUG_ENABLED
     // ut_dumpVideoModes();
 #endif
@@ -218,14 +211,16 @@ static void run_script(char *sb_set, char *script, int width, int bbp) {
     if (GrMouseDetect()) {
         LOG("Mouse detected\n");
         GrMouseInit();
+        GrMouseDisplayCursor();
         mouse_available = true;
+        mouse_visible = true;
     } else {
         LOG("NO Mouse detected\n");
         mouse_available = false;
     }
     synth_available = init_fmmusic(J);
     midi_available = init_midi(J);
-    sound_available = init_sbsound(J, sb_set);
+    sound_available = init_sound(J);
     ipx_available = init_ipx(J);
     init_funcs(J);  // must be called after initalizing the booleans above!
     init_color(J);
@@ -273,16 +268,29 @@ static void run_script(char *sb_set, char *script, int width, int bbp) {
                     LOG("Loop() not found.");
                     break;
                 }
-                GrBitBltNC(GrScreenContext(), 0, 0, ctx, 0, 0, GrMaxX(), GrMaxY(), GrWRITE);
                 if (callInput(J)) {
                     keep_running = false;
                 }
+                int blk = GrMouseBlock(GrScreenContext(), 0, 0, GrMaxX(), GrMaxY());
+                GrBitBltNC(GrScreenContext(), 0, 0, ctx, 0, 0, GrMaxX(), GrMaxY(), GrWRITE);
+                GrMouseUnBlock(blk);
                 long end = GrMsecTime();
                 long runtime = (end - start) + 1;
                 current_frame_rate = 1000 / runtime;
                 if (current_frame_rate > wanted_frame_rate) {
                     long delay = (1000 / wanted_frame_rate) - runtime;
-                    GrSleep(delay);
+
+                    long elapsed = 0;
+                    while (elapsed < delay) {
+                        MikMod_Update();
+                        GrSleep(2);
+                        elapsed += 2;
+                    }
+                } else {
+                    MikMod_Update();
+                }
+                if (!Player_Active()) {
+                    sound_mod_stop();  // FIX: this stops all module voices but keeps the sample voices active
                 }
                 end = GrMsecTime();
                 runtime = (end - start) + 1;
@@ -293,10 +301,9 @@ static void run_script(char *sb_set, char *script, int width, int bbp) {
             LOG("Setup() not found.");
         }
     }
-
     LOG("DOjS Shutdown...\n");
     shutdown_midi();
-    shutdown_sbsound();
+    shutdown_sound();
     shutdown_fmmusic();
     shutdown_ipx();
 #ifndef PLATFORM_UNIX
@@ -326,7 +333,6 @@ static void run_script(char *sb_set, char *script, int width, int bbp) {
  * @return int exit code.
  */
 int main(int argc, char **argv) {
-    char *sb_set = NULL;
     char *script = NULL;
     bool run = false;
     int width = 640;
@@ -334,7 +340,7 @@ int main(int argc, char **argv) {
     int opt;
 
     // check parameters
-    while ((opt = getopt(argc, argv, "rs:w:b:")) != -1) {
+    while ((opt = getopt(argc, argv, "rw:b:")) != -1) {
         switch (opt) {
             case 'w':
                 width = atoi(optarg);
@@ -344,9 +350,6 @@ int main(int argc, char **argv) {
                 break;
             case 'r':
                 run = true;
-                break;
-            case 's':
-                sb_set = optarg;
                 break;
             default: /* '?' */
                 usage();
@@ -383,7 +386,7 @@ int main(int argc, char **argv) {
         }
 
         if (exit == EDI_RUNSCRIPT) {
-            run_script(sb_set, script, width, bpp);
+            run_script(script, width, bpp);
         }
 
         if (run || exit == EDI_QUIT || exit == EDI_ERROR) {

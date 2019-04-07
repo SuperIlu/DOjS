@@ -522,7 +522,7 @@ static bool ipx_convertAddress(js_State *J, int idx, node_address_t addr) {
             js_error(J, "address must be of length %d", ADDRESS_SIZE);
             return false;
         }
-        DEBUG("Copying address data\n");
+        // DEBUG("Copying address data\n");
         for (int i = 0; i < ADDRESS_SIZE; i++) {
             js_getindex(J, idx, i);
             addr[i] = js_toint16(J, -1);
@@ -588,13 +588,13 @@ static void ipx_IpxSend(js_State *J) {
 
         string_t data;
         memcpy(data, str, str_len);
-        DEBUGF("Data length is %d\n", str_len);
+        // DEBUGF("Data length is %d\n", str_len);
 
         node_address_t addr;
         if (!ipx_convertAddress(J, 2, addr)) {
             return;
         }
-        DEBUGF("sending to %02x:%02x:%02x:%02x:%02x:%02x\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
+        // DEBUGF("sending to %02x:%02x:%02x:%02x:%02x:%02x\n", addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
 
         Jonipx_Send_Packet(data, str_len, addr);
     } else {

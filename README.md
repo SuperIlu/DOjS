@@ -16,11 +16,76 @@ DOjS is pronounces like [doge](https://en.wikipedia.org/wiki/Doge_(meme)), but e
 DOjS was only possible due to the work of these people/projects:
 * [MuJS](https://mujs.com/) JavaScript interpreter
 * The [GRX graphics library](http://grx.gnu.de/)
-* The SoundBlaster example code from [Steven Don](http://www.shdon.com/dos/sound)
+* [libmikmod](http://mikmod.sourceforge.net/) sound library.
+* The FM and MIDI code from [Steven Don](http://www.shdon.com/dos/sound)
 * [DJGPP](http://www.delorie.com/djgpp/) from DJ Delorie and the [Linux compile scripts](https://github.com/andrewwutw/build-djgpp) by Andrew Wu.
 * The people that contributed to [p5js](https://p5js.org/).
 
 You can find me on [Twitter](https://twitter.com/dec_hl) if you want...
+
+# Download and quick start
+You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases). Just extract the contents of the archive and run DOjS.
+
+DOjS run in [Dosbox](https://www.dosbox.com/) and on real hardware or a virtual machine with MS-DOS, [FreeDOS](https://www.freedos.org/) or any DOS based Windows like Windows 95/98/ME.
+
+If you run it on real hardware you need at least a **80386 with 4MB**. I recommend a **Pentium class machine (>= 100MHz) with at least 32MB RAM**. The example files run fine on an Athlon 1GHz and with 256MB RAM.
+
+## A minimal script
+You can find the following example in `examples/exampl.js`:
+```javascript
+/*
+** This function is called once when the script is started.
+*/
+function Setup() {
+    pink = new Color(241, 66, 244); // define the color pink
+}
+
+/*
+** This function is repeatedly until ESC is pressed or Stop() is called.
+*/
+function Loop() {
+    ClearScreen(EGA.BLACK);
+    TextXY(SizeX() / 2, SizeY() / 2, "Hello World!", pink, NO_COLOR);
+
+    TextXY(10, 10, "rate=" + GetFramerate(), EGA.BLACK, EGA.LIGHT_BLUE);
+}
+
+/*
+** This function is called on any input.
+*/
+function Input(event) {
+    str = JSON.stringify(event);
+}
+```
+Open this script with `DOjS.EXE tests\exampl.js` or use `DOjS.EXE -r tests\exampl.js` to run it without starting the integrated editor first. If the script does not exist the editor loads the template for a new script.
+
+## p5js compatibility
+If you want to write scripts using the syntax of [p5js](https://p5js.org/) you need to use `Include('p5');` as first line of your script. You can find the following example in `examples/examplp5.js`:
+
+```javascript
+Include('p5');
+
+/*
+** This function is called once when the script is started.
+*/
+function setup() {
+    pink = color(241, 66, 244); // define the color pink
+}
+
+/*
+** This function is repeatedly until ESC is pressed or Stop() is called.
+*/
+function draw() {
+    background(EGA.BLACK);
+    stroke(pink);
+    fill(pink);
+    text("Hello World!", width / 2, height / 2);
+
+    stroke(EGA.LIGHT_BLUE);
+    fill(EGA.LIGHT_BLUE);
+    text("rate=" + getFrameRate(), 10, 10);
+}
+```
 
 # Compilation
 You can compile DOjS on any modern Linux (the instructions below are for Debian based distributions) or on Windows 10 using Windows Subsystem for Linux (WSL).
@@ -58,47 +123,12 @@ Open the Makefile in a text editor and change the path to DJGPP according to you
 Now you are ready to compile DOjS with `make clean all`. This might take some time as the dependencies are quite a large.
 `make distclean` will clean dependencies as well. `make zip` will create the distribution ZIP and `make doc` will re-create the HTML help.
 
-## A minimal script
-You can find the following example in `tests/exampl.js`:
-```javascript
-/*
-** This function is called once when the script is started.
-*/
-function Setup() {
-    str = "";
-    pink = new Color(241, 66, 244); // define the color pink
-    SetFramerate(30);
-}
-
-/*
-** This function is repeatedly until ESC is pressed or Stop() is called.
-*/
-function Loop() {
-    ClearScreen(EGA.BLACK);
-    TextXY(SizeX() / 2, SizeY() / 2, "Hello World!", pink, NO_COLOR);
-
-    TextXY(2, SizeY() / 2 + 20, str, EGA.WHITE, NO_COLOR);
-
-    TextXY(10, 10, "rate=" + GetFramerate(), EGA.BLACK, EGA.LIGHT_BLUE);
-}
-
-/*
-** This function is called on any input.
-*/
-function Input(event) {
-    str = JSON.stringify(event);
-}
-```
-Open this script with `DOjS.EXE tests\exampl.js` or use `DOjS.EXE -r tests\exampl.js` to run it without starting the integrated editor first. If the script does not exist the editor loads the template for a new script.
-
 # History
 See the [changelog](/CHANGELOG.md) for the projects history.
 
 # Known bugs/limitations
-* SoundBlaster IRQ detection only works for IRQs 3, 5 and 7. I could not figure out why the system locks up when 2, 10 and 11 are tried as well.
 * There seems to be a bug in the FM sound system. Sounds created by DOjS sound different to the ones created by Steven Dons original code.
 * Some (nice) functions from GRX are still missing.
-* WAV files need to be 11025Hz, 8bit, mono. Different sample rates produce a warning in the logfile (and sound weird). Different formats are outright refused.
 * BMPs must be 2, 4, 8 bpp.
 * `MouseShowCursor(false)` does not work
 * The double buffering (fix for flickering graphics) created visibility issues with the mouse cursor.
@@ -107,8 +137,6 @@ See the [changelog](/CHANGELOG.md) for the projects history.
 * Fix bugs!
 * Add more GRX functions to JavaScript API.
 * split up `func.c` into `grx.c` and `func.c`.
-* Improve sound loading/output.
-* Add libmikmod?
 * Improve help viewer.
 
 # Licenses
@@ -121,13 +149,15 @@ MuJS is released under **ISC license**. See *COPYING* in the MuJS folder for det
 ## GRX
 GRX itself is released under **LGPL**, the fonts are under **MIT and other licenses**. See *copying.grx* in the grx folder for details.
 
-## SoundBlaster MIDI, DMA, FM sound and SoundBlaster detection code
+## Mikmod
+Mikmod is released under **LGPL**.
+
+## MIDI and FM sound
 This code (modified by me) is (c) bei [Steven Don](http://www.shdon.com/). It is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) with kind permission of Steven. `FM.DAT` is released under [WTFPL](http://www.wtfpl.net/).
 
 ## IPX and dosbuffer sub-system
 This code is taken from the game [Cylindrix](https://www.allegro.cc/depot/Cylindrix) by Hotwarez LLC, Goldtree Enterprises.
 It was [released](https://sourceforge.net/projects/cylindrix/) under **GPLv2**.
-
 
 ## CWSDPMI.EXE
 [CWSDPMI](http://sandmann.dotster.com/cwsdpmi/) DPMI host is licensed under **GPL**. The documentation states:
@@ -153,7 +183,9 @@ The MIDI files were downloaded from the [FreeDOOM](https://github.com/freedoom/f
 ## zlib
 [zlib](http://www.zlib.net/) is released under [zlib license](http://www.zlib.net/zlib_license.html).
 
-## p5js examples
+## p5js and examples
+p5js is is released under **LGPL**. 
+
 The examples are licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 # Usage
@@ -163,11 +195,6 @@ The examples are licensed under a [Creative Commons Attribution-NonCommercial-Sh
         -r             : Do not invoke the editor, just run the script.
         -w <width>     : Screen width: 320 or 640, Default: 640.
         -b <bbp>       : Bit per pixel:8, 16, 24, 32. Default: 24.
-        -s <p>:<i>:<d> : Override sound card auto detection with given values.
-                         p := Port (220h - 280h).
-                         i := IRQ  (2 - 11).
-                         d := DMA  (0 - 7).
-                         Example: -s 220:5:1
 ```
 
 ## Editor keys
@@ -223,7 +250,6 @@ Add `Include('p5');` as first line to your script. After that you have (limited)
 Things that don't work:
 * GRX has no transparency when rendering, so all functions that need an alpha channel won't work.
 * Anything 3D (objects, lights camera, etc)
-* You can't change the stroke width of lines.
 * Smoothing is not supported.
 * Key release events work different for GRX and are simulated for p5js.
 * Only simple vertices are supported.

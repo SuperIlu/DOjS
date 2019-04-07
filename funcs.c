@@ -501,7 +501,7 @@ static void f_Plot(js_State *J) {
 /**
  * @brief draw a line.
  *
- * Plot(x1:number, y1:number, x2:number, y2:number, c:Color)
+ * Line(x1:number, y1:number, x2:number, y2:number, c:Color)
  *
  * @param J the JS context.
  */
@@ -514,6 +514,31 @@ static void f_Line(js_State *J) {
     GrColor *color = js_touserdata(J, 5, TAG_COLOR);
 
     GrLine(x1, y1, x2, y2, *color);
+}
+
+/**
+ * @brief draw a line with variable thinkness.
+ *
+ * CustomLine(x1:number, y1:number, x2:number, y2:number, w:number, c:Color)
+ *
+ * @param J the JS context.
+ */
+static void f_CustomLine(js_State *J) {
+    int x1 = js_toint16(J, 1);
+    int y1 = js_toint16(J, 2);
+    int x2 = js_toint16(J, 3);
+    int y2 = js_toint16(J, 4);
+    int w = js_toint16(J, 5);
+
+    GrColor *color = js_touserdata(J, 6, TAG_COLOR);
+
+    GrLineOption opts;
+    opts.lno_color = *color;
+    opts.lno_width = w;
+    opts.lno_pattlen = 0;
+    opts.lno_dashpat = 0;
+
+    GrCustomLine(x1, y1, x2, y2, &opts);
 }
 
 /**
@@ -535,6 +560,31 @@ static void f_Box(js_State *J) {
 }
 
 /**
+ * @brief draw a box with variable thinkness.
+ *
+ * CustomBox(x1:number, y1:number, x2:number, y2:number, w:number, c:Color)
+ *
+ * @param J the JS context.
+ */
+static void f_CustomBox(js_State *J) {
+    int x1 = js_toint16(J, 1);
+    int y1 = js_toint16(J, 2);
+    int x2 = js_toint16(J, 3);
+    int y2 = js_toint16(J, 4);
+    int w = js_toint16(J, 5);
+
+    GrColor *color = js_touserdata(J, 6, TAG_COLOR);
+
+    GrLineOption opts;
+    opts.lno_color = *color;
+    opts.lno_width = w;
+    opts.lno_pattlen = 0;
+    opts.lno_dashpat = 0;
+
+    GrCustomBox(x1, y1, x2, y2, &opts);
+}
+
+/**
  * @brief draw a circle.
  *
  * Circle(x1:number, y1:number, r:number, c:Color)
@@ -549,6 +599,30 @@ static void f_Circle(js_State *J) {
     GrColor *color = js_touserdata(J, 4, TAG_COLOR);
 
     GrCircle(x, y, r, *color);
+}
+
+/**
+ * @brief draw a circle with variable thinkness.
+ *
+ * CustomCircle(x1:number, y1:number, r:number, w:number, c:Color)
+ *
+ * @param J the JS context.
+ */
+static void f_CustomCircle(js_State *J) {
+    int x = js_toint16(J, 1);
+    int y = js_toint16(J, 2);
+    int r = js_toint16(J, 3);
+    int w = js_toint16(J, 4);
+
+    GrColor *color = js_touserdata(J, 5, TAG_COLOR);
+
+    GrLineOption opts;
+    opts.lno_color = *color;
+    opts.lno_width = w;
+    opts.lno_pattlen = 0;
+    opts.lno_dashpat = 0;
+
+    GrCustomCircle(x, y, r, &opts);
 }
 
 /**
@@ -567,6 +641,31 @@ static void f_Ellipse(js_State *J) {
     GrColor *color = js_touserdata(J, 5, TAG_COLOR);
 
     GrEllipse(xc, yc, xa, ya, *color);
+}
+
+/**
+ * @brief draw an ellipse with variable thinkness.
+ *
+ * CustomEllipse(xc:number, yc:number, xa:number, ya:number, c:Color)
+ *
+ * @param J the JS context.
+ */
+static void f_CustomEllipse(js_State *J) {
+    int xc = js_toint16(J, 1);
+    int yc = js_toint16(J, 2);
+    int xa = js_toint16(J, 3);
+    int ya = js_toint16(J, 4);
+    int w = js_toint16(J, 5);
+
+    GrColor *color = js_touserdata(J, 6, TAG_COLOR);
+
+    GrLineOption opts;
+    opts.lno_color = *color;
+    opts.lno_width = w;
+    opts.lno_pattlen = 0;
+    opts.lno_dashpat = 0;
+
+    GrCustomEllipse(xc, yc, xa, ya, &opts);
 }
 
 /**
@@ -599,6 +698,42 @@ static void f_CircleArc(js_State *J) {
 }
 
 /**
+ * @brief Draw a circle arc with variable thinkness.
+ * CustomCircleArc(
+ *    x:number,
+ *    y:number,
+ *    r:number,
+ *    start:number,
+ *    end:number,
+ *    style:number,
+ *    c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
+ *
+ * @param J the JS context.
+ */
+static void f_CustomCircleArc(js_State *J) {
+    int x = js_toint16(J, 1);
+    int y = js_toint16(J, 2);
+    int r = js_toint16(J, 3);
+
+    int start = js_toint16(J, 4);
+    int end = js_toint16(J, 5);
+    int style = js_toint16(J, 6);
+    int w = js_toint16(J, 7);
+
+    GrColor *color = js_touserdata(J, 8, TAG_COLOR);
+
+    GrLineOption opts;
+    opts.lno_color = *color;
+    opts.lno_width = w;
+    opts.lno_pattlen = 0;
+    opts.lno_dashpat = 0;
+
+    GrCustomCircleArc(x, y, r, start, end, style, &opts);
+
+    f_arcReturn(J);
+}
+
+/**
  * @brief Draw an ellipse arc.
  * EllipseArc(
  *    xc:number,
@@ -625,6 +760,44 @@ static void f_EllipseArc(js_State *J) {
     GrColor *color = js_touserdata(J, 8, TAG_COLOR);
 
     GrEllipseArc(xc, yc, xa, ya, start, end, style, *color);
+
+    f_arcReturn(J);
+}
+
+/**
+ * @brief Draw an ellipse arc with variable thinkness.
+ * CustomEllipseArc(
+ *    xc:number,
+ *    yc:number,
+ *    xa:number,
+ *    ya:number,
+ *    start:number,
+ *    end:number,
+ *    style:number,
+ *    c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
+ *
+ * @param J the JS context.
+ */
+static void f_CustomEllipseArc(js_State *J) {
+    int xc = js_toint16(J, 1);
+    int yc = js_toint16(J, 2);
+    int xa = js_toint16(J, 3);
+    int ya = js_toint16(J, 4);
+
+    int start = js_toint16(J, 5);
+    int end = js_toint16(J, 6);
+    int style = js_toint16(J, 7);
+    int w = js_toint16(J, 8);
+
+    GrColor *color = js_touserdata(J, 9, TAG_COLOR);
+
+    GrLineOption opts;
+    opts.lno_color = *color;
+    opts.lno_width = w;
+    opts.lno_pattlen = 0;
+    opts.lno_dashpat = 0;
+
+    GrCustomEllipseArc(xc, yc, xa, ya, start, end, style, &opts);
 
     f_arcReturn(J);
 }
@@ -869,6 +1042,28 @@ static void f_PolyLine(js_State *J) {
 }
 
 /**
+ * @brief draw a polyline with variable thinkness.
+ * CustomPolyLine([[x1, x2], [..], [xN, yN]], c:Color)
+ *
+ * @param J the JS context.
+ */
+static void f_CustomPolyLine(js_State *J) {
+    poly_array_t *array = f_convertArray(J, 1);
+    int w = js_toint16(J, 2);
+    GrColor *color = js_touserdata(J, 3, TAG_COLOR);
+
+    GrLineOption opts;
+    opts.lno_color = *color;
+    opts.lno_width = w;
+    opts.lno_pattlen = 0;
+    opts.lno_dashpat = 0;
+
+    GrCustomPolyLine(array->len, (int(*)[2])array->data, &opts);
+
+    f_freeArray(array);
+}
+
+/**
  * @brief draw a polygon.
  * Polygon([[x1, x2], [..], [xN, yN]], c:Color)
  *
@@ -879,6 +1074,28 @@ static void f_Polygon(js_State *J) {
     GrColor *color = js_touserdata(J, 2, TAG_COLOR);
 
     GrPolygon(array->len, (int(*)[2])array->data, *color);
+
+    f_freeArray(array);
+}
+
+/**
+ * @brief draw a polygon with variable thinkness.
+ * CustomPolygon([[x1, x2], [..], [xN, yN]], c:Color)
+ *
+ * @param J the JS context.
+ */
+static void f_CustomPolygon(js_State *J) {
+    poly_array_t *array = f_convertArray(J, 1);
+    int w = js_toint16(J, 2);
+    GrColor *color = js_touserdata(J, 3, TAG_COLOR);
+
+    GrLineOption opts;
+    opts.lno_color = *color;
+    opts.lno_width = w;
+    opts.lno_pattlen = 0;
+    opts.lno_dashpat = 0;
+
+    GrCustomPolygon(array->len, (int(*)[2])array->data, &opts);
 
     f_freeArray(array);
 }
@@ -1003,8 +1220,8 @@ static void f_MouseWarp(js_State *J) {
  * @param J the JS context.
  */
 static void f_MouseShowCursor(js_State *J) {
-    bool show = js_toboolean(J, 1);
-    if (show) {
+    mouse_visible = js_toboolean(J, 1);
+    if (mouse_visible) {
         GrMouseDisplayCursor();
     } else {
         GrMouseEraseCursor();  // TODO: does not work?
@@ -1169,6 +1386,7 @@ void init_funcs(js_State *J) {
     PROPDEF_B(J, synth_available, "SYNTH_AVAILABLE");
     PROPDEF_B(J, mouse_available, "MOUSE_AVAILABLE");
     PROPDEF_B(J, ipx_available, "IPX_AVAILABLE");
+    PROPDEF_N(J, DOSJS_VERSION, "DOJS_VERSION");
 
     // define global functions
     FUNCDEF(J, f_Read, "Read", 1);
@@ -1198,13 +1416,21 @@ void init_funcs(js_State *J) {
 
     FUNCDEF(J, f_Plot, "Plot", 3);
     FUNCDEF(J, f_Line, "Line", 5);
+    FUNCDEF(J, f_CustomLine, "CustomLine", 6);
     FUNCDEF(J, f_Box, "Box", 5);
+    FUNCDEF(J, f_CustomBox, "CustomBox", 6);
     FUNCDEF(J, f_Circle, "Circle", 4);
+    FUNCDEF(J, f_CustomCircle, "CustomCircle", 5);
     FUNCDEF(J, f_Ellipse, "Ellipse", 5);
+    FUNCDEF(J, f_CustomEllipse, "CustomEllipse", 6);
     FUNCDEF(J, f_CircleArc, "CircleArc", 7);
+    FUNCDEF(J, f_CustomCircleArc, "CustomCircleArc", 8);
     FUNCDEF(J, f_EllipseArc, "EllipseArc", 8);
+    FUNCDEF(J, f_CustomEllipseArc, "CustomEllipseArc", 9);
     FUNCDEF(J, f_PolyLine, "PolyLine", 2);
+    FUNCDEF(J, f_CustomPolyLine, "CustomPolyLine", 3);
     FUNCDEF(J, f_Polygon, "Polygon", 2);
+    FUNCDEF(J, f_CustomPolygon, "CustomPolygon", 3);
 
     FUNCDEF(J, f_FilledBox, "FilledBox", 5);
     FUNCDEF(J, f_FramedBox, "FramedBox", 6);

@@ -24,7 +24,6 @@ SOFTWARE.
 #define __EDI_H__
 
 #include <conio.h>
-#include <regex.h>
 #include <stdbool.h>
 #include <sys/types.h>
 
@@ -46,10 +45,6 @@ SOFTWARE.
 /***********
 ** macros **
 ***********/
-//! add a keyord to array
-#define EDI_KWORD(col, txt) \
-    { col, txt, NULL }
-
 #ifdef DEBUG_ENABLED
 #define EDIF(str, ...)                      \
     {                                       \
@@ -60,6 +55,8 @@ SOFTWARE.
             fclose(f);                      \
         }                                   \
     }
+#else
+#define EDIF(str, ...)
 #endif  // DEBUG_ENABLED
 
 /*************
@@ -98,7 +95,27 @@ typedef struct _edi {
     bool changed;          //!< file change indicator
     struct text_info scr;  //!< screen dimensions
     char *msg;             //!< message to display in next loop
+    line_t *last_top;      //!< last y drawing position
+    int last_offset;       //!< last x drawing position
 } edi_t;
+
+//! syntax highlight entry
+typedef struct _syntax {
+    int color;   //!< color to use
+    int length;  //!< length of the keyword
+    char *word;  //!< keyword
+} syntax_t;
+
+//! add a keyord to array
+#define EDI_SYNTAX(c, w) \
+    { c, sizeof(w) - 1, w }
+
+#define EDI_SYNTAX_EOL(c, w) \
+    { c, -1, w }
+
+//! end array
+#define EDI_SYNTAX_END \
+    { 0, 0, NULL }
 
 /***********************
 ** exported functions **

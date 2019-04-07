@@ -11,8 +11,7 @@
  */
 function Color(r, g, b, mask) { }
 /**
- * @property {number}
- * 24bit value with the actual color.
+ * @property {number} value 24bit value with the actual color.
  */
 Color.value = 0;
 /**
@@ -152,42 +151,61 @@ Font.prototype.Resize = function (w, h) { };
 
 
 /********
- * Sound
+ * Sample/Module
  */
 /**
- * Load a WAV (11025Hz, 8bit, mono). Different sample rates are accepted (and create a warning in the log), but are not converted and will sound weird.
+ * Load a WAV-file.
  * @class
  * @param {string} filename 
  */
-function Sound(filename) { }
+function Sample(filename) { }
 /**
  * Name of the WAV.
  */
-Sound.filename = null;
+Sample.filename = null;
 /**
  * Sound length.
  */
-Sound.length = null;
+Sample.length = null;
 /**
- * Sound format.
+ * Sound speed.
  */
-Sound.format = null;
-/**
- * Number of channels.
- */
-Sound.channels = null;
-/**
- * Sampling rate.
- */
-Sound.rate = null;
-/**
- * Number of bits / sample.
- */
-Sound.num_bits = null;
+Sample.speed = null;
 /**
  * Play the WAV once.
  */
-Sound.prototype.Play = function () { };
+Sample.prototype.Play = function () { };
+/**
+ * Stop playing.
+ */
+Sample.prototype.Stop = function () { };
+
+/**
+ * Load a MOD/S3M/XM/etc-file.
+ * @class
+ * @param {string} filename 
+ */
+function Module(filename) { }
+/**
+ * Name of the MOD-file.
+ */
+Module.filename = null;
+/**
+ * internal name of the song.
+ */
+Module.songname = null;
+/**
+ * file format of the song.
+ */
+Module.modtype = null;
+/**
+ * mod file comment (if any).
+ */
+Module.comment = null;
+/**
+ * Play the MOD-file once.
+ */
+Module.prototype.Play = function () { };
 
 /********
  * MIDI

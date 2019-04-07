@@ -170,7 +170,7 @@ exports.frameRate = function (r) {
 /**
  * Returns the current framerate.
  *
- * @private
+ * @method getFrameRate
  * @return {Number} current frameRate
  */
 exports.getFrameRate = function () {

@@ -1,0 +1,108 @@
+  Hello folks !
+
+
+This is libmikmod, version 3.3.11, a portable sound library for Unix.
+Check out the file 'NEWS' for more history information.
+
+
+>> BUILDING LIBMIKMOD
+---------------------
+
+- If you're not building libmikmod for Windows, then you're lost in the
+  sources. Go up one directory, and read the main README file.
+
+So, you're on an angry fruit salad Windows system, aren't you ? With
+those so cute icons and an overflowed system tray ?
+
+Currently, libmikmod can be build under Windows with the Microsoft
+compiler, lcc-win32 and MinGW (I suppose that the Watcom compiler and Metrowerks
+Codewarrior could be used as well).
+
+You'll need the DirectX SDK (if not included with the compiler) to
+compile the DirectSound driver; version 5 or better is required. The
+standard Win32 SDK is enough for the winmm driver.
+
+Oh, I almost forgot: you need long filenames to compile libmikmod, but
+that should not be a problem nowadays.
+
+
+-- Instructions for Microsoft Compiler
+
+Use one of the project files to build a dll and an import library: MSVC6
+for the old Visual C 6, or VS2005 for Visual Studio 2005 and newer.
+To make your library ready to use, copy the file 'mikmod.h' to your
+compiler include directory, and 'mikmod.lib` to your compiler libraries
+directory. You also have to put 'libmikmod.dll' somewhere in your PATH.
+
+HTML documentation of the library, for programmers, is located in the
+doc directory.
+
+-- Instructions for lcc-win32
+
+Use Makefile.lcc
+
+-- Instructions for MingGW
+
+Use Makefile.mingw
+
+>> THANKS
+---------
+
+I would like to thank everyone who contributed to libmikmod. Their names
+are in the AUTHORS file for the significative contributions, but some
+other names can be found in the NEWS file. Thanks a lot ! Keeping
+libmikmod alive wouldn't be much fun without you.
+
+
+>> LICENSE
+----------
+
+The libmikmod sound library is covered by the GNU Library General Public
+License as published by the Free Software Fundation (you'll find it in
+the file COPYING.LIB); either version 2 of the licence, or (at your
+option) any later version.
+
+The GNU Lesser General Public License, version 2.1, in file
+COPYING.LESSER, can be considered as a later version of the LGPL, and is
+strongly recommended for people who will embed libmikmod in their
+application as a shared library.
+
+Parts of the library (in playercode/mdulaw.c) are derived from the files
+libst.h and raw.c from an old version of the sox (SOund eXchange)
+package written by Lance Norskog and Jef Poskanzer. The following
+copyright notice applies to these parts:
+
+  Copyright (C) 1989 by Jef Poskanzer.
+
+  Permission to use, copy, modify, and distribute this software and its
+  documentation for any purpose and without fee is hereby granted, provided
+  that the above copyright notice appear in all copies and that both that
+  copyright notice and this permission notice appear in supporting
+  documentation.  This software is provided "as is" without express or
+  implied warranty.
+
+Note that none of these parts are used in the Win32 version of the
+libmikmod library.
+
+
+>> CONTACT AND DOWNLOAD INFO
+----------------------------
+
+libmikmod home page is located at SourceForge:
+
+    http://mikmod.sourceforge.net/
+    http://sourceforge.net/projects/mikmod/
+
+There's a mailing list (mikmod-public) for discussing the development
+of MikMod (new features, bugs, ideas...) Look for more information on
+the web site.
+
+
+>> LAST NOTES
+-------------
+
+I hope you'll enjoy using this version of libmikmod as well as I enjoyed
+debugging and improving it.
+
+-- Miod Vallat, 01/24/2002
+   miod@mikmod.org

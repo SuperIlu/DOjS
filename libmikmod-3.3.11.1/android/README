@@ -1,0 +1,20 @@
+- libmikmod for Android:
+
+Building: To compile the Android version, the Android NDK must be
+installed on your machine. If so, type the 'ndk-build' command in
+command line. The compiled shared Android libraries for ARM and
+ARMv7-A architectures are placed to the generated libs directory.
+If necessary, edit config.h and jni/Android.mk to modify compiler
+flags and customize the build.
+
+The compiled libraries do not provide a JNI interface for Java
+applications, because the primary intention is (just) to use
+the libmikmod in native code as a shared library.
+For the JNI wrapper see the old libmikmod-android project:
+http://github.com/0xD34D/libmikmod-android
+
+The aforementioned project was also the source of the used
+OpenSL ES driver modified for recent versions of libmikmod.
+
+Radovan Cervenka
+

@@ -1,3 +1,17 @@
+**Version 0.9 (the fifth foreboding)**
+* Fixed `millis()` in p5js compatibility layer.
+* Improved mouse display (still flickering, though).
+* Fixed `MouseShowCursor(false)` (sort of).
+* Added node discovery and address helpers to IPX module.
+* Fixed `mousePressed()` and implemented `mouseDragged()`in p5js compatibility layer.
+* Added HSL and HSB color mode to p5js compatibility layer.
+* Added very simple syntax highlighting to the editor.
+* Added `CustomLine()`, `CustomBox()`, etc to native API
+* Added `strokeWeight()` to p5js compatibility layer.
+* Renamed *tests/* to *examples/*
+* Fixed *Makefile* on OSX.
+* Switched to libmikmod for MOD and WAV sound output.
+
 **Version 0.8 (the fourth forecoming)**
 * Tuned the compiler flags to pentium class CPUs
 * Added command line option to turn off SoundBlaster code

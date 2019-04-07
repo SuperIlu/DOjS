@@ -80,7 +80,7 @@ Open an IPX socket.
 ### IpxSocketClose()
 Close IPX socket (if any).
 
-### IpxSendPacket(data:string, dest:array[6:number])
+### IpxSend(data:string, dest:array[6:number])
 Send packet via IPX. Max length 79 byte.
 
 ### IpxCheckPacket():boolean
@@ -166,30 +166,49 @@ Check if the file is still playing
 ### MidiStop()
 Stop playing midi.
 
-## Sound
-### snd = new Sound(filename:string)
-Load a WAV (11025Hz, 8bit, mono). Different sample rates are accepted (and create a warning in the log), but are not converted and will sound weird.
+## Sample
+### snd = new Sample(filename:string)
+Load a WAV-file.
 
 ### snd.filename
-Name of the WAV
+Name of the WAV.
 
 ### snd.length
 Sound length.
 
-### snd.format
-Sound format.
-
-### snd.channels
-Number of channels.
-
-### snd.rate
-Sampling rate.
-
-### snd.num_bits
-Number of bits/sample.
+### snd.speed
+Sound speed.
 
 ### snd.Play()
 Play the WAV once.
+
+### snd.Stop()
+Stop the sound.
+
+## Module
+### mod = new Module(filename:string)
+Load a MOD-file.
+
+### mod.filename
+Name of the MOD.
+
+### mod.songname
+internal name of the song.
+
+### mod.modtype
+file format of the song.
+
+### mod.comment
+mod file comment (if any).
+
+### mod.Play()
+Play the MOD once.
+
+### ModuleIsPlaying():boolean
+Check if the file is still playing.
+
+### ModuleStop()
+Stop playing module.
 
 ## FM Music
 See `jsboot/fmmusic.js` for pre-defined instruments and notes.
@@ -234,20 +253,38 @@ draw a point.
 ### Line(x1:number, y1:number, x2:number, y2:number, c:Color)
 draw a line.
 
+### CustomLine(x1:number, y1:number, x2:number, y2:number, w:number, c:Color)
+draw a line with given width.
+
 ### Box(x1:number, y1:number, x2:number, y2:number, c:Color)
 draw a box.
+
+### CustomBox(x1:number, y1:number, x2:number, y2:number, w:number, c:Color)
+draw a box with given width.
 
 ### Circle(x1:number, y1:number, r:number, c:Color)
 draw a circle.
 
+### CustomCircle(x1:number, y1:number, r:number, w:number, c:Color)
+draw a circle with given width.
+
 ### Ellipse(xc:number, yc:number, xa:number, ya:number, c:Color)
 draw an ellipse.
+
+### CustomEllipse(xc:number, yc:number, xa:number, ya:number, w:number, c:Color)
+draw an ellipse with given width.
 
 ### CircleArc(x:number, y:number, r:number, start:number, end:number, style:number, c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
 Draw a circle arc. Returns an object with coordinates of the drawn arc: `{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}`.
 
+### CustomCircleArc(x:number, y:number, r:number, start:number, end:number, style:number, w:number, c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
+Draw a circle arc with given width. Returns an object with coordinates of the drawn arc: `{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}`.
+
 ### EllipseArc(xc:number, yc:number, xa:number, ya:number, start:number, end:number, style:number, c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
 Draw an ellipse arc. Returns an object with coordinates of the drawn arc: `{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}`.
+
+### CustomEllipseArc(xc:number, yc:number, xa:number, ya:number, start:number, end:number, style:number, w:number, c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
+Draw an ellipse arc with given width. Returns an object with coordinates of the drawn arc: `{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}`.
 
 ### FilledBox(x1:number, y1:number, x2:number, y2:number, c:Color)
 draw a filled box.
@@ -279,8 +316,14 @@ do a flood spill2.
 ### PolyLine([[x1, x2], [..], [xN, yN]], c:Color)
 draw a polyline.
 
+### CustomPolyLine([[x1, x2], [..], [xN, yN]], w:number, c:Color)
+draw a polyline with given width.
+
 ### Polygon([[x1, x2], [..], [xN, yN]], c:Color)
 draw a polygon.
+
+### CustomPolygon([[x1, x2], [..], [xN, yN]], w:number, c:Color)
+draw a polygon with given width.
 
 ### FilledPolygon([[x1, x2], [..], [xN, yN]], c:Color)
 draw a filled polygon.

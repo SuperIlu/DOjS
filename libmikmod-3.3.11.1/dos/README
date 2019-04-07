@@ -1,0 +1,110 @@
+  Hello folks !
+
+
+This is libmikmod, version 3.3.11, a portable sound library for DOS.
+Comments & feedback are welcome.
+
+
+>> BUILDING LIBMIKMOD
+---------------------
+
+- If you're not building libmikmod for DOS, then you're lost in the sources.
+  Go up one directory, and read the main README file.
+
+This port has been designed to work only with DJGPP compiler. However, it
+should not be too complex to make it compile with any other compiler. If you
+manage to make libmikmod compile and work with another compiler, we'd like to
+hear from you. You'll likely have to write an appropiate makefile, or build
+things manually ...
+
+If you have all proper tools installed, just type
+
+	make -f Makefile.dj
+
+To make your library ready to use, copy the files 'libmikmod.a' and
+'include/mikmod.h' to your '%DJGPP%/lib' and '%DJGPP%/include' directories
+respectively.
+
+HTML documentation of the library, for programmers, is located in the doc
+directory.
+
+
+>> SUPPORTED SOUNDCARDS
+-----------------------
+
+Currently three brands of sound cards are supported under DOS:
+
+- Gravis Ultrasound and compatibles. Not tested with Interwave cards. If
+  somebody has one and can debug the code under Interwave, please drop us a note
+  (see email at bottom).
+
+- SoundBlaster and compatibles. There is only one driver that supports all
+  flavours of SoundBlasters:
+
+	+ SB original (8-bit mono, 22KHz)
+	+ SB 2.0 (DMA autoinit mode -> less clicks, 44KHz 8-bit mono).
+	+ SB Pro (8-bit 22KHz stereo, 8-bit 44KHz mono)
+	+ SB 16+ (8- and 16-bit stereo, up to 44Khz both)
+
+  Note that SB16 should cover AWE32/64 as well...
+
+- Windows Sound System and compatibles. Most today SoundBlaster clones
+  (including the CS4236B card used for testing) emulates (in hardware) WSS.
+  That's because Creative Labs copyrighted the SB16 interface and thus
+  clonemakers cannot do similar hardware without violating their rights, so
+  most of them only emulate SB Pro (see above).
+
+  WSS supports up to 44KHz 16-bit stereo. The following playback rates (in both
+  8- and 16-bit) are supported: 5510, 6620, 8000, 9600, 11025, 16000, 18900,
+  22050, 27420, 32000, 33075, 37800, 44100 and 48000 Hz.
+
+
+>> THANKS
+---------
+
+We would like to thank everyone who contributed to libmikmod. Their names
+are in the AUTHORS file for the significative contributions, but some other
+names can be found in the NEWS file. Thanks a lot ! Keeping libmikmod alive
+wouldn't be much fun without you.
+
+
+>> LICENSE
+----------
+
+The libmikmod sound library is covered by the GNU Library General Public
+License as published by the Free Software Fundation (you'll find it in the
+file COPYING.LIB) ; either version 2 of the licence, or (at your option)
+any later version.
+
+The GNU Lesser General Public License, version 2.1, in file COPYING.LESSER, can
+be considered as a later version of the LGPL, and is strongly recommended for
+people who will embed libmikmod in their application as a shared library.
+
+
+>> CONTACT AND DOWNLOAD INFO
+----------------------------
+
+libmikmod home page is located at SourceForge:
+
+    http://mikmod.sourceforge.net/
+    http://sourceforge.net/projects/mikmod/
+
+There's a mailing list (mikmod-public) for discussing the development
+of MikMod (new features, bugs, ideas...) Look for more information on
+the web site.
+
+Things related to the DOS port should also be forwarded to the DOS
+``portmaster'', Andrew Zabolotny, at: bit@eltech.ru
+
+
+>> LAST NOTES
+-------------
+
+We hope you'll enjoy using this version of libmikmod as well as we enjoyed
+debugging and improving it.
+
+-- Miodrag ("Miod") Vallat, 10/19/1999
+   miodrag@mikmod.darkorb.net
+
+   Andrew Zabolotny
+   bit@eltech.ru

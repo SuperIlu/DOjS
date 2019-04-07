@@ -90,6 +90,8 @@ SOFTWARE.
  * @return false if the user used ESC to exit the dialog.
  */
 bool dia_ask_text(edi_t* edi, char buffer[DIA_ASK_SIZE], char* allowed, char* msg) {
+    edi->last_top = NULL;
+
     int w = edi->scr.screenwidth - 4;
     int h = 3;
 
@@ -187,6 +189,8 @@ bool dia_ask_text(edi_t* edi, char buffer[DIA_ASK_SIZE], char* allowed, char* ms
  * @param txt the message to display.
  */
 void dia_show_message(edi_t* edi, char* txt) {
+    edi->last_top = NULL;
+
     int w = strlen(txt) + 4;
     int h = 3;
 
@@ -239,6 +243,8 @@ void dia_show_message(edi_t* edi, char* txt) {
  * @param txt the question to display.
  */
 bool dia_show_confirm(edi_t* edi, char* txt) {
+    edi->last_top = NULL;
+
     int w = strlen(txt) + 4;
     int h = 3;
 
@@ -296,6 +302,8 @@ bool dia_show_confirm(edi_t* edi, char* txt) {
  * @param deletable TRUE if the DEL-key shall delete the file after displaying.
  */
 void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable) {
+    edi->last_top = NULL;
+
     char buff[1024];
     FILE* f;
     char* s;
@@ -373,6 +381,8 @@ void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable) {
  * @return false the user exited via any other key.
  */
 bool dia_show_text(edi_t* edi, char* txt, int* pos) {
+    edi->last_top = NULL;
+
     int start = 0;
     int lastStart = -1;
     bool end = false;

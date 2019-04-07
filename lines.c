@@ -59,6 +59,8 @@ edi_t* lin_init(char* name) {
         edi->changed = false;
         edi->num = 1;
         edi->msg = NULL;
+        edi->last_top = NULL;
+        edi->last_offset = -1;
 
         return edi;
     } else {
@@ -163,6 +165,7 @@ void lin_insertline(edi_t* edi, line_t* pred, line_t* l) {
     if (succ) {
         succ->prev = l;  // fix successor
     }
+    edi->last_top = NULL;
     edi->changed = true;
     pred->newline = true;
 }
@@ -205,6 +208,7 @@ void lin_removeline(edi_t* edi, line_t* l) {
         lin_freeline(l);
     }
     edi->changed = true;
+    edi->last_top = NULL;
 }
 
 /**

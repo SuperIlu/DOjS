@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libmikmod
+Description: Library for playing Module Files and for Sound Effects
+Version: @LIBMIKMOD_VERSION@
+URL: http://mikmod.sourceforge.net/
+Libs: -L${libdir} -lmikmod
+Libs.private: -lm
+Cflags: -I${includedir}

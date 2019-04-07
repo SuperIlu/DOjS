@@ -1,0 +1,54 @@
+# libmikmod Makefile for targetting PSP (Playstation Portable)
+# Edit the compiler/linker flags, etc. to meet your needs
+
+PSPSDK = $(shell psp-config --pspsdk-path)
+PSPDIR = $(shell psp-config --psp-prefix)
+
+CFLAGS=-DMIKMOD_BUILD
+
+# support for PSP audio output (requires -lpspaudio when linking to an app)
+CFLAGS+=-DDRV_PSP
+# support for aiff file output (requires -lm when linking to an app)
+CFLAGS+=-DDRV_AIFF
+# support for wav file output:
+CFLAGS+=-DDRV_WAV
+# support for output raw data to a file:
+CFLAGS+=-DDRV_RAW
+
+# disable the high quality mixer (build only with the standart mixer)
+#CFLAGS+=-DNO_HQMIXER
+
+CFLAGS+=-DHAVE_FCNTL_H -DHAVE_LIMITS_H -DHAVE_MALLOC_H -DHAVE_UNISTD_H -DHAVE_SNPRINTF
+
+# compiler flags
+CFLAGS+=-O2 -Wall
+CFLAGS+=-G0 -fno-strict-aliasing
+#CFLAGS+=-g
+CFLAGS+=-I../psp -I../include
+
+TARGET_LIB=libmikmod.a
+
+OBJS=../drivers/drv_psp.o ../drivers/drv_nos.o \
+     ../drivers/drv_raw.o ../drivers/drv_aiff.o ../drivers/drv_wav.o \
+     ../loaders/load_669.o ../loaders/load_amf.o ../loaders/load_asy.o \
+     ../loaders/load_dsm.o ../loaders/load_far.o ../loaders/load_gdm.o \
+     ../loaders/load_gt2.o ../loaders/load_it.o ../loaders/load_imf.o \
+     ../loaders/load_m15.o ../loaders/load_med.o ../loaders/load_mod.o \
+     ../loaders/load_mtm.o ../loaders/load_okt.o ../loaders/load_s3m.o \
+     ../loaders/load_stm.o ../loaders/load_stx.o ../loaders/load_ult.o \
+     ../loaders/load_umx.o ../loaders/load_uni.o ../loaders/load_xm.o \
+     ../mmio/mmalloc.o ../mmio/mmerror.o ../mmio/mmio.o \
+     ../depackers/mmcmp.o ../depackers/pp20.o \
+     ../depackers/s404.o ../depackers/xpk.o \
+     ../posix/strcasecmp.o \
+     ../playercode/mdriver.o ../playercode/mdreg.o \
+     ../playercode/mloader.o ../playercode/mlreg.o \
+     ../playercode/mlutil.o ../playercode/mplayer.o \
+     ../playercode/munitrk.o ../playercode/mwav.o \
+     ../playercode/npertab.o ../playercode/sloader.o \
+     ../playercode/virtch.o ../playercode/virtch2.o \
+     ../playercode/virtch_common.o
+#    ../playercode/mdulaw.o
+
+include $(PSPSDK)/lib/build.mak
+

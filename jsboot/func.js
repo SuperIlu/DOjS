@@ -20,13 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/* @module other */
 
 /**
  * @property {boolean} DEBUG enable/disable Debug() output.
  */
 DEBUG = false;
 
+/** @module other */
 
 /**
  * print javascript debug output if DEBUG is true.

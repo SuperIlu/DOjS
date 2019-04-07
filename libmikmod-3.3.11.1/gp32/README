@@ -1,0 +1,6 @@
+Building libmikmod requires Mr.Mirkos SDK replacement
+ (see http://sourceforge.net/projects/devkitpro/
+  as well as http://www.gp32x.com/ for pointers.)
+
+Driver for output on gp32 platform:
+  See drivers/drv_gp32.c for its history.

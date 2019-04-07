@@ -1119,7 +1119,7 @@ exports.minute = function () {
  * text('Milliseconds \nrunning: \n' + millisecond, 5, 40);
  */
 exports.millis = function () {
-	return Date.now();
+	return MsecTime();
 };
 
 /**

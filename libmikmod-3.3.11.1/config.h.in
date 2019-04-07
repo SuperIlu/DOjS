@@ -1,0 +1,332 @@
+/* config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
+/* Define if your system is AIX 3.x - might be needed for 4.x too */
+#undef AIX
+
+/* Define if your system needs leading underscore to function names in dlsym()
+   calls */
+#undef DLSYM_NEEDS_UNDERSCORE
+
+/* Define if the DEC AudioFile server driver is compiled */
+#undef DRV_AF
+
+/* Define if the Amiga AHI driver is compiled */
+#undef DRV_AHI
+
+/* Define if you want an .aiff file writer driver */
+#undef DRV_AIFF
+
+/* Define if the AIX audio driver is compiled */
+#undef DRV_AIX
+
+/* Define if the Linux ALSA driver is compiled */
+#undef DRV_ALSA
+
+/* Define if the OS/2 direct audio (DART) driver is compiled */
+#undef DRV_DART
+
+/* Define if the Windows DirectSound driver is compiled */
+#undef DRV_DS
+
+/* Define if the Enlightened Sound Daemon driver is compiled */
+#undef DRV_ESD
+
+/* Define if the HP-UX audio driver is compiled */
+#undef DRV_HP
+
+/* Define this if you want the Carbon Mac Audio driver */
+#undef DRV_MAC
+
+/* Define if the Network Audio System driver is compiled */
+#undef DRV_NAS
+
+/* Define if the OpenAL driver is compiled */
+#undef DRV_OPENAL
+
+/* Define if the OS/2 MCI driver is compiled */
+#undef DRV_OS2
+
+/* Define if the OpenSL ES driver is compiled */
+#undef DRV_OSLES
+
+/* Define if the Open Sound System driver is compiled */
+#undef DRV_OSS
+
+/* Define this if you want the MacOS X CoreAudio driver */
+#undef DRV_OSX
+
+/* Define if your system supports binary pipes (i.e. Unix) */
+#undef DRV_PIPE
+
+/* Define if the PulseAudio driver is compiled */
+#undef DRV_PULSEAUDIO
+
+/* Define if you want a raw pcm data file writer driver */
+#undef DRV_RAW
+
+/* Define if the Linux SAM9407 driver is compiled */
+#undef DRV_SAM9407
+
+/* Define if the SDL audio driver is compiled */
+#undef DRV_SDL
+
+/* Define if the SGI audio driver is compiled */
+#undef DRV_SGI
+
+/* Define if the OpenBSD sndio driver is compiled */
+#undef DRV_SNDIO
+
+/* Define if you want support for output to stdout */
+#undef DRV_STDOUT
+
+/* Define if the Sun audio driver or compatible (NetBSD, OpenBSD) is compiled
+   */
+#undef DRV_SUN
+
+/* Define if the Linux Ultra driver is compiled */
+#undef DRV_ULTRA
+
+/* Define if you want a .wav file writer driver */
+#undef DRV_WAV
+
+/* Define if the Windows MCI driver is compiled */
+#undef DRV_WIN
+
+/* Define if the Windows XAudio2 driver is compiled */
+#undef DRV_XAUDIO2
+
+/* Define if using XAudio 2.8 for Windows8 with XAudio2 driver */
+#undef DRV_XAUDIO28
+
+/* Define to 1 if you have the <AF/AFlib.h> header file. */
+#undef HAVE_AF_AFLIB_H
+
+/* Define to 1 if you have the <alsa/asoundlib.h> header file. */
+#undef HAVE_ALSA_ASOUNDLIB_H
+
+/* Define to 1 if you have the <AL/alc.h> header file. */
+#undef HAVE_AL_ALC_H
+
+/* Define to 1 if you have the <AL/alext.h> header file. */
+#undef HAVE_AL_ALEXT_H
+
+/* Define to 1 if you have the <AL/al.h> header file. */
+#undef HAVE_AL_AL_H
+
+/* Define to 1 if you have the <audio/audiolib.h> header file. */
+#undef HAVE_AUDIO_AUDIOLIB_H
+
+/* Define to 1 if you have the <devices/ahi.h> header file. */
+#undef HAVE_DEVICES_AHI_H
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define to 1 if you have the <dl.h> header file. */
+#undef HAVE_DL_H
+
+/* Define to 1 if you have the <dmedia/audio.h> header file. */
+#undef HAVE_DMEDIA_AUDIO_H
+
+/* Define to 1 if you have the <dsound.h> header file. */
+#undef HAVE_DSOUND_H
+
+/* Define to 1 if you have the <fcntl.h> header file. */
+#undef HAVE_FCNTL_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <libgus.h> header file. */
+#undef HAVE_LIBGUS_H
+
+/* Define to 1 if you have the <limits.h> header file. */
+#undef HAVE_LIMITS_H
+
+/* Define to 1 if you have the <machine/soundcard.h> header file. */
+#undef HAVE_MACHINE_SOUNDCARD_H
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#undef HAVE_MALLOC_H
+
+/* Define to 1 if you have the `memcmp' function. */
+#undef HAVE_MEMCMP
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <OpenAL/alc.h> header file. */
+#undef HAVE_OPENAL_ALC_H
+
+/* Define to 1 if you have the <OpenAL/al.h> header file. */
+#undef HAVE_OPENAL_AL_H
+
+/* Define to 1 if you have the <os2.h> header file. */
+#undef HAVE_OS2_H
+
+/* Define to 1 if you have the `posix_memalign' function. */
+#undef HAVE_POSIX_MEMALIGN
+
+/* Define if your system provides POSIX.4 threads */
+#undef HAVE_PTHREAD
+
+/* Define to 1 if you have the <pulse/simple.h> header file. */
+#undef HAVE_PULSE_SIMPLE_H
+
+/* Define if your system has RTLD_GLOBAL defined in <dlfcn.h> */
+#undef HAVE_RTLD_GLOBAL
+
+/* Define to 1 if you have the `setenv' function. */
+#undef HAVE_SETENV
+
+/* Define to 1 if you have the <sndio.h> header file. */
+#undef HAVE_SNDIO_H
+
+/* Define to 1 if you have the `snprintf' function. */
+#undef HAVE_SNPRINTF
+
+/* Define to 1 if you have the <soundcard.h> header file. */
+#undef HAVE_SOUNDCARD_H
+
+/* Define to 1 if you have the `srandom' function. */
+#undef HAVE_SRANDOM
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strstr' function. */
+#undef HAVE_STRSTR
+
+/* Define to 1 if you have the <sun/audioio.h> header file. */
+#undef HAVE_SUN_AUDIOIO_H
+
+/* Define to 1 if you have the <sys/acpa.h> header file. */
+#undef HAVE_SYS_ACPA_H
+
+/* Define to 1 if you have the <sys/audioio.h> header file. */
+#undef HAVE_SYS_AUDIOIO_H
+
+/* Define to 1 if you have the <sys/audio.h> header file. */
+#undef HAVE_SYS_AUDIO_H
+
+/* Define to 1 if you have the <sys/ioctl.h> header file. */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define to 1 if you have the <sys/sam9407.h> header file. */
+#undef HAVE_SYS_SAM9407_H
+
+/* Define to 1 if you have the <sys/soundcard.h> header file. */
+#undef HAVE_SYS_SOUNDCARD_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
+#undef HAVE_SYS_WAIT_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <windows.h> header file. */
+#undef HAVE_WINDOWS_H
+
+/* Define to 1 if you have the <xaudio2.h> header file. */
+#undef HAVE_XAUDIO2_H
+
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
+#undef LT_OBJDIR
+
+/* Define if you want a debug version of the library */
+#undef MIKMOD_DEBUG
+
+/* Define if you want runtime dynamic linking of ALSA and EsounD drivers */
+#undef MIKMOD_DYNAMIC
+
+/* Define if you want to use SIMD (AltiVec or SSE2) optimizations (Unstable!)
+   */
+#undef MIKMOD_SIMD
+
+/* Define to 0 or 1 to override MIKMOD_UNIX in mikmod_internals.h. */
+#undef MIKMOD_UNIX
+
+/* disable the high quality mixer (build only with the standart mixer) */
+#undef NO_HQMIXER
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Define if your system defines random(3) and srandom(3) in math.h instead of
+   stdlib.h */
+#undef SRANDOM_IN_MATH_H
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define if your system is SunOS 4.x */
+#undef SUNOS
+
+/* Version number of package */
+#undef VERSION
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+#undef inline
+#endif
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef pid_t
+
+/* Define to empty if compiler does not understand the `signed' keyword. */
+#undef signed
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef size_t

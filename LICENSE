@@ -8,7 +8,10 @@ GRX:
 GRX itself is released under LGPL, the fonts are under "MIT and other licenses".
 See copying.grx below or in the grx folder for details.
 
-SoundBlaster MIDI, DMA, FM sound and SoundBlaster detection code:
+Mikmod:
+Mikmod is licensed under LGPL 2.1.
+
+MIDI and FM sound code:
 This code (modified by me) is (c) bei Steven Don (http://www.shdon.com/).
 It is licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
 with kind permission of Steven. `FM.DAT` is released under WTFPL

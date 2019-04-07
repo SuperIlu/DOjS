@@ -38,7 +38,8 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION "V0.8"  //!< version number
+#define DOSJS_VERSION 0.9         //!< version number
+#define DOSJS_VERSION_STR "V0.9"  //!< version number as string
 
 #define BOOT_DIR "JSBOOT/"  //!< directory with boot files.
 
@@ -126,6 +127,7 @@ extern bool synth_available;  //!< indicates if FM sound is available
 extern bool mouse_available;  //!< indicates if the mouse is available
 extern bool midi_available;   //!< indicates if midi is available
 extern bool ipx_available;    //!< indicates if ipx is available
+extern bool mouse_visible;    //!< indicates if the cursor should be visible.
 
 extern float current_frame_rate;  //!< current frame rate
 extern float wanted_frame_rate;   //!< wanted frame rate

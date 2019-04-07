@@ -1,0 +1,18 @@
+simpleplay/
+	Shows the simplest way of initializing the library
+	loading and playing a module.
+
+simpleplayFP/
+	Shows how to initialize the library, load a module from
+	a FILE* and play it.
+
+simpleplayMEM/
+	Shows how to initialize the library, load a module using a
+	custom MREADER (which will read from memory), and play it.
+
+simpleplayMEM2/
+	Shows how to initialize the library, load a module from a
+	memory buffer using library-provided readers, and play it.
+
+soundeffects/
+	An example on how to use libmikmod to play sound effects.

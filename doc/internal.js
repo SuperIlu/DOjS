@@ -22,26 +22,29 @@ function Input(event) { }
  * Other properties
  */
 /**
- * true if WAV sound is available.
- * @property {boolean}
+ * @property {boolean} SOUND_AVAILABLE true if WAV sound is available.
  */
 SOUND_AVAILABLE = null;
 
 /**
- * true if FM sound is available.
- * @property {boolean}
+ * @property {boolean} SYNTH_AVAILABLE true if FM sound is available.
  */
 SYNTH_AVAILABLE = true;
 
 /**
- * @property {boolean} true if mouse is available.
+ * @property {boolean} MOUSE_AVAILABLE true if mouse is available.
  */
 MOUSE_AVAILABLE = true;
 
 /**
- * @property {boolean} true if midi is available.
+ * @property {boolean} MIDI_AVAILABLE true if midi is available.
  */
 MIDI_AVAILABLE = true;
+
+/**
+ * @property {number} DOJS_VERSION the version
+ */
+DOJS_VERSION = 0.0;
 
 /**
  * IPX network functions.
@@ -65,7 +68,7 @@ function IpxSocketClose() { }
  * @param {string} data data to send.
  * @param {IpxAddress} dest destination address.
  */
-function IpxSendPacket(data, dest) { }
+function IpxSend(data, dest) { }
 
 /**
  * Check for packet in receive buffer.
@@ -100,6 +103,22 @@ function MidiIsPlaying() { }
  * Stop playing midi.
  */
 function MidiStop() { }
+
+/**
+ * Module music functions. See {@link Module} on how to load MOD-files.
+ * 
+ * @module module
+ */
+/**
+ * Check if the file is still playing.
+ * @returns {boolean} true if the file is still playing.
+ */
+function ModuleIsPlaying() { }
+
+/**
+ * Stop playing module.
+ */
+function ModuleStop() { }
 
 /**
  * All functions for FM music.
@@ -196,6 +215,17 @@ function Plot(x, y, c) { }
 function Line(x1, y1, x2, y2, c) { }
 
 /**
+ * draw a line with given width.
+ * @param {number} x1 start x coordinate.
+ * @param {number} y1 start y coordinate.
+ * @param {number} x2 end x coordinate.
+ * @param {number} y2 end y coordinate.
+ * @param {number} w line width.
+ * @param {Color} c color.
+ */
+function CustomLine(x1, y1, x2, y2, w, c) { }
+
+/**
  * draw a box.
  * @param {number} x1 start x coordinate.
  * @param {number} y1 start y coordinate.
@@ -204,6 +234,17 @@ function Line(x1, y1, x2, y2, c) { }
  * @param {Color} c color.
  */
 function Box(x1, y1, x2, y2, c) { }
+
+/**
+ * draw a box with given width.
+ * @param {number} x1 start x coordinate.
+ * @param {number} y1 start y coordinate.
+ * @param {number} x2 end x coordinate.
+ * @param {number} y2 end y coordinate.
+ * @param {number} w line width.
+ * @param {Color} c color.
+ */
+function CustomBox(x1, y1, x2, y2, w, c) { }
 
 /**
  * draw a circle.
@@ -215,6 +256,16 @@ function Box(x1, y1, x2, y2, c) { }
 function Circle(x, y, r, c) { }
 
 /**
+ * draw a circle with given width.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} r radius.
+ * @param {number} w line width.
+ * @param {Color} c color.
+ */
+function CustomCircle(x, y, r, w, c) { }
+
+/**
  * draw a ellipse.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
@@ -223,6 +274,17 @@ function Circle(x, y, r, c) { }
  * @param {Color} c color.
  */
 function Ellipse(x, y, xr, yr, c) { }
+
+/**
+ * draw a ellipse with given width.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} xr radius.
+ * @param {number} yr radius.
+ * @param {number} w line width.
+ * @param {Color} c color.
+ */
+function CustomEllipse(x, y, xr, yr, w, c) { }
 
 /**
  * Draw a circle arc.
@@ -238,6 +300,20 @@ function Ellipse(x, y, xr, yr, c) { }
 function CircleArc(x, y, r, start, end, style, c) { }
 
 /**
+ * Draw a circle arc with given width.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} r radius.
+ * @param {number} start start angle in tenths of degrees.
+ * @param {number} end end angle in tenths of degrees.
+ * @param {*} style value from {@link ARC}.
+ * @param {number} w line width.
+ * @param {Color} c color.
+ * @returns {ArcInfo} detailed info about the drawn arc.
+ */
+function CustomCircleArc(x, y, r, start, end, style, w, c) { }
+
+/**
  * Draw an ellipse arc.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
@@ -250,6 +326,21 @@ function CircleArc(x, y, r, start, end, style, c) { }
  * @returns {ArcInfo} detailed info about the drawn arc.
  */
 function EllipseArc(x, y, rx, ry, start, end, style, c) { }
+
+/**
+ * Draw an ellipse arc with given width.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} xr radius.
+ * @param {number} yr radius.
+ * @param {number} start start angle in tenths of degrees.
+ * @param {number} end end angle in tenths of degrees.
+ * @param {*} style value from {@link ARC}.
+ * @param {number} w line width.
+ * @param {Color} c color.
+ * @returns {ArcInfo} detailed info about the drawn arc.
+ */
+function CustomEllipseArc(x, y, rx, ry, start, end, style, w, c) { }
 
 /**
  * draw a filled box.
@@ -359,11 +450,27 @@ function FloodSpill2(x1, y1, x2, y2, old1, c1, old2, c2) { }
 function PolyLine(points, c) { }
 
 /**
+ * draw a polyline with given width.
+ * @param {Color} c color.
+ * @param {number} w line width.
+ * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
+ */
+function CustomPolyLine(points, w, c) { }
+
+/**
  * draw a polygon.
  * @param {Color} c color.
  * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
  */
 function Polygon(points, c) { }
+
+/**
+ * draw a polygon with given width.
+ * @param {Color} c color.
+ * @param {number} w line width.
+ * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
+ */
+function CustomPolygon(points, w, c) { }
 
 /**
  * draw a filled polygon.

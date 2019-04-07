@@ -1,0 +1,138 @@
+>> BUILD INSTRUCTIONS FOR libmikmod FOR MACINTOSH
+-------------------------------------------------
+
+Requirements (to run):
+- 68020 or PowerPC Macintosh
+- Sound Manager 2.0 or above
+- CFM68K for 680X0 shared library
+
+Requirements (to compile):
+- Metrowerks CodeWarrior Pro
+- Apple MPW
+
+Platforms (either one of):
+- System 7
+- Mac OS 9
+- Mac OS X (10.1 and up)
+
+
+>> COMPILING
+------------
+
+To fix the file type and creators:
+
+If you downloaded this library from the main site, there is a good chance
+that the types and creators of the various files are messed up and it won't
+build because of that. There is an AppleScript supplied, that will fix this.
+
+On Mac OS X, you should be able to open the text file "FixTypeAndCreators.applescript"
+Run this script, choosing the top "libmikmod" folder - and all should then be fixed.
+On Mac OS 9, if you have trouble opening the AppleScript because it *too* lacks the
+type and creator - there is a BinHex version in "FixTypeAndCreators.hqx". Use that.
+
+The script sets the creator to CodeWarrior, but is needed for the MPW builds as well.
+Note that all the files use UNIX line breaks (\n), and not the regular Mac ones (\r).
+
+
+To compile and build :
+
+A) Using CodeWarrior
+--------------------
+
+1) Import "libmikmod-cw#.xml" with CodeWarrior IDE
+2) Set Current Target : "¥ All Libraries"
+3) Make, or "Bring Up To Date"
+
+Temporary stuff (can be deleted afterwards)
+- "libmikmod-cw# Data" folder
+
+CodeWarrior version Pro 5 or Pro 6 is needed to open the supplied projects.
+If you have an older or newer version of CodeWarrior, you should be able to
+convert the project by opening it and choosing OK when it asks to convert.
+
+The Pro 5 version builds 68K and PPC targets for regular Macintosh (System 7),
+and the Pro 6 version builds Classic (Mac OS 9) and Carbon (Mac OS X) targets.
+
+At the moment there is no support for Mach-O linkage or the CoreAudio driver
+when using Metrowerks CodeWarrior, it would require updating to CodeWarrior 8.
+It might come in the future, but for now it is CFM and the Carbon driver only.
+
+
+B) Using MPW
+------------
+
+1) Open MPW Shell
+2) Run the Script : "BuildLibmikmod"
+
+Temporary stuff (can be deleted afterwards)
+- "libmikmod.makeout" textfile
+- "obj","objppc" folders
+
+Currently the 68K build doesn't work because the default Symantec compiler
+lacks "long long" (64-bit) int support and also support for prefix headers.
+
+MPW can be downloaded for free from http://developer.apple.com/tools/mpw-tools/
+Updating your Universal Interfaces to the latest version (3.4) is recommended.
+
+The MPW makefile does not build any Carbon or Mac OS X targets.
+Use Apple's new freely available Developer Tools for that instead.
+
+
+>> TARGETS
+----------
+
+SYSTEM 7
+
+Builds the following files:
+- libmikmod				# Fat (680X0+PowerPC) Shared Library    ['shlb']
+- libmikmodStub			# Fat Stub Link Library (no code/data)  ['stub']
+
+The various parts that are mixed into the above fat libraries:
+- libmikmod68k.lib		# 680X0 stub library
+- libmikmodPPC.lib		# PowerPC stub library
+- libmikmod68k.dll		# 680X0 shared library
+- libmikmodPPC.dll		# PowerPC shared library
+(these 4 files can be deleted, since they are also present in the fat libs)
+
+MAC OS 9 / MAC OS X
+
+- libmikmod.lib			# PowerPC stub library, for both Classic/Carbon
+- libmikmodClassic.dll	# PowerPC shared library, links to InterfaceLib
+- libmikmodCarbon.dll	# PowerPC shared library, links to CarbonLib
+
+STATIC LIBRARIES
+
+- libmikmod.o           # 680X0 Static Library for MPW
+- libmikmod.x           # PowerPC Static Library for MPW
+- libmikmod 68k         # 680X0 Static Library for CodeWarrior
+- libmikmod PPC			# PowerPC Static Library for CodeWarrior
+
+- libmikmod Classic		# Static Library for CodeWarrior (TARGET_API_MACOS8)
+- libmikmod Carbon		# Static Library for CodeWarrior (TARGET_API_CARBON)
+
+
+>> INSTALLING
+-------------
+
+Mac OS:
+Move "libmikmod" to the Extensions folder of your System Folder.
+Move "libmikmodStub" and "mikmod.h" to your Compiler Folder, for instance
+(just somewhere along your libmikmod-using project's search path)
+
+These three files (libmikmod,libmikmodStub, mikmod.h) with installer
+can also be downloaded directly from my web page (see URL below).
+If you have troubles compiling them yourself, that is.
+
+Mac OS X:
+There is no official place to put them, since it only uses frameworks now.
+You can bundle the shared libraries next to your app, or link statically.
+(frameworks and other such nextisms are located in the "macosx" folder)
+
+Future Mac OS X support will take place using gcc and the Xcode IDE.
+(unless someone donates a copy of Metrowerks CodeWarrior 8 or 9 ;) )
+
+
+Enjoy!
+
+Anders F Bjšrklund <afb@algonet.se>
+http://www.algonet.se/~afb/mikmod

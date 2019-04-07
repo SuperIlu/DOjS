@@ -1,0 +1,161 @@
+# Makefile for windows for the lcc-win32 compiler.
+#
+# For XAudio2 support you need DirectX SDK / xaudio2.h, then:
+# add /DDRV_XAUDIO2 among your CFLAGS. (not tested.)
+#
+# For OpenAL support you need OpenAL 1.1 SDK, then add /DDRV_OPENAL
+# among your CFLAGS and add OpenAL32.lib among your link libraries.
+# (See drv_openal.c for notes about OpenAL header location issues.)
+
+CC=lcc.exe
+LIB=lcclib.exe
+LINK=lcclnk.exe
+
+DRIVER_FLAGS= /DDRV_DS /DDRV_WIN /DDRV_AIFF /DDRV_WAV /DDRV_RAW
+# If you want to build a static library, comment out the following two lines
+# and uncomment the next two.
+LIBS=$(DLLNAME)
+CFLAGS= -A /DWIN32 /DMIKMOD_BUILD /DDLL_EXPORT /DHAVE_FCNTL_H /DHAVE_MALLOC_H /DHAVE_LIMITS_H $(DRIVER_FLAGS)
+#LIBS=$(LIBSTATIC)
+#CFLAGS= -A /DWIN32 /DMIKMOD_BUILD /DMIKMOD_STATIC /DHAVE_FCNTL_H /DHAVE_MALLOC_H /DHAVE_LIMITS_H $(DRIVER_FLAGS)
+
+# Compile command
+COMPILE=$(CC) -errout=err.out $(CFLAGS) /I..\win32 /I..\include
+
+.SUFFIXES:
+.SUFFIXES: .o .c
+
+LIBNAME=mikmod.lib
+DLLNAME=mikmod.dll
+LIBSTATIC=mikmod_static.lib
+
+DRIVER_OBJ=drv_ds.o drv_xaudio2.o drv_win.o
+
+OBJ=$(DRIVER_OBJ) \
+    drv_openal.o drv_sdl.o drv_nos.o drv_aiff.o drv_raw.o drv_stdout.o drv_wav.o \
+    load_669.o load_amf.o load_asy.o load_dsm.o load_far.o load_gdm.o load_gt2.o \
+    load_it.o load_imf.o load_m15.o load_med.o load_mod.o load_mtm.o load_okt.o \
+    load_s3m.o load_stm.o load_stx.o load_ult.o load_umx.o load_uni.o load_xm.o \
+    mmalloc.o mmerror.o mmio.o \
+    mmcmp.o pp20.o s404.o xpk.o strcasecmp.o \
+    mdriver.o mdreg.o mloader.o mlreg.o mlutil.o mplayer.o munitrk.o mwav.o \
+    npertab.o sloader.o virtch.o virtch2.o virtch_common.o
+
+all: $(LIBS)
+
+clean:
+	FOR %F IN ( $(LIBNAME) $(LIBSTATIC) $(DLLNAME) mikmod.exp *.o ) DO IF EXIST %F ERASE %F
+
+# lcc doesn't seem to do well without a *.def with dll exports
+$(DLLNAME):     $(OBJ) mikmod.def
+	$(LINK) /DLL /NOUNDERSCORES /OUT:$(DLLNAME) *.o mikmod.def dsound.lib winmm.lib
+
+$(LIBSTATIC):   $(OBJ)
+	$(LIB) /OUT:$(LIBSTATIC) *.o
+
+HEADER_DEPS=..\include\mikmod.h ..\include\mikmod_internals.h ../include/mikmod_ctype.h
+drv_ds.o: ..\drivers\drv_ds.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_ds.c
+drv_aiff.o: ..\drivers\drv_aiff.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_aiff.c
+drv_nos.o: ..\drivers\drv_nos.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_nos.c
+drv_openal.o: ..\drivers\drv_openal.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_openal.c
+drv_sdl.o: ..\drivers\drv_sdl.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_sdl.c
+drv_raw.o: ..\drivers\drv_raw.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_raw.c
+drv_stdout.o: ..\drivers\drv_stdout.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_stdout.c
+drv_wav.o: ..\drivers\drv_wav.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_wav.c
+drv_win.o: ..\drivers\drv_win.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_win.c
+drv_xaudio2.o: ..\drivers\drv_xaudio2.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\drivers\drv_xaudio2.c
+load_669.o: ..\loaders\load_669.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_669.c
+load_amf.o: ..\loaders\load_amf.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_amf.c
+load_asy.o: ..\loaders\load_asy.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_asy.c
+load_dsm.o: ..\loaders\load_dsm.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_dsm.c
+load_far.o: ..\loaders\load_far.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_far.c
+load_gdm.o: ..\loaders\load_gdm.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_gdm.c
+load_gt2.o: ..\loaders\load_gt2.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_gt2.c
+load_it.o: ..\loaders\load_it.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_it.c
+load_imf.o: ..\loaders\load_imf.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_imf.c
+load_m15.o: ..\loaders\load_m15.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_m15.c
+load_med.o: ..\loaders\load_med.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_med.c
+load_mod.o: ..\loaders\load_mod.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_mod.c
+load_mtm.o: ..\loaders\load_mtm.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_mtm.c
+load_okt.o: ..\loaders\load_okt.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_okt.c
+load_s3m.o: ..\loaders\load_s3m.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_s3m.c
+load_stm.o: ..\loaders\load_stm.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_stm.c
+load_stx.o: ..\loaders\load_stx.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_stx.c
+load_ult.o: ..\loaders\load_ult.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_ult.c
+load_umx.o: ..\loaders\load_umx.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_umx.c
+load_uni.o: ..\loaders\load_uni.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_uni.c
+load_xm.o: ..\loaders\load_xm.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\loaders\load_xm.c
+mmalloc.o: ..\mmio\mmalloc.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\mmio\mmalloc.c
+mmerror.o: ..\mmio\mmerror.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\mmio\mmerror.c
+mmio.o: ..\mmio\mmio.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\mmio\mmio.c
+mmcmp.o: ..\depackers\mmcmp.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\depackers\mmcmp.c
+pp20.o: ..\depackers\pp20.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\depackers\pp20.c
+s404.o: ..\depackers\s404.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\depackers\s404.c
+xpk.o: ..\depackers\xpk.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\depackers\xpk.c
+mdriver.o: ..\playercode\mdriver.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\mdriver.c
+mdreg.o: ..\playercode\mdreg.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\mdreg.c
+mloader.o: ..\playercode\mloader.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\mloader.c
+mlreg.o: ..\playercode\mlreg.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\mlreg.c
+mlutil.o: ..\playercode\mlutil.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\mlutil.c
+mplayer.o: ..\playercode\mplayer.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\mplayer.c
+munitrk.o: ..\playercode\munitrk.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\munitrk.c
+mwav.o: ..\playercode\mwav.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\mwav.c
+npertab.o: ..\playercode\npertab.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\npertab.c
+sloader.o: ..\playercode\sloader.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\sloader.c
+virtch.o: ..\playercode\virtch.c ..\playercode\virtch_common.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\virtch.c
+virtch2.o: ..\playercode\virtch2.c ..\playercode\virtch_common.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\virtch2.c
+virtch_common.o: ..\playercode\virtch_common.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\playercode\virtch_common.c
+strcasecmp.o: ..\posix\strcasecmp.c $(HEADER_DEPS)
+	$(COMPILE) /Fo$@ ..\posix\strcasecmp.c
+

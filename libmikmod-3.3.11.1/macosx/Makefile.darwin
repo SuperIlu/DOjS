@@ -1,0 +1,252 @@
+# libmikmod Makefile for targetting Darwin (i.e. Mac OS X)
+# Edit the compiler/linker flags, etc. to meet your needs
+
+ifeq ($(CROSS),)
+CC=gcc
+AS=as
+AR=ar
+RANLIB=ranlib
+LIPO=lipo
+else
+CC=$(CROSS)-gcc
+AS=$(CROSS)-as
+AR=$(CROSS)-ar
+RANLIB=$(CROSS)-ranlib
+LIPO=$(CROSS)-lipo
+endif
+
+ARFLAGS = cr
+CPPFLAGS=-DMIKMOD_BUILD
+LDLIBS=
+
+# SSE2 support (for x86 builds. for x86_64 it doesn't hurt.)
+# SIMD code is unstable at present: *not* recommended...
+SSE2FLAGS=-msse2
+
+# altivec support (for ppc builds)
+#VECFLAGS=-maltivec
+# use -faltivec or -mpim-altivec instead. (see Apple gcc man page.)
+# SIMD code is unstable at present: *not* recommended...
+VECFLAGS=-faltivec
+
+# support for CoreAudio sound output:
+LDLIBS+=-Wl,-framework,CoreAudio
+CPPFLAGS+=-DDRV_OSX
+
+# support for output through OpenAL (requires 10.4 or newer)
+#LDLIBS+=-Wl,-framework,OpenAL
+#CPPFLAGS+=-DDRV_OPENAL
+
+# support for output through SDL:
+# SDL_FRAMEWORK define is for including SDL.h as <SDL/SDL.h> from SDL.framework.
+#LDLIBS+=-Wl,-framework,SDL
+#CPPFLAGS+=-DDRV_SDL -DSDL_FRAMEWORK
+
+# support for output via a pipe to another command:
+CPPFLAGS+=-DDRV_PIPE
+# support for output to stdout:
+CPPFLAGS+=-DDRV_STDOUT
+
+# support for aiff file output:
+CPPFLAGS+=-DDRV_AIFF
+# support for wav file output:
+CPPFLAGS+=-DDRV_WAV
+# support for output raw data to a file:
+CPPFLAGS+=-DDRV_RAW
+
+# disable the high quality mixer (build only with the standart mixer)
+#CPPFLAGS+=-DNO_HQMIXER
+
+CPPFLAGS+=-DHAVE_FCNTL_H -DHAVE_LIMITS_H -DHAVE_UNISTD_H -DHAVE_SNPRINTF -DHAVE_PTHREAD -DHAVE_SRANDOM
+
+# compiler flags
+CFLAGS=-O2 -Wall
+CFLAGS+=-ffast-math -fno-common
+CFLAGS+=-fvisibility=hidden -DSYM_VISIBILITY
+#CFLAGS+=-g
+LDFLAGS =-Wl,-single_module
+LDFLAGS+=-Wl,-install_name,"@executable_path/$(LIBSHARED)"
+LDFLAGS+=-Wl,-compatibility_version,4.0 -Wl,-current_version,6.0
+
+# specifically for 10.5 and newer:
+#CFLAGS+=-mmacosx-version-min=10.5
+#LDFLAGS+=-mmacosx-version-min=10.5
+# specifically for 10.6 and newer:
+#CFLAGS+=-mmacosx-version-min=10.6
+#CPPFLAGS+=-DHAVE_POSIX_MEMALIGN
+#LDFLAGS+=-mmacosx-version-min=10.6 -Wl,-lbundle1.o
+
+COMPILE=$(CC) -c $(CFLAGS) $(CPPFLAGS) -I../macosx -I../include
+
+.SUFFIXES:
+.SUFFIXES: .o .c
+
+DYLIB_VER=3
+#LIBSHARED=libmikmod.$(DYLIB_VER).dylib
+LIBSHARED=libmikmod.dylib
+LIBSTATIC=libmikmod.a
+
+LIBS=$(LIBSHARED)
+
+OBJ=drv_osx.o drv_openal.o drv_sdl.o \
+    drv_raw.o drv_aiff.o drv_wav.o \
+    drv_nos.o drv_pipe.o drv_stdout.o \
+    load_669.o load_amf.o load_asy.o load_dsm.o load_far.o load_gdm.o load_gt2.o \
+    load_it.o load_imf.o load_m15.o load_med.o load_mod.o load_mtm.o load_okt.o \
+    load_s3m.o load_stm.o load_stx.o load_ult.o load_umx.o load_uni.o load_xm.o \
+    mmalloc.o mmerror.o mmio.o mdriver.o mdreg.o \
+    mmcmp.o pp20.o s404.o xpk.o strcasecmp.o \
+    mloader.o mlreg.o mlutil.o mplayer.o munitrk.o mwav.o \
+    npertab.o sloader.o virtch.o virtch2.o virtch_common.o
+#   mdulaw.o
+
+help:
+	@echo ""
+	@echo "Valid targets:"
+	@echo ""
+	@echo "  $(MAKE) dylib         : build libmikmod.dylib shared lib"
+	@echo "  $(MAKE) static        : build libmikmod.a static library"
+	@echo ""
+	@echo "Same as above, but with SIMD (AltiVec/SSE2) mixer optimizations:"
+	@echo "(SIMD code is unstable at present: *not* recommended...)"
+	@echo ""
+	@echo "  $(MAKE) dylib-altivec : build libmikmod.dylib with altivec support (ppc)"
+	@echo "  $(MAKE) dylib-sse2    : build libmikmod.dylib with sse2 support (x86/x86_64)"
+	@echo "  $(MAKE) static-altivec: build libmikmod.a with altivec support (ppc)"
+	@echo "  $(MAKE) static-sse2   : build libmikmod.a with sse2 support (x86/x86_64)"
+	@echo ""
+
+clean:
+	rm -f $(LIBSHARED) $(LIBSTATIC) *.o
+
+dylib-sse2: CFLAGS+=$(SSE2FLAGS)
+dylib-sse2: CPPFLAGS+=-DMIKMOD_SIMD
+dylib-sse2: dylib
+
+dylib-altivec: CFLAGS+=$(VECFLAGS)
+dylib-altivec: CPPFLAGS+=-DMIKMOD_SIMD
+dylib-altivec: dylib
+
+static-sse2: CFLAGS+=$(SSE2FLAGS)
+static-sse2: CPPFLAGS+=-DMIKMOD_SIMD
+static-sse2: static
+
+static-altivec: CFLAGS+=$(VECFLAGS)
+static-altivec: CPPFLAGS+=-DMIKMOD_SIMD
+static-altivec: static
+
+dylib: $(LIBSHARED)
+static: $(LIBSTATIC)
+
+$(LIBSHARED): $(OBJ)
+	$(CC) -dynamiclib -o $(LIBSHARED) $(OBJ) $(LDFLAGS) $(LDLIBS)
+
+$(LIBSTATIC): $(OBJ)
+	$(AR) $(ARFLAGS) $@ $(OBJ)
+	$(RANLIB) $@
+
+HEADER_DEPS=../include/mikmod.h ../include/mikmod_internals.h ../include/mikmod_ctype.h
+drv_osx.o: ../drivers/drv_osx.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_osx.c -o drv_osx.o
+drv_openal.o: ../drivers/drv_openal.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_openal.c -o drv_openal.o
+drv_sdl.o: ../drivers/drv_sdl.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_sdl.c -o drv_sdl.o
+drv_nos.o: ../drivers/drv_nos.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_nos.c -o drv_nos.o
+drv_raw.o: ../drivers/drv_raw.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_raw.c -o drv_raw.o
+drv_stdout.o: ../drivers/drv_stdout.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_stdout.c -o drv_stdout.o
+drv_aiff.o: ../drivers/drv_aiff.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_aiff.c -o drv_aiff.o
+drv_wav.o: ../drivers/drv_wav.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_wav.c -o drv_wav.o
+drv_pipe.o: ../drivers/drv_pipe.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_pipe.c -o drv_pipe.o
+load_669.o: ../loaders/load_669.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_669.c -o load_669.o
+load_amf.o: ../loaders/load_amf.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_amf.c -o load_amf.o
+load_asy.o: ../loaders/load_asy.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_asy.c -o load_asy.o
+load_dsm.o: ../loaders/load_dsm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_dsm.c -o load_dsm.o
+load_far.o: ../loaders/load_far.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_far.c -o load_far.o
+load_gdm.o: ../loaders/load_gdm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_gdm.c -o load_gdm.o
+load_gt2.o: ../loaders/load_gt2.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_gt2.c -o load_gt2.o
+load_it.o: ../loaders/load_it.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_it.c -o load_it.o
+load_imf.o: ../loaders/load_imf.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_imf.c -o load_imf.o
+load_m15.o: ../loaders/load_m15.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_m15.c -o load_m15.o
+load_med.o: ../loaders/load_med.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_med.c -o load_med.o
+load_mod.o: ../loaders/load_mod.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_mod.c -o load_mod.o
+load_mtm.o: ../loaders/load_mtm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_mtm.c -o load_mtm.o
+load_okt.o: ../loaders/load_okt.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_okt.c -o load_okt.o
+load_s3m.o: ../loaders/load_s3m.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_s3m.c -o load_s3m.o
+load_stm.o: ../loaders/load_stm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_stm.c -o load_stm.o
+load_stx.o: ../loaders/load_stx.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_stx.c -o load_stx.o
+load_ult.o: ../loaders/load_ult.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_ult.c -o load_ult.o
+load_umx.o: ../loaders/load_umx.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_umx.c -o load_umx.o
+load_uni.o: ../loaders/load_uni.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_uni.c -o load_uni.o
+load_xm.o: ../loaders/load_xm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_xm.c -o load_xm.o
+mmalloc.o: ../mmio/mmalloc.c $(HEADER_DEPS)
+	$(COMPILE) ../mmio/mmalloc.c -o mmalloc.o
+mmerror.o: ../mmio/mmerror.c $(HEADER_DEPS)
+	$(COMPILE) ../mmio/mmerror.c -o mmerror.o
+mmio.o: ../mmio/mmio.c $(HEADER_DEPS)
+	$(COMPILE) ../mmio/mmio.c -o mmio.o
+mmcmp.o: ../depackers/mmcmp.c $(HEADER_DEPS)
+	$(COMPILE) ../depackers/mmcmp.c -o mmcmp.o
+pp20.o: ../depackers/pp20.c $(HEADER_DEPS)
+	$(COMPILE) ../depackers/pp20.c -o pp20.o
+s404.o: ../depackers/s404.c $(HEADER_DEPS)
+	$(COMPILE) ../depackers/s404.c -o s404.o
+xpk.o: ../depackers/xpk.c $(HEADER_DEPS)
+	$(COMPILE) ../depackers/xpk.c -o xpk.o
+mdriver.o: ../playercode/mdriver.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mdriver.c -o mdriver.o
+mdreg.o: ../playercode/mdreg.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mdreg.c -o mdreg.o
+mdulaw.o: ../playercode/mdulaw.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mdulaw.c -o mdulaw.o
+mloader.o: ../playercode/mloader.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mloader.c -o mloader.o
+mlreg.o: ../playercode/mlreg.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mlreg.c -o mlreg.o
+mlutil.o: ../playercode/mlutil.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mlutil.c -o mlutil.o
+mplayer.o: ../playercode/mplayer.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mplayer.c -o mplayer.o
+munitrk.o: ../playercode/munitrk.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/munitrk.c -o munitrk.o
+mwav.o: ../playercode/mwav.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mwav.c -o mwav.o
+npertab.o: ../playercode/npertab.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/npertab.c -o npertab.o
+sloader.o: ../playercode/sloader.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/sloader.c -o sloader.o
+virtch.o: ../playercode/virtch.c ../playercode/virtch_common.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/virtch.c -o virtch.o
+virtch2.o: ../playercode/virtch2.c ../playercode/virtch_common.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/virtch2.c -o virtch2.o
+virtch_common.o: ../playercode/virtch_common.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/virtch_common.c -o virtch_common.o
+strcasecmp.o: ../posix/strcasecmp.c $(HEADER_DEPS)
+	$(COMPILE) ../posix/strcasecmp.c -o strcasecmp.o

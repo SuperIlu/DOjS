@@ -10,20 +10,22 @@ MUJS=mujs-1.0.5
 GRX=grx249
 ZLIB=zlib-1.2.11
 PNG=lpng1636
+MIK=libmikmod-3.3.11.1
 
-INCLUDES=-I$(MUJS) -I$(GRX)/include -I$(GRX)/src/include -I$(GRX)/addons/bmp -I$(ZLIB) -I$(PNG)
-LIBS=-lgrx20 -lpng -lz -lmujs -lm -lemu
+INCLUDES=-I$(MUJS) -I$(GRX)/include -I$(GRX)/src/include -I$(GRX)/addons/bmp -I$(ZLIB) -I$(PNG) -I$(MIK)/include
+LIBS=-lgrx20 -lpng -lz -lmujs -lm -lemu -lmikmod
 
-CFLAGS=-MMD -Wall -pedantic -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -DPLATFORM_MSDOS -DDEBUG_ENABLED
-LDFLAGS=-L$(MUJS)/build/release -L$(GRX)/lib/dj2 -L$(ZLIB) -L$(PNG)
+CFLAGS=-MMD -Wall -pedantic -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -DPLATFORM_MSDOS #-DDEBUG_ENABLED
+LDFLAGS=-L$(MUJS)/build/release -L$(GRX)/lib/dj2 -L$(ZLIB) -L$(PNG) -L$(MIK)/dos
 
-EXE=DOjS.EXE
+EXE=DOJS.EXE
 
 FONTDIR=jsboot/fonts
 BUILDDIR=build
 
 DOCDIR=doc/html
 
+CROSS=$(DJGPP)/i586-pc-msdosdjgpp
 CROSS_PLATFORM=i586-pc-msdosdjgpp-
 CC=$(DJGPP)/$(CROSS_PLATFORM)gcc
 AR=$(DJGPP)/$(CROSS_PLATFORM)ar
@@ -37,9 +39,8 @@ PARTS= \
 	$(BUILDDIR)/funcs.o \
 	$(BUILDDIR)/color.o \
 	$(BUILDDIR)/bitmap.o \
-	$(BUILDDIR)/sbdet.o \
 	$(BUILDDIR)/fmmusic.o \
-	$(BUILDDIR)/sbsound.o \
+	$(BUILDDIR)/sound.o \
 	$(BUILDDIR)/font.o \
 	$(BUILDDIR)/file.o \
 	$(BUILDDIR)/midiplay.o \
@@ -48,9 +49,10 @@ PARTS= \
 	$(BUILDDIR)/edit.o \
 	$(BUILDDIR)/dialog.o \
 	$(BUILDDIR)/lines.o \
+	$(BUILDDIR)/syntax.o \
 	$(BUILDDIR)/util.o
 
-all: init libmujs libgrx $(EXE)
+all: init libmujs libgrx libmikmod $(EXE)
 
 libz: $(ZLIB)/msdos/libz.a
 
@@ -59,6 +61,8 @@ libpng: libz $(PNG)/scripts/libpng.a
 libgrx: libpng $(GRX)/lib/unix/libgrx20.a
 
 libmujs: $(MUJS)/build/release/libmujs.a
+
+libmikmod: $(MIK)/dos/libmikmod.a
 
 $(MUJS)/build/release/libmujs.a:
 	$(MAKE) -C $(MUJS) build/release/libmujs.a
@@ -71,6 +75,9 @@ $(GRX)/lib/unix/libgrx20.a:
 $(ZLIB)/msdos/libz.a:
 	$(MAKE) -C $(ZLIB) -f Makefile.dojs
 
+$(MIK)/dos/libmikmod.a:
+	$(MAKE) -C $(MIK)/dos -f Makefile.dj
+
 $(PNG)/scripts/libpng.a:
 	$(MAKE) -C $(PNG) -f makefile.dojs libpng.a
 
@@ -82,7 +89,7 @@ $(BUILDDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 zip: all doc
-	zip -9 -v -r DOJS.ZIP DOjS.EXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ tests/ $(DOCDIR)
+	zip -9 -v -r DOJS.ZIP DOjS.EXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR)
 
 doc:
 	rm -rf $(DOCDIR)
@@ -94,13 +101,14 @@ init:
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) DOJS.ZIP
+	rm -f $(EXE) DOjS.exe DOJS.ZIP JSLOG.TXT
 
 distclean: clean
 	$(MAKE) -C $(MUJS) clean
 	$(MAKE) -C $(GRX) cleanall -f makefile.dj2
 	$(MAKE) -C $(ZLIB) -f Makefile.dojs clean
 	$(MAKE) -C $(PNG) -f makefile.dojs clean
+	$(MAKE) -C $(MIK)/dos -f makefile.dj clean
 	rm -rf $(FONTDIR) $(DOCDIR) TEST.TXT JSLOG.TXT
 
 .PHONY: clean distclean init doc

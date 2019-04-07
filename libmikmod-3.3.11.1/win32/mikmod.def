@@ -1,0 +1,145 @@
+EXPORTS
+    MikMod_Active @1
+    MikMod_DisableOutput @2
+    MikMod_DriverByOrdinal @3
+    MikMod_DriverFromAlias @4
+    MikMod_EnableOutput @5
+    MikMod_Exit @6
+    MikMod_GetVersion @7
+    MikMod_InfoDriver @8
+    MikMod_InfoLoader @9
+    MikMod_Init @10
+    MikMod_InitThreads @11
+    MikMod_Lock @12
+    MikMod_RegisterAllDrivers @13
+    MikMod_RegisterAllLoaders @14
+    MikMod_RegisterDriver @15
+    MikMod_RegisterErrorHandler @16
+    MikMod_RegisterLoader @17
+    MikMod_RegisterPlayer @18
+    MikMod_Reset @19
+    MikMod_SetNumVoices @20
+    MikMod_Unlock @21
+    MikMod_Update @22
+    MikMod_calloc @23
+    MikMod_critical @24 DATA
+    MikMod_errno @25 DATA
+    MikMod_free @26
+    MikMod_malloc @27
+    MikMod_realloc @28
+    MikMod_strdup @29
+    MikMod_strerror @30
+    Player_Active @31
+    Player_Free @32
+    Player_GetChannelPeriod @33
+    Player_GetChannelVoice @34
+    Player_GetModule @35
+    Player_GetOrder @36
+    Player_GetRow @37
+    Player_Load @38
+    Player_LoadFP @39
+    Player_LoadGeneric @40
+    Player_LoadMem @41
+    Player_LoadTitle @42
+    Player_LoadTitleFP @43
+    Player_LoadTitleGeneric @44
+    Player_LoadTitleMem @45
+    Player_Mute @46
+    Player_Muted @47
+    Player_NextPosition @48
+    Player_Paused @49
+    Player_PrevPosition @50
+    Player_QueryVoices @51
+    Player_SetPosition @52
+    Player_SetSpeed @53
+    Player_SetTempo @54
+    Player_SetVolume @55
+    Player_Start @56
+    Player_Stop @57
+    Player_ToggleMute @58
+    Player_TogglePause @59
+    Player_Unmute @60
+    Sample_Free @61
+    Sample_Load @62
+    Sample_LoadFP @63
+    Sample_LoadGeneric @64
+    Sample_LoadMem @65
+    Sample_LoadRaw @66
+    Sample_LoadRawFP @67
+    Sample_LoadRawGeneric @68
+    Sample_LoadRawMem @69
+    Sample_Play @70
+    VC_Exit @71
+    VC_Init @72
+    VC_PlayStart @73
+    VC_PlayStop @74
+    VC_SampleLength @75
+    VC_SampleLoad @76
+    VC_SampleSpace @77
+    VC_SampleUnload @78
+    VC_SetCallback @79
+    VC_SetNumVoices @80
+    VC_SilenceBytes @81
+    VC_VoiceGetFrequency @82
+    VC_VoiceGetPanning @83
+    VC_VoiceGetPosition @84
+    VC_VoiceGetVolume @85
+    VC_VoicePlay @86
+    VC_VoiceRealVolume @87
+    VC_VoiceSetFrequency @88
+    VC_VoiceSetPanning @89
+    VC_VoiceSetVolume @90
+    VC_VoiceStop @91
+    VC_VoiceStopped @92
+    VC_WriteBytes @93
+    Voice_GetFrequency @94
+    Voice_GetPanning @95
+    Voice_GetPosition @96
+    Voice_GetVolume @97
+    Voice_Play @98
+    Voice_RealVolume @99
+    Voice_SetFrequency @100
+    Voice_SetPanning @101
+    Voice_SetVolume @102
+    Voice_Stop @103
+    Voice_Stopped @104
+    drv_aiff @105 DATA
+    drv_ds @106 DATA
+    drv_nos @107 DATA
+    drv_openal @108 DATA
+    drv_raw @109 DATA
+    drv_sdl @110 DATA
+    drv_stdout @111 DATA
+    drv_wav @112 DATA
+    drv_win @113 DATA
+    drv_xaudio2 @114 DATA
+    load_669 @115 DATA
+    load_amf @116 DATA
+    load_asy @117 DATA
+    load_dsm @118 DATA
+    load_far @119 DATA
+    load_gdm @120 DATA
+    load_gt2 @121 DATA
+    load_imf @122 DATA
+    load_it @123 DATA
+    load_m15 @124 DATA
+    load_med @125 DATA
+    load_mod @126 DATA
+    load_mtm @127 DATA
+    load_okt @128 DATA
+    load_s3m @129 DATA
+    load_stm @130 DATA
+    load_stx @131 DATA
+    load_ult @132 DATA
+    load_umx @133 DATA
+    load_uni @134 DATA
+    load_xm @135 DATA
+    md_device @136 DATA
+    md_driver @137 DATA
+    md_mixfreq @138 DATA
+    md_mode @139 DATA
+    md_musicvolume @140 DATA
+    md_pansep @141 DATA
+    md_reverb @142 DATA
+    md_sndfxvolume @143 DATA
+    md_volume @144 DATA

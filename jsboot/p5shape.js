@@ -28,6 +28,7 @@ exports._imageMode = CORNER;
 exports._ellipseMode = CENTER;
 exports._shapeMode = null;
 exports._shape = [];
+exports._strokeWeight = 1;
 
 /**********************************************************************************************************************
  * 2d shapes
@@ -124,7 +125,11 @@ exports.ellipse = function (x, y, w, h) {
 		FilledEllipse(x1, y1, w1, h1, _fill);
 	}
 	if (_stroke != NO_COLOR) {
-		Ellipse(x1, y1, w1, h1, _stroke);
+		if (_strokeWeight == 1) {
+			Ellipse(x1, y1, w1, h1, _stroke);
+		} else {
+			CustomEllipse(x1, y1, w1, h1, _strokeWeight, _stroke);
+		}
 	}
 };
 
@@ -173,7 +178,11 @@ exports.circle = function (x, y, r) {
  */
 exports.line = function (x1, y1, x2, y2) {
 	if (_stroke != NO_COLOR) {
-		Line(x1, y1, x2, y2, _stroke);
+		if (_strokeWeight == 1) {
+			Line(x1, y1, x2, y2, _stroke);
+		} else {
+			CustomLine(x1, y1, x2, y2, _strokeWeight, _stroke);
+		}
 	}
 };
 
@@ -283,7 +292,11 @@ exports.rect = function (x, y, w, h) {
 		FilledBox(x1, y1, x2, y2, _fill);
 	}
 	if (_stroke != NO_COLOR) {
-		Box(x1, y1, x2, y2, _stroke);
+		if (_strokeWeight == 1) {
+			Box(x1, y1, x2, y2, _stroke);
+		} else {
+			CustomBox(x1, y1, x2, y2, _strokeWeight, _stroke);
+		}
 	}
 };
 
@@ -474,7 +487,12 @@ exports.endShape = function (p) {
 		});
 	} else if (_shapeMode === LINES) {
 		for (var i = 0; i < _shape.length; i += 2) {
-			Line(_shape[i][0], _shape[i][1], _shape[i + 1][0], _shape[i + 1][1], _stroke);
+			if (_strokeWeight == 1) {
+				Line(_shape[i][0], _shape[i][1], _shape[i + 1][0], _shape[i + 1][1], _stroke);
+			} else {
+				CustomLine(_shape[i][0], _shape[i][1], _shape[i + 1][0], _shape[i + 1][1], _strokeWeight, _stroke);
+			}
+
 		}
 	} else if (_shapeMode === TRIANGLES) {
 		for (var i = 0; i < _shape.length; i += 3) {
@@ -483,7 +501,11 @@ exports.endShape = function (p) {
 				FilledPolygon(tri, _fill);
 			}
 			if (_stroke != NO_COLOR) {
-				Polygon(tri, _stroke);
+				if (_strokeWeight == 1) {
+					Polygon(tri, _stroke);
+				} else {
+					CustomPolygon(tri, _strokeWeight, _stroke);
+				}
 			}
 		}
 	} else {
@@ -492,11 +514,19 @@ exports.endShape = function (p) {
 				FilledPolygon(_shape, _fill);
 			}
 			if (_stroke != NO_COLOR) {
-				Polygon(_shape, _stroke);
+				if (_strokeWeight == 1) {
+					Polygon(_shape, _stroke);
+				} else {
+					CustomPolygon(_shape, _strokeWeight, _stroke);
+				}
 			}
 		} else {
 			if (_stroke != NO_COLOR) {
-				PolyLine(_shape, _stroke);
+				if (_strokeWeight == 1) {
+					PolyLine(_shape, _stroke);
+				} else {
+					CustomPolyLine(_shape, _strokeWeight, _stroke);
+				}
 			}
 		}
 	}
@@ -737,4 +767,32 @@ exports.imageMode = function (m) {
 	) {
 		_imageMode = m;
 	}
+};
+
+/**
+ * Sets the width of the stroke used for lines, points, and the border
+ * around shapes. All widths are set in units of pixels.
+ *
+ * @method strokeWeight
+ * @param  {Number} weight the weight (in pixels) of the stroke
+ * @chainable
+ * @example
+ * <div>
+ * <code>
+ * strokeWeight(1); // Default
+ * line(20, 20, 80, 20);
+ * strokeWeight(4); // Thicker
+ * line(20, 40, 80, 40);
+ * strokeWeight(10); // Beastly
+ * line(20, 70, 80, 70);
+ * </code>
+ * </div>
+ *
+ * @alt
+ * 3 horizontal black lines. Top line: thin, mid: medium, bottom:thick.
+ *
+ */
+exports.strokeWeight = function (w) {
+	this._strokeWeight = w;
+	return this;
 };

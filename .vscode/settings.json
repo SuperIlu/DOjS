@@ -6,7 +6,12 @@
         "cstdlib": "c",
         "util.h": "c",
         "errno.h": "c",
-        "lines.h": "c"
+        "lines.h": "c",
+        "time.h": "c",
+        "initializer_list": "c",
+        "string_view": "c",
+        "conio.h": "c",
+        "stddef.h": "c"
     },
     "editor.formatOnSave": true,
     "editor.insertSpaces": false,

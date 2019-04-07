@@ -27,10 +27,35 @@
 exports._fill = EGA.WHITE;
 exports._stroke = EGA.WHITE;
 exports._background = EGA.BLACK;
+exports._colorMode = RGB;
 
 /**********************************************************************************************************************
  * creating/reading
  */
+/**
+ * @method colorMode
+ * @param {Constant} mode
+ * @param {Number} max1     range for the red or hue depending on the
+ *                              current color mode
+ * @param {Number} max2     range for the green or saturation depending
+ *                              on the current color mode
+ * @param {Number} max3     range for the blue or brightness/lightness
+ *                              depending on the current color mode
+ * @param {Number} [maxA]   range for the alpha
+ * @chainable
+ */
+exports.colorMode = function (mode, max1, max2, max3, maxA) {
+	if (
+		mode === RGB ||
+		mode === HSB ||
+		mode === HSL
+	) {
+		// Set color mode.
+		_colorMode = mode;
+	}
+
+	return this;
+};
 
 /**
  * Alpha is not supported, the value returned is always 255.
@@ -76,6 +101,17 @@ exports.blue = function (c) {
  */
 exports.color = function (r, g, b, a) {
 	if (arguments.length > 2) {
+		if (_colorMode === HSB) {
+			var rgb = _hsbaToRGBA([r / 255, g / 255, b / 255, 1]);
+			r = rgb[0] * 255;
+			g = rgb[1] * 255;
+			b = rgb[2] * 255;
+		} else if (_colorMode === HSL) {
+			var rgb = _hsblToRGBA([r / 255, g / 255, b / 255, 1]);
+			r = rgb[0] * 255;
+			g = rgb[1] * 255;
+			b = rgb[2] * 255;
+		}
 		return new Color(r, g, b);
 	} else {
 		return new Color(r, r, r);
@@ -145,6 +181,17 @@ exports.red = function (c) {
  */
 exports.background = function (r, g, b, a) {
 	if (arguments.length > 2) {
+		if (_colorMode === HSB) {
+			var rgb = _hsbaToRGBA([r / 255, g / 255, b / 255, 1]);
+			r = rgb[0] * 255;
+			g = rgb[1] * 255;
+			b = rgb[2] * 255;
+		} else if (_colorMode === HSL) {
+			var rgb = _hsblToRGBA([r / 255, g / 255, b / 255, 1]);
+			r = rgb[0] * 255;
+			g = rgb[1] * 255;
+			b = rgb[2] * 255;
+		}
 		_background = new Color(r, g, b);
 	} else if (r instanceof Color) {
 		_background = r;
@@ -187,6 +234,17 @@ exports.fill = function (r, g, b) {
 	if (r instanceof Color) {
 		_fill = r;
 	} else if (arguments.length > 2) {
+		if (_colorMode === HSB) {
+			var rgb = _hsbaToRGBA([r / 255, g / 255, b / 255, 1]);
+			r = rgb[0] * 255;
+			g = rgb[1] * 255;
+			b = rgb[2] * 255;
+		} else if (_colorMode === HSL) {
+			var rgb = _hsblToRGBA([r / 255, g / 255, b / 255, 1]);
+			r = rgb[0] * 255;
+			g = rgb[1] * 255;
+			b = rgb[2] * 255;
+		}
 		_fill = new Color(r, g, b);
 	} else {
 		_fill = new Color(r, r, r);
@@ -257,8 +315,138 @@ exports.stroke = function (r, g, b) {
 	if (r instanceof Color) {
 		_stroke = r;
 	} else if (arguments.length > 2) {
+		if (_colorMode === HSB) {
+			var rgb = _hsbaToRGBA([r / 255, g / 255, b / 255, 1]);
+			r = rgb[0] * 255;
+			g = rgb[1] * 255;
+			b = rgb[2] * 255;
+		} else if (_colorMode === HSL) {
+			var rgb = _hsblToRGBA([r / 255, g / 255, b / 255, 1]);
+			r = rgb[0] * 255;
+			g = rgb[1] * 255;
+			b = rgb[2] * 255;
+		}
 		_stroke = new Color(r, g, b);
 	} else {
 		_stroke = new Color(r, r, r);
 	}
+};
+
+/**
+ * Convert an HSBA array to RGBA.
+ */
+exports._hsbaToRGBA = function (hsba) {
+	var hue = hsba[0] * 6; // We will split hue into 6 sectors.
+	var sat = hsba[1];
+	var val = hsba[2];
+
+	var RGBA = [];
+
+	if (sat === 0) {
+		RGBA = [val, val, val, hsba[3]]; // Return early if grayscale.
+	} else {
+		var sector = Math.floor(hue);
+		var tint1 = val * (1 - sat);
+		var tint2 = val * (1 - sat * (hue - sector));
+		var tint3 = val * (1 - sat * (1 + sector - hue));
+		var red, green, blue;
+		if (sector === 1) {
+			// Yellow to green.
+			red = tint2;
+			green = val;
+			blue = tint1;
+		} else if (sector === 2) {
+			// Green to cyan.
+			red = tint1;
+			green = val;
+			blue = tint3;
+		} else if (sector === 3) {
+			// Cyan to blue.
+			red = tint1;
+			green = tint2;
+			blue = val;
+		} else if (sector === 4) {
+			// Blue to magenta.
+			red = tint3;
+			green = tint1;
+			blue = val;
+		} else if (sector === 5) {
+			// Magenta to red.
+			red = val;
+			green = tint1;
+			blue = tint2;
+		} else {
+			// Red to yellow (sector could be 0 or 6).
+			red = val;
+			green = tint3;
+			blue = tint1;
+		}
+		RGBA = [red, green, blue, hsba[3]];
+	}
+
+	return RGBA;
+};
+
+/**
+ * Convert an HSLA array to RGBA.
+ *
+ * We need to change basis from HSLA to something that can be more easily be
+ * projected onto RGBA. We will choose hue and brightness as our first two
+ * components, and pick a convenient third one ('zest') so that we don't need
+ * to calculate formal HSBA saturation.
+ */
+exports._hslaToRGBA = function (hsla) {
+	var hue = hsla[0] * 6; // We will split hue into 6 sectors.
+	var sat = hsla[1];
+	var li = hsla[2];
+
+	var RGBA = [];
+
+	if (sat === 0) {
+		RGBA = [li, li, li, hsla[3]]; // Return early if grayscale.
+	} else {
+		// Calculate brightness.
+		var val;
+		if (li < 0.5) {
+			val = (1 + sat) * li;
+		} else {
+			val = li + sat - li * sat;
+		}
+
+		// Define zest.
+		var zest = 2 * li - val;
+
+		// Implement projection (project onto green by default).
+		var hzvToRGB = function (hue, zest, val) {
+			if (hue < 0) {
+				// Hue must wrap to allow projection onto red and blue.
+				hue += 6;
+			} else if (hue >= 6) {
+				hue -= 6;
+			}
+			if (hue < 1) {
+				// Red to yellow (increasing green).
+				return zest + (val - zest) * hue;
+			} else if (hue < 3) {
+				// Yellow to cyan (greatest green).
+				return val;
+			} else if (hue < 4) {
+				// Cyan to blue (decreasing green).
+				return zest + (val - zest) * (4 - hue);
+			} else {
+				// Blue to red (least green).
+				return zest;
+			}
+		};
+
+		// Perform projections, offsetting hue as necessary.
+		RGBA = [
+			hzvToRGB(hue + 2, zest, val),
+			hzvToRGB(hue, zest, val),
+			hzvToRGB(hue - 2, zest, val),
+			hsla[3]
+		];
+	}
+
+	return RGBA;
 };

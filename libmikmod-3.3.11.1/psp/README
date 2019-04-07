@@ -1,0 +1,27 @@
+libmikmod for Playstation Portable:
+
+The PSP driver was written by sweetlilmre <sweetlilmre@gmail.com>  for
+libmikmod-3.1.11 based on the one from Jim Shaw's original mikmod-3.0.3
+port, with code borrowed from pspaudiolib. The driver and the Makefiles
+and the example code here are adapted from the ps2dev.org svn versions.
+
+
+BUILDING libmikmod for PSP:
+
+You need pspsdk installed, and psp-config must be on your $PATH.
+See http://sourceforge.net/projects/minpspw/
+as well as http://sourceforge.net/projects/devkitpro/ for toolchains.
+Run 'make -f Makefile.psp' to build the library.
+
+
+NOTE taken from original README.PSP:
+
+Be aware: if you are calling MikMod_Update() from another thread on the
+PSP, you MUST yeild after the call to MikMod_Update():
+  sceKernelDelayThread(1);
+will be sufficient.  From what I understand, the PSP uses co-operative
+multitasking and as the MikMod_Update() call effectively becomes a busy
+wait loop after MikMod_DisableOutput() is called, your main thread will
+be starved if you don't do this. example.c contains the code for this:
+PSP example code was originally written by Nevyn, further changed and
+updated by sweetlilmre. To compile it, run: 'make -f Makefile.example'

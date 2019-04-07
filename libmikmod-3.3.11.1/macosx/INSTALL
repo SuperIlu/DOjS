@@ -1,0 +1,68 @@
+>> BUILD INSTRUCTIONS FOR libmikmod FOR MAC OS X
+------------------------------------------------
+
+You can always use the UNIX commandline tools
+instead of the IDE projects in this directory.
+
+Go to the top level and follow the INSTALL there...
+(Hint: "./configure && make && sudo make install")
+
+In that case your files will end up under /usr/local.
+The IDE stuff will end up under a "build" directory.
+
+You can also play with the standalone Makefile.darwin
+file here in this directory, in order to build from
+the command line. (Hint: "gmake -f Makefile.darwin" )
+
+
+XCode on Mac OS X 10.3 and newer:
+-------------
+
+1) You should be using Xcode 2.x, or up.
+
+2) Open "libmikmod.xcodeproj" with the Xcode app.
+
+
+Build products
+--------------
+
+The projects will build a static library with header:
+- mikmod.h
+- libmikmod.a
+And they will also build a dynamic framework bundle:
+- mikmod.framework
+
+These build products are normally found in the "build"
+folder, unless you have changed your IDE settings...
+
+
+Using the library
+----------------
+
+To use the library, either copy "mikmod.framework"
+bundle to somewhere in your framework search path,
+(such as ~/Library/Frameworks or /Library/Frameworks)
+
+Source code:	#include <mikmod/mikmod.h>
+
+Linker flags:	-framework mikmod
+
+
+Or copy the "mikmod.h" header and "libmikmod.a" library
+to somewhere in the include and library search paths.
+(such as /usr/local/include and /usr/local/lib)
+
+Source code:	#include "mikmod.h"
+
+Linker flags:	-lmikmod -framework CoreAudio
+
+
+The HTML documentation is found in the "docs" folder,
+located in the top level of the libmikmod distribution.
+
+
+
+Enjoy!
+
+Anders F Bjšrklund <afb@algonet.se>
+http://www.algonet.se/~afb/mikmod

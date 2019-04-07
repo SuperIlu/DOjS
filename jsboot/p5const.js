@@ -54,3 +54,7 @@ exports.CORNER = 'CORNER';
 exports.CORNERS = 'CORNERS';
 exports.CENTER = 'center';
 exports.RADIUS = 'radius';
+
+exports.RGB = 'rgb';
+exports.HSB = 'hsb';
+exports.HSL = 'hsl';

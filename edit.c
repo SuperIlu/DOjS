@@ -19,7 +19,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -44,6 +43,11 @@ SOFTWARE.
 #define EDI_TEMPLATE BOOT_DIR "template.txt"  //!< filename for template file
 #define EDI_HELPFILE BOOT_DIR "help.txt"      //!< filename for help file
 
+/***********************
+** external variables **
+***********************/
+extern syntax_t edi_wordlist[];
+
 /************************
 ** function prototypes **
 ************************/
@@ -54,6 +58,8 @@ static edi_exit_t edi_loop(edi_t* edi_ptr);
 static void edi_draw_status(edi_t* edi);
 static void edi_draw_commands(edi_t* edi);
 static edi_t* edi_init(char* fname);
+static bool edi_colcmp(syntax_t* sy, char* txt, int remainder);
+static int edi_syntax(line_t* l, int pos);
 
 #define EDI_NUM_COMMANDS 10  //!< number of commands
 //! array with command texts
@@ -650,35 +656,122 @@ static edi_exit_t edi_loop(edi_t* edi) {
 }
 
 /**
+ * @brief match a syntax highlight string with current cursor position.
+ *
+ * @param sy word to find
+ * @param txt start of text to compare with
+ * @param remainder remaining length of txt.
+ * @return true if this is a match
+ * @return false if no match was found
+ */
+static bool edi_colcmp(syntax_t* sy, char* txt, int remainder) {
+    char* find = sy->word;
+    if (remainder < strlen(find)) {
+        return false;
+    }
+
+    while (*find) {
+        if (*find != *txt) {
+            return false;
+        }
+        txt++;
+        find++;
+        remainder--;
+    }
+
+    if (remainder == 0 || !isalnum(*txt) || sy->length == -1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * @brief switch display color for syntax highlighting word.
+ *
+ * @param l the line we are working on.
+ * @param pos the cursor position in the line.
+ *
+ * @return int the number of characters to draw in the just set color or 0 if no match was found.
+ */
+static int edi_syntax(line_t* l, int pos) {
+    int w = 0;
+    while (edi_wordlist[w].word) {
+        if (pos == 0 || edi_wordlist[w].word[0] == '.' || !isalnum(l->txt[pos - 1])) {
+            if (edi_colcmp(&edi_wordlist[w], &l->txt[pos], l->length - pos)) {
+                textcolor(edi_wordlist[w].color);
+                if (edi_wordlist[w].length == -1) {
+                    return l->length - pos;
+                } else {
+                    return edi_wordlist[w].length;
+                }
+            }
+        }
+        w++;
+    }
+    return 0;
+}
+
+/**
  * @brief redraw editor screen.
  *
  * @param edi the edi system to work on.
  */
 static void edi_redraw(edi_t* edi) {
+    int offset = 0;
+    if (edi->x > edi->width - 1) {
+        offset = edi->x - edi->width + 1;
+    }
+
     textbackground(BLACK);
     textcolor(WHITE);
     edi_draw_status(edi);
 
     textbackground(BLACK);
     textcolor(WHITE);
-    line_t* l = edi->top;
-    int offset = 0;
-    if (edi->x > edi->width - 1) {
-        offset = edi->x - edi->width + 1;
-    }
-    for (int y = 2; y <= edi->height; y++) {
-        textcolor(WHITE);
-        gotoxy(1, y);
-        if (l) {
-            for (int i = offset; i < l->length; i++) {
-                putch(l->txt[i]);
+
+    // if offsets are changes redraw the whole screen
+    if (edi->last_top != edi->top || edi->last_offset != offset) {
+        line_t* l = edi->top;
+        for (int y = 2; y <= edi->height; y++) {
+            textcolor(WHITE);
+            gotoxy(1, y);
+            int hskip = 0;
+            if (l) {
+                for (int i = offset; i < l->length && wherex() < edi->width; i++) {
+                    if (hskip <= 0) {
+                        textcolor(WHITE);
+                        hskip = edi_syntax(l, i);
+                    }
+                    putch(l->txt[i]);
+                    if (hskip > 0) {
+                        hskip--;
+                    }
+                }
+                l = l->next;
             }
-            l = l->next;
+            clreol();
+        }
+
+        edi_draw_commands(edi);
+    } else {
+        // if not, only redraw current line
+        textcolor(WHITE);
+        gotoxy(1, edi->y + 2);
+        int hskip = 0;
+        for (int i = offset; i < edi->current->length && wherex() < edi->width; i++) {
+            if (hskip <= 0) {
+                textcolor(WHITE);
+                hskip = edi_syntax(edi->current, i);
+            }
+            putch(edi->current->txt[i]);
+            if (hskip > 0) {
+                hskip--;
+            }
         }
         clreol();
     }
 
-    edi_draw_commands(edi);
     // set cursor to current position
     if (offset) {
         gotoxy(edi->width, edi->y + 2);
@@ -689,8 +782,11 @@ static void edi_redraw(edi_t* edi) {
     if (edi->msg) {
         dia_show_message(edi, edi->msg);
         edi->msg = NULL;
+        edi->last_offset = -1;
         edi_redraw(edi);
     }
+    edi->last_top = edi->top;
+    edi->last_offset = offset;
 }
 
 /**
@@ -704,7 +800,7 @@ static void edi_draw_status(edi_t* edi) {
 
     // draw 'modified' indicator
     gotoxy(edi->scr.winleft, edi->scr.wintop);
-    cputs("DOjS " DOSJS_VERSION " ");
+    cputs("DOjS " DOSJS_VERSION_STR " ");
     if (edi->changed) {
         cputs("* ");
     } else {

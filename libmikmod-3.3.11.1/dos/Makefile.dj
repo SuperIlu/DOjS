@@ -1,0 +1,225 @@
+# GNU Makefile for building libMikMod using GCC / DJGPP environment
+#
+# Edit config.h to disable/enable certain drivers, etc, if necessary.
+#
+# Targets:
+# - all (default): make libmikmod.a, static MikMod sound library
+# - clean: clean up (remove all generated files)
+
+# Set to 1 for debug build
+DEBUG = 0
+
+# The tools
+ifeq ($(CROSS),)
+CC=gcc
+AS=as
+AR=ar
+RANLIB=ranlib
+else
+CC=$(CROSS)-gcc
+AS=$(CROSS)-as
+AR=$(CROSS)-ar
+RANLIB=$(CROSS)-ranlib
+endif
+CFLAGS = -DMIKMOD_BUILD -DHAVE_CONFIG_H $(INCLUDE)
+INCLUDE = -I../dos -I../drivers/dos -I../include
+ARFLAGS = cr
+
+ifeq ($(DEBUG),1)
+CFLAGS += -g -Wall
+else
+CFLAGS += -O2 -Wall -fomit-frame-pointer -ffast-math
+endif
+
+.SUFFIXES:
+.SUFFIXES: .o .c
+
+COMPILE=$(CC) -c $(CFLAGS)
+
+OBJ=out/dosdma.o \
+    out/dosirq.o \
+    out/dosgus.o \
+    out/drv_ultra.o \
+    out/dossb.o \
+    out/drv_sb.o \
+    out/doswss.o \
+    out/drv_wss.o \
+    out/drv_wav.o \
+    out/drv_aiff.o \
+    out/drv_raw.o \
+    out/drv_stdout.o \
+    out/drv_pipe.o \
+    out/drv_nos.o \
+    out/strcasecmp.o \
+    out/load_669.o \
+    out/load_amf.o \
+    out/load_asy.o \
+    out/load_dsm.o \
+    out/load_far.o \
+    out/load_gdm.o \
+    out/load_gt2.o \
+    out/load_it.o \
+    out/load_imf.o \
+    out/load_m15.o \
+    out/load_med.o \
+    out/load_mod.o \
+    out/load_mtm.o \
+    out/load_okt.o \
+    out/load_s3m.o \
+    out/load_stm.o \
+    out/load_stx.o \
+    out/load_ult.o \
+    out/load_umx.o \
+    out/load_uni.o \
+    out/load_xm.o \
+    out/mmalloc.o \
+    out/mmerror.o \
+    out/mmio.o \
+    out/mdriver.o \
+    out/mdreg.o \
+    out/mmcmp.o \
+    out/pp20.o \
+    out/s404.o \
+    out/xpk.o \
+    out/mloader.o \
+    out/mlreg.o \
+    out/mlutil.o \
+    out/mplayer.o \
+    out/munitrk.o \
+    out/mwav.o \
+    out/npertab.o \
+    out/sloader.o \
+    out/virtch.o \
+    out/virtch2.o \
+    out/virtch_common.o
+#   out/mdulaw.o
+
+.PHONY: clean
+
+# The build targets
+TARGETS = libmikmod.a
+
+all: $(TARGETS)
+
+clean:
+	rm -rf out/*.o $(TARGETS)
+
+libmikmod.a: $(OBJ)
+	$(AR) $(ARFLAGS) $@ $^
+	$(RANLIB) $@
+
+HEADER_DEPS=../dos/config.h ../include/mikmod.h ../include/mikmod_internals.h ../include/mikmod_ctype.h
+out/drv_ultra.o: ../drivers/drv_ultra.c $(HEADER_DEPS) ../drivers/dos/libgus.h
+	$(COMPILE) ../drivers/drv_ultra.c -o out/drv_ultra.o
+out/drv_sb.o: ../drivers/drv_sb.c $(HEADER_DEPS) ../drivers/dos/dossb.h
+	$(COMPILE) ../drivers/drv_sb.c -o out/drv_sb.o
+out/drv_wss.o: ../drivers/drv_wss.c $(HEADER_DEPS) ../drivers/dos/doswss.h
+	$(COMPILE) ../drivers/drv_wss.c -o out/drv_wss.o
+out/dosgus.o: ../drivers/dos/dosgus.c $(HEADER_DEPS) ../drivers/dos/libgus.h
+	$(COMPILE) ../drivers/dos/dosgus.c -o out/dosgus.o
+out/dossb.o: ../drivers/dos/dossb.c $(HEADER_DEPS) ../drivers/dos/dossb.h
+	$(COMPILE) ../drivers/dos/dossb.c -o out/dossb.o
+out/doswss.o: ../drivers/dos/doswss.c $(HEADER_DEPS) ../drivers/dos/doswss.h
+	$(COMPILE) ../drivers/dos/doswss.c -o out/doswss.o
+out/dosdma.o: ../drivers/dos/dosdma.c $(HEADER_DEPS) ../drivers/dos/dosdma.h
+	$(COMPILE) ../drivers/dos/dosdma.c -o out/dosdma.o
+out/dosirq.o: ../drivers/dos/dosirq.c $(HEADER_DEPS) ../drivers/dos/dosirq.h
+	$(COMPILE) ../drivers/dos/dosirq.c -o out/dosirq.o
+out/drv_nos.o: ../drivers/drv_nos.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_nos.c -o out/drv_nos.o
+out/drv_raw.o: ../drivers/drv_raw.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_raw.c -o out/drv_raw.o
+out/drv_aiff.o: ../drivers/drv_aiff.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_aiff.c -o out/drv_aiff.o
+out/drv_wav.o: ../drivers/drv_wav.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_wav.c -o out/drv_wav.o
+out/drv_stdout.o: ../drivers/drv_stdout.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_stdout.c -o out/drv_stdout.o
+out/drv_pipe.o: ../drivers/drv_pipe.c $(HEADER_DEPS)
+	$(COMPILE) ../drivers/drv_pipe.c -o out/drv_pipe.o
+out/load_669.o: ../loaders/load_669.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_669.c -o out/load_669.o
+out/load_amf.o: ../loaders/load_amf.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_amf.c -o out/load_amf.o
+out/load_asy.o: ../loaders/load_asy.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_asy.c -o out/load_asy.o
+out/load_dsm.o: ../loaders/load_dsm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_dsm.c -o out/load_dsm.o
+out/load_far.o: ../loaders/load_far.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_far.c -o out/load_far.o
+out/load_gdm.o: ../loaders/load_gdm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_gdm.c -o out/load_gdm.o
+out/load_gt2.o: ../loaders/load_gt2.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_gt2.c -o out/load_gt2.o
+out/load_it.o: ../loaders/load_it.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_it.c -o out/load_it.o
+out/load_imf.o: ../loaders/load_imf.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_imf.c -o out/load_imf.o
+out/load_m15.o: ../loaders/load_m15.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_m15.c -o out/load_m15.o
+out/load_med.o: ../loaders/load_med.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_med.c -o out/load_med.o
+out/load_mod.o: ../loaders/load_mod.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_mod.c -o out/load_mod.o
+out/load_mtm.o: ../loaders/load_mtm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_mtm.c -o out/load_mtm.o
+out/load_okt.o: ../loaders/load_okt.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_okt.c -o out/load_okt.o
+out/load_s3m.o: ../loaders/load_s3m.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_s3m.c -o out/load_s3m.o
+out/load_stm.o: ../loaders/load_stm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_stm.c -o out/load_stm.o
+out/load_stx.o: ../loaders/load_stx.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_stx.c -o out/load_stx.o
+out/load_ult.o: ../loaders/load_ult.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_ult.c -o out/load_ult.o
+out/load_umx.o: ../loaders/load_umx.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_umx.c -o out/load_umx.o
+out/load_uni.o: ../loaders/load_uni.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_uni.c -o out/load_uni.o
+out/load_xm.o: ../loaders/load_xm.c $(HEADER_DEPS)
+	$(COMPILE) ../loaders/load_xm.c -o out/load_xm.o
+out/mmalloc.o: ../mmio/mmalloc.c $(HEADER_DEPS)
+	$(COMPILE) ../mmio/mmalloc.c -o out/mmalloc.o
+out/mmerror.o: ../mmio/mmerror.c $(HEADER_DEPS)
+	$(COMPILE) ../mmio/mmerror.c -o out/mmerror.o
+out/mmio.o: ../mmio/mmio.c $(HEADER_DEPS)
+	$(COMPILE) ../mmio/mmio.c -o out/mmio.o
+out/mmcmp.o: ../depackers/mmcmp.c $(HEADER_DEPS)
+	$(COMPILE) ../depackers/mmcmp.c -o out/mmcmp.o
+out/pp20.o: ../depackers/pp20.c $(HEADER_DEPS)
+	$(COMPILE) ../depackers/pp20.c -o out/pp20.o
+out/s404.o: ../depackers/s404.c $(HEADER_DEPS)
+	$(COMPILE) ../depackers/s404.c -o out/s404.o
+out/xpk.o: ../depackers/xpk.c $(HEADER_DEPS)
+	$(COMPILE) ../depackers/xpk.c -o out/xpk.o
+out/mdriver.o: ../playercode/mdriver.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mdriver.c -o out/mdriver.o
+out/mdreg.o: ../playercode/mdreg.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mdreg.c -o out/mdreg.o
+out/mdulaw.o: ../playercode/mdulaw.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mdulaw.c -o out/mdulaw.o
+out/mloader.o: ../playercode/mloader.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mloader.c -o out/mloader.o
+out/mlreg.o: ../playercode/mlreg.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mlreg.c -o out/mlreg.o
+out/mlutil.o: ../playercode/mlutil.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mlutil.c -o out/mlutil.o
+out/mplayer.o: ../playercode/mplayer.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mplayer.c -o out/mplayer.o
+out/munitrk.o: ../playercode/munitrk.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/munitrk.c -o out/munitrk.o
+out/mwav.o: ../playercode/mwav.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/mwav.c -o out/mwav.o
+out/npertab.o: ../playercode/npertab.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/npertab.c -o out/npertab.o
+out/sloader.o: ../playercode/sloader.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/sloader.c -o out/sloader.o
+out/virtch.o: ../playercode/virtch.c ../playercode/virtch_common.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/virtch.c -o out/virtch.o
+out/virtch2.o: ../playercode/virtch2.c ../playercode/virtch_common.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/virtch2.c -o out/virtch2.o
+out/virtch_common.o: ../playercode/virtch_common.c $(HEADER_DEPS)
+	$(COMPILE) ../playercode/virtch_common.c -o out/virtch_common.o
+out/strcasecmp.o: ../posix/strcasecmp.c $(HEADER_DEPS)
+	$(COMPILE) ../posix/strcasecmp.c -o out/strcasecmp.o

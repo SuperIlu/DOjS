@@ -1,0 +1,70 @@
+# libmikmod Makefile for Dreamcast
+
+INCS = -I../dc -I../include $(KOS_INCS)
+KOS_CFLAGS += $(INCS) -Wall -O2 -DMIKMOD_BUILD -DHAVE_LIMITS_H -DHAVE_MALLOC_H -DHAVE_UNISTD_H
+# mikmod drivers selection:
+KOS_CFLAGS += -DDRV_DC -DDRV_WAV -DDRV_AIFF -DDRV_RAW
+# disable the high quality mixer (build only with the standart mixer)
+#KOS_CFLAGS += -DNO_HQMIXER
+
+
+TARGET = libmikmod.a
+
+SRCS =	../drivers/drv_dc.c	\
+	../drivers/drv_nos.c	\
+	../drivers/drv_wav.c	\
+	../drivers/drv_aiff.c	\
+	../drivers/drv_raw.c	\
+	\
+	../loaders/load_669.c	\
+	../loaders/load_amf.c	\
+	../loaders/load_asy.c	\
+	../loaders/load_dsm.c	\
+	../loaders/load_far.c	\
+	../loaders/load_gdm.c	\
+	../loaders/load_gt2.c	\
+	../loaders/load_it.c	\
+	../loaders/load_imf.c	\
+	../loaders/load_m15.c	\
+	../loaders/load_med.c	\
+	../loaders/load_mod.c	\
+	../loaders/load_mtm.c	\
+	../loaders/load_okt.c	\
+	../loaders/load_s3m.c	\
+	../loaders/load_stm.c	\
+	../loaders/load_stx.c	\
+	../loaders/load_ult.c	\
+	../loaders/load_umx.c	\
+	../loaders/load_uni.c	\
+	../loaders/load_xm.c	\
+	\
+	../mmio/mmalloc.c	\
+	../mmio/mmerror.c	\
+	../mmio/mmio.c		\
+	\
+	../depackers/mmcmp.c	\
+	../depackers/pp20.c	\
+	../depackers/s404.c	\
+	../depackers/xpk.c	\
+	\
+	../posix/strcasecmp.c	\
+	\
+	../playercode/mdreg.c	\
+	../playercode/mdriver.c	\
+	../playercode/mloader.c	\
+	../playercode/mlreg.c	\
+	../playercode/mlutil.c	\
+	../playercode/mplayer.c	\
+	../playercode/munitrk.c	\
+	../playercode/mwav.c	\
+	../playercode/npertab.c	\
+	../playercode/sloader.c	\
+	../playercode/virtch.c	\
+	../playercode/virtch2.c	\
+	../playercode/virtch_common.c
+#	../playercode/mdulaw.c
+
+OBJS = $(SRCS:.c=.o)
+
+include $(KOS_BASE)/addons/Makefile.prefab
+

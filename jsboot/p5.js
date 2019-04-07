@@ -26,16 +26,20 @@
  */
 
 Include('jsboot/p5const.js');
-Include('jsboot/p5util.js');
-Include('jsboot/p5math.js');
-Include('jsboot/p5vect.js');
 Include('jsboot/p5color.js');
-Include('jsboot/p5shape.js');
 Include('jsboot/p5env.js');
 Include('jsboot/p5input.js');
+Include('jsboot/p5math.js');
+Include('jsboot/p5shape.js');
+Include('jsboot/p5typo.js');
+Include('jsboot/p5util.js');
+Include('jsboot/p5vect.js');
 
 exports._loop = true;
 
+/*
+ * not documented here.
+ */
 exports.Setup = function () {
 	windowWidth = displayWidth = width = SizeX();
 	windowHeight = displayHeight = height = SizeY();
@@ -48,6 +52,9 @@ exports.Setup = function () {
 	setup();
 };
 
+/*
+ * not documented here.
+ */
 exports.Loop = function () {
 	if (_loop) {
 		redraw();
@@ -60,6 +67,9 @@ exports.Loop = function () {
 	}
 };
 
+/*
+ * not documented here.
+ */
 exports.Input = function (e) {
 	// update mouse coordinates
 	if (e.flags & MOUSE.Flags.MOTION) {
@@ -73,6 +83,11 @@ exports.Input = function (e) {
 
 		if (typeof global['mouseMoved'] != 'undefined') {
 			mouseMoved(e);
+		}
+		if (mouseIsPressed) {
+			if (typeof global['mouseDragged'] != 'undefined') {
+				mouseDragged(e);
+			}
 		}
 	}
 
@@ -95,11 +110,11 @@ exports.Input = function (e) {
 		if (mouseIsPressed && typeof global['mouseReleased'] != 'undefined') {
 			mouseReleased(e);
 		}
-		mouseIsPressed = false;
-		mouseButton = 0;
 		if (mouseIsPressed && typeof global['mouseClicked'] != 'undefined') {
 			mouseClicked(e);
 		}
+		mouseIsPressed = false;
+		mouseButton = 0;
 	}
 
 	// this does not work like with p5 as we don't get a key release
@@ -143,17 +158,7 @@ exports.settings = function () { };
 /**
  * ignored
  */
-exports.colorMode = function () { };
-
-/**
- * ignored
- */
 exports.imageMode = function () { };
-
-/**
- * ignored
- */
-exports.strokeWeight = function () { };
 
 /**
  * ignored
@@ -372,6 +377,40 @@ exports.printArray = function (what) {
 	}
 };
 
+/**
+ *  Writes an array of Strings to a text file, one line per String.
+ *  The file saving process and location of the saved file will
+ *  vary between web browsers.
+ *
+ *  @method saveStrings
+ *  @param  {String[]} list   string array to be written
+ *  @param  {String} filename filename for output
+ *  @param  {String} [extension] the filename's extension
+ *  @example
+ * let words = 'apple bear cat dog';
+ *
+ * // .split() outputs an Array
+ * let list = split(words, ' ');
+ *
+ * function setup() {
+ *   createCanvas(100, 100);
+ *   background(200);
+ *   text('click here to save', 10, 10, 70, 80);
+ * }
+ *
+ * function mousePressed() {
+ *   if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+ *     saveStrings(list, 'nouns.txt');
+ *   }
+ * }
+ *
+ * // Saves the following to a file called 'nouns.txt':
+ * //
+ * // apple
+ * // bear
+ * // cat
+ * // dog
+ */
 exports.saveStrings = function (fname, data) {
 	var f = new File();
 	data.forEach(function (d) {
@@ -388,6 +427,52 @@ exports.saveBytes = function (fname, data) {
 	f.Close();
 };
 
+/**
+ * Reads the contents of a file and creates a String array of its individual
+ * lines. If the name of the file is used as the parameter, as in the above
+ * example, the file must be located in the sketch directory/folder.
+ * <br><br>
+ * Alternatively, the file maybe be loaded from anywhere on the local
+ * computer using an absolute path (something that starts with / on Unix and
+ * Linux, or a drive letter on Windows), or the filename parameter can be a
+ * URL for a file found on a network.
+ * <br><br>
+ * This method is asynchronous, meaning it may not finish before the next
+ * line in your sketch is executed.
+ *
+ * This method is suitable for fetching files up to size of 64MB.
+ * @method loadStrings
+ * @param  {String}   filename   name of the file or url to load
+ * @param  {function} [callback] function to be executed after <a href="#/p5/loadStrings">loadStrings()</a>
+ *                               completes, Array is passed in as first
+ *                               argument
+ * @param  {function} [errorCallback] function to be executed if
+ *                               there is an error, response is passed
+ *                               in as first argument
+ * @return {String[]}            Array of Strings
+ * @example
+ *
+ * let result;
+ * function preload() {
+ *   result = loadStrings('assets/test.txt');
+ * }
+
+ * function setup() {
+ *   background(200);
+ *   let ind = floor(random(result.length));
+ *   text(result[ind], 10, 10, 80, 80);
+ * }
+ *
+ * function setup() {
+ *   loadStrings('assets/test.txt', pickString);
+ * }
+ *
+ * function pickString(result) {
+ *   background(200);
+ *   let ind = floor(random(result.length));
+ *   text(result[ind], 10, 10, 80, 80);
+ * }
+ */
 exports.loadStrings = function (fname) {
 	try {
 		var ret = [];
@@ -405,6 +490,29 @@ exports.loadStrings = function (fname) {
 	}
 };
 
+/**
+ * This method is suitable for fetching files up to size of 64MB.
+ * @method loadBytes
+ * @param {string}   file            name of the file or URL to load
+ * @param {function} [callback]      function to be executed after <a href="#/p5/loadBytes">loadBytes()</a>
+ *                                    completes
+ * @param {function} [errorCallback] function to be executed if there
+ *                                    is an error
+ * @returns {Object} an object whose 'bytes' property will be the loaded buffer
+ *
+ * @example
+ * let data;
+ *
+ * function preload() {
+ *   data = loadBytes('assets/mammals.xml');
+ * }
+ *
+ * function setup() {
+ *   for (let i = 0; i < 5; i++) {
+ *     console.log(data.bytes[i].toString(16));
+ *   }
+ * }
+ */
 exports.loadBytes = function (fname) {
 	try {
 		var ret = [];

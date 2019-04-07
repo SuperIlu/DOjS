@@ -1,0 +1,52 @@
+INSTALL file for libmikmod
+==========================
+
+COMPILE USING CMAKE :
+=====================
+
+libmikmod versions 3.3.2 and newer support CMake.  CMake version 2.8.x
+or later is required.  CMake homepage is at http://www.cmake.org/ .
+
+Run:
+    mkdir build
+    cd build
+    cmake-gui ..         # For the GUI configuration applet
+
+Or:
+    mkdir build
+    cd build
+    ccmake ..            # For the Curses-based configuration applet
+
+With a fallback to:
+    mkdir build
+    cd build
+    cmake ..             # Non-interactive application.
+
+This will build and install the libmikmod shared and static libraries.
+For installing under windows, consult the CMake documentation for
+generating a Visual C, MinGW, etc. compatible makefile or project.
+
+
+COMPILE USING CONFIGURE / AUTOTOOLS :
+=====================================
+
+In most systems just run:
+ $ ./configure
+ $ make
+
+You need GNU make.  On BSD or SysV systems, you may need to use gmake
+instead of make.  Use ./configure --help to see configuration options.
+To install the library and development components, run "make install"
+as the superuser.  This will install the shared and static libraries,
+header file and pkg-config file into directories under /usr/local or a
+different location selected with the --prefix option in configure.
+
+To cross-compile, you will need to use the --host option of configury.
+For example:
+ $ ./configure --host=powerpc-apple-darwin9  # for Mac OS X (powerpc)
+ $ ./configure --host=i686-pc-mingw32        # for Windows (win32)
+ $ ./configure --host=x86_64-w64-mingw32     # for Windows (win64)
+
+We also provide standalone makefiles for Windows, Mac OS X, DJGPP (DOS)
+which you can use for both compiling on the relevant native system, or
+for cross-compiling.

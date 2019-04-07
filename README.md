@@ -11,7 +11,7 @@ You can type in a script with the builtin or your favorite text editor and then 
 
 DOjS is pronounces like [doge](https://en.wikipedia.org/wiki/Doge_(meme)), but ending with an "s".
 
-![DOjS logo](/tests/DOjS.png)
+![DOjS logo](/examples/DOjS.png)
 
 DOjS was only possible due to the work of these people/projects:
 * [MuJS](https://mujs.com/) JavaScript interpreter

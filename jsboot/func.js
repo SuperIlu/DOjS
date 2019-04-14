@@ -26,18 +26,32 @@ SOFTWARE.
  */
 DEBUG = false;
 
+/**
+ * @property {boolean} REMOTE_DEBUG enable/disable Debug() sending via IPX.
+ */
+REMOTE_DEBUG = false;
+
 /** @module other */
 
 /**
  * print javascript debug output if DEBUG is true.
+ * 
  * @param {string} str the message to print.
  */
 function Debug(str) {
+	_Debug(str);
+	if (REMOTE_DEBUG) {
+		IpxDebug(str + "\n");
+	}
+}
+
+/**
+ * Internal debug which does not redirect to IPX if enabled.
+ * 
+ * @param {string} str the message to print.
+ */
+function _Debug(str) {
 	if (DEBUG) {
-		var str = "";
-		for (var i = 0; i < arguments.length; i++) {
-			str += arguments[i] + " ";
-		};
 		Println("-=> ", str);
 	}
 }
@@ -50,21 +64,21 @@ function Debug(str) {
 function Require(name) {
 	// look in cache
 	if (name in Require.cache) {
-		Debug("Require(cached)", name);
+		Debug("Require(cached) " + name);
 		return Require.cache[name];
 	}
 
 	var names = [name, name + '.JS', 'JSBOOT/' + name, 'JSBOOT/' + name + '.JS'];
-	Debug("Require(names)", JSON.stringify(names));
+	Debug("Require(names) " + JSON.stringify(names));
 
 	for (var i = 0; i < names.length; i++) {
 		var n = names[i];
-		Debug("Require()", 'Trying "' + n + '"');
+		Debug("Require() Trying '" + n + "'");
 		var content;
 		try {
 			content = Read(n);
 		} catch (e) {
-			Debug("Require()", n + " Not found");
+			Debug("Require() " + n + " Not found");
 			continue;
 		}
 		var exports = {};
@@ -86,7 +100,7 @@ Require.cache = Object.create(null);
 function Include(name) {
 	var e = Require(name);
 	for (var key in e) {
-		Debug("Include(toGlobal)", key);
+		Debug("Include(toGlobal) " + key);
 		global[key] = e[key];
 	}
 }
@@ -109,8 +123,8 @@ function StartupInfo() {
 	var height = SizeY();
 	var colors = NumColors();
 
-	Debug("Screen size=" + width + "x" + height + " with " + colors + " colors, mode=" + mode + ", adapter=" + adapter);
-	Debug("Memory=" + JSON.stringify(MemoryInfo()));
+	_Debug("Screen size=" + width + "x" + height + " with " + colors + " colors, mode=" + mode + ", adapter=" + adapter);
+	_Debug("Memory=" + JSON.stringify(MemoryInfo()));
 }
 StartupInfo();
 

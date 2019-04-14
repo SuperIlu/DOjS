@@ -1,0 +1,6163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Module: PVector | Module: PVector</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Module: PVector</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Modules</h3><ul><li><a href="module-fm.html">fm</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:fm_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-fm.html#~NoteOff">NoteOff</a></li><li><a href="module-fm.html#~NoteOn">NoteOn</a></li><li><a href="module-fm.html#~SetInstrument">SetInstrument</a></li></ul></div></li><li><a href="module-gfx.html">gfx</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:gfx_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-gfx.html#~Box">Box</a></li><li><a href="module-gfx.html#~Circle">Circle</a></li><li><a href="module-gfx.html#~CircleArc">CircleArc</a></li><li><a href="module-gfx.html#~ClearScreen">ClearScreen</a></li><li><a href="module-gfx.html#~CustomBox">CustomBox</a></li><li><a href="module-gfx.html#~CustomCircle">CustomCircle</a></li><li><a href="module-gfx.html#~CustomCircleArc">CustomCircleArc</a></li><li><a href="module-gfx.html#~CustomEllipse">CustomEllipse</a></li><li><a href="module-gfx.html#~CustomEllipseArc">CustomEllipseArc</a></li><li><a href="module-gfx.html#~CustomLine">CustomLine</a></li><li><a href="module-gfx.html#~CustomPolygon">CustomPolygon</a></li><li><a href="module-gfx.html#~CustomPolyLine">CustomPolyLine</a></li><li><a href="module-gfx.html#~Ellipse">Ellipse</a></li><li><a href="module-gfx.html#~EllipseArc">EllipseArc</a></li><li><a href="module-gfx.html#~FilledBox">FilledBox</a></li><li><a href="module-gfx.html#~FilledCircle">FilledCircle</a></li><li><a href="module-gfx.html#~FilledCircleArc">FilledCircleArc</a></li><li><a href="module-gfx.html#~FilledConvexPolygon">FilledConvexPolygon</a></li><li><a href="module-gfx.html#~FilledEllipse">FilledEllipse</a></li><li><a href="module-gfx.html#~FilledEllipseArc">FilledEllipseArc</a></li><li><a href="module-gfx.html#~FilledPolygon">FilledPolygon</a></li><li><a href="module-gfx.html#~FloodFill">FloodFill</a></li><li><a href="module-gfx.html#~FloodSpill">FloodSpill</a></li><li><a href="module-gfx.html#~FloodSpill2">FloodSpill2</a></li><li><a href="module-gfx.html#~FramedBox">FramedBox</a></li><li><a href="module-gfx.html#~GetPixel">GetPixel</a></li><li><a href="module-gfx.html#~Line">Line</a></li><li><a href="module-gfx.html#~MaxX">MaxX</a></li><li><a href="module-gfx.html#~MaxY">MaxY</a></li><li><a href="module-gfx.html#~MouseCursorIsDisplayed">MouseCursorIsDisplayed</a></li><li><a href="module-gfx.html#~MouseGetLimits">MouseGetLimits</a></li><li><a href="module-gfx.html#~MouseSetAccel">MouseSetAccel</a></li><li><a href="module-gfx.html#~MouseSetColors">MouseSetColors</a></li><li><a href="module-gfx.html#~MouseSetCursorMode">MouseSetCursorMode</a></li><li><a href="module-gfx.html#~MouseSetLimits">MouseSetLimits</a></li><li><a href="module-gfx.html#~MouseSetSpeed">MouseSetSpeed</a></li><li><a href="module-gfx.html#~MouseShowCursor">MouseShowCursor</a></li><li><a href="module-gfx.html#~MouseWarp">MouseWarp</a></li><li><a href="module-gfx.html#~NumColors">NumColors</a></li><li><a href="module-gfx.html#~NumFreeColors">NumFreeColors</a></li><li><a href="module-gfx.html#~Plot">Plot</a></li><li><a href="module-gfx.html#~Polygon">Polygon</a></li><li><a href="module-gfx.html#~PolyLine">PolyLine</a></li><li><a href="module-gfx.html#~SaveBmpImage">SaveBmpImage</a></li><li><a href="module-gfx.html#~SavePngImage">SavePngImage</a></li><li><a href="module-gfx.html#~SizeX">SizeX</a></li><li><a href="module-gfx.html#~SizeY">SizeY</a></li><li><a href="module-gfx.html#~TextXY">TextXY</a></li></ul></div></li><li><a href="module-ipx.html">ipx</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:ipx_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="module-ipx.html#~_ipxDebugNodes">_ipxDebugNodes</a></li><li><a href="module-ipx.html#~_ipxLogData">_ipxLogData</a></li><li><a href="module-ipx.html#~_ipxLogInit">_ipxLogInit</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="module-ipx.html#~IpxAddressToString">IpxAddressToString</a></li><li><a href="module-ipx.html#~IpxAllNodes">IpxAllNodes</a></li><li><a href="module-ipx.html#~IpxCheckPacket">IpxCheckPacket</a></li><li><a href="module-ipx.html#~IpxDebug">IpxDebug</a></li><li><a href="module-ipx.html#~IpxFindNodes">IpxFindNodes</a></li><li><a href="module-ipx.html#~IpxGetLocalAddress">IpxGetLocalAddress</a></li><li><a href="module-ipx.html#~IpxGetPacket">IpxGetPacket</a></li><li><a href="module-ipx.html#~IpxSend">IpxSend</a></li><li><a href="module-ipx.html#~IpxSocketClose">IpxSocketClose</a></li><li><a href="module-ipx.html#~IpxSocketOpen">IpxSocketOpen</a></li><li><a href="module-ipx.html#~IpxStringToAddress">IpxStringToAddress</a></li></ul></div></li><li><a href="module-midi.html">midi</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:midi_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-midi.html#~MidiIsPlaying">MidiIsPlaying</a></li><li><a href="module-midi.html#~MidiStop">MidiStop</a></li></ul></div></li><li><a href="module-module.html">module</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:module_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-module.html#~ModuleIsPlaying">ModuleIsPlaying</a></li><li><a href="module-module.html#~ModuleStop">ModuleStop</a></li></ul></div></li><li><a href="module-other.html">other</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:other_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-other.html#~_Debug">_Debug</a></li><li><a href="module-other.html#~CharCode">CharCode</a></li><li><a href="module-other.html#~Debug">Debug</a></li><li><a href="module-other.html#~Gc">Gc</a></li><li><a href="module-other.html#~GetFramerate">GetFramerate</a></li><li><a href="module-other.html#~Include">Include</a></li><li><a href="module-other.html#~List">List</a></li><li><a href="module-other.html#~MemoryInfo">MemoryInfo</a></li><li><a href="module-other.html#~MsecTime">MsecTime</a></li><li><a href="module-other.html#~Print">Print</a></li><li><a href="module-other.html#~Println">Println</a></li><li><a href="module-other.html#~Read">Read</a></li><li><a href="module-other.html#~Require">Require</a></li><li><a href="module-other.html#~SetExitKey">SetExitKey</a></li><li><a href="module-other.html#~SetFramerate">SetFramerate</a></li><li><a href="module-other.html#~Sleep">Sleep</a></li><li><a href="module-other.html#~StartupInfo">StartupInfo</a></li><li><a href="module-other.html#~Stat">Stat</a></li><li><a href="module-other.html#~Stop">Stop</a></li></ul></div></li><li><a href="module-p5compat.html">p5compat</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:p5compat_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="module-p5compat.html#.displayHeight">displayHeight</a></li><li><a href="module-p5compat.html#.displayWidth">displayWidth</a></li><li><a href="module-p5compat.html#.focused">focused</a></li><li><a href="module-p5compat.html#.frameCount">frameCount</a></li><li><a href="module-p5compat.html#.height">height</a></li><li><a href="module-p5compat.html#.key">key</a></li><li><a href="module-p5compat.html#.keyCode">keyCode</a></li><li><a href="module-p5compat.html#.keyIsPressed">keyIsPressed</a></li><li><a href="module-p5compat.html#.mouseButton">mouseButton</a></li><li><a href="module-p5compat.html#.mouseIsPressed">mouseIsPressed</a></li><li><a href="module-p5compat.html#.mouseX">mouseX</a></li><li><a href="module-p5compat.html#.mouseY">mouseY</a></li><li><a href="module-p5compat.html#.pmouseX">pmouseX</a></li><li><a href="module-p5compat.html#.pmouseY">pmouseY</a></li><li><a href="module-p5compat.html#.pwinMouseX">pwinMouseX</a></li><li><a href="module-p5compat.html#.pwinMouseY">pwinMouseY</a></li><li><a href="module-p5compat.html#.width">width</a></li><li><a href="module-p5compat.html#.windowHeight">windowHeight</a></li><li><a href="module-p5compat.html#.windowWidth">windowWidth</a></li><li><a href="module-p5compat.html#.winMouseX">winMouseX</a></li><li><a href="module-p5compat.html#.winMouseY">winMouseY</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="module-p5compat.html#._hsbaToRGBA">_hsbaToRGBA</a></li><li><a href="module-p5compat.html#._hslaToRGBA">_hslaToRGBA</a></li><li><a href="module-p5compat.html#.createCanvas">createCanvas</a></li><li><a href="module-p5compat.html#.exit">exit</a></li><li><a href="module-p5compat.html#.imageMode">imageMode</a></li><li><a href="module-p5compat.html#.noSmooth">noSmooth</a></li><li><a href="module-p5compat.html#.noTint">noTint</a></li><li><a href="module-p5compat.html#.settings">settings</a></li><li><a href="module-p5compat.html#.size">size</a></li><li><a href="module-p5compat.html#.smooth">smooth</a></li><li><a href="module-p5compat.html#.tint">tint</a></li><li><a href="module-p5compat.html#~abs">abs</a></li><li><a href="module-p5compat.html#~acos">acos</a></li><li><a href="module-p5compat.html#~alpha">alpha</a></li><li><a href="module-p5compat.html#~angleMode">angleMode</a></li><li><a href="module-p5compat.html#~append">append</a></li><li><a href="module-p5compat.html#~arc">arc</a></li><li><a href="module-p5compat.html#~arrayCopy">arrayCopy</a></li><li><a href="module-p5compat.html#~asin">asin</a></li><li><a href="module-p5compat.html#~atan">atan</a></li><li><a href="module-p5compat.html#~atan2">atan2</a></li><li><a href="module-p5compat.html#~background">background</a></li><li><a href="module-p5compat.html#~background">background</a></li><li><a href="module-p5compat.html#~beginShape">beginShape</a></li><li><a href="module-p5compat.html#~blue">blue</a></li><li><a href="module-p5compat.html#~boolean">boolean</a></li><li><a href="module-p5compat.html#~byte">byte</a></li><li><a href="module-p5compat.html#~ceil">ceil</a></li><li><a href="module-p5compat.html#~char">char</a></li><li><a href="module-p5compat.html#~circle">circle</a></li><li><a href="module-p5compat.html#~clear">clear</a></li><li><a href="module-p5compat.html#~color">color</a></li><li><a href="module-p5compat.html#~colorMode">colorMode</a></li><li><a href="module-p5compat.html#~concat">concat</a></li><li><a href="module-p5compat.html#~constrain">constrain</a></li><li><a href="module-p5compat.html#~cos">cos</a></li><li><a href="module-p5compat.html#~createNumberDict">createNumberDict</a></li><li><a href="module-p5compat.html#~createStringDict">createStringDict</a></li><li><a href="module-p5compat.html#~createVector">createVector</a></li><li><a href="module-p5compat.html#~day">day</a></li><li><a href="module-p5compat.html#~degrees">degrees</a></li><li><a href="module-p5compat.html#~displayDensity">displayDensity</a></li><li><a href="module-p5compat.html#~dist">dist</a></li><li><a href="module-p5compat.html#~ellipse">ellipse</a></li><li><a href="module-p5compat.html#~ellipseMode">ellipseMode</a></li><li><a href="module-p5compat.html#~endShape">endShape</a></li><li><a href="module-p5compat.html#~exp">exp</a></li><li><a href="module-p5compat.html#~fill">fill</a></li><li><a href="module-p5compat.html#~float">float</a></li><li><a href="module-p5compat.html#~floor">floor</a></li><li><a href="module-p5compat.html#~frameRate">frameRate</a></li><li><a href="module-p5compat.html#~fullscreen">fullscreen</a></li><li><a href="module-p5compat.html#~getFrameRate">getFrameRate</a></li><li><a href="module-p5compat.html#~getURL">getURL</a></li><li><a href="module-p5compat.html#~getURLParams">getURLParams</a></li><li><a href="module-p5compat.html#~getURLPath">getURLPath</a></li><li><a href="module-p5compat.html#~green">green</a></li><li><a href="module-p5compat.html#~hex">hex</a></li><li><a href="module-p5compat.html#~hour">hour</a></li><li><a href="module-p5compat.html#~image">image</a></li><li><a href="module-p5compat.html#~imageMode">imageMode</a></li><li><a href="module-p5compat.html#~int">int</a></li><li><a href="module-p5compat.html#~join">join</a></li><li><a href="module-p5compat.html#~keyPressed">keyPressed</a></li><li><a href="module-p5compat.html#~keyReleased">keyReleased</a></li><li><a href="module-p5compat.html#~keyTyped">keyTyped</a></li><li><a href="module-p5compat.html#~lerp">lerp</a></li><li><a href="module-p5compat.html#~line">line</a></li><li><a href="module-p5compat.html#~loadBytes">loadBytes</a></li><li><a href="module-p5compat.html#~loadFont">loadFont</a></li><li><a href="module-p5compat.html#~loadImage">loadImage</a></li><li><a href="module-p5compat.html#~loadStrings">loadStrings</a></li><li><a href="module-p5compat.html#~log">log</a></li><li><a href="module-p5compat.html#~loop">loop</a></li><li><a href="module-p5compat.html#~mag">mag</a></li><li><a href="module-p5compat.html#~map">map</a></li><li><a href="module-p5compat.html#~match">match</a></li><li><a href="module-p5compat.html#~matchAll">matchAll</a></li><li><a href="module-p5compat.html#~max">max</a></li><li><a href="module-p5compat.html#~millis">millis</a></li><li><a href="module-p5compat.html#~min">min</a></li><li><a href="module-p5compat.html#~minute">minute</a></li><li><a href="module-p5compat.html#~month">month</a></li><li><a href="module-p5compat.html#~mouseClicked">mouseClicked</a></li><li><a href="module-p5compat.html#~mouseMoved">mouseMoved</a></li><li><a href="module-p5compat.html#~mousePressed">mousePressed</a></li><li><a href="module-p5compat.html#~mouseReleased">mouseReleased</a></li><li><a href="module-p5compat.html#~nf">nf</a></li><li><a href="module-p5compat.html#~nfc">nfc</a></li><li><a href="module-p5compat.html#~nfp">nfp</a></li><li><a href="module-p5compat.html#~nfs">nfs</a></li><li><a href="module-p5compat.html#~noCursor">noCursor</a></li><li><a href="module-p5compat.html#~noFill">noFill</a></li><li><a href="module-p5compat.html#~noise">noise</a></li><li><a href="module-p5compat.html#~noiseDetail">noiseDetail</a></li><li><a href="module-p5compat.html#~noLoop">noLoop</a></li><li><a href="module-p5compat.html#~norm">norm</a></li><li><a href="module-p5compat.html#~noStroke">noStroke</a></li><li><a href="module-p5compat.html#~pixelDensity">pixelDensity</a></li><li><a href="module-p5compat.html#~point">point</a></li><li><a href="module-p5compat.html#~pow">pow</a></li><li><a href="module-p5compat.html#~print">print</a></li><li><a href="module-p5compat.html#~print">print</a></li><li><a href="module-p5compat.html#~quad">quad</a></li><li><a href="module-p5compat.html#~radians">radians</a></li><li><a href="module-p5compat.html#~random">random</a></li><li><a href="module-p5compat.html#~randomGaussian">randomGaussian</a></li><li><a href="module-p5compat.html#~randomSeed">randomSeed</a></li><li><a href="module-p5compat.html#~rect">rect</a></li><li><a href="module-p5compat.html#~rectMode">rectMode</a></li><li><a href="module-p5compat.html#~red">red</a></li><li><a href="module-p5compat.html#~redraw">redraw</a></li><li><a href="module-p5compat.html#~reverse">reverse</a></li><li><a href="module-p5compat.html#~round">round</a></li><li><a href="module-p5compat.html#~saveStrings">saveStrings</a></li><li><a href="module-p5compat.html#~second">second</a></li><li><a href="module-p5compat.html#~shorten">shorten</a></li><li><a href="module-p5compat.html#~shuffle">shuffle</a></li><li><a href="module-p5compat.html#~sin">sin</a></li><li><a href="module-p5compat.html#~sort">sort</a></li><li><a href="module-p5compat.html#~splice">splice</a></li><li><a href="module-p5compat.html#~split">split</a></li><li><a href="module-p5compat.html#~splitTokens">splitTokens</a></li><li><a href="module-p5compat.html#~sq">sq</a></li><li><a href="module-p5compat.html#~sqrt">sqrt</a></li><li><a href="module-p5compat.html#~square">square</a></li><li><a href="module-p5compat.html#~str">str</a></li><li><a href="module-p5compat.html#~stroke">stroke</a></li><li><a href="module-p5compat.html#~strokeWeight">strokeWeight</a></li><li><a href="module-p5compat.html#~subset">subset</a></li><li><a href="module-p5compat.html#~tan">tan</a></li><li><a href="module-p5compat.html#~text">text</a></li><li><a href="module-p5compat.html#~textAlign">textAlign</a></li><li><a href="module-p5compat.html#~textFont">textFont</a></li><li><a href="module-p5compat.html#~textSize">textSize</a></li><li><a href="module-p5compat.html#~textWidth">textWidth</a></li><li><a href="module-p5compat.html#~triangle">triangle</a></li><li><a href="module-p5compat.html#~trim">trim</a></li><li><a href="module-p5compat.html#~unchar">unchar</a></li><li><a href="module-p5compat.html#~unhex">unhex</a></li><li><a href="module-p5compat.html#~vertex">vertex</a></li><li><a href="module-p5compat.html#~year">year</a></li></ul></div></li><li><a href="p5compat.module_NumberDict.html">NumberDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:NumberDict_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="p5compat.module_NumberDict.html#~add">add</a></li><li><a href="p5compat.module_NumberDict.html#~div">div</a></li><li><a href="p5compat.module_NumberDict.html#~maxKey">maxKey</a></li><li><a href="p5compat.module_NumberDict.html#~maxValue">maxValue</a></li><li><a href="p5compat.module_NumberDict.html#~minKey">minKey</a></li><li><a href="p5compat.module_NumberDict.html#~minValue">minValue</a></li><li><a href="p5compat.module_NumberDict.html#~mult">mult</a></li><li><a href="p5compat.module_NumberDict.html#~sub">sub</a></li></ul></div></li><li><a href="p5compat.module_PVector.html">PVector</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:PVector_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="p5compat.module_PVector.html#.add">add</a></li><li><a href="p5compat.module_PVector.html#.cross">cross</a></li><li><a href="p5compat.module_PVector.html#.dist">dist</a></li><li><a href="p5compat.module_PVector.html#.div">div</a></li><li><a href="p5compat.module_PVector.html#.dot">dot</a></li><li><a href="p5compat.module_PVector.html#.fromAngle">fromAngle</a></li><li><a href="p5compat.module_PVector.html#.fromAngles">fromAngles</a></li><li><a href="p5compat.module_PVector.html#.lerp">lerp</a></li><li><a href="p5compat.module_PVector.html#.mag">mag</a></li><li><a href="p5compat.module_PVector.html#.mult">mult</a></li><li><a href="p5compat.module_PVector.html#.random2D">random2D</a></li><li><a href="p5compat.module_PVector.html#.random3D">random3D</a></li><li><a href="p5compat.module_PVector.html#.sub">sub</a></li><li><a href="p5compat.module_PVector.html#~add">add</a></li><li><a href="p5compat.module_PVector.html#~angleBetween">angleBetween</a></li><li><a href="p5compat.module_PVector.html#~array">array</a></li><li><a href="p5compat.module_PVector.html#~copy">copy</a></li><li><a href="p5compat.module_PVector.html#~cross">cross</a></li><li><a href="p5compat.module_PVector.html#~dist">dist</a></li><li><a href="p5compat.module_PVector.html#~div">div</a></li><li><a href="p5compat.module_PVector.html#~dot">dot</a></li><li><a href="p5compat.module_PVector.html#~dot">dot</a></li><li><a href="p5compat.module_PVector.html#~equals">equals</a></li><li><a href="p5compat.module_PVector.html#~equals">equals</a></li><li><a href="p5compat.module_PVector.html#~heading">heading</a></li><li><a href="p5compat.module_PVector.html#~lerp">lerp</a></li><li><a href="p5compat.module_PVector.html#~limit">limit</a></li><li><a href="p5compat.module_PVector.html#~mag">mag</a></li><li><a href="p5compat.module_PVector.html#~magSq">magSq</a></li><li><a href="p5compat.module_PVector.html#~mult">mult</a></li><li><a href="p5compat.module_PVector.html#~normalize">normalize</a></li><li><a href="p5compat.module_PVector.html#~rotate">rotate</a></li><li><a href="p5compat.module_PVector.html#~set">set</a></li><li><a href="p5compat.module_PVector.html#~setMag">setMag</a></li><li><a href="p5compat.module_PVector.html#~sub">sub</a></li><li><a href="p5compat.module_PVector.html#~toString">toString</a></li></ul></div></li><li><a href="p5compat.module_StringDict.html">StringDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:StringDict_sub"></div></li><li><a href="p5compat.module_TypedDict.html">TypedDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:TypedDict_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="p5compat.module_TypedDict.html#~clear">clear</a></li><li><a href="p5compat.module_TypedDict.html#~create">create</a></li><li><a href="p5compat.module_TypedDict.html#~get">get</a></li><li><a href="p5compat.module_TypedDict.html#~hasKey">hasKey</a></li><li><a href="p5compat.module_TypedDict.html#~print">print</a></li><li><a href="p5compat.module_TypedDict.html#~remove">remove</a></li><li><a href="p5compat.module_TypedDict.html#~saveJSON">saveJSON</a></li><li><a href="p5compat.module_TypedDict.html#~set">set</a></li><li><a href="p5compat.module_TypedDict.html#~size">size</a></li></ul></div></li></ul></div><div class="lnb-api hidden"><h3>Classes</h3><ul><li><a href="ArcInfo.html">ArcInfo</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="ArcInfo_sub"></div></li><li><a href="Bitmap.html">Bitmap</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Bitmap_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Bitmap.html#.filename">filename</a></li><li><a href="Bitmap.html#.height">height</a></li><li><a href="Bitmap.html#.width">width</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Bitmap.html#Draw">Draw</a></li><li><a href="Bitmap.html#GetPixel">GetPixel</a></li></ul></div></li><li><a href="Color_.html">Color</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Color_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Color_.html#.value">value</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Color_.html#GetBlue">GetBlue</a></li><li><a href="Color_.html#GetGreen">GetGreen</a></li><li><a href="Color_.html#GetRed">GetRed</a></li></ul></div></li><li><a href="Event.html">Event</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Event_sub"></div></li><li><a href="File.html">File</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="File_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="File.html#Close">Close</a></li><li><a href="File.html#ReadByte">ReadByte</a></li><li><a href="File.html#ReadLine">ReadLine</a></li><li><a href="File.html#WriteByte">WriteByte</a></li><li><a href="File.html#WriteLine">WriteLine</a></li><li><a href="File.html#WriteString">WriteString</a></li></ul></div></li><li><a href="FmInstrument.html">FmInstrument</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="FmInstrument_sub"></div></li><li><a href="Font.html">Font</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Font_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Font.html#.filename">filename</a></li><li><a href="Font.html#.maxwidth">maxwidth</a></li><li><a href="Font.html#.minwidth">minwidth</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Font.html#DrawString">DrawString</a></li><li><a href="Font.html#Resize">Resize</a></li><li><a href="Font.html#StringHeight">StringHeight</a></li><li><a href="Font.html#StringWidth">StringWidth</a></li></ul></div></li><li><a href="IpxAddress.html">IpxAddress</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="IpxAddress_sub"></div></li><li><a href="IpxPacket.html">IpxPacket</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="IpxPacket_sub"></div></li><li><a href="MemInfo.html">MemInfo</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="MemInfo_sub"></div></li><li><a href="Midi.html">Midi</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Midi_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="Midi.html#Play">Play</a></li></ul></div></li><li><a href="Module.html">Module</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Module_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Module.html#.comment">comment</a></li><li><a href="Module.html#.filename">filename</a></li><li><a href="Module.html#.modtype">modtype</a></li><li><a href="Module.html#.songname">songname</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Module.html#Play">Play</a></li></ul></div></li><li><a href="MouseLimits.html">MouseLimits</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="MouseLimits_sub"></div></li><li><a href="p5compat.module_NumberDict-NumberDict.html">NumberDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:NumberDict~NumberDict_sub"></div></li><li><a href="p5compat.module_StringDict-StringDict.html">StringDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:StringDict~StringDict_sub"></div></li><li><a href="p5compat.module_TypedDict-TypedDict.html">TypedDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:TypedDict~TypedDict_sub"></div></li><li><a href="p5compat.PVector.html">PVector</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.PVector_sub"></div></li><li><a href="Sample.html">Sample</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Sample_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Sample.html#.filename">filename</a></li><li><a href="Sample.html#.length">length</a></li><li><a href="Sample.html#.speed">speed</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Sample.html#Play">Play</a></li><li><a href="Sample.html#Stop">Stop</a></li></ul></div></li><li><a href="StatInfo.html">StatInfo</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="StatInfo_sub"></div></li></ul></div><div class="lnb-api hidden"><h3>Namespaces</h3><ul><li><a href="COLOR.html">COLOR</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="COLOR_sub"></div></li><li><a href="EGA.html">EGA</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="EGA_sub"></div></li><li><a href="FILE_.html">FILE</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="FILE_sub"></div></li><li><a href="FMMUSIC.html">FMMUSIC</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="FMMUSIC_sub"></div></li><li><a href="FONT_.html">FONT</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="FONT_sub"></div></li><li><a href="IPX.html">IPX</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="IPX_sub"></div></li><li><a href="module-other-ARC.html">other~ARC</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:other~ARC_sub"></div></li><li><a href="module-other-KEY.html">other~KEY</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:other~KEY_sub"></div></li><li><a href="module-other-MOUSE.html">other~MOUSE</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:other~MOUSE_sub"></div></li></ul></div><div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#DEBUG">DEBUG</a></li><li><a href="global.html#DOJS_VERSION">DOJS_VERSION</a></li><li><a href="global.html#Input">Input</a></li><li><a href="global.html#Loop">Loop</a></li><li><a href="global.html#MIDI_AVAILABLE">MIDI_AVAILABLE</a></li><li><a href="global.html#MOUSE_AVAILABLE">MOUSE_AVAILABLE</a></li><li><a href="global.html#NO_COLOR">NO_COLOR</a></li><li><a href="global.html#REMOTE_DEBUG">REMOTE_DEBUG</a></li><li><a href="global.html#Setup">Setup</a></li><li><a href="global.html#SOUND_AVAILABLE">SOUND_AVAILABLE</a></li><li><a href="global.html#SYNTH_AVAILABLE">SYNTH_AVAILABLE</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+
+<section>
+
+<header>
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+            
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+                
+
+<dt>
+    
+        <h4 class="name" id=".add">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>add<span class="signature">(v1, v2, target)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1313">line 1313</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a PVector to add</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>v2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a PVector to add</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the vector to receive the result</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".cross">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>cross<span class="signature">(v1, v2)</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1401">line 1401</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculates the cross product of two vectors.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the first PVector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>v2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the second PVector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- the cross product
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".dist">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>dist<span class="signature">(v1, v2)</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1414">line 1414</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculates the Euclidean distance between two points (considering apoint as a vector object).
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the first PVector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>v2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the second PVector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- the distance
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".div">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>div<span class="signature">(v, n, target)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1369">line 1369</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Divides a vector by a scalar and returns a new vector.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the vector to divide</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">if undefined a new vector will be created</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".dot">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>dot<span class="signature">(v1, v2)</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1388">line 1388</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculates the dot product of two vectors.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the first PVector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>v2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the second PVector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- the dot product
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".fromAngle">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>fromAngle<span class="signature">(angle, length<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {PVector}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1151">line 1151</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Make a new 2D vector from an angle
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>angle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the desired angle, in radians</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the length of the new vector (defaults to 1)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">PVector</span>
+
+
+
+
+
+- the new PVector object
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>function draw() {  background(200);  // Create a variable, proportional to the mouseX,  // varying from 0-360, to represent an angle in degrees.  angleMode(DEGREES);  let myDegrees = map(mouseX, 0, width, 0, 360);  // Display that variable in an onscreen text.  // (Note the nfc() function to truncate additional decimal places,  // and the "\xB0" character for the degree symbol.)  let readout = 'angle = ' + nfc(myDegrees, 1) + '\xB0';  noStroke();  fill(0);  text(readout, 5, 15);  // Create a PVector using the fromAngle function,  // and extract its x and y components.  let v = PVector.fromAngle(radians(myDegrees), 30);  let vx = v.x;  let vy = v.y;  push();  translate(width / 2, height / 2);  noFill();  stroke(150);  line(0, 0, 30, 0);  stroke(0);  line(0, 0, vx, vy);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".fromAngles">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>fromAngles<span class="signature">(theta, phi, length<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {PVector}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1199">line 1199</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Make a new 3D vector from a pair of ISO spherical angles
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>theta</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the polar angle, in radians (zero is up)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>phi</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the azimuthal angle, in radians                              (zero is out of the screen)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the length of the new vector (defaults to 1)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">PVector</span>
+
+
+
+
+
+- the new PVector object
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>* function setup() {  createCanvas(100, 100, WEBGL);  fill(255);  noStroke();}function draw() {  background(255);  let t = millis() / 1000;  // add three point lights  pointLight(color('#f00'), PVector.fromAngles(t * 1.0, t * 1.3, 100));  pointLight(color('#0f0'), PVector.fromAngles(t * 1.1, t * 1.2, 100));  pointLight(color('#00f'), PVector.fromAngles(t * 1.2, t * 1.1, 100));  sphere(35);}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".lerp">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>lerp<span class="signature">(v1, v2, amt)</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1428">line 1428</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Linear interpolate a vector to another vector and return the result as anew vector.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>v2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>amt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- the lerped value
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".mag">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>mag<span class="signature">(vecT)</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1449">line 1449</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>vecT</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the vector to return the magnitude of</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- the magnitude of vecT
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".mult">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>mult<span class="signature">(v, n, target)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1350">line 1350</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Multiplies a vector by a scalar and returns a new vector.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the vector to multiply</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">if undefined a new vector will be created</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".random2D">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>random2D<span class="signature">()</span><span class="type-signature"> &rarr; {PVector}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1244">line 1244</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Make a new 2D unit vector from a random angle
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">PVector</span>
+
+
+
+
+
+- the new PVector object
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = PVector.random2D();// May make v's attributes something like:// [0.61554617, -0.51195765, 0.0] or// [-0.4695841, -0.14366731, 0.0] or// [0.6091097, -0.22805278, 0.0]print(v);function setup() {  frameRate(1);}function draw() {  background(240);  let v0 = createVector(50, 50);  let v1 = PVector.random2D();  drawArrow(v0, v1.mult(50), 'black');}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".random3D">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>random3D<span class="signature">()</span><span class="type-signature"> &rarr; {PVector}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1289">line 1289</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Make a new random 3D unit vector.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">PVector</span>
+
+
+
+
+
+- the new PVector object
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = PVector.random3D();// May make v's attributes something like:// [0.61554617, -0.51195765, 0.599168] or// [-0.4695841, -0.14366731, -0.8711202] or// [0.6091097, -0.22805278, -0.7595902]print(v);</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id=".sub">
+            
+                <span class="type-signature"><span class="icon green">static</span> </span>sub<span class="signature">(v1, v2, target)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1330">line 1330</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Subtracts one PVector from another and returns a new one.  The secondvector (v2) is subtracted from the first (v1), resulting in v1-v2.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a PVector to subtract from</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>v2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a PVector to subtract</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">if undefined a new vector will be created</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~add">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>add<span class="signature">(x, y<span class="signature-attributes">opt</span>, z<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line207">line 207</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Adds x, y, and z components to a vector, adds one vector to another, oradds two independent vectors together. The version of the method that addstwo vectors together is a static method and returns a PVector, the othersacts directly on the vector. See the examples for more context.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the x component of the vector to be added</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the y component of the vector to be added</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>z</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the z component of the vector to be added</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = createVector(1, 2, 3);v.add(4, 5, 6);// v's components are set to [5, 7, 9]// Static methodlet v1 = createVector(1, 2, 3);let v2 = createVector(2, 3, 4);let v3 = PVector.add(v1, v2);// v3 has components [3, 5, 7]print(v3);// red vector + blue vector = purple vectorfunction draw() {  background(240);  let v0 = createVector(0, 0);  let v1 = createVector(mouseX, mouseY);  drawArrow(v0, v1, 'red');  let v2 = createVector(-30, 20);  drawArrow(v1, v2, 'blue');  let v3 = PVector.add(v1, v2);  drawArrow(v0, v3, 'purple');}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~angleBetween">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>angleBetween<span class="signature">(the)</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line945">line 945</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculates and returns the angle (in radians) between two vectors.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>the</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">x, y, and z components of a PVector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- the angle between (in radians)
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v1 = createVector(1, 0, 0);let v2 = createVector(0, 1, 0);let angle = v1.angleBetween(v2);// angle is PI/2print(angle);function draw() {  background(240);  let v0 = createVector(50, 50);  let v1 = createVector(50, 0);  drawArrow(v0, v1, 'red');  let v2 = createVector(mouseX - 50, mouseY - 50);  drawArrow(v0, v2, 'blue');  let angleBetween = v1.angleBetween(v2);  noStroke();  text(    'angle between: ' +      angleBetween.toFixed(2) +      ' radians or ' +      degrees(angleBetween).toFixed(2) +      ' degrees',    10,    50,    90,    50  );}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~array">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>array<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;Number>}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1080">line 1080</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Return a representation of this vector as a float array. This is onlyfor temporary use. If used in any other fashion, the contents should becopied by using the PVector.copy() method to copy into your ownarray.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Array.&lt;Number></span>
+
+
+
+
+
+- an Array with the 3 values
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>* function setup() {  let v = createVector(20, 30);  print(v.array()); // Prints : Array [20, 30, 0]}let v = createVector(10.0, 20.0, 30.0);let f = v.array();print(f[0]); // Prints "10.0"print(f[1]); // Prints "20.0"print(f[2]); // Prints "30.0"</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~copy">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>copy<span class="signature">()</span><span class="type-signature"> &rarr; {PVector}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line192">line 192</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Gets a copy of the vector, returns a PVector object.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">PVector</span>
+
+
+
+
+
+- the copy of the PVector object
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v1 = createVector(1, 2, 3);let v2 = v1.copy();print(v1.x === v2.x &amp;&amp; v1.y === v2.y &amp;&amp; v1.z === v2.z);// Prints "true"</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~cross">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>cross<span class="signature">(v)</span><span class="type-signature"> &rarr; {PVector}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line602">line 602</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculates and returns a vector composed of the cross product betweentwo vectors. Both the static and non static methods return a new PVector.See the examples for more context.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">PVector to be crossed</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">PVector</span>
+
+
+
+
+
+- PVector composed of cross product
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v1 = createVector(1, 2, 3);let v2 = createVector(1, 2, 3);v1.cross(v2); // v's components are [0, 0, 0]// Static methodlet v1 = createVector(1, 0, 0);let v2 = createVector(0, 1, 0);let crossProduct = PVector.cross(v1, v2);// crossProduct has components [0, 0, 1]print(crossProduct);</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~dist">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>dist<span class="signature">(v)</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line632">line 632</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculates the Euclidean distance between two points (considering apoint as a vector object).
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>v</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the x, y, and z coordinates of a PVector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- the distance
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v1 = createVector(1, 0, 0);let v2 = createVector(0, 1, 0);let distance = v1.dist(v2); // distance is 1.4142...print(distance);// Static methodlet v1 = createVector(1, 0, 0);let v2 = createVector(0, 1, 0);let distance = PVector.dist(v1, v2);// distance is 1.4142...print(distance);function draw() {  background(240);  let v0 = createVector(0, 0);  let v1 = createVector(70, 50);  drawArrow(v0, v1, 'red');  let v2 = createVector(mouseX, mouseY);  drawArrow(v0, v2, 'blue');  noStroke();  text('distance between vectors: ' + v2.dist(v1).toFixed(2), 5, 50, 95, 50);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~div">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>div<span class="signature">(n)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line415">line 415</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Divide the vector by a scalar. The static version of this method creates anew PVector while the non static version acts on the vector directly.See the examples for more context.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the number to divide the vector by</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = createVector(6, 4, 2);v.div(2); //v's components are set to [3, 2, 1]// Static methodlet v1 = createVector(6, 4, 2);let v2 = PVector.div(v1, 2);// v2 has components [3, 2, 1]print(v2);function draw() {  background(240);  let v0 = createVector(0, 100);  let v1 = createVector(50, -50);  drawArrow(v0, v1, 'red');  let num = map(mouseX, 0, width, 10, 0.5, true);  let v2 = PVector.div(v1, num);  drawArrow(v0, v2, 'blue');  noStroke();  text('divided by ' + num.toFixed(2), 10, 90);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~dot">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>dot<span class="signature">(value)</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line590">line 590</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">value component of the vector or a PVector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~dot">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>dot<span class="signature">(x, y<span class="signature-attributes">opt</span>, z<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line567">line 567</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculates the dot product of two vectors. The version of the methodthat computes the dot product of two independent vectors is a staticmethod. See the examples for more context.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">x component of the vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">y component of the vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>z</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">z component of the vector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- the dot product
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v1 = createVector(1, 2, 3);let v2 = createVector(2, 3, 4);print(v1.dot(v2)); // Prints "20"//Static methodlet v1 = createVector(1, 2, 3);let v2 = createVector(3, 2, 1);print(PVector.dot(v1, v2)); // Prints "10"</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~equals">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>equals<span class="signature">(value)</span><span class="type-signature"> &rarr; {Boolean}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1126">line 1126</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PVector</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the vector to compare</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Boolean</span>
+
+
+
+
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~equals">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>equals<span class="signature">(x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, z<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Boolean}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1104">line 1104</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Equality check against a PVector
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the x component of the vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the y component of the vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>z</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the z component of the vector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Boolean</span>
+
+
+
+
+
+- whether the vectors are equals
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>* let v1 = createVector(5, 10, 20);let v2 = createVector(5, 10, 20);let v3 = createVector(13, 10, 19);print(v1.equals(v2.x, v2.y, v2.z)); // trueprint(v1.equals(v3.x, v3.y, v3.z)); // falselet v1 = createVector(10.0, 20.0, 30.0);let v2 = createVector(10.0, 20.0, 30.0);let v3 = createVector(0.0, 0.0, 0.0);print(v1.equals(v2)); // trueprint(v1.equals(v3)); // false</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~heading">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>heading<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line837">line 837</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculate the angle of rotation for this vector (only 2D vectors)
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- the angle of rotation
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>* function setup() {  let v1 = createVector(30, 50);  print(v1.heading()); // 1.0303768265243125  v1 = createVector(40, 50);  print(v1.heading()); // 0.8960553845713439  v1 = createVector(30, 70);  print(v1.heading()); // 1.1659045405098132}function draw() {  background(240);  let v0 = createVector(50, 50);  let v1 = createVector(mouseX - 50, mouseY - 50);  drawArrow(v0, v1, 'black');  let myHeading = v1.heading();  noStroke();  text(    'vector heading: ' +      myHeading.toFixed(2) +      ' radians or ' +      degrees(myHeading).toFixed(2) +      ' degrees',    10,    50,    90,    50  );}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~lerp">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>lerp<span class="signature">(x, y, z, amt)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line1009">line 1009</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Linear interpolate the vector to another vector
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the x component</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the y component</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>z</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the z component</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>amt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the amount of interpolation; some value between 0.0                        (old vector) and 1.0 (new vector). 0.9 is very near                        the new vector. 0.5 is halfway in between.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = createVector(1, 1, 0);v.lerp(3, 3, 0, 0.5); // v now has components [2,2,0]let v1 = createVector(0, 0, 0);let v2 = createVector(100, 100, 0);let v3 = PVector.lerp(v1, v2, 0.5);// v3 has components [50,50,0]print(v3);let step = 0.01;let amount = 0;function draw() {  background(240);  let v0 = createVector(0, 0);  let v1 = createVector(mouseX, mouseY);  drawArrow(v0, v1, 'red');  let v2 = createVector(90, 90);  drawArrow(v0, v2, 'blue');  if (amount > 1 || amount &lt; 0) {    step *= -1;  }  amount += step;  let v3 = PVector.lerp(v1, v2, amount);  drawArrow(v0, v3, 'purple');}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~limit">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>limit<span class="signature">(max)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line739">line 739</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Limit the magnitude of this vector to the value used for the <b>max</b>parameter.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>max</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the maximum magnitude for the vector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = createVector(10, 20, 2);// v has components [10.0, 20.0, 2.0]v.limit(5);// v's components are set to// [2.2271771, 4.4543543, 0.4454354]* * function draw() {  background(240);  let v0 = createVector(50, 50);  let v1 = createVector(mouseX - 50, mouseY - 50);  drawArrow(v0, v1, 'red');  drawArrow(v0, v1.limit(35), 'blue');  noFill();  ellipse(50, 50, 35 * 2);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~mag">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>mag<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line481">line 481</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculates the magnitude (length) of the vector and returns the result asa float (this is simply the equation sqrt(x*x + y*y + z*z).)
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">Number</span>
+
+
+
+
+
+- magnitude of the vector
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>function draw() {  background(240);  let v0 = createVector(0, 0);  let v1 = createVector(mouseX, mouseY);  drawArrow(v0, v1, 'black');  noStroke();  text('vector length: ' + v1.mag().toFixed(2), 10, 70, 90, 30);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}* * let v = createVector(20.0, 30.0, 40.0);let m = v.mag();print(m); // Prints "53.85164807134504"</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~magSq">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>magSq<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line521">line 521</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Calculates the squared magnitude of the vector and returns the resultas a float (this is simply the equation <em>(x*x + y*y + z*z)</em>.)Faster if the real length is not required in thecase of comparing vectors, etc.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">number</span>
+
+
+
+
+
+- squared magnitude of the vector
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>// Static methodlet v1 = createVector(6, 4, 2);print(v1.magSq()); // Prints "56"function draw() {  background(240);  let v0 = createVector(0, 0);  let v1 = createVector(mouseX, mouseY);  drawArrow(v0, v1, 'black');  noStroke();  text('vector length squared: ' + v1.magSq().toFixed(2), 10, 45, 90, 55);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~mult">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>mult<span class="signature">(n)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line352">line 352</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Multiply the vector by a scalar. The static version of this methodcreates a new PVector while the non static version acts on the vectordirectly. See the examples for more context.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the number to multiply with the vector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = createVector(1, 2, 3);v.mult(2);// v's components are set to [2, 4, 6]// Static methodlet v1 = createVector(1, 2, 3);let v2 = PVector.mult(v1, 2);// v2 has components [2, 4, 6]print(v2);function draw() {  background(240);  let v0 = createVector(50, 50);  let v1 = createVector(25, -25);  drawArrow(v0, v1, 'red');  let num = map(mouseX, 0, width, -2, 2, true);  let v2 = PVector.mult(v1, num);  drawArrow(v0, v2, 'blue');  noStroke();  text('multiplied by ' + num.toFixed(2), 5, 90);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~normalize">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>normalize<span class="signature">()</span><span class="type-signature"> &rarr; {PVector}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line691">line 691</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Normalize the vector to length 1 (make it a unit vector).
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">PVector</span>
+
+
+
+
+
+- normalized PVector
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = createVector(10, 20, 2);// v has components [10.0, 20.0, 2.0]v.normalize();// v's components are set to// [0.4454354, 0.8908708, 0.089087084]* * function draw() {  background(240);  let v0 = createVector(50, 50);  let v1 = createVector(mouseX - 50, mouseY - 50);  drawArrow(v0, v1, 'red');  v1.normalize();  drawArrow(v0, v1.mult(35), 'blue');  noFill();  ellipse(50, 50, 35 * 2);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~rotate">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>rotate<span class="signature">(angle)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line897">line 897</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Rotate the vector by an angle (only 2D vectors), magnitude remains thesame
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>angle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the angle of rotation</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = createVector(10.0, 20.0);// v has components [10.0, 20.0, 0.0]v.rotate(HALF_PI);// v's components are set to [-20.0, 9.999999, 0.0]let angle = 0;function draw() {  background(240);  let v0 = createVector(50, 50);  let v1 = createVector(50, 0);  drawArrow(v0, v1.rotate(angle), 'black');  angle += 0.01;}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~set">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>set<span class="signature">(x<span class="signature-attributes">opt</span>, y<span class="signature-attributes">opt</span>, z<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line122">line 122</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Sets the x, y, and z component of the vector using two or three separatevariables, the data from a PVector, or the values from a float array.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the x component of the vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the y component of the vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>z</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the z component of the vector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>function setup() {  let v = createVector(1, 2, 3);  v.set(4, 5, 6); // Sets vector to [4, 5, 6]  let v1 = createVector(0, 0, 0);  let arr = [1, 2, 3];  v1.set(arr); // Sets vector to [1, 2, 3]}let v0, v1;function setup() {  createCanvas(100, 100);  v0 = createVector(0, 0);  v1 = createVector(50, 50);}function draw() {  background(240);  drawArrow(v0, v1, 'black');  v1.set(v1.x + random(-1, 1), v1.y + random(-1, 1));  noStroke();  text('x: ' + round(v1.x) + ' y: ' + round(v1.y), 20, 90);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~setMag">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>setMag<span class="signature">(len)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line789">line 789</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Set the magnitude of this vector to the value used for the <b>len</b>parameter.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>len</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the new length for this vector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = createVector(10, 20, 2);// v has components [10.0, 20.0, 2.0]v.setMag(10);// v's components are set to [6.0, 8.0, 0.0]function draw() {  background(240);  let v0 = createVector(0, 0);  let v1 = createVector(50, 50);  drawArrow(v0, v1, 'red');  let length = map(mouseX, 0, width, 0, 141, true);  v1.setMag(length);  drawArrow(v0, v1, 'blue');  noStroke();  text('magnitude set to: ' + length.toFixed(2), 10, 70, 90, 30);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~sub">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>sub<span class="signature">(x, y<span class="signature-attributes">opt</span>, z<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line279">line 279</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Subtracts x, y, and z components from a vector, subtracts one vector fromanother, or subtracts two independent vectors. The version of the methodthat subtracts two vectors is a static method and returns a PVector, theother acts directly on the vector. See the examples for more context.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-params">
+        <h5>Parameters:</h5>
+        
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the x component of the vector to subtract</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the y component of the vector to subtract</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>z</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the z component of the vector to subtract</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>let v = createVector(4, 5, 6);v.sub(1, 1, 1);// v's components are set to [3, 4, 5]// Static methodlet v1 = createVector(2, 3, 4);let v2 = createVector(1, 2, 3);let v3 = PVector.sub(v1, v2);// v3 has components [1, 1, 1]print(v3);// red vector - blue vector = purple vectorfunction draw() {  background(240);  let v0 = createVector(0, 0);  let v1 = createVector(70, 50);  drawArrow(v0, v1, 'red');  let v2 = createVector(mouseX, mouseY);  drawArrow(v0, v2, 'blue');  let v3 = PVector.sub(v1, v2);  drawArrow(v2, v3, 'purple');}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            
+                
+
+<dt>
+    
+        <h4 class="name" id="~toString">
+            
+                <span class="type-signature"><span class="icon green">inner</span> </span>toString<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span>
+                
+            
+            <div class="container-source members">
+                <code><a href="jsboot_p5vect.js.html">jsboot/p5vect.js</a></code>,
+                <code><a href="jsboot_p5vect.js.html#line80">line 80</a></code>
+            </div>
+            
+        </h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Returns a string representation of a vector v by calling String(v)or v.toString(). This method is useful for logging vectors in theconsole.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <div class="container-returns">
+        <h5>Returns:</h5>
+        
+                
+
+
+
+<span class="param-type">String</span>
+
+
+
+
+
+
+
+
+            
+    </div>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>function setup() {  let v = createVector(20, 30);  print(String(v)); // prints "PVector Object : [20, 30, 0]"}function draw() {  background(240);  let v0 = createVector(0, 0);  let v1 = createVector(mouseX, mouseY);  drawArrow(v0, v1, 'black');  noStroke();  text(v1.toString(), 10, 25, 90, 75);}// draw an arrow for a vector at a given base positionfunction drawArrow(base, vec, myColor) {  push();  stroke(myColor);  strokeWeight(3);  fill(myColor);  translate(base.x, base.y);  line(0, 0, vec.x, vec.y);  rotate(vec.heading());  let arrowSize = 7;  translate(vec.mag() - arrowSize, 0);  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);  pop();}</code></pre>
+
+    
+
+</dd>
+
+            </dl>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = 'p5compat.module:PVector_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

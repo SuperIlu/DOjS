@@ -1340,34 +1340,28 @@ static void f_SavePngImage(js_State *J) {
     }
 }
 
-#ifdef DEBUG_ENABLED
 /**
- * @brief test function.
+ * @brief get the color of an on-screen pixel.
+ * GetPixel(x, y):Color
  *
  * @param J the JS context.
  */
-static void f_Test(js_State *J) {
-    /*
-    if (!js_isarray(J, 1)) {
-      js_error(J, "Array expected");
-    } else {
-      int len = js_getlength(J, 1);
-      DEBUGF("Array length = %d\n", len);
-      for (int i = 0; i < len; i++) {
-        js_getindex(J, 1, i);
-        DEBUGF("  %d := %d\n", i, js_toint16(J, -1));
-        js_pop(J, 1);
-      }
+static void f_getPixel(js_State *J) {
+    GrColor *color = malloc(sizeof(GrColor));
+    if (!color) {
+        js_error(J, "Can't alloc color");
+        return;
     }
-    */
-    poly_array_t *array = f_convertArray(J, 1);
-    if (array) {
-        DEBUGF("Success, len=%d\n", array->len);
-    } else {
-        DEBUG("Ups!\n");
-    }
+
+    int x = js_toint16(J, 1);
+    int y = js_toint16(J, 2);
+
+    *color = GrPixel(x, y);
+
+    js_getglobal(J, TAG_COLOR);
+    js_getproperty(J, -1, "prototype");
+    js_newuserdata(J, TAG_COLOR, color, Color_Finalize);
 }
-#endif
 
 /***********************
 ** exported functions **
@@ -1459,7 +1453,5 @@ void init_funcs(js_State *J) {
     FUNCDEF(J, f_SaveBmpImage, "SaveBmpImage", 1);
     FUNCDEF(J, f_SavePngImage, "SavePngImage", 1);
 
-#ifdef DEBUG_ENABLED
-    FUNCDEF(J, f_Test, "TestFunc", 1);
-#endif
+    FUNCDEF(J, f_getPixel, "GetPixel", 2);
 }

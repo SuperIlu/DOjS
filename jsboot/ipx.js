@@ -27,8 +27,11 @@ SOFTWARE.
  * @property {*} BROADCAST broadcast address
  */
 IPX = {
+	MAX: 80,
 	DEFAULT_SOCKET: 0x2342,
-	BROADCAST: [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
+	DEBUG_SOCKET: 0x1234,
+	BROADCAST: [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF],
+	HELLO: "_$HELLO="
 };
 
 /** @module ipx */
@@ -94,22 +97,23 @@ function IpxFindNodes(num, nodes) {
 	};
 
 	if (nodes.length < num - 1) {
-		IpxSend("HELLO", IPX.BROADCAST);
+		IpxSend(IPX.HELLO + MsecTime(), IPX.BROADCAST);
 
 		if (IpxCheckPacket()) {
 			var pck = IpxGetPacket();
-			if (pck.data === "HELLO") {
+			if (pck.data.lastIndexOf(IPX.HELLO, 0) === 0) {
 				if (searchAddress(nodes, pck.source)) {
-					Debug("Node " + JSON.stringify(pck.source) + " already known.");
+					_Debug("Node " + JSON.stringify(pck.source) + " already known.");
 				} else {
 					nodes.push(pck.source);
-					Debug("Node found " + JSON.stringify(pck.source));
+					_Debug("Node found " + JSON.stringify(pck.source));
 				}
 			}
 		}
 	} else {
 		return true;
 	}
+	return false;
 }
 
 /**
@@ -121,5 +125,45 @@ function IpxFindNodes(num, nodes) {
 function IpxAllNodes(data, nodes) {
 	for (var i = 0; i < nodes.length; i++) {
 		IpxSend(data, nodes[i]);
+	}
+}
+
+/**
+ * @property {string} _ipxLogData remaining data to send to log viewer.
+ */
+_ipxLogData = "";
+
+/**
+ * @property {boolean} _ipxLogInit indicates if the IPX socket was already opened.
+ */
+_ipxLogInit = false;
+
+/**
+ * @property {IpxAddress[]} _ipxDebugNodes node list with the logviewer entry.
+ */
+_ipxDebugNodes = [];
+
+/**
+ * Send logmessages to logviewer using IPX networking.
+ * 
+ * @param {string} str logmessage to send.
+ */
+function IpxDebug(str) {
+	_ipxLogData += str;
+
+	if (!_ipxLogInit) {
+		// init
+		IpxSocketOpen(IPX.DEBUG_SOCKET);
+		_ipxLogInit = true;
+	}
+	if (_ipxLogInit && _ipxDebugNodes.length < 1) {
+		var success = IpxFindNodes(2, _ipxDebugNodes);
+	} else {
+		while (_ipxLogData.length > 0) {
+			var part = _ipxLogData.substring(0, IPX.MAX - 1);
+			_ipxLogData = _ipxLogData.slice(IPX.MAX);
+
+			IpxSend(part, _ipxDebugNodes[0]);
+		}
 	}
 }

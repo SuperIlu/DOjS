@@ -1,0 +1,572 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Source: jsboot/func.js | Source: jsboot/func.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
+</head>
+<body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="">
+        
+            <img src="img/toast-ui.png" width="100%" height="100%">
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Source: jsboot/func.js</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Modules</h3><ul><li><a href="module-fm.html">fm</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:fm_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-fm.html#~NoteOff">NoteOff</a></li><li><a href="module-fm.html#~NoteOn">NoteOn</a></li><li><a href="module-fm.html#~SetInstrument">SetInstrument</a></li></ul></div></li><li><a href="module-gfx.html">gfx</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:gfx_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-gfx.html#~Box">Box</a></li><li><a href="module-gfx.html#~Circle">Circle</a></li><li><a href="module-gfx.html#~CircleArc">CircleArc</a></li><li><a href="module-gfx.html#~ClearScreen">ClearScreen</a></li><li><a href="module-gfx.html#~CustomBox">CustomBox</a></li><li><a href="module-gfx.html#~CustomCircle">CustomCircle</a></li><li><a href="module-gfx.html#~CustomCircleArc">CustomCircleArc</a></li><li><a href="module-gfx.html#~CustomEllipse">CustomEllipse</a></li><li><a href="module-gfx.html#~CustomEllipseArc">CustomEllipseArc</a></li><li><a href="module-gfx.html#~CustomLine">CustomLine</a></li><li><a href="module-gfx.html#~CustomPolygon">CustomPolygon</a></li><li><a href="module-gfx.html#~CustomPolyLine">CustomPolyLine</a></li><li><a href="module-gfx.html#~Ellipse">Ellipse</a></li><li><a href="module-gfx.html#~EllipseArc">EllipseArc</a></li><li><a href="module-gfx.html#~FilledBox">FilledBox</a></li><li><a href="module-gfx.html#~FilledCircle">FilledCircle</a></li><li><a href="module-gfx.html#~FilledCircleArc">FilledCircleArc</a></li><li><a href="module-gfx.html#~FilledConvexPolygon">FilledConvexPolygon</a></li><li><a href="module-gfx.html#~FilledEllipse">FilledEllipse</a></li><li><a href="module-gfx.html#~FilledEllipseArc">FilledEllipseArc</a></li><li><a href="module-gfx.html#~FilledPolygon">FilledPolygon</a></li><li><a href="module-gfx.html#~FloodFill">FloodFill</a></li><li><a href="module-gfx.html#~FloodSpill">FloodSpill</a></li><li><a href="module-gfx.html#~FloodSpill2">FloodSpill2</a></li><li><a href="module-gfx.html#~FramedBox">FramedBox</a></li><li><a href="module-gfx.html#~GetPixel">GetPixel</a></li><li><a href="module-gfx.html#~Line">Line</a></li><li><a href="module-gfx.html#~MaxX">MaxX</a></li><li><a href="module-gfx.html#~MaxY">MaxY</a></li><li><a href="module-gfx.html#~MouseCursorIsDisplayed">MouseCursorIsDisplayed</a></li><li><a href="module-gfx.html#~MouseGetLimits">MouseGetLimits</a></li><li><a href="module-gfx.html#~MouseSetAccel">MouseSetAccel</a></li><li><a href="module-gfx.html#~MouseSetColors">MouseSetColors</a></li><li><a href="module-gfx.html#~MouseSetCursorMode">MouseSetCursorMode</a></li><li><a href="module-gfx.html#~MouseSetLimits">MouseSetLimits</a></li><li><a href="module-gfx.html#~MouseSetSpeed">MouseSetSpeed</a></li><li><a href="module-gfx.html#~MouseShowCursor">MouseShowCursor</a></li><li><a href="module-gfx.html#~MouseWarp">MouseWarp</a></li><li><a href="module-gfx.html#~NumColors">NumColors</a></li><li><a href="module-gfx.html#~NumFreeColors">NumFreeColors</a></li><li><a href="module-gfx.html#~Plot">Plot</a></li><li><a href="module-gfx.html#~Polygon">Polygon</a></li><li><a href="module-gfx.html#~PolyLine">PolyLine</a></li><li><a href="module-gfx.html#~SaveBmpImage">SaveBmpImage</a></li><li><a href="module-gfx.html#~SavePngImage">SavePngImage</a></li><li><a href="module-gfx.html#~SizeX">SizeX</a></li><li><a href="module-gfx.html#~SizeY">SizeY</a></li><li><a href="module-gfx.html#~TextXY">TextXY</a></li></ul></div></li><li><a href="module-ipx.html">ipx</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:ipx_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="module-ipx.html#~_ipxDebugNodes">_ipxDebugNodes</a></li><li><a href="module-ipx.html#~_ipxLogData">_ipxLogData</a></li><li><a href="module-ipx.html#~_ipxLogInit">_ipxLogInit</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="module-ipx.html#~IpxAddressToString">IpxAddressToString</a></li><li><a href="module-ipx.html#~IpxAllNodes">IpxAllNodes</a></li><li><a href="module-ipx.html#~IpxCheckPacket">IpxCheckPacket</a></li><li><a href="module-ipx.html#~IpxDebug">IpxDebug</a></li><li><a href="module-ipx.html#~IpxFindNodes">IpxFindNodes</a></li><li><a href="module-ipx.html#~IpxGetLocalAddress">IpxGetLocalAddress</a></li><li><a href="module-ipx.html#~IpxGetPacket">IpxGetPacket</a></li><li><a href="module-ipx.html#~IpxSend">IpxSend</a></li><li><a href="module-ipx.html#~IpxSocketClose">IpxSocketClose</a></li><li><a href="module-ipx.html#~IpxSocketOpen">IpxSocketOpen</a></li><li><a href="module-ipx.html#~IpxStringToAddress">IpxStringToAddress</a></li></ul></div></li><li><a href="module-midi.html">midi</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:midi_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-midi.html#~MidiIsPlaying">MidiIsPlaying</a></li><li><a href="module-midi.html#~MidiStop">MidiStop</a></li></ul></div></li><li><a href="module-module.html">module</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:module_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-module.html#~ModuleIsPlaying">ModuleIsPlaying</a></li><li><a href="module-module.html#~ModuleStop">ModuleStop</a></li></ul></div></li><li><a href="module-other.html">other</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:other_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-other.html#~_Debug">_Debug</a></li><li><a href="module-other.html#~CharCode">CharCode</a></li><li><a href="module-other.html#~Debug">Debug</a></li><li><a href="module-other.html#~Gc">Gc</a></li><li><a href="module-other.html#~GetFramerate">GetFramerate</a></li><li><a href="module-other.html#~Include">Include</a></li><li><a href="module-other.html#~List">List</a></li><li><a href="module-other.html#~MemoryInfo">MemoryInfo</a></li><li><a href="module-other.html#~MsecTime">MsecTime</a></li><li><a href="module-other.html#~Print">Print</a></li><li><a href="module-other.html#~Println">Println</a></li><li><a href="module-other.html#~Read">Read</a></li><li><a href="module-other.html#~Require">Require</a></li><li><a href="module-other.html#~SetExitKey">SetExitKey</a></li><li><a href="module-other.html#~SetFramerate">SetFramerate</a></li><li><a href="module-other.html#~Sleep">Sleep</a></li><li><a href="module-other.html#~StartupInfo">StartupInfo</a></li><li><a href="module-other.html#~Stat">Stat</a></li><li><a href="module-other.html#~Stop">Stop</a></li></ul></div></li><li><a href="module-p5compat.html">p5compat</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:p5compat_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="module-p5compat.html#.displayHeight">displayHeight</a></li><li><a href="module-p5compat.html#.displayWidth">displayWidth</a></li><li><a href="module-p5compat.html#.focused">focused</a></li><li><a href="module-p5compat.html#.frameCount">frameCount</a></li><li><a href="module-p5compat.html#.height">height</a></li><li><a href="module-p5compat.html#.key">key</a></li><li><a href="module-p5compat.html#.keyCode">keyCode</a></li><li><a href="module-p5compat.html#.keyIsPressed">keyIsPressed</a></li><li><a href="module-p5compat.html#.mouseButton">mouseButton</a></li><li><a href="module-p5compat.html#.mouseIsPressed">mouseIsPressed</a></li><li><a href="module-p5compat.html#.mouseX">mouseX</a></li><li><a href="module-p5compat.html#.mouseY">mouseY</a></li><li><a href="module-p5compat.html#.pmouseX">pmouseX</a></li><li><a href="module-p5compat.html#.pmouseY">pmouseY</a></li><li><a href="module-p5compat.html#.pwinMouseX">pwinMouseX</a></li><li><a href="module-p5compat.html#.pwinMouseY">pwinMouseY</a></li><li><a href="module-p5compat.html#.width">width</a></li><li><a href="module-p5compat.html#.windowHeight">windowHeight</a></li><li><a href="module-p5compat.html#.windowWidth">windowWidth</a></li><li><a href="module-p5compat.html#.winMouseX">winMouseX</a></li><li><a href="module-p5compat.html#.winMouseY">winMouseY</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="module-p5compat.html#._hsbaToRGBA">_hsbaToRGBA</a></li><li><a href="module-p5compat.html#._hslaToRGBA">_hslaToRGBA</a></li><li><a href="module-p5compat.html#.createCanvas">createCanvas</a></li><li><a href="module-p5compat.html#.exit">exit</a></li><li><a href="module-p5compat.html#.imageMode">imageMode</a></li><li><a href="module-p5compat.html#.noSmooth">noSmooth</a></li><li><a href="module-p5compat.html#.noTint">noTint</a></li><li><a href="module-p5compat.html#.settings">settings</a></li><li><a href="module-p5compat.html#.size">size</a></li><li><a href="module-p5compat.html#.smooth">smooth</a></li><li><a href="module-p5compat.html#.tint">tint</a></li><li><a href="module-p5compat.html#~abs">abs</a></li><li><a href="module-p5compat.html#~acos">acos</a></li><li><a href="module-p5compat.html#~alpha">alpha</a></li><li><a href="module-p5compat.html#~angleMode">angleMode</a></li><li><a href="module-p5compat.html#~append">append</a></li><li><a href="module-p5compat.html#~arc">arc</a></li><li><a href="module-p5compat.html#~arrayCopy">arrayCopy</a></li><li><a href="module-p5compat.html#~asin">asin</a></li><li><a href="module-p5compat.html#~atan">atan</a></li><li><a href="module-p5compat.html#~atan2">atan2</a></li><li><a href="module-p5compat.html#~background">background</a></li><li><a href="module-p5compat.html#~background">background</a></li><li><a href="module-p5compat.html#~beginShape">beginShape</a></li><li><a href="module-p5compat.html#~blue">blue</a></li><li><a href="module-p5compat.html#~boolean">boolean</a></li><li><a href="module-p5compat.html#~byte">byte</a></li><li><a href="module-p5compat.html#~ceil">ceil</a></li><li><a href="module-p5compat.html#~char">char</a></li><li><a href="module-p5compat.html#~circle">circle</a></li><li><a href="module-p5compat.html#~clear">clear</a></li><li><a href="module-p5compat.html#~color">color</a></li><li><a href="module-p5compat.html#~colorMode">colorMode</a></li><li><a href="module-p5compat.html#~concat">concat</a></li><li><a href="module-p5compat.html#~constrain">constrain</a></li><li><a href="module-p5compat.html#~cos">cos</a></li><li><a href="module-p5compat.html#~createNumberDict">createNumberDict</a></li><li><a href="module-p5compat.html#~createStringDict">createStringDict</a></li><li><a href="module-p5compat.html#~createVector">createVector</a></li><li><a href="module-p5compat.html#~day">day</a></li><li><a href="module-p5compat.html#~degrees">degrees</a></li><li><a href="module-p5compat.html#~displayDensity">displayDensity</a></li><li><a href="module-p5compat.html#~dist">dist</a></li><li><a href="module-p5compat.html#~ellipse">ellipse</a></li><li><a href="module-p5compat.html#~ellipseMode">ellipseMode</a></li><li><a href="module-p5compat.html#~endShape">endShape</a></li><li><a href="module-p5compat.html#~exp">exp</a></li><li><a href="module-p5compat.html#~fill">fill</a></li><li><a href="module-p5compat.html#~float">float</a></li><li><a href="module-p5compat.html#~floor">floor</a></li><li><a href="module-p5compat.html#~frameRate">frameRate</a></li><li><a href="module-p5compat.html#~fullscreen">fullscreen</a></li><li><a href="module-p5compat.html#~getFrameRate">getFrameRate</a></li><li><a href="module-p5compat.html#~getURL">getURL</a></li><li><a href="module-p5compat.html#~getURLParams">getURLParams</a></li><li><a href="module-p5compat.html#~getURLPath">getURLPath</a></li><li><a href="module-p5compat.html#~green">green</a></li><li><a href="module-p5compat.html#~hex">hex</a></li><li><a href="module-p5compat.html#~hour">hour</a></li><li><a href="module-p5compat.html#~image">image</a></li><li><a href="module-p5compat.html#~imageMode">imageMode</a></li><li><a href="module-p5compat.html#~int">int</a></li><li><a href="module-p5compat.html#~join">join</a></li><li><a href="module-p5compat.html#~keyPressed">keyPressed</a></li><li><a href="module-p5compat.html#~keyReleased">keyReleased</a></li><li><a href="module-p5compat.html#~keyTyped">keyTyped</a></li><li><a href="module-p5compat.html#~lerp">lerp</a></li><li><a href="module-p5compat.html#~line">line</a></li><li><a href="module-p5compat.html#~loadBytes">loadBytes</a></li><li><a href="module-p5compat.html#~loadFont">loadFont</a></li><li><a href="module-p5compat.html#~loadImage">loadImage</a></li><li><a href="module-p5compat.html#~loadStrings">loadStrings</a></li><li><a href="module-p5compat.html#~log">log</a></li><li><a href="module-p5compat.html#~loop">loop</a></li><li><a href="module-p5compat.html#~mag">mag</a></li><li><a href="module-p5compat.html#~map">map</a></li><li><a href="module-p5compat.html#~match">match</a></li><li><a href="module-p5compat.html#~matchAll">matchAll</a></li><li><a href="module-p5compat.html#~max">max</a></li><li><a href="module-p5compat.html#~millis">millis</a></li><li><a href="module-p5compat.html#~min">min</a></li><li><a href="module-p5compat.html#~minute">minute</a></li><li><a href="module-p5compat.html#~month">month</a></li><li><a href="module-p5compat.html#~mouseClicked">mouseClicked</a></li><li><a href="module-p5compat.html#~mouseMoved">mouseMoved</a></li><li><a href="module-p5compat.html#~mousePressed">mousePressed</a></li><li><a href="module-p5compat.html#~mouseReleased">mouseReleased</a></li><li><a href="module-p5compat.html#~nf">nf</a></li><li><a href="module-p5compat.html#~nfc">nfc</a></li><li><a href="module-p5compat.html#~nfp">nfp</a></li><li><a href="module-p5compat.html#~nfs">nfs</a></li><li><a href="module-p5compat.html#~noCursor">noCursor</a></li><li><a href="module-p5compat.html#~noFill">noFill</a></li><li><a href="module-p5compat.html#~noise">noise</a></li><li><a href="module-p5compat.html#~noiseDetail">noiseDetail</a></li><li><a href="module-p5compat.html#~noLoop">noLoop</a></li><li><a href="module-p5compat.html#~norm">norm</a></li><li><a href="module-p5compat.html#~noStroke">noStroke</a></li><li><a href="module-p5compat.html#~pixelDensity">pixelDensity</a></li><li><a href="module-p5compat.html#~point">point</a></li><li><a href="module-p5compat.html#~pow">pow</a></li><li><a href="module-p5compat.html#~print">print</a></li><li><a href="module-p5compat.html#~print">print</a></li><li><a href="module-p5compat.html#~quad">quad</a></li><li><a href="module-p5compat.html#~radians">radians</a></li><li><a href="module-p5compat.html#~random">random</a></li><li><a href="module-p5compat.html#~randomGaussian">randomGaussian</a></li><li><a href="module-p5compat.html#~randomSeed">randomSeed</a></li><li><a href="module-p5compat.html#~rect">rect</a></li><li><a href="module-p5compat.html#~rectMode">rectMode</a></li><li><a href="module-p5compat.html#~red">red</a></li><li><a href="module-p5compat.html#~redraw">redraw</a></li><li><a href="module-p5compat.html#~reverse">reverse</a></li><li><a href="module-p5compat.html#~round">round</a></li><li><a href="module-p5compat.html#~saveStrings">saveStrings</a></li><li><a href="module-p5compat.html#~second">second</a></li><li><a href="module-p5compat.html#~shorten">shorten</a></li><li><a href="module-p5compat.html#~shuffle">shuffle</a></li><li><a href="module-p5compat.html#~sin">sin</a></li><li><a href="module-p5compat.html#~sort">sort</a></li><li><a href="module-p5compat.html#~splice">splice</a></li><li><a href="module-p5compat.html#~split">split</a></li><li><a href="module-p5compat.html#~splitTokens">splitTokens</a></li><li><a href="module-p5compat.html#~sq">sq</a></li><li><a href="module-p5compat.html#~sqrt">sqrt</a></li><li><a href="module-p5compat.html#~square">square</a></li><li><a href="module-p5compat.html#~str">str</a></li><li><a href="module-p5compat.html#~stroke">stroke</a></li><li><a href="module-p5compat.html#~strokeWeight">strokeWeight</a></li><li><a href="module-p5compat.html#~subset">subset</a></li><li><a href="module-p5compat.html#~tan">tan</a></li><li><a href="module-p5compat.html#~text">text</a></li><li><a href="module-p5compat.html#~textAlign">textAlign</a></li><li><a href="module-p5compat.html#~textFont">textFont</a></li><li><a href="module-p5compat.html#~textSize">textSize</a></li><li><a href="module-p5compat.html#~textWidth">textWidth</a></li><li><a href="module-p5compat.html#~triangle">triangle</a></li><li><a href="module-p5compat.html#~trim">trim</a></li><li><a href="module-p5compat.html#~unchar">unchar</a></li><li><a href="module-p5compat.html#~unhex">unhex</a></li><li><a href="module-p5compat.html#~vertex">vertex</a></li><li><a href="module-p5compat.html#~year">year</a></li></ul></div></li><li><a href="p5compat.module_NumberDict.html">NumberDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:NumberDict_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="p5compat.module_NumberDict.html#~add">add</a></li><li><a href="p5compat.module_NumberDict.html#~div">div</a></li><li><a href="p5compat.module_NumberDict.html#~maxKey">maxKey</a></li><li><a href="p5compat.module_NumberDict.html#~maxValue">maxValue</a></li><li><a href="p5compat.module_NumberDict.html#~minKey">minKey</a></li><li><a href="p5compat.module_NumberDict.html#~minValue">minValue</a></li><li><a href="p5compat.module_NumberDict.html#~mult">mult</a></li><li><a href="p5compat.module_NumberDict.html#~sub">sub</a></li></ul></div></li><li><a href="p5compat.module_PVector.html">PVector</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:PVector_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="p5compat.module_PVector.html#.add">add</a></li><li><a href="p5compat.module_PVector.html#.cross">cross</a></li><li><a href="p5compat.module_PVector.html#.dist">dist</a></li><li><a href="p5compat.module_PVector.html#.div">div</a></li><li><a href="p5compat.module_PVector.html#.dot">dot</a></li><li><a href="p5compat.module_PVector.html#.fromAngle">fromAngle</a></li><li><a href="p5compat.module_PVector.html#.fromAngles">fromAngles</a></li><li><a href="p5compat.module_PVector.html#.lerp">lerp</a></li><li><a href="p5compat.module_PVector.html#.mag">mag</a></li><li><a href="p5compat.module_PVector.html#.mult">mult</a></li><li><a href="p5compat.module_PVector.html#.random2D">random2D</a></li><li><a href="p5compat.module_PVector.html#.random3D">random3D</a></li><li><a href="p5compat.module_PVector.html#.sub">sub</a></li><li><a href="p5compat.module_PVector.html#~add">add</a></li><li><a href="p5compat.module_PVector.html#~angleBetween">angleBetween</a></li><li><a href="p5compat.module_PVector.html#~array">array</a></li><li><a href="p5compat.module_PVector.html#~copy">copy</a></li><li><a href="p5compat.module_PVector.html#~cross">cross</a></li><li><a href="p5compat.module_PVector.html#~dist">dist</a></li><li><a href="p5compat.module_PVector.html#~div">div</a></li><li><a href="p5compat.module_PVector.html#~dot">dot</a></li><li><a href="p5compat.module_PVector.html#~dot">dot</a></li><li><a href="p5compat.module_PVector.html#~equals">equals</a></li><li><a href="p5compat.module_PVector.html#~equals">equals</a></li><li><a href="p5compat.module_PVector.html#~heading">heading</a></li><li><a href="p5compat.module_PVector.html#~lerp">lerp</a></li><li><a href="p5compat.module_PVector.html#~limit">limit</a></li><li><a href="p5compat.module_PVector.html#~mag">mag</a></li><li><a href="p5compat.module_PVector.html#~magSq">magSq</a></li><li><a href="p5compat.module_PVector.html#~mult">mult</a></li><li><a href="p5compat.module_PVector.html#~normalize">normalize</a></li><li><a href="p5compat.module_PVector.html#~rotate">rotate</a></li><li><a href="p5compat.module_PVector.html#~set">set</a></li><li><a href="p5compat.module_PVector.html#~setMag">setMag</a></li><li><a href="p5compat.module_PVector.html#~sub">sub</a></li><li><a href="p5compat.module_PVector.html#~toString">toString</a></li></ul></div></li><li><a href="p5compat.module_StringDict.html">StringDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:StringDict_sub"></div></li><li><a href="p5compat.module_TypedDict.html">TypedDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:TypedDict_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="p5compat.module_TypedDict.html#~clear">clear</a></li><li><a href="p5compat.module_TypedDict.html#~create">create</a></li><li><a href="p5compat.module_TypedDict.html#~get">get</a></li><li><a href="p5compat.module_TypedDict.html#~hasKey">hasKey</a></li><li><a href="p5compat.module_TypedDict.html#~print">print</a></li><li><a href="p5compat.module_TypedDict.html#~remove">remove</a></li><li><a href="p5compat.module_TypedDict.html#~saveJSON">saveJSON</a></li><li><a href="p5compat.module_TypedDict.html#~set">set</a></li><li><a href="p5compat.module_TypedDict.html#~size">size</a></li></ul></div></li></ul></div><div class="lnb-api hidden"><h3>Classes</h3><ul><li><a href="ArcInfo.html">ArcInfo</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="ArcInfo_sub"></div></li><li><a href="Bitmap.html">Bitmap</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Bitmap_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Bitmap.html#.filename">filename</a></li><li><a href="Bitmap.html#.height">height</a></li><li><a href="Bitmap.html#.width">width</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Bitmap.html#Draw">Draw</a></li><li><a href="Bitmap.html#GetPixel">GetPixel</a></li></ul></div></li><li><a href="Color_.html">Color</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Color_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Color_.html#.value">value</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Color_.html#GetBlue">GetBlue</a></li><li><a href="Color_.html#GetGreen">GetGreen</a></li><li><a href="Color_.html#GetRed">GetRed</a></li></ul></div></li><li><a href="Event.html">Event</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Event_sub"></div></li><li><a href="File.html">File</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="File_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="File.html#Close">Close</a></li><li><a href="File.html#ReadByte">ReadByte</a></li><li><a href="File.html#ReadLine">ReadLine</a></li><li><a href="File.html#WriteByte">WriteByte</a></li><li><a href="File.html#WriteLine">WriteLine</a></li><li><a href="File.html#WriteString">WriteString</a></li></ul></div></li><li><a href="FmInstrument.html">FmInstrument</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="FmInstrument_sub"></div></li><li><a href="Font.html">Font</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Font_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Font.html#.filename">filename</a></li><li><a href="Font.html#.maxwidth">maxwidth</a></li><li><a href="Font.html#.minwidth">minwidth</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Font.html#DrawString">DrawString</a></li><li><a href="Font.html#Resize">Resize</a></li><li><a href="Font.html#StringHeight">StringHeight</a></li><li><a href="Font.html#StringWidth">StringWidth</a></li></ul></div></li><li><a href="IpxAddress.html">IpxAddress</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="IpxAddress_sub"></div></li><li><a href="IpxPacket.html">IpxPacket</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="IpxPacket_sub"></div></li><li><a href="MemInfo.html">MemInfo</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="MemInfo_sub"></div></li><li><a href="Midi.html">Midi</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Midi_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="Midi.html#Play">Play</a></li></ul></div></li><li><a href="Module.html">Module</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Module_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Module.html#.comment">comment</a></li><li><a href="Module.html#.filename">filename</a></li><li><a href="Module.html#.modtype">modtype</a></li><li><a href="Module.html#.songname">songname</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Module.html#Play">Play</a></li></ul></div></li><li><a href="MouseLimits.html">MouseLimits</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="MouseLimits_sub"></div></li><li><a href="p5compat.module_NumberDict-NumberDict.html">NumberDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:NumberDict~NumberDict_sub"></div></li><li><a href="p5compat.module_StringDict-StringDict.html">StringDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:StringDict~StringDict_sub"></div></li><li><a href="p5compat.module_TypedDict-TypedDict.html">TypedDict</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.module:TypedDict~TypedDict_sub"></div></li><li><a href="p5compat.PVector.html">PVector</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="p5compat.PVector_sub"></div></li><li><a href="Sample.html">Sample</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="Sample_sub"><div class="member-type">Members</div><ul class="inner"><li><a href="Sample.html#.filename">filename</a></li><li><a href="Sample.html#.length">length</a></li><li><a href="Sample.html#.speed">speed</a></li></ul><div class="member-type">Methods</div><ul class="inner"><li><a href="Sample.html#Play">Play</a></li><li><a href="Sample.html#Stop">Stop</a></li></ul></div></li><li><a href="StatInfo.html">StatInfo</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="StatInfo_sub"></div></li></ul></div><div class="lnb-api hidden"><h3>Namespaces</h3><ul><li><a href="COLOR.html">COLOR</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="COLOR_sub"></div></li><li><a href="EGA.html">EGA</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="EGA_sub"></div></li><li><a href="FILE_.html">FILE</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="FILE_sub"></div></li><li><a href="FMMUSIC.html">FMMUSIC</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="FMMUSIC_sub"></div></li><li><a href="FONT_.html">FONT</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="FONT_sub"></div></li><li><a href="IPX.html">IPX</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="IPX_sub"></div></li><li><a href="module-other-ARC.html">other~ARC</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:other~ARC_sub"></div></li><li><a href="module-other-KEY.html">other~KEY</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:other~KEY_sub"></div></li><li><a href="module-other-MOUSE.html">other~MOUSE</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:other~MOUSE_sub"></div></li></ul></div><div class="lnb-api hidden"><h3>Global</h3><ul><li><a href="global.html#DEBUG">DEBUG</a></li><li><a href="global.html#DOJS_VERSION">DOJS_VERSION</a></li><li><a href="global.html#Input">Input</a></li><li><a href="global.html#Loop">Loop</a></li><li><a href="global.html#MIDI_AVAILABLE">MIDI_AVAILABLE</a></li><li><a href="global.html#MOUSE_AVAILABLE">MOUSE_AVAILABLE</a></li><li><a href="global.html#NO_COLOR">NO_COLOR</a></li><li><a href="global.html#REMOTE_DEBUG">REMOTE_DEBUG</a></li><li><a href="global.html#Setup">Setup</a></li><li><a href="global.html#SOUND_AVAILABLE">SOUND_AVAILABLE</a></li><li><a href="global.html#SYNTH_AVAILABLE">SYNTH_AVAILABLE</a></li></ul></div>
+</nav>
+<div id="resizer"></div>
+
+<div class="main" id="main">
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+MIT License
+
+Copyright (c) 2019 Andre Seidelt &lt;superilu@yahoo.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+
+/**
+ * @property {boolean} DEBUG enable/disable Debug() output.
+ */
+DEBUG = false;
+
+/**
+ * @property {boolean} REMOTE_DEBUG enable/disable Debug() sending via IPX.
+ */
+REMOTE_DEBUG = false;
+
+/** @module other */
+
+/**
+ * print javascript debug output if DEBUG is true.
+ * 
+ * @param {string} str the message to print.
+ */
+function Debug(str) {
+	_Debug(str);
+	if (REMOTE_DEBUG) {
+		IpxDebug(str + "\n");
+	}
+}
+
+/**
+ * Internal debug which does not redirect to IPX if enabled.
+ * 
+ * @param {string} str the message to print.
+ */
+function _Debug(str) {
+	if (DEBUG) {
+		Println("-=> ", str);
+	}
+}
+
+/**
+ * import a module.
+ * @param {string} name module file name.
+ * @returns the imported module.
+ */
+function Require(name) {
+	// look in cache
+	if (name in Require.cache) {
+		Debug("Require(cached) " + name);
+		return Require.cache[name];
+	}
+
+	var names = [name, name + '.JS', 'JSBOOT/' + name, 'JSBOOT/' + name + '.JS'];
+	Debug("Require(names) " + JSON.stringify(names));
+
+	for (var i = 0; i &lt; names.length; i++) {
+		var n = names[i];
+		Debug("Require() Trying '" + n + "'");
+		var content;
+		try {
+			content = Read(n);
+		} catch (e) {
+			Debug("Require() " + n + " Not found");
+			continue;
+		}
+		var exports = {};
+		Require.cache[name] = exports;
+		Function('exports', content)(exports);
+		return exports;
+	};
+
+
+	throw 'Could not load "' + name + '"';
+}
+Require.cache = Object.create(null);
+
+/**
+ * include a module. The exported functions are copied into global scope.
+ * 
+ * @param {string} name module file name.
+ */
+function Include(name) {
+	var e = Require(name);
+	for (var key in e) {
+		Debug("Include(toGlobal) " + key);
+		global[key] = e[key];
+	}
+}
+
+/**
+ * add toString() to Error class.
+ */
+Error.prototype.toString = function () {
+	if (this.stackTrace) { return this.name + ': ' + this.message + this.stackTrace; }
+	return this.name + ': ' + this.message;
+};
+
+/**
+ * print startup info with screen details.
+ */
+function StartupInfo() {
+	var mode = GetScreenMode();
+	var adapter = GetScreenAdapter();
+	var width = SizeX();
+	var height = SizeY();
+	var colors = NumColors();
+
+	_Debug("Screen size=" + width + "x" + height + " with " + colors + " colors, mode=" + mode + ", adapter=" + adapter);
+	_Debug("Memory=" + JSON.stringify(MemoryInfo()));
+}
+StartupInfo();
+
+/**
+ * get char code.
+ * 
+ * @param {string} s a string
+ * @returns the ASCII-code of the first character.
+ */
+function CharCode(s) {
+	return s.charCodeAt(0);
+}
+
+/**
+ * arc style definition
+ * @namespace ARC
+ * @property {*} OPEN Open arc.
+ * @property {*} CLOSE1 closes the arc with a line between his start and end point.
+ * @property {*} CLOSE2 draws the typical cake slice.
+ */
+ARC = {
+	OPEN: 0,
+	CLOSE1: 1,
+	CLOSE2: 2
+};
+
+/* @module */
+
+/**
+ * event interface.
+ * @namespace MOUSE
+ * @property {*} Mode.NORMAL just the cursor
+ * @property {*} Mode.RUBBER rect. rubber band (XOR-d to the screen)
+ * @property {*} Mode.LINE line attached to the cursor
+ * @property {*} Mode.BOX rectangular box dragged by the cursor
+ * @property {*} Flags event flags
+ * @property {*} Buttons mouse button definitions
+ * @property {*} Flags.MOTION
+ * @property {*} Flags.LEFT_DOWN
+ * @property {*} Flags.LEFT_UP
+ * @property {*} Flags.RIGHT_DOWN
+ * @property {*} Flags.RIGHT_UP
+ * @property {*} Flags.MIDDLE_DOWN
+ * @property {*} Flags.MIDDLE_UP
+ * @property {*} Flags.P4_DOWN
+ * @property {*} Flags.P4_UP
+ * @property {*} Flags.P5_DOWN
+ * @property {*} Flags.P5_UP
+ * @property {*} Flags.BUTTON_DOWN
+ * @property {*} Flags.BUTTON_UP
+ * @property {*} Flags.BUTTON_CHANGE
+ * @property {*} Flags.KEYPRESS
+ * @property {*} Flags.POLL
+ * @property {*} Flags.NOPAINT
+ * @property {*} Flags.COMMAND
+ * @property {*} Flags.EVENT
+ * @property {*} Buttons.LEFT
+ * @property {*} Buttons.RIGHT
+ * @property {*} Buttons.MIDDLE
+ * @property {*} Buttons.P4
+ * @property {*} Buttons.WHEEL_UP
+ * @property {*} Buttons.P5
+ * @property {*} Buttons.WHEEL_DOWN
+ */
+MOUSE = {
+	Mode: {
+		NORMAL: 0,
+		RUBBER: 1,
+		LINE: 2,
+		BOX: 3
+	},
+	Flags: {
+		MOTION: 0x001,
+		LEFT_DOWN: 0x002,
+		LEFT_UP: 0x004,
+		RIGHT_DOWN: 0x008,
+		RIGHT_UP: 0x010,
+		MIDDLE_DOWN: 0x020,
+		MIDDLE_UP: 0x040,
+		P4_DOWN: 0x400,
+		P4_UP: 0x800,
+		P5_DOWN: 0x2000,
+		P5_UP: 0x4000,
+		BUTTON_DOWN: (0x002 | 0x020 | 0x008 | 0x400 | 0x2000),
+		BUTTON_UP: (0x004 | 0x040 | 0x010 | 0x800 | 0x4000),
+		BUTTON_CHANGE: ((0x004 | 0x040 | 0x010 | 0x800 | 0x4000) | (0x002 | 0x020 | 0x008 | 0x400 | 0x2000)),
+		KEYPRESS: 0x080,
+		POLL: 0x100,
+		NOPAINT: 0x200,
+		COMMAND: 0x1000,
+		EVENT: (0x001 | 0x080 | ((0x004 | 0x040 | 0x010 | 0x800 | 0x4000) | (0x002 | 0x020 | 0x008 | 0x400 | 0x2000)) | 0x1000)
+
+	},
+	Buttons: {
+		LEFT: 0x01,
+		RIGHT: 0x02,
+		MIDDLE: 0x04,
+		P4: 0x08,
+		WHEEL_UP: 0x08,
+		P5: 0x10,
+		WHEEL_DOWN: 0x10,
+	}
+};
+
+/**
+ * keyboard input.
+ * @namespace KEY
+ * @property {*} State kbdstate definitions.
+ * @property {*} Code key definitions.
+ */
+KEY = {
+	State: {
+		RIGHTSHIFT: 0x01,	/* Keybd states: right shift key depressed */
+		LEFTSHIFT: 0x02,		/* left shift key depressed */
+		CTRL: 0x04,			/* CTRL depressed */
+		ALT: 0x08,			/* ALT depressed */
+		SCROLLOCK: 0x10,		/* SCROLL LOCK active */
+		NUMLOCK: 0x20,			/* NUM LOCK active */
+		CAPSLOCK: 0x40,			/* CAPS LOCK active */
+		INSERT: 0x80,			/* INSERT state active */
+		SHIFT: (0x02 | 0x01)
+	},
+	Code: {
+		NoKey: 0x0000,		/* no key available */
+		/* Letters and numbers are missing from the definitions but can be obtained by e.g. CharCode('A'). */
+
+		OutsideValidRange: 0x0100,	/* key typed but code outside 1..Gr,LastDefinedKeycode */
+
+		/* standard ASCII key codes */
+		Control_A: 0x0001,
+		Control_B: 0x0002,
+		Control_C: 0x0003,
+		Control_D: 0x0004,
+		Control_E: 0x0005,
+		Control_F: 0x0006,
+		Control_G: 0x0007,
+		Control_H: 0x0008,
+		BackSpace: 0x0008,
+		Control_I: 0x0009,
+		Tab: 0x0009,
+		Control_J: 0x000a,
+		LineFeed: 0x000a,
+		Control_K: 0x000b,
+		Control_L: 0x000c,
+		Control_M: 0x000d,
+		Return: 0x000d,
+		Control_N: 0x000e,
+		Control_O: 0x000f,
+		Control_P: 0x0010,
+		Control_Q: 0x0011,
+		Control_R: 0x0012,
+		Control_S: 0x0013,
+		Control_T: 0x0014,
+		Control_U: 0x0015,
+		Control_V: 0x0016,
+		Control_W: 0x0017,
+		Control_X: 0x0018,
+		Control_Y: 0x0019,
+		Control_Z: 0x001a,
+		Control_LBracket: 0x001b,
+		Escape: 0x001b,
+		Control_BackSlash: 0x001c,
+		Control_RBracket: 0x001d,
+		Control_Caret: 0x001e,
+		Control_Underscore: 0x001f,
+		Space: 0x0020,
+		ExclamationPoint: 0x0021,
+		DoubleQuote: 0x0022,
+		Hash: 0x0023,
+		Dollar: 0x0024,
+		Percent: 0x0025,
+		Ampersand: 0x0026,
+		Quote: 0x0027,
+		LParen: 0x0028,
+		RParen: 0x0029,
+		Star: 0x002a,
+		Plus: 0x002b,
+		Comma: 0x002c,
+		Dash: 0x002d,
+		Period: 0x002e,
+		Slash: 0x002f,
+		Colon: 0x003a,
+		SemiColon: 0x003b,
+		LAngle: 0x003c,
+		Equals: 0x003d,
+		RAngle: 0x003e,
+		QuestionMark: 0x003f,
+		At: 0x0040,
+		LBracket: 0x005b,
+		BackSlash: 0x005c,
+		RBracket: 0x005d,
+		Caret: 0x005e,
+		UnderScore: 0x005f,
+		BackQuote: 0x0060,
+		LBrace: 0x007b,
+		Pipe: 0x007c,
+		RBrace: 0x007d,
+		Tilde: 0x007e,
+		Control_Backspace: 0x007f,
+
+		/* extended key codes as defined in DJGPP */
+		Alt_Escape: 0x0101,
+		Control_At: 0x0103,
+		Alt_Backspace: 0x010e,
+		BackTab: 0x010f,
+		Alt_Q: 0x0110,
+		Alt_W: 0x0111,
+		Alt_E: 0x0112,
+		Alt_R: 0x0113,
+		Alt_T: 0x0114,
+		Alt_Y: 0x0115,
+		Alt_U: 0x0116,
+		Alt_I: 0x0117,
+		Alt_O: 0x0118,
+		Alt_P: 0x0119,
+		Alt_LBracket: 0x011a,
+		Alt_RBracket: 0x011b,
+		Alt_Return: 0x011c,
+		Alt_A: 0x011e,
+		Alt_S: 0x011f,
+		Alt_D: 0x0120,
+		Alt_F: 0x0121,
+		Alt_G: 0x0122,
+		Alt_H: 0x0123,
+		Alt_J: 0x0124,
+		Alt_K: 0x0125,
+		Alt_L: 0x0126,
+		Alt_Semicolon: 0x0127,
+		Alt_Quote: 0x0128,
+		Alt_Backquote: 0x0129,
+		Alt_Backslash: 0x012b,
+		Alt_Z: 0x012c,
+		Alt_X: 0x012d,
+		Alt_C: 0x012e,
+		Alt_V: 0x012f,
+		Alt_B: 0x0130,
+		Alt_N: 0x0131,
+		Alt_M: 0x0132,
+		Alt_Comma: 0x0133,
+		Alt_Period: 0x0134,
+		Alt_Slash: 0x0135,
+		Alt_KPStar: 0x0137,
+		F1: 0x013b,
+		F2: 0x013c,
+		F3: 0x013d,
+		F4: 0x013e,
+		F5: 0x013f,
+		F6: 0x0140,
+		F7: 0x0141,
+		F8: 0x0142,
+		F9: 0x0143,
+		F10: 0x0144,
+		Home: 0x0147,
+		Up: 0x0148,
+		PageUp: 0x0149,
+		Alt_KPMinus: 0x014a,
+		Left: 0x014b,
+		Center: 0x014c,
+		Right: 0x014d,
+		Alt_KPPlus: 0x014e,
+		End: 0x014f,
+		Down: 0x0150,
+		PageDown: 0x0151,
+		Insert: 0x0152,
+		Delete: 0x0153,
+		Shift_F1: 0x0154,
+		Shift_F2: 0x0155,
+		Shift_F3: 0x0156,
+		Shift_F4: 0x0157,
+		Shift_F5: 0x0158,
+		Shift_F6: 0x0159,
+		Shift_F7: 0x015a,
+		Shift_F8: 0x015b,
+		Shift_F9: 0x015c,
+		Shift_F10: 0x015d,
+		Control_F1: 0x015e,
+		Control_F2: 0x015f,
+		Control_F3: 0x0160,
+		Control_F4: 0x0161,
+		Control_F5: 0x0162,
+		Control_F6: 0x0163,
+		Control_F7: 0x0164,
+		Control_F8: 0x0165,
+		Control_F9: 0x0166,
+		Control_F10: 0x0167,
+		Alt_F1: 0x0168,
+		Alt_F2: 0x0169,
+		Alt_F3: 0x016a,
+		Alt_F4: 0x016b,
+		Alt_F5: 0x016c,
+		Alt_F6: 0x016d,
+		Alt_F7: 0x016e,
+		Alt_F8: 0x016f,
+		Alt_F9: 0x0170,
+		Alt_F10: 0x0171,
+		Control_Print: 0x0172,
+		Control_Left: 0x0173,
+		Control_Right: 0x0174,
+		Control_End: 0x0175,
+		Control_PageDown: 0x0176,
+		Control_Home: 0x0177,
+		Alt_1: 0x0178,
+		Alt_2: 0x0179,
+		Alt_3: 0x017a,
+		Alt_4: 0x017b,
+		Alt_5: 0x017c,
+		Alt_6: 0x017d,
+		Alt_7: 0x017e,
+		Alt_8: 0x017f,
+		Alt_9: 0x0180,
+		Alt_0: 0x0181,
+		Alt_Dash: 0x0182,
+		Alt_Equals: 0x0183,
+		Control_PageUp: 0x0184,
+		F11: 0x0185,
+		F12: 0x0186,
+		Shift_F11: 0x0187,
+		Shift_F12: 0x0188,
+		Control_F11: 0x0189,
+		Control_F12: 0x018a,
+		Alt_F11: 0x018b,
+		Alt_F12: 0x018c,
+		Control_Up: 0x018d,
+		Control_KPDash: 0x018e,
+		Control_Center: 0x018f,
+		Control_KPPlus: 0x0190,
+		Control_Down: 0x0191,
+		Control_Insert: 0x0192,
+		Control_Delete: 0x0193,
+		Control_Tab: 0x0194,
+		Control_KPSlash: 0x0195,
+		Control_KPStar: 0x0196,
+		Alt_KPSlash: 0x01a4,
+		Alt_Tab: 0x01a5,
+		Alt_Enter: 0x01a6,
+
+		/* some additional codes not in DJGPP */
+		Alt_LAngle: 0x01b0,
+		Alt_RAngle: 0x01b1,
+		Alt_At: 0x01b2,
+		Alt_LBrace: 0x01b3,
+		Alt_Pipe: 0x01b4,
+		Alt_RBrace: 0x01b5,
+		Print: 0x01b6,
+		Shift_Insert: 0x01b7,
+		Shift_Home: 0x01b8,
+		Shift_End: 0x01b9,
+		Shift_PageUp: 0x01ba,
+		Shift_PageDown: 0x01bb,
+		Alt_Up: 0x01bc,
+		Alt_Left: 0x01bd,
+		Alt_Center: 0x01be,
+		Alt_Right: 0x01c0,
+		Alt_Down: 0x01c1,
+		Alt_Insert: 0x01c2,
+		Alt_Delete: 0x01c3,
+		Alt_Home: 0x01c4,
+		Alt_End: 0x01c5,
+		Alt_PageUp: 0x01c6,
+		Alt_PageDown: 0x01c7,
+		Shift_Up: 0x01c8,
+		Shift_Down: 0x01c9,
+		Shift_Right: 0x01ca,
+		Shift_Left: 0x01cb,
+		LastDefinedKeycode: 0x01cb
+	}
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<footer>
+    <img class="logo" src="img/toast-ui.png" style="">
+    <div class="footer-text">NHN Entertainment. Frontend Development Lab</div>
+</footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+    <script>
+        var id = '_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
+</body>
+</html>

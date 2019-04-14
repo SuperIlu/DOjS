@@ -259,8 +259,11 @@ bool init_sound(js_State *J) {
     /* initialize MikMod threads */
     MikMod_InitThreads();
 
-    /* register all the drivers */
-    MikMod_RegisterAllDrivers();
+    /* register the drivers */
+    MikMod_RegisterDriver(&drv_ultra);
+    MikMod_RegisterDriver(&drv_wss);
+    MikMod_RegisterDriver(&drv_sb);
+    MikMod_RegisterDriver(&drv_nos);
 
     /* register all the module loaders */
     MikMod_RegisterAllLoaders();

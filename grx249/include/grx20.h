@@ -1306,6 +1306,9 @@ void     GrImageDestroy(GrImage *i);
 void     GrImageDisplay(int x,int y, GrImage *i);
 void     GrImageDisplayExt(int x1,int y1,int x2,int y2, GrImage *i);
 void     GrImageFilledBoxAlign(int xo,int yo,int x1,int y1,int x2,int y2,GrImage *p);
+void     GrImageDisplayC(GrContext *c, int x,int y, GrImage *i);
+void     GrImageDisplayExtC(GrContext *c, int x1,int y1,int x2,int y2, GrImage *i);
+void     GrImageFilledBoxAlignC(GrContext *c, int xo,int yo,int x1,int y1,int x2,int y2,GrImage *p);
 void     GrImageHLineAlign(int xo,int yo,int x,int y,int width,GrImage *p);
 void     GrImagePlotAlign(int xo,int yo,int x,int y,GrImage *p);
 

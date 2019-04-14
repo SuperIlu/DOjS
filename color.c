@@ -32,18 +32,6 @@ SOFTWARE.
 ** static functions **
 *********************/
 /**
- * @brief finalize a color and free resources.
- *
- * @param J VM state.
- */
-static void Color_Finalize(js_State *J, void *data) {
-    GrColor *color = (GrColor *)data;
-    // DEBUGF("Finalizing Color 0x%08X\n", *color);
-    GrFreeColor(*color);
-    free(color);
-}
-
-/**
  * @brief create a color and store it as userdata in JS object.
  * new Color(red:number, green:number, blue:number [, mask:number])
  *
@@ -52,10 +40,12 @@ static void Color_Finalize(js_State *J, void *data) {
 static void new_Color(js_State *J) {
     if (js_isundefined(J, 1) || js_isundefined(J, 1) || js_isundefined(J, 1)) {
         js_error(J, "Color constructor needs three integer arguments");
+        return;
     } else {
         GrColor *color = malloc(sizeof(GrColor));
         if (!color) {
             js_error(J, "Can't alloc color");
+            return;
         }
 
         *color = GrAllocColor(js_toint16(J, 1), js_toint16(J, 2), js_toint16(J, 3));
@@ -125,6 +115,18 @@ static void Color_getBlue(js_State *J) {
 /***********************
 ** exported functions **
 ***********************/
+/**
+ * @brief finalize a color and free resources.
+ *
+ * @param J VM state.
+ */
+void Color_Finalize(js_State *J, void *data) {
+    GrColor *color = (GrColor *)data;
+    // DEBUGF("Finalizing Color 0x%08X\n", *color);
+    GrFreeColor(*color);
+    free(color);
+}
+
 /**
  * @brief initialize color subsystem.
  *

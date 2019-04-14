@@ -87,6 +87,8 @@ function draw() {
 }
 ```
 
+More info can be found at the end of this README in the section **Usage** and in the API documentation. Take a look at the `examples/` as well.
+
 # Compilation
 You can compile DOjS on any modern Linux (the instructions below are for Debian based distributions) or on Windows 10 using Windows Subsystem for Linux (WSL).
 Setup Windows Subsystem for Linux (WSL) according to [this](https://docs.microsoft.com/en-us/windows/wsl/install-win10) guide (I used Ubuntu 18.04 LTS).
@@ -255,3 +257,14 @@ Things that don't work:
 * Only simple vertices are supported.
 * no DOM
 * no transformations
+
+## Logfile
+All output via `Print()` and `Println()` is sent to the file `JSLOG.TXT`. You can use `Debug()` instead and output is only generated when you set the global variable `DEBUG=true`.
+
+## Remote logging/debugging
+This feature allows you to debug a running script via IPX networking and a second machine. To use remote logging do the following:
+* Put both machines on the same network.
+* Run `DOJS.EXE -r JSBOOT\LOGVIEW.JS` on one machine.
+* Enable debugging by setting `DEBUG=true` and enable remote debugging by `REMOTE_DEBUG=true`. You can either modify `JSBOOT\FUNC.JS` or change the variables at the very beginning of your script.
+
+This works fine with two instances of DOSBox as well.

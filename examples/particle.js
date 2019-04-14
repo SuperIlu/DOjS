@@ -7,7 +7,7 @@
  * 
  * It was modified to run with DOjS by Andre Seidelt <superilu@yahoo.com>.
  */
-Require('jsboot/vector');
+Require('p5');
 
 ps = null;
 

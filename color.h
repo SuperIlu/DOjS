@@ -35,6 +35,7 @@ SOFTWARE.
 /***********************
 ** exported functions **
 ***********************/
+extern void Color_Finalize(js_State *J, void *data);
 extern void init_color(js_State *J);
 
 #endif  // __COLOR_H__

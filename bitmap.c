@@ -26,8 +26,13 @@ SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <libgrx.h>
+
+#include <clipping.h>
+
 #include "DOjS.h"
 #include "bitmap.h"
+#include "color.h"
 #include "util.h"
 
 /************
@@ -35,7 +40,6 @@ SOFTWARE.
 ************/
 //! bitmap userdata definition
 typedef struct __bitmap {
-    GrPattern *pat;         //!< GrPattern for the image
     GrBmpImageColors *pal;  //!< allocated colors for the image
     GrContext *ctx;         //!< context data in case of a PNG
 } bitmap_t;
@@ -50,8 +54,9 @@ typedef struct __bitmap {
  */
 static void Bitmap_Finalize(js_State *J, void *data) {
     bitmap_t *bm = (bitmap_t *)data;
-    GrFreeBmpImageColors(bm->pal);
-    GrDestroyPattern(bm->pat);
+    if (bm->pal) {
+        GrFreeBmpImageColors(bm->pal);
+    }
     if (bm->ctx) {
         GrDestroyContext(bm->ctx);
     }
@@ -67,7 +72,7 @@ static void Bitmap_Finalize(js_State *J, void *data) {
 static void new_Bitmap(js_State *J) {
     const char *fname = js_tostring(J, 1);
 
-    bitmap_t *bm = malloc(sizeof(bitmap_t));
+    bitmap_t *bm = calloc(1, sizeof(bitmap_t));
     if (!bm) {
         js_error(J, "No memory for image '%s'", fname);
         return;
@@ -81,8 +86,27 @@ static void new_Bitmap(js_State *J) {
             return;
         }
         GrAllocBmpImageColors(bmp, bm->pal);
-        GrPattern *pat = GrConvertBmpImageToStaticPattern(bmp);
-        bm->pat = pat;
+
+        LOG("BMP loaded\n");
+
+        GrPattern *pat = GrConvertBmpImageToPattern(bmp);
+        if (!pat) {
+            js_error(J, "No memory for BMP image '%s'", fname);
+            free(bm);
+            return;
+        }
+        GrUnloadBmpImage(bmp);
+
+        bm->ctx = GrCreateContext(pat->gp_pixmap.pxp_width, pat->gp_pixmap.pxp_height, NULL, NULL);
+        if (!bm->ctx) {
+            js_error(J, "No memory for BMP image '%s'", fname);
+            GrDestroyPattern(pat);
+            free(bm);
+            return;
+        }
+
+        GrImageDisplayC(bm->ctx, 0, 0, GrImageFromPattern(pat));
+        GrDestroyPattern(pat);
     } else if (ut_endsWith(fname, ".PNG") || ut_endsWith(fname, ".png")) {
         int width, height;
         if (GrQueryPng((char *)fname, &width, &height) != 0) {
@@ -102,7 +126,6 @@ static void new_Bitmap(js_State *J) {
             free(bm);
             return;
         }
-        bm->pat = GrConvertToPixmap(bm->ctx);
     } else {
         js_error(J, "Filename does not end with .BMP or .PNG '%s'", fname);
         free(bm);
@@ -117,10 +140,10 @@ static void new_Bitmap(js_State *J) {
     js_pushstring(J, fname);
     js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
-    js_pushnumber(J, bm->pat->gp_pixmap.pxp_width);
+    js_pushnumber(J, bm->ctx->gc_xmax + 1);
     js_defproperty(J, -2, "width", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
-    js_pushnumber(J, bm->pat->gp_pixmap.pxp_height);
+    js_pushnumber(J, bm->ctx->gc_ymax + 1);
     js_defproperty(J, -2, "height", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 }
 
@@ -134,7 +157,32 @@ static void Bitmap_Draw(js_State *J) {
     bitmap_t *bm = js_touserdata(J, 0, TAG_BITMAP);
     int x = js_toint16(J, 1);
     int y = js_toint16(J, 2);
-    GrImageDisplay(x, y, GrImageFromPattern(bm->pat));
+    GrBitBlt(GrCurrentContext(), x, y, bm->ctx, 0, 0, bm->ctx->gc_xmax, bm->ctx->gc_ymax, GrWRITE);
+}
+
+/**
+ * @brief get the color of an image pixel.
+ * img.GetPixel(x, y):Color
+ *
+ * @param J the JS context.
+ */
+static void Bitmap_GetPixel(js_State *J) {
+    GrColor *color = malloc(sizeof(GrColor));
+    if (!color) {
+        js_error(J, "Can't alloc color");
+        return;
+    }
+
+    bitmap_t *bm = js_touserdata(J, 0, TAG_BITMAP);
+
+    int x = js_toint16(J, 1);
+    int y = js_toint16(J, 2);
+
+    *color = (bm->ctx->gc_driver->readpixel)(&bm->ctx->gc_frame, x + bm->ctx->gc_xoffset, y + bm->ctx->gc_yoffset);
+
+    js_getglobal(J, TAG_COLOR);
+    js_getproperty(J, -1, "prototype");
+    js_newuserdata(J, TAG_COLOR, color, Color_Finalize);
 }
 
 /***********************
@@ -148,7 +196,10 @@ static void Bitmap_Draw(js_State *J) {
 void init_bitmap(js_State *J) {
     // define the Image() object
     js_newobject(J);
-    { PROTDEF(J, Bitmap_Draw, TAG_BITMAP, "Draw", 2); }
+    {
+        PROTDEF(J, Bitmap_Draw, TAG_BITMAP, "Draw", 2);
+        PROTDEF(J, Bitmap_GetPixel, TAG_BITMAP, "GetPixel", 2);
+    }
     js_newcconstructor(J, new_Bitmap, new_Bitmap, TAG_BITMAP, 1);
     js_defglobal(J, TAG_BITMAP, JS_DONTENUM);
 }

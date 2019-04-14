@@ -1,3 +1,10 @@
+**Version 0.9.1 (the fixed foreboding)**
+* Fixed libmikmod creating a WAV file when no soundcard is detected.
+* Added logging to another machine using IPX. set `REMOTE_DEBUG=true` and start `jsboot/logview.js` on other machine.
+* Added `GetPixel()` which returns the `Color` of an on-screen pixel.
+* Added `Bitmap.GetPixel()` which returns the `Color` of an image pixel.
+* Fixed/added some stuff in GRX.
+
 **Version 0.9 (the fifth foreboding)**
 * Fixed `millis()` in p5js compatibility layer.
 * Improved mouse display (still flickering, though).

@@ -197,6 +197,14 @@ function MaxY() { }
 function ClearScreen(c) { }
 
 /**
+ * get color of on-screen pixel.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @returns {Color} pixel color.
+ */
+function GetPixel(x, y) { }
+
+/**
  * draw a point.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
@@ -605,6 +613,12 @@ function Stop() { }
  * @param {number} ms time to sleep.
  */
 function Sleep(ms) { }
+
+/**
+ * Get ms timestamp.
+ * @return {number} ms time.
+ */
+function MsecTime() { }
 
 /**
  * Load the contents of a file into a string. Throws exception if loading fails.

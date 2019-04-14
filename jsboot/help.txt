@@ -126,6 +126,9 @@ Height in pixels
 ### bm.Draw(x:number, y:number)
 Draw the image to the canvas at given coordinates.
 
+### bm.GetPixel(x:number, y:number):Color
+get the color of an image pixel.
+
 ## Font
 See `jsboot/font.js` for direction and alignment values.
 
@@ -246,6 +249,9 @@ get the max Y coordinate on the drawing area.
 
 ### ClearScreen(c:Color)
 clear the screen with given color.
+
+### GetPixel(x:number, y:number):Color
+get color of on-screen pixel.
 
 ### Plot(x:number, y:number, c:Color)
 draw a point.
@@ -395,6 +401,9 @@ DOjS will exit after the current call to `Loop()`.
 
 ### Sleep(ms:number)
 Sleep for the given number of ms.
+
+### MsecTime():number
+Get ms timestamp.
 
 ### Read(filename:string):string
 Load the contents of a file into a string.

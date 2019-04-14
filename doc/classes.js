@@ -98,6 +98,14 @@ Bitmap.height = null;
  */
 Bitmap.prototype.Draw = function (x, y) { };
 
+/**
+ * Get the color of a pixel of this image.
+ * @param {number} x position.
+ * @param {number} y position.
+ * @returns {Color} the color of the pixel.
+ */
+Bitmap.prototype.GetPixel = function (x, y) { };
+
 /********
  * Font
  */

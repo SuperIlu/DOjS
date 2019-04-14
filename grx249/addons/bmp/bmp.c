@@ -462,6 +462,8 @@ GrBmpImage *GrLoadBmpImage ( char *_filename )
     bmpimage->bi_map = GrLoadImageFromBmp(handle, bmpimage->bi_bmpfileheader->bf_offbits - BMPFILEHEADERSIZE, bmpimage->bi_numcolors, bmpimage->bi_bmpinfoheader);
     if ( !bmpimage->bi_map )
       defClose;
+  
+    close(handle);
   }
   #undef defClose
   return bmpimage;

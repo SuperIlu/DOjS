@@ -226,7 +226,7 @@ The examples are licensed under a [Creative Commons Attribution-NonCommercial-Sh
 ```
 
 ## API documentation
-You can find the full API doc in the [doc/html/](/doc/html/index.html) directory.
+You can find the full API doc in the [doc/html/](http://htmlpreview.github.io/?https://github.com/SuperIlu/DOjS/blob/master/doc/html/index.html) directory.
 
 ## Script format
 Scripts need to provide three functions: `Setup()`, `Loop()` and `Input()`. Scripts are loaded and executed top-own. After that `Setup()` is called once and then `Loop()` repeatedly. `Input()` is called whenever mouse of keyboard input happens.

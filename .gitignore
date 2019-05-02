@@ -42,20 +42,18 @@ TEST2.JS
 CWSDPMI.SWP
 stderr.txt
 stdout.txt
-grx249/bin/fnt2c
-grx249/bin/bin2c
-grx249/bin/xmodetest
-grx249/src/systag.002
-grx249/src/systag.004
-lpng1636/pnglibconf.h
 miktest.c
 
 # other dirs
 upx/
 cylindrix/
-jsboot/fonts/
 build/
-allegro-4.2.2-xc-master/
 p5.js-master/
 tests/p5.js/
 .vscode/ipch
+tests/SCR.TGA
+tests/SCR.PCX
+tests/SCR.BMP
+allegro-4.2.2-xc-master/obj/djgpp/asmcapa.h
+allegro-4.2.2-xc-master/obj/djgpp/asmdef.inc
+allegro-4.2.2-xc-master/obj/djgpp/asmdef.s

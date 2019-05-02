@@ -23,22 +23,27 @@ SOFTWARE.
 Include('p5');
 
 function setup() {
-	m = width / 2;
-	stroke(255);
-	rectMode(CENTER);
+    m = width / 2;
 }
 
 function draw() {
-	fill(random(32, 224));
+    rectMode(CORNER);
+    noStroke();
+    fill(0, 0, 0, 8);
+    rect(0, 0, width, height);
 
-	var h = random(5, 40);
-	var w = random(5, 110);
-	var p = random(0, height - h / 2);
+    fill(random(32, 224));
 
-	rect(m, p, w, h);
-	line(m, 0, m, height);
+    var h = random(5, 40);
+    var w = random(5, 110);
+    var p = random(0, height - h / 2);
+
+    stroke(255);
+    rectMode(CENTER);
+    rect(m, p, w, h);
+    line(m, 0, m, height);
 }
 
 function mousePressed() {
-	background(0);
+    background(0);
 }

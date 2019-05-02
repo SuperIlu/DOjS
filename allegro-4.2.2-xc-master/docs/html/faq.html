@@ -1,0 +1,1077 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>
+Allegro FAQ
+</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" title="Default" type="text/css" href="allegro.css"></head><body bgcolor=white text=black link="#0000ee" alink="#ff0000" vlink="#551a8b">
+<center><h1><b>
+The Allegro FAQ<br>
+<i>If the answer isn't here, ask and it will be added...</i></b></h1></center>
+<hr>
+<p>
+<h1><a name="Contents">Contents</a></h1>
+
+<p>
+<ul>
+<li><a href="#Trivial problems">Trivial problems</a>
+<ul>
+<li><a href="#How_do_I_use_it_">   How do I use it?</a> 
+<li><a href="#What_is_Allegro_">   What is Allegro?</a> 
+<li><a href="#Where_can_I_get_it_">   Where can I get it?</a> 
+</ul>
+<li><a href="#The giftware licence">The giftware licence</a>
+<ul>
+<li><a href="#Can_I_use_Allegro_for_commercial_purposes_">   Can I use Allegro for commercial purposes?</a> 
+<li><a href="#Does_the_licence_mean_that_Allegro_is_public_domain_">   Does the licence mean that Allegro is public domain?</a> 
+<li><a href="#How_are_modifications_of_the_library_licensed_">   How are modifications of the library licensed?</a> 
+<li><a href="#I_took_your_code__Will_you_sue_me_">   I took your code. Will you sue me?</a> 
+<li><a href="#Is_Allegro_compatible_with_licence_XXX__e_g__GPL__">   Is Allegro compatible with licence XXX (e.g. GPL)?</a> 
+<li><a href="#Is_Allegro_open_source__OSI__compatible_">   Is Allegro open source (OSI) compatible?</a> 
+</ul>
+<li><a href="#DJGPP problems">DJGPP problems</a>
+<ul>
+<li><a href="#Compile_errors_scroll_off_the_screen_too_quickly_for_me_to_read_them_">   Compile errors scroll off the screen too quickly for me to read them!</a> 
+<li><a href="#I_give_up__I_can_t_compile_this__Can_you_send_me_a_precompiled_version_">   I give up: I can't compile this! Can you send me a precompiled version?</a> 
+<li><a href="#Make_doesn_t_work_properly_">   Make doesn't work properly.</a> 
+<li><a href="#My_djgpp_installation_is_fine__but_make_still_doesn_t_work_properly_">   My djgpp installation is fine, but make still doesn't work properly.</a> 
+<li><a href="#What_is_this_make_program_that_I_m_supposed_to_run_">   What is this make program that I'm supposed to run?</a> 
+<li><a href="#When_I_run_make__it_asks_me_for_some_parameters__What_do_I_type_">   When I run make, it asks me for some parameters. What do I type?</a> 
+<li><a href="#When_I_run_make__it_says__conflicting_types_for_va_list__">   When I run make, it says "conflicting types for va_list".</a> 
+<li><a href="#When_I_run_make__it_says__makefile_has_modification_time_in_the_future__">   When I run make, it says "makefile has modification time in the future".</a> 
+<li><a href="#When_I_run_make__it_says__virtual_memory_exhausted__">   When I run make, it says "virtual memory exhausted".</a> 
+<li><a href="#When_I_try_to_compile_a_program_using_Allegro__I_get_lots_of_errors_like_">   When I try to compile a program using Allegro, I get lots of errors like:</a> 
+</ul>
+<li><a href="#DOS problems">DOS problems</a>
+<ul>
+<li><a href="#Does_Allegro_work_under_OpenDOS_">   Does Allegro work under OpenDOS?</a> 
+<li><a href="#Does_DOS_Allegro_work_with_the_SB_Live_soundcard_">   Does DOS Allegro work with the SB-Live soundcard?</a> 
+<li><a href="#Does_the_DOS_version_of_Allegro_work_under_Windows_NT_">   Does the DOS version of Allegro work under Windows NT?</a> 
+<li><a href="#How_can_I_extend_the_256k_limit_on_Mode_X_video_memory_">   How can I extend the 256k limit on Mode-X video memory?</a> 
+<li><a href="#I_get_an__out_of_environment_space__error_when_I_run_fix_bat_or">   I get an "out of environment space" error when I run fix.bat or</a> 
+<li><a href="#Why_does_DOS_Allegro_play_sounds_so_much_quieter_than_in_Windows_">   Why does DOS Allegro play sounds so much quieter than in Windows?</a> 
+<li><a href="#Why_doesn_t_it_work_with_my_video_card_">   Why doesn't it work with my video card?</a> 
+<li><a href="#Why_not_use_some_sort_of_dynamic_linking_system_">   Why not use some sort of dynamic linking system?</a> 
+</ul>
+<li><a href="#Windows problems">Windows problems</a>
+<ul>
+<li><a href="#I_get_an__out_of_environment_space__error_when_I_run_fix_bat_or">   I get an "out of environment space" error when I run fix.bat or</a> 
+<li><a href="#I_get_an_error_about_a_missing_WinMain___or_main___function_">   I get an error about a missing WinMain() or main() function!</a> 
+<li><a href="#I_get_an_error_about_an__unresolved_external_symbol__main__">   I get an error about an "unresolved external symbol _main"!</a> 
+<li><a href="#I_get_lots_of_compile_errors_about_conflicting_types_for__struct_BITMAP__">   I get lots of compile errors about conflicting types for "struct BITMAP"!</a> 
+<li><a href="#I_get_lots_of_compile_errors_about_things_like__DDEDM_STANDARDVGAMODES__">   I get lots of compile errors about things like "DDEDM_STANDARDVGAMODES"!</a> 
+<li><a href="#I_get_lots_of_compile_errors_about_things_like__LPDIRECTDRAWSURFACE2__">   I get lots of compile errors about things like "LPDIRECTDRAWSURFACE2"!</a> 
+<li><a href="#In_windowed_mode_artifacts_are_left_on_the_desktop_when_the_window">   In windowed mode artifacts are left on the desktop when the window</a> 
+<li><a href="#In_windowed_mode_the_screen_stays_black_unless_the_window_is_placed">   In windowed mode the screen stays black unless the window is placed</a> 
+<li><a href="#When_I_run_make__it_says__missing_separator__">   When I run make, it says "missing separator".</a> 
+<li><a href="#When_I_run_make__it_says__windres__no_resources__">   When I run make, it says "windres: no resources".</a> 
+</ul>
+<li><a href="#Unix problems">Unix problems</a>
+<ul>
+<li><a href="#Compile_errors_scroll_off_the_screen_way_too_quickly_for_me_to_read_them_">   Compile errors scroll off the screen way too quickly for me to read them!</a> 
+<li><a href="#I_get_an_error_about___mangled_main_address__being_undefined_">   I get an error about "_mangled_main_address" being undefined!</a> 
+<li><a href="#I_get_an_error_about_a_duplicate_definition_of_the___main__symbol_">   I get an error about a duplicate definition of the "_main" symbol!</a> 
+<li><a href="#When_I_try_to_run_Allegro_programs__I_get__error_while_loading_shared_libraries_">   When I try to run Allegro programs, I get "error while loading shared libraries:</a> 
+<li><a href="#When_I_try_to_use_DGA2__I_get__resolution_not_supported___but_the">   When I try to use DGA2, I get "resolution not supported", but the</a> 
+<li><a href="#When_I_try_to_use_DGA2__the_screen_goes_black_and_the_PC_completely">   When I try to use DGA2, the screen goes black and the PC completely</a> 
+</ul>
+<li><a href="#General problems">General problems</a>
+<ul>
+<li><a href="#Can_I_use_Allegro_in_my__ltwhatever_gt_commercial_application_">   Can I use Allegro in my &lt;whatever&gt; commercial application?</a> 
+<li><a href="#Can_I_use_Allegro_with_my__ltfoobar_gt_compiler_">   Can I use Allegro with my &lt;foobar&gt; compiler?</a> 
+<li><a href="#How_can_I_convert_my_graphics_to_all_use_the_same_256_color_palette_">   How can I convert my graphics to all use the same 256 color palette?</a> 
+<li><a href="#How_can_I_convert_the_documentation_into_Windows_Help_format_">   How can I convert the documentation into Windows Help format?</a> 
+<li><a href="#How_can_I_display_several_different_images_at_the_same_time_">   How can I display several different images at the same time?</a> 
+<li><a href="#How_can_I_fade_the_screen_in_a_truecolor_graphics_mode_">   How can I fade the screen in a truecolor graphics mode?</a> 
+<li><a href="#How_can_I_generate_a_random_number_">   How can I generate a random number?</a> 
+<li><a href="#How_can_I_generate_FLI_or_FLC_format_animations_">   How can I generate FLI or FLC format animations?</a> 
+<li><a href="#How_can_I_make_my_game_run_at_the_same_speed_on_any_computer_">   How can I make my game run at the same speed on any computer?</a> 
+<li><a href="#How_can_I_make_parts_of_my_sprite_transparent_in_truecolor_modes_">   How can I make parts of my sprite transparent in truecolor modes?</a> 
+<li><a href="#How_can_I_print_out_the_documentation_">   How can I print out the documentation?</a> 
+<li><a href="#How_can_I_take_a_screenshot_of_my_Allegro_program_">   How can I take a screenshot of my Allegro program?</a> 
+<li><a href="#I_can_t_get_the_3D_polygon_functions_to_work_">   I can't get the 3D polygon functions to work!</a> 
+<li><a href="#I_can_t_get_the_d_bitmap_proc___or_d_icon_proc___GUI_object_to_work_">   I can't get the d_bitmap_proc() or d_icon_proc() GUI object to work!</a> 
+<li><a href="#I_can_t_get_the_rotate_sprite___function_to_work_">   I can't get the rotate_sprite() function to work!</a> 
+<li><a href="#I_get_lots_of_errors_when_I_try_to_compile_my_C___Allegro_program_">   I get lots of errors when I try to compile my C++ Allegro program.</a> 
+<li><a href="#I_got_the_WIP_patch__but_I_can_t_apply_it_">   I got the WIP patch, but I can't apply it.</a> 
+<li><a href="#I_m_still_confused__Where_can_I_get_help_">   I'm still confused. Where can I get help?</a> 
+<li><a href="#I_m_trying_to_compile_the_grabber__but_it_doesn_t_work_">   I'm trying to compile the grabber, but it doesn't work!</a> 
+<li><a href="#I_tried_using_fade_in___and_fade_out___with_truecolor_modes_but_nothing">   I tried using fade_in() and fade_out() with truecolor modes but nothing</a> 
+<li><a href="#My_colors_always_come_out_wrong__And_how_can_I_make_a_greyscale_palette">   My colors always come out wrong. And how can I make a greyscale palette</a> 
+<li><a href="#My_program_crashes_all_the_time__Could_this_be_a_bug_in_Allegro_">   My program crashes all the time. Could this be a bug in Allegro?</a> 
+<li><a href="#Should_I_use_regular_bitmaps__RLE_sprites__or_compiled_sprites_">   Should I use regular bitmaps, RLE sprites, or compiled sprites?</a> 
+<li><a href="#What_is_this__Allegro_WIP__that_I_see_people_talking_about_">   What is this "Allegro WIP" that I see people talking about?</a> 
+<li><a href="#When_I_compile_Allegro__make_fails_with_something_like__Error__operands">   When I compile Allegro, make fails with something like `Error: operands</a> 
+<li><a href="#When_I_run_the_demo_game__it_says_it_can_t_find_demo_dat_">   When I run the demo game, it says it can't find demo.dat.</a> 
+<li><a href="#When_will__ltfoobar_gt_be_finished__I_can_t_wait___">   When will &lt;foobar&gt; be finished? I can't wait...</a> 
+<li><a href="#Where_can_I_find_a_set_of_instrument_samples_for_the_DIGMID_driver_">   Where can I find a set of instrument samples for the DIGMID driver?</a> 
+<li><a href="#Where_can_I_find_example_source_code__add_on_packages__and_tutorials_">   Where can I find example source code, add-on packages, and tutorials?</a> 
+<li><a href="#Where_can_I_get_some_fonts_to_use_with_Allegro_">   Where can I get some fonts to use with Allegro?</a> 
+<li><a href="#Why_can_t_Allegro_read_GIF_files_">   Why can't Allegro read GIF files?</a> 
+<li><a href="#Why_do_I_have_a_funny_color_border_at_the_edges_of_my_monitor_">   Why do I have a funny color border at the edges of my monitor?</a> 
+<li><a href="#Why_doesn_t_busy_waiting_on_the_key_array_work__For_example_">   Why doesn't busy waiting on the key array work? For example,</a> 
+<li><a href="#Why_doesn_t_vsync___seem_to_work_">   Why doesn't vsync() seem to work?</a> 
+<li><a href="#Why_is_it_considered_good_coding_practice_to_define_PI_as_a_constant_">   Why is it considered good coding practice to define PI as a constant,</a> 
+<li><a href="#Why_not_add_a_MOD_playing_function_">   Why not add a MOD playing function?</a> 
+<li><a href="#Why_not_add_networking_support_">   Why not add networking support?</a> 
+<li><a href="#Why_not_make_a__lite__version_of_Allegro_">   Why not make a "lite" version of Allegro?</a> 
+<li><a href="#Will_you_ever_add_support_for_3D_accelerator_hardware_">   Will you ever add support for 3D accelerator hardware?</a> 
+</ul>
+</ul>
+
+
+
+<p><br>
+<h1><a name="Trivial problems">Trivial problems</a></h1>
+
+<div class="faq-shift-to-right">
+<p><br>
+<div class="al-api"><b><a name="What_is_Allegro_">   What is Allegro?</a></b></div><br>
+      See <tt><a href="readme.html">readme.txt</a></tt>.
+
+
+<p><br>
+<div class="al-api"><b><a name="Where_can_I_get_it_">   Where can I get it?</a></b></div><br>
+      From any SimTel mirror (<a href="http://alleg.sourceforge.net/mirrors.html">http://alleg.sourceforge.net/mirrors.html</a>), in
+      the directory <tt>gnu/djgpp/v2tk/</tt>, or from the Allegro homepage,
+      <a href="http://alleg.sourceforge.net/">http://alleg.sourceforge.net/</a>.
+
+
+<p><br>
+<div class="al-api"><b><a name="How_do_I_use_it_">   How do I use it?</a></b></div><br>
+      See <tt><a href="allegro.html">allegro.txt</a></tt>.
+</div>
+
+
+
+<p><br>
+<h1><a name="The giftware licence">The giftware licence</a></h1>
+
+<p>
+   The Allegro licence is absolutely clear unless you are a lawyer.
+   However, it's written quite informally so this mini-FAQ tries to clarify
+   some things.
+
+<div class="faq-shift-to-right">
+<p><br>
+<div class="al-api"><b><a name="Does_the_licence_mean_that_Allegro_is_public_domain_">   Does the licence mean that Allegro is public domain?</a></b></div><br>
+      No. Every Allegro contributor holds the copyright for the code he or
+      she wrote. This means he or she grants you the right to use it for
+      any purpose you want. But the fact that the contributor holds the
+      copyright means that you e.g. cannot claim that you wrote the code.
+
+<p><br>
+<div class="al-api"><b><a name="Can_I_use_Allegro_for_commercial_purposes_">   Can I use Allegro for commercial purposes?</a></b></div><br>
+      Yes.
+
+<p><br>
+<div class="al-api"><b><a name="Is_Allegro_compatible_with_licence_XXX__e_g__GPL__">   Is Allegro compatible with licence XXX (e.g. GPL)?</a></b></div><br>
+      Because the Allegro licence has no restrictions on use you can combine
+      it with any licence you want.
+
+<p><br>
+<div class="al-api"><b><a name="Is_Allegro_open_source__OSI__compatible_">   Is Allegro open source (OSI) compatible?</a></b></div><br>
+      See the previous question. Since Allegro is compatible with about any
+      license, it also is OSI compatible. It clearly is compatible with all the
+      points in the OSD (open source definition). You can search the OSI
+      mailing list for "Allegro" to see that OSI shares this view. (OSI
+      officials still were reluctant to consider it for approval though and
+      suggested to use an existing license like MIT instead.)
+
+<p><br>
+<div class="al-api"><b><a name="How_are_modifications_of_the_library_licensed_">   How are modifications of the library licensed?</a></b></div><br>
+      You can modify Allegro and distribute the modified Allegro under
+      any licence you want, but the original unmodified parts will still
+      be licenced under the Allegro licence. If you offer your
+      modifications to be included in the official Allegro distribution
+      (e.g. by sending them to the Allegro developers mailing list) you
+      automatically agree with licencing the modification under the
+      Allegro licence.
+
+<p><br>
+<div class="al-api"><b><a name="I_took_your_code__Will_you_sue_me_">   I took your code. Will you sue me?</a>
+   Your library destroyed my PC. Who do I sue?</b></div><br>
+      We are programmers not lawyers. This FAQ represents our current
+      understanding of copyright law (or copyright laws in different
+      countries). But given the license, which allows everything, and
+      the disclaimer, which says we take no responsibility for anything,
+      we really don't see how there could be any problems.
+</div>
+
+
+
+<p><br>
+<h1><a name="DJGPP problems">DJGPP problems</a></h1>
+
+<div class="faq-shift-to-right">
+<p><br>
+<div class="al-api"><b><a name="What_is_this_make_program_that_I_m_supposed_to_run_">   What is this make program that I'm supposed to run?</a></b></div><br>
+      Make is part of the standard djgpp distribution, in the file 
+      <tt>v2gnu/mak*b.zip</tt> (whatever the latest version number is).
+      You can get this from <a href="http://www.delorie.com/djgpp/">http://www.delorie.com/djgpp/</a>.
+
+
+<p><br>
+<div class="al-api"><b><a name="Make_doesn_t_work_properly_">   Make doesn't work properly.</a></b></div><br>
+      Are you sure that you have installed djgpp correctly? Check the 
+      instructions in the djgpp <tt>readme.1st</tt> file, and in particular confirm
+      that you have set the DJGPP environment variable and added the 
+      <tt>djgpp\bin</tt> directory to your path.
+
+
+<p><br>
+<div class="al-api"><b><a name="My_djgpp_installation_is_fine__but_make_still_doesn_t_work_properly_">   My djgpp installation is fine, but make still doesn't work properly.</a></b></div><br>
+      Are you sure that you are using the GNU make program, and not some 
+      other version like the Borland one? If in doubt, run <tt>make -v</tt> and
+      check that the GNU copyright message is displayed.
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_run_make__it_asks_me_for_some_parameters__What_do_I_type_">   When I run make, it asks me for some parameters. What do I type?</a></b></div><br>
+      You shouldn't be running make from the Win95 explorer! Bring up a DOS 
+      box, change to your Allegro directory, and type <tt>make</tt> at the command
+      prompt.
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_run_make__it_says__makefile_has_modification_time_in_the_future__">   When I run make, it says "makefile has modification time in the future".</a></b></div><br>
+      Are you sure that your system time and date are set correctly?
+      Alternatively you may have downloaded a fresh file made by someone in a
+      more eastern timezone. In the latter case you can either wait a few
+      hours, temporarily set your clock forward, or use a utility such as
+      <tt>touch</tt> to change the timestamp of the files.
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_run_make__it_says__virtual_memory_exhausted__">   When I run make, it says "virtual memory exhausted".</a></b></div><br>
+
+<p>
+      As the error message suggests, you need to provide more memory for the 
+      compiler to use. The <tt>go32-v2</tt> program will tell you how much is
+      currently available. If you are running under DOS, try to free up more
+      disk space for use as a swapfile. When using win95, increase the DPMI 
+      memory limit in the properties for your DOS session to 65535 (you'll 
+      have to type this in by hand, because the pulldown list doesn't go 
+      above 16384).
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_run_make__it_says__conflicting_types_for_va_list__">   When I run make, it says "conflicting types for va_list".</a></b></div><br>
+
+<p>
+      As the error message suggests, there is a conflict between newer
+      versions of gcc and older versions of the libc. You must upgrade your
+      djdevxxx.zip package to the latest update (timestamp 11 August 2002)
+      of DJGPP-2.03 or above.
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_try_to_compile_a_program_using_Allegro__I_get_lots_of_errors_like_">   When I try to compile a program using Allegro, I get lots of errors like:</a></b></div><br>
+   C:\TEMP\ccdaaaaa(.text+0x9):x.c: undefined reference to <tt>`allegro_init'</tt><br>
+   C:\TEMP\ccdaaaaa(.text+0xe):x.c: undefined reference to <tt>`install_keyboard'</tt><br>
+
+<p>
+      You haven't read the docs, have you? :-) You need to link your program 
+      with the library file, <tt>liballeg.a</tt>. First, make sure you have installed
+      everything properly (running <tt>make install</tt> should do this for you).
+      Second, if you are compiling from the command prompt or with a makefile,
+      add <tt>-lalleg</tt> to the end of your gcc command line, or if you are using Rhide,
+      go to the Options/Libraries menu, type <tt>alleg</tt> into the first empty field,
+      and make sure the box next to it is checked.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_give_up__I_can_t_compile_this__Can_you_send_me_a_precompiled_version_">   I give up: I can't compile this! Can you send me a precompiled version?</a></b></div><br>
+
+<p>
+      No, sorry. For starters, <tt>liballeg.a</tt> is about 450k, but you'd probably 
+      also want various utilities like the grabber, sound setup, etc. And
+      what about all the example programs? If we included compiled versions
+      of everything, a binary distribution would be over 7 megs: way too big
+      to be practical! More seriously though, there just isn't any reason
+      why you can't build it yourself. A compiler is a deterministic
+      process: given a particular input file and command line, it will always
+      produce the same output. If this isn't working, you either have the
+      wrong input files (ie. your copy of Allegro is broken in some way), or
+      the wrong command line (it is hard to see how that could happen, since
+      all you have to do is type <tt>make</tt>...) or your compiler is broken, ie. you
+      didn't install djgpp properly. You need to find and fix the problem,
+      not just sweep it under the carpet by getting someone else to compile
+      Allegro for you...
+
+
+<p><br>
+<div class="al-api"><b><a name="Compile_errors_scroll_off_the_screen_too_quickly_for_me_to_read_them_">   Compile errors scroll off the screen too quickly for me to read them!</a></b></div><br>
+
+<p>
+      GNU tools write their error messages to the error stream, <tt>stderr</tt>. 
+      Unfortunately <tt>command.com</tt> is too stupid to know how to redirect this, 
+      but fortunately DJ was smart enough to work around that, so you can 
+      use his redir program to capture the output messages, for example 
+      <pre>
+         redir -eo make > logfile.txt
+      </pre>
+</div>
+
+
+<p><br>
+<h1><a name="DOS problems">DOS problems</a></h1>
+
+<div class="faq-shift-to-right">
+<p><br>
+<div class="al-api"><b><a name="Does_the_DOS_version_of_Allegro_work_under_Windows_NT_">   Does the DOS version of Allegro work under Windows NT?</a></b></div><br>
+
+<p>
+      Your mileage may vary. Some people have reported problems, while 
+      others say that it works fine. Use the Windows version of Allegro
+      if you want to make Windows programs. If you want to run DOS
+      programs, use DOS!
+
+
+<p><br>
+<div class="al-api"><b><a name="Does_Allegro_work_under_OpenDOS_">   Does Allegro work under OpenDOS?</a></b></div><br>
+
+<p>
+      Yes, but with some caveats. If you are using the OpenDOS version of 
+      EMM386, you must disable their DPMI implementation (specify <tt>DPMI=OFF</tt>
+      on the <tt>EMM386.EXE</tt> device line in your config.sys). You should also
+      make sure the <tt>PIC=OFF</tt> flag is set, but this is the default so it won't
+      be a problem unless you have specifically enabled it.
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_extend_the_256k_limit_on_Mode_X_video_memory_">   How can I extend the 256k limit on Mode-X video memory?</a>
+   I have two megs in my card.</b></div><br>
+
+<p>
+      You can't. The limit is imposed by the VGA hardware, not by Allegro. 
+      To access more than 256k of video memory you need to use an SVGA mode, 
+      which means either switching to a higher resolution or getting a copy 
+      of the SciTech Display Doctor, which provides several low resolution
+      SVGA modes.
+
+
+<p><br>
+<div class="al-api"><b><a name="Does_DOS_Allegro_work_with_the_SB_Live_soundcard_">   Does DOS Allegro work with the SB-Live soundcard?</a></b></div><br>
+
+<p>
+      It does for some people, but not for others. The problem is that 
+      Creative Labs refuse to release any specs, so we don't know how to 
+      write a driver for it. Complain to them, or buy a different card from 
+      a more reasonable manufacturer.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_does_DOS_Allegro_play_sounds_so_much_quieter_than_in_Windows_">   Why does DOS Allegro play sounds so much quieter than in Windows?</a></b></div><br>
+
+<p>
+      This might be because you have the volume set very low: try changing 
+      this in the setup program. Also, Allegro is mixing several sounds into 
+      a single output buffer, unlike the Windows sound player that only 
+      plays one sample at a time, so each individual sound can only get a 
+      smaller percentage of the total output volume. This is just the price 
+      you pay for multiple output channels. If you don't like it, use the 
+      setup program to tweak the number of channels: this can be any power 
+      of two less than or equal to 64, and the smaller you make it, the 
+      louder the sound will be. Alternatively, use <code>set_volume_per_voice()</code>,
+      described in the docs. This will enable you to adjust the overall
+      volume of Allegro's digital sound output.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_doesn_t_it_work_with_my_video_card_">   Why doesn't it work with my video card?</a></b></div><br>
+
+<p>
+      Try using a FreeBE/AF driver (<a href="http://www.talula.demon.co.uk/freebe/">http://www.talula.demon.co.uk/freebe/</a>),
+      or the commercial SciTech Display Doctor (<a href="http://www.scitechsoft.com">http://www.scitechsoft.com</a>).
+      If it still doesn't work, post a description of your problem to the 
+      Allegro mailing list, along with a copy of the output from running the 
+      afinfo and vesainfo programs.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_not_use_some_sort_of_dynamic_linking_system_">   Why not use some sort of dynamic linking system?</a></b></div><br>
+
+<p>
+      The VBE/AF interface already provides this for the video drivers: see 
+      the FreeBE/AF project on <a href="http://www.talula.demon.co.uk/freebe/">http://www.talula.demon.co.uk/freebe/</a>.
+      For more general things like the sound, VESA, and mode-X routines, 
+      this would be very difficult to do because the drivers depend on a lot 
+      of helper functions from the core lib. The djgpp DXE format is nowhere 
+      near flexible enough to support this, and we don't want to make Allegro 
+      dependent on any other dynamic linking packages.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_get_an__out_of_environment_space__error_when_I_run_fix_bat_or">   I get an "out of environment space" error when I run fix.bat or</a>
+   vcvars32.bat!</b></div><br>
+
+<p>
+      Well duh, you need to increase the size of your environment then :-) 
+      You can do this by changing the settings for your DOS box (click the 
+      system menu and select "properties"), or at startup in your config.sys 
+      file (eg. <tt>shell=c:\command.com /e:8192 /p</tt>).
+</div>
+
+
+<p><br>
+<h1><a name="Windows problems">Windows problems</a></h1>
+
+<div class="faq-shift-to-right">
+<p><br>
+<div class="al-api"><b><a name="I_get_an__out_of_environment_space__error_when_I_run_fix_bat_or">   I get an "out of environment space" error when I run fix.bat or</a>
+   vcvars32.bat!</b></div><br>
+
+<p>
+      Well duh, you need to increase the size of your environment then :-) 
+      You can do this by changing the settings for your DOS box (click the 
+      system menu and select "properties"), or at startup in your config.sys 
+      file (eg. <tt>shell=c:\command.com /e:8192 /p</tt>).
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_run_make__it_says__missing_separator__">   When I run make, it says "missing separator".</a></b></div><br>
+
+<p>
+      Make sure that you don't have a semi-colon appended to your MSVCDIR 
+      variable if you are using MSVC, to your MINGDIR variable if you are 
+      using MinGW or to your BCC32DIR variable if you are using BCC.
+      Also run <tt>make -v</tt> from the command line and make sure you are using
+      GNU make and not Borland make or Microsoft make.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_get_lots_of_compile_errors_about_things_like__LPDIRECTDRAWSURFACE2__">   I get lots of compile errors about things like "LPDIRECTDRAWSURFACE2"!</a></b></div><br>
+
+<p>
+      You need to tell your compiler how to find the DirectX include files
+      and libraries: put the DirectX SDK <tt>/include</tt> and <tt>/lib</tt> directories in the
+      compiler/linker path. Alternatively, if you don't want to modify any
+      configuration stuff, you can simply copy the files from the DirectX SDK
+      <tt>/include</tt> and <tt>/lib</tt> directories to the corresponding ones for your
+      compiler.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_get_lots_of_compile_errors_about_things_like__DDEDM_STANDARDVGAMODES__">   I get lots of compile errors about things like "DDEDM_STANDARDVGAMODES"!</a></b></div><br>
+
+<p>
+      You need to upgrade to a more recent version of the DirectX SDK, at 
+      least version 5, which you can get from the Microsoft Developer site.
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_run_make__it_says__windres__no_resources__">   When I run make, it says "windres: no resources".</a></b></div><br>
+
+<p>
+      If an anti-virus software (Norton or McAfee for example) is running in
+      the background on your computer, try to disable it temporarily.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_get_an_error_about_a_missing_WinMain___or_main___function_">   I get an error about a missing WinMain() or main() function!</a></b></div><br>
+
+<p>
+      You need to write <code>END_OF_MAIN()</code> just after your <code>main()</code> function.
+      Allegro uses this, along with some preprocessor magic, to turn a normal
+      <code>main()</code> function into a Windows-style <code>WinMain()</code> entry point.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_get_an_error_about_an__unresolved_external_symbol__main__">   I get an error about an "unresolved external symbol _main"!</a></b></div><br>
+
+<p>
+      Make sure you're building a Windows GUI Application, and not a Windows
+      Console Application. This is a setting when you create the project in
+      MSVC, Dev-C++ or Borland C++ Builder. Alternatively, this is specified
+      on the command line by the <tt>-subsystem:windows</tt> option for the MSVC
+      linker, by the <tt>-Wl,--subsystem,windows</tt> option for the MinGW compiler
+      or the <tt>-tW</tt> option for the Borland C++ compiler. Either that, or define
+      the preprocessor symbol <tt>ALLEGRO_USE_CONSOLE</tt> prior to including Allegro
+      headers if you really need the console for your program.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_get_lots_of_compile_errors_about_conflicting_types_for__struct_BITMAP__">   I get lots of compile errors about conflicting types for "struct BITMAP"!</a></b></div><br>
+
+<p>
+      If your program directly includes Win32 API header files, see the
+      "Windows specifics" section of the documentation.
+      <p>
+<p>
+      If your program only includes header files of the C++ standard library,
+      you're very likely trying to compile it with gcc 3.x for MinGW; if so,
+      define the symbol <tt>__GTHREAD_HIDE_WIN32API</tt> on the compiler command line:
+      <pre>
+         g++ -D__GTHREAD_HIDE_WIN32API program.cpp -lalleg
+      </pre>
+
+
+<p><br>
+<div class="al-api"><b><a name="In_windowed_mode_artifacts_are_left_on_the_desktop_when_the_window">   In windowed mode artifacts are left on the desktop when the window</a>
+   is moved or when another window is placed on top of it.</b></div><br>
+
+<p>
+      Disable direct updating for the DirectX windowed driver by using the
+      dedicated configuration variable. See the 'Configuration routines'
+      section in the docs and the <tt>allegro.cfg</tt> template file for more
+      detailed informations.
+
+
+<p><br>
+<div class="al-api"><b><a name="In_windowed_mode_the_screen_stays_black_unless_the_window_is_placed">   In windowed mode the screen stays black unless the window is placed</a>
+   under another window on the desktop.</b></div><br>
+
+<p>
+      Disable direct updating for the DirectX windowed driver by using the
+      dedicated configuration variable. See the 'Configuration routines'
+      section in the docs and the <tt>allegro.cfg</tt> template file for more
+      detailed informations.
+</div>
+
+
+<p><br>
+<h1><a name="Unix problems">Unix problems</a></h1>
+
+<div class="faq-shift-to-right">
+<p><br>
+<div class="al-api"><b><a name="I_get_an_error_about___mangled_main_address__being_undefined_">   I get an error about "_mangled_main_address" being undefined!</a></b></div><br>
+
+<p>
+      You need to write <code>END_OF_MAIN()</code> just after your <code>main()</code> function. 
+      Allegro uses this, along with some preprocessor magic, to get a copy 
+      of your <code>argv[]</code> parameters (it needs those for various internal things).
+
+
+<p><br>
+<div class="al-api"><b><a name="I_get_an_error_about_a_duplicate_definition_of_the___main__symbol_">   I get an error about a duplicate definition of the "_main" symbol!</a></b></div><br>
+
+<p>
+      You are probably on a Darwin/MacOS X system. If so, make sure the symbol
+      <code>USE_CONSOLE</code> is not defined in your program: it is a deprecated symbol
+      that must be replaced by <code>ALLEGRO_USE_CONSOLE</code>. Also note that the magic
+      main can't be disabled on such a system: you simply can't define the
+      symbol <code>ALLEGRO_NO_MAGIC_MAIN</code> in a program linked against Allegro.
+
+
+<p><br>
+<div class="al-api"><b><a name="Compile_errors_scroll_off_the_screen_way_too_quickly_for_me_to_read_them_">   Compile errors scroll off the screen way too quickly for me to read them!</a></b></div><br>
+
+<p>
+      You need to redirect stderr into a file, so you can view them later. 
+      The method for doing this depends on your shell: if you are using a 
+      Bourne-style shell like bash, try <tt>make 2> logfile.txt</tt>
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_try_to_run_Allegro_programs__I_get__error_while_loading_shared_libraries_">   When I try to run Allegro programs, I get "error while loading shared libraries:</a>
+   liballeg.so.4.1: cannot open shared object file: No such file or directory".</b></div><br>
+
+<p>
+      You need to teach the dynamic linker where to find the Allegro shared library.
+      See <tt>docs/build/unix.txt</tt>, near the end of the 'Installing Allegro' section.
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_try_to_use_DGA2__I_get__resolution_not_supported___but_the">   When I try to use DGA2, I get "resolution not supported", but the</a>
+   X server does actually support that resolution !</b></div><br>
+
+<p>
+      There are two possible reasons:
+      1) DGA2 may support different resolutions/color depths than X, 
+         run the gfxinfo program to know what combinations you can use, 
+      2) You may have a buggy DGA2 implementation, see next question.
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_try_to_use_DGA2__the_screen_goes_black_and_the_PC_completely">   When I try to use DGA2, the screen goes black and the PC completely</a>
+   halts!</b></div><br>
+
+<p>
+      You are probably using a XFree86 server with a very buggy DGA2 
+      implementation, such as 4.0.3 (shipped with Red Hat 7.1 for example). 
+      Upgrading to 4.1.0 will probably solve your problem. You can obtain 
+      it from <a href="ftp://ftp.xfree86.org/pub/XFree86/4.1.0/binaries/">ftp://ftp.xfree86.org/pub/XFree86/4.1.0/binaries/</a> selecting 
+      the directory suited to your platform and following the instructions 
+      you find in the Install file.
+</div>
+
+
+<p><br>
+<h1><a name="General problems">General problems</a></h1>
+
+<div class="faq-shift-to-right">
+<p><br>
+<div class="al-api"><b><a name="I_m_trying_to_compile_the_grabber__but_it_doesn_t_work_">   I'm trying to compile the grabber, but it doesn't work!</a></b></div><br>
+
+<p>
+      The grabber needs to be linked with the code in <code>datedit.c</code>. But you 
+      shouldn't have to worry about doing this by hand: just run <code>make</code> and 
+      that will build everything for you.
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_compile_Allegro__make_fails_with_something_like__Error__operands">   When I compile Allegro, make fails with something like `Error: operands</a>
+   given don't match any known 386 instruction' or `Error: no such
+   instruction `maskmovq %mm3, %mm1''.</b></div><br>
+
+<p>
+      You need to update your version of GNU binutils. See <tt><a href="readme.html">readme.txt</a></tt> to
+      find out what the minimum required version you need is.
+
+
+<p><br>
+<div class="al-api"><b><a name="Can_I_use_Allegro_with_my__ltfoobar_gt_compiler_">   Can I use Allegro with my &lt;foobar&gt; compiler?</a></b></div><br>
+
+<p>
+      Not unless &lt;foobar&gt; is mentioned in <tt><a href="readme.html">readme.txt</a></tt> as one of the 
+      supported platforms. You could port it, but that is usually a lot of 
+      work. If &lt;foobar&gt; is a 16 bit DOS compiler like Borland C, you 
+      might as well just forget the idea :-)
+
+
+<p><br>
+<div class="al-api"><b><a name="What_is_this__Allegro_WIP__that_I_see_people_talking_about_">   What is this "Allegro WIP" that I see people talking about?</a></b></div><br>
+
+<p>
+      WIP stands for "work in progress", and refers to any changes that are 
+      more recent than the last official release. WIP versions of the 
+      library can be obtained as patches from the Allegro website 
+      (<a href="http://alleg.sourceforge.net/">http://alleg.sourceforge.net/</a>), and are usually
+      quite stable, although obviously not so well tested as a final release 
+      version.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_got_the_WIP_patch__but_I_can_t_apply_it_">   I got the WIP patch, but I can't apply it.</a></b></div><br>
+
+<p>
+      Do you have a copy of <tt>patch.exe</tt>? If not, go and get it from the same 
+      place that you downloaded the rest of djgpp: this tool is a standard 
+      part of the compiler distribution. Similarly, you can get the Mingw
+      compiled version from <a href="http://sourceforge.net/projects/gnuwin32/">http://sourceforge.net/projects/gnuwin32/</a>.
+      <p>
+<p>
+      If you do have the patch program but it isn't working properly, make
+      sure that you are installing the patch over the top of an unmodified
+      copy of whatever Allegro version it is intended to update (this will
+      usually be the most recent official release from before the WIP was
+      made, but check the text file that comes with the WIP to be sure).
+
+
+<p><br>
+<div class="al-api"><b><a name="When_I_run_the_demo_game__it_says_it_can_t_find_demo_dat_">   When I run the demo game, it says it can't find demo.dat.</a></b></div><br>
+
+<p>
+      That file is distributed separately in the WIP versions. It is here:
+      <a href="http://alleg.sourceforge.net/wip.html">http://alleg.sourceforge.net/wip.html</a>. (<tt>alldata.zip</tt>)
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_display_several_different_images_at_the_same_time_">   How can I display several different images at the same time?</a>
+   When I show the second one it messes up the palette for the first.</b></div><br>
+
+<p>
+      This is just the way that the video hardware works: there can only be 
+      one palette in use at any given moment. Either convert your images so 
+      they all use the same palette, or switch to a truecolor graphics mode.
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_convert_my_graphics_to_all_use_the_same_256_color_palette_">   How can I convert my graphics to all use the same 256 color palette?</a></b></div><br>
+
+<p>
+      See the Allegro.cc homepage (<a href="http://www.allegro.cc/">http://www.allegro.cc/</a>)
+      for some utilities, for example FixPal and Smacker.
+
+
+<p><br>
+<div class="al-api"><b><a name="My_colors_always_come_out_wrong__And_how_can_I_make_a_greyscale_palette">   My colors always come out wrong. And how can I make a greyscale palette</a>
+   with 256 different shades?</b></div><br>
+
+<p>
+      The VGA hardware only uses 6 bits for each color component, which 
+      means the red, green, and blue values in the palette structure range 
+      from 0 to 63, not all the way up to 255. That gives you a potential 
+      2^18 = 262144 different colors, or 64 shades of grey. If you need more 
+      than this you could try using VESA function <tt>0x4F08</tt> to select an 8 bit 
+      wide DAC, but Allegro doesn't support this directly and I don't know 
+      how reliable it will be across different hardware.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_do_I_have_a_funny_color_border_at_the_edges_of_my_monitor_">   Why do I have a funny color border at the edges of my monitor?</a></b></div><br>
+
+<p>
+      When you are in a 256 color mode, the VGA card displays color #0 
+      around the border of the display area (in truecolor modes it displays 
+      black). Your funny color will go away if you change the palette so 
+      that color #0 is black.
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_fade_the_screen_in_a_truecolor_graphics_mode_">   How can I fade the screen in a truecolor graphics mode?</a></b></div><br>
+
+<p>
+      With great difficulty :-) There is no such easy trick as just altering 
+      the palette, so you will have to repeatedly redraw the image in a 
+      lighter or darker form. You could draw black translucent rectangles 
+      over the screen to darken it down, or use <code>draw_lit_sprite()</code> to tint a 
+      bitmap while copying it to the screen, but be warned that these 
+      operations are expensive and will require a fast PC!
+      <p>
+<p>
+      Also, have a look at <a href="http://www.allegro.cc/">http://www.allegro.cc/</a> for add-on packages
+      (notably FBlend v0.5) that attempt to make this operation as fast as
+      possible.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_tried_using_fade_in___and_fade_out___with_truecolor_modes_but_nothing">   I tried using fade_in() and fade_out() with truecolor modes but nothing</a>
+   happened. What am I doing wrong?</b></div><br>
+
+<p>
+      <code>fade_in()</code> and <code>fade_out()</code> only work in 8-bit paletted modes.
+      See the previous question for details.
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_generate_FLI_or_FLC_format_animations_">   How can I generate FLI or FLC format animations?</a></b></div><br>
+
+<p>
+      See the Allegro.cc homepage (<a href="http://www.allegro.cc/">http://www.allegro.cc/</a>)
+      for some utilities, for example DTA and Smacker. Also, you can use ASE
+      (Allegro Sprite Editor, <a href="http://ase.sourceforge.net/">http://ase.sourceforge.net/</a>), which allows
+      drawing/editing each frame of the animation and save it as a FLI. Or
+      you can use The GIMP (<a href="http://www.gimp.org/">http://www.gimp.org/</a>) along with it's GFli
+      plugin, using layers as frames, and saving your work as <tt>file.fli</tt>.
+      The GIMP allows you to edit existent FLI files too.
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_make_parts_of_my_sprite_transparent_in_truecolor_modes_">   How can I make parts of my sprite transparent in truecolor modes?</a>
+   I don't understand what the docs mean by "bright pink"...</b></div><br>
+
+<p>
+      In your favourite paint program, get hold of the RGB sliders and drag 
+      the red and blue ones up as far as they go (usually to 255, but this 
+      will depend on what units your software uses), and the green one right 
+      down to zero. The result is a special shade of Magic Pink, or as some 
+      people prefer to call it, magenta.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_can_t_get_the_3D_polygon_functions_to_work_">   I can't get the 3D polygon functions to work!</a></b></div><br>
+
+<p>
+      Remember that the vertex positions are stored in fixed point format, 
+      so you must use the <code>itofix()</code> macro or shift your coordinates 16 bits 
+      to the left.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_can_t_get_the_rotate_sprite___function_to_work_">   I can't get the rotate_sprite() function to work!</a></b></div><br>
+
+<p>
+      Remember that the angle of rotation is stored in fixed point format, 
+      so you must use the <code>itofix()</code> macro or shift your coordinates 16 bits 
+      to the left. For example, <code>rotate_sprite(bmp, spr, x, y, itofix(32))</code>
+      will rotate the graphic by 45 degrees.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_can_t_get_the_d_bitmap_proc___or_d_icon_proc___GUI_object_to_work_">   I can't get the d_bitmap_proc() or d_icon_proc() GUI object to work!</a></b></div><br>
+
+<p>
+      You are probably trying to initialise the dialog structure with a 
+      pointer to your bitmap, right? That won't work because the dialog is 
+      created at compile time, but the bitmap is only loaded at runtime, so 
+      the compiler doesn't yet know where it will be located. You need to 
+      fill in the dialog structure with a <code>NULL</code> pointer, and then copy the 
+      real bitmap pointer into the <code>dp</code> field as part of your program init 
+      code, after you've loaded the bitmap into memory.
+
+
+<p><br>
+<div class="al-api"><b><a name="Should_I_use_regular_bitmaps__RLE_sprites__or_compiled_sprites_">   Should I use regular bitmaps, RLE sprites, or compiled sprites?</a></b></div><br>
+
+<p>
+      It depends on exactly what you are doing. If your images are totally 
+      opaque, there is no advantage to using an RLE sprite, and it will 
+      probably be faster to use a regular bitmap with the <code>blit()</code> function. 
+      If your graphics contain masked areas, an RLE sprite may be both smaller
+      and faster than the <code>draw_sprite()</code> function, depending on your CPU
+      and your bitmaps.
+      Compiled sprites are in general quite a bit faster than both the 
+      others for masked images, and slightly faster for opaque graphics, but 
+      this is far more variable. They are at their best with small sprites, 
+      on older machines and in mode-X, and may actually be slower than 
+      <code>blit()</code> when using SVGA modes on a pentium (the large size of a 
+      compiled sprite is very bad for the cache performance).
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_make_my_game_run_at_the_same_speed_on_any_computer_">   How can I make my game run at the same speed on any computer?</a></b></div><br>
+
+<p>
+      You need to make sure the game logic gets updated at a regular rate, 
+      but skip the screen refresh every now and then if the computer is too 
+      slow to keep up. This can be done by installing a timer handler that 
+      will increment a global variable at your game logic speed, eg:
+<blockquote class="code"><pre>
+      volatile int speed_counter = 0;
+
+      void increment_speed_counter()
+      {
+         speed_counter++;
+      }
+
+      END_OF_FUNCTION(increment_speed_counter)
+
+      void play_the_game()
+      {
+         LOCK_VARIABLE(speed_counter);
+         LOCK_FUNCTION(increment_speed_counter);
+
+         install_int_ex(increment_speed_counter, BPS_TO_TIMER(60));
+
+         while (!game_over) {
+            while (speed_counter &gt; 0) {
+               update_game_logic();
+               speed_counter--;
+            }
+
+            update_display();
+         }
+      }</pre></blockquote>
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_take_a_screenshot_of_my_Allegro_program_">   How can I take a screenshot of my Allegro program?</a></b></div><br>
+
+<p>
+      Add a call to <code>save_bitmap()</code> somewhere in your code. See the 
+      <code>save_bitmap()</code> documentation for a discussion of one common pitfall 
+      when doing this, and some example code.
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_generate_a_random_number_">   How can I generate a random number?</a></b></div><br>
+
+<p>
+      Call <code>srand(time(NULL))</code> at the beginning of your program, and then use 
+      <code>rand()%limit</code> to obtain a pseudo-random number between <code>0</code> and <code>limit-1</code>.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_not_make_a__lite__version_of_Allegro_">   Why not make a "lite" version of Allegro?</a>
+   I don't need any of the sound, maths, or GUI routines...</b></div><br>
+
+<p>
+      There is no need. The linker will only include the parts of the 
+      library that you actually use, so if you don't call any of, say, the 
+      texture mapping or FLIC playing functions, they will be left out of 
+      your executable. This doesn't work perfectly because a lot of the 
+      Allegro code uses tables of function pointers that cause some 
+      unnecessary routines to be linked in, so the majority of the graphics 
+      functions will be included in every executable, but I have tried to 
+      keep this to a minimum. See <tt><a href="allegro.html">allegro.txt</a></tt> for information about more 
+      precise ways to remove some of the graphics and sound drivers.
+
+
+<p><br>
+<div class="al-api"><b><a name="Will_you_ever_add_support_for_3D_accelerator_hardware_">   Will you ever add support for 3D accelerator hardware?</a></b></div><br>
+
+<p>
+      No. This sort of hardware support would be most useful as part of a 
+      proper 3D API, which Allegro is not, and will never be. If you want
+      to do some work on this, the MESA library (a free implementation 
+      of OpenGL) is IMHO the place to start.
+      <p>
+<p>
+      However, if you are interested in using OpenGL for graphics and Allegro
+      for everything else, you can try the various add-ons libraries linked
+      from <a href="http://www.allegro.cc/">http://www.allegro.cc/</a> such as AllegroGL.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_not_add_a_MOD_playing_function_">   Why not add a MOD playing function?</a></b></div><br>
+
+<p>
+      Several very good ones already exist, for instance the JGMOD or DUMB
+      packages. See the audio library extensions section on the Allegro.cc
+      website (<a href="http://www.allegro.cc/">http://www.allegro.cc/</a>). You are not allowed to suggest
+      that one of these libraries be merged into Allegro, because this topic
+      has already been done to death on the mailing list and we are tired of it.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_not_add_networking_support_">   Why not add networking support?</a></b></div><br>
+
+<p>
+      There are several networking packages currently in development or 
+      floating around on the net, though, and in our opinion this sort of 
+      code is more useful as an external library than it would be as part of 
+      Allegro.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_can_t_Allegro_read_GIF_files_">   Why can't Allegro read GIF files?</a></b></div><br>
+
+<p>
+      Unisys has a patent on the LZW compression algorithm that is used by 
+      the GIF format. We want everything in Allegro to be freely usable 
+      without any restrictions whatsoever, which means we can't include any 
+      code that is subject to licensing or the payment of royalties.
+
+
+<p><br>
+<div class="al-api"><b><a name="My_program_crashes_all_the_time__Could_this_be_a_bug_in_Allegro_">   My program crashes all the time. Could this be a bug in Allegro?</a></b></div><br>
+
+<p>
+      Perhaps. Try to isolate the smallest fragment of code that is able to 
+      reproduce the problem, and we'll have a look at it. If you can send us 
+      a 10 line program, we will fix it. 100 lines, and we can probably fix 
+      it. 1000 lines, and we don't have a chance :-)
+
+
+<p><br>
+<div class="al-api"><b><a name="Can_I_use_Allegro_in_my__ltwhatever_gt_commercial_application_">   Can I use Allegro in my &lt;whatever&gt; commercial application?</a></b></div><br>
+
+<p>
+      Sure. See the giftware terms in <tt><a href="readme.html">readme.txt</a></tt>. We don't mind what you do 
+      with it, and there are no problems with commercial usage.
+
+
+<p><br>
+<div class="al-api"><b><a name="When_will__ltfoobar_gt_be_finished__I_can_t_wait___">   When will &lt;foobar&gt; be finished? I can't wait...</a></b></div><br>
+
+<p>
+      Whenever it is done! A little encouragement is always welcome, but we 
+      don't have any completion deadlines and we're not going to make one up 
+      for you :-) As soon as it is finished, it will be released.
+
+
+<p><br>
+<div class="al-api"><b><a name="Where_can_I_get_some_fonts_to_use_with_Allegro_">   Where can I get some fonts to use with Allegro?</a></b></div><br>
+
+<p>
+      The grabber can import directly from GRX or BIOS format .fnt files, or 
+      you can draw them onto a .pcx image using any paint program. See 
+      <a href="http://www.talula.demon.co.uk/ttf2pcx/">http://www.talula.demon.co.uk/ttf2pcx/</a> for a utility that 
+      will convert Windows TrueType fonts into this .pcx format.
+
+
+<p><br>
+<div class="al-api"><b><a name="Where_can_I_find_a_set_of_instrument_samples_for_the_DIGMID_driver_">   Where can I find a set of instrument samples for the DIGMID driver?</a></b></div><br>
+
+<p>
+      See the Allegro homepage (<a href="http://alleg.sourceforge.net/">http://alleg.sourceforge.net/</a>)
+      for some links. You can use Gravis patches (.pat format), or SoundFont 
+      2.0 (.sf2) files, but the latter must be converted into a patches.dat 
+      file with the pat2dat utility.
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_convert_the_documentation_into_Windows_Help_format_">   How can I convert the documentation into Windows Help format?</a></b></div><br>
+
+<p>
+      You need to download the makertf conversion utility 
+      (<a href="ftp://ftp.coast.net/Coast/win3/winhelp/mkrtf104.zip">ftp://ftp.coast.net/Coast/win3/winhelp/mkrtf104.zip</a>), and the Windows 
+      Help compiler (<a href="ftp://ftp.microsoft.com/Softlib/MSLFILES/HC505.EXE">ftp://ftp.microsoft.com/Softlib/MSLFILES/HC505.EXE</a>). 
+      Make a temporary directory, copy the <code>allegro.txi</code> file from the 
+      <code>allegro/docs</code> dir, and run the commands <tt>makertf --no-warn allegro.txi 
+      -o allegro.rtf -J allegro.hpj</tt> followed by <tt>hcp allegro.hpj</tt>. The 
+      second command will give a lot of warnings, but they can safely be 
+      ignored.
+
+
+<p><br>
+<div class="al-api"><b><a name="How_can_I_print_out_the_documentation_">   How can I print out the documentation?</a></b></div><br>
+
+<p>
+      The <tt>allegro.rtf</tt> file can be read directly into Microsoft Word and 
+      printed from there, but you should right-click and update the table of 
+      contents and index fields to fill them with the correct data first. 
+      Alternatively you can install the TeX package and use the tex and 
+      dvips programs to convert <tt>allegro.txi</tt> into Postscript format.
+
+
+<p><br>
+<div class="al-api"><b><a name="Where_can_I_find_example_source_code__add_on_packages__and_tutorials_">   Where can I find example source code, add-on packages, and tutorials?</a></b></div><br>
+
+<p>
+      Check the Allegro.cc homepage, <a href="http://www.allegro.cc/">http://www.allegro.cc/</a>.
+      If you have anything to add to this, please post the URL!
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_is_it_considered_good_coding_practice_to_define_PI_as_a_constant_">   Why is it considered good coding practice to define PI as a constant,</a>
+   rather than just using the value 3.141592 in my code?</b></div><br>
+
+<p>
+      It simplifies the maintenance of your program, in case the value of PI 
+      ever needs to be changed. Also it will make your program more portable 
+      to other compilers that use different values of PI.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_doesn_t_vsync___seem_to_work_">   Why doesn't vsync() seem to work?</a></b></div><br>
+
+<p>
+      A number of graphics cards have buggy or incomplete VESA
+      implementations, and often the <code>vsync()</code> function is not implemented. For
+      examples on flicker-free drawing, look at the code for the demo game,
+      which uses a variety of methods to draw itself.
+
+
+<p><br>
+<div class="al-api"><b><a name="Why_doesn_t_busy_waiting_on_the_key_array_work__For_example_">   Why doesn't busy waiting on the key array work? For example,</a>
+   "while (!key[KEY_ENTER]);" doesn't work.</b></div><br>
+
+<p>
+      If the code works without optimisations, then it could be the
+      compiler's fault. You can try beating the compiler into submission,
+      for example:
+<blockquote class="code"><pre>
+      while (!key[KEY_ENTER])
+         rest(0);</pre></blockquote>
+
+<p>
+      For this case, however, it would be better to use <code>readkey()</code> instead.
+      Or consider upgrading or downgrading your compiler.
+
+
+<p><br>
+<div class="al-api"><b><a name="I_get_lots_of_errors_when_I_try_to_compile_my_C___Allegro_program_">   I get lots of errors when I try to compile my C++ Allegro program.</a></b></div><br>
+
+<p>
+      You are probably declaring the use of a namespace before including
+      Allegro headers. For example:
+<blockquote class="code"><pre>
+      #include &lt;iostream&gt;
+      using namespace std;
+
+      #include &lt;allegro.h&gt;</pre></blockquote>
+
+<p>
+      Move the <tt>`using'</tt> declaration after the <tt>`include'</tt> directives referring
+      to Allegro headers:
+<blockquote class="code"><pre>
+      #include &lt;iostream&gt;
+      #include &lt;allegro.h&gt;
+
+      using namespace std;</pre></blockquote>
+
+
+<p><br>
+<div class="al-api"><b><a name="I_m_still_confused__Where_can_I_get_help_">   I'm still confused. Where can I get help?</a></b></div><br>
+
+<p>
+      See <a href="http://alleg.sourceforge.net/maillist.html">http://alleg.sourceforge.net/maillist.html</a>.
+</div>
+
+
+
+</body>
+</html>

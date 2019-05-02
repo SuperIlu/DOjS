@@ -23,11 +23,11 @@ SOFTWARE.
 #ifndef __DOJS_H__
 #define __DOJS_H__
 
-#include <grx20.h>
-#include <grxkeys.h>
 #include <mujs.h>
 #include <stdbool.h>
 #include <stdio.h>
+
+#include <allegro.h>
 
 /************
 ** defines **
@@ -38,8 +38,8 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 0.9         //!< version number
-#define DOSJS_VERSION_STR "V0.9"  //!< version number as string
+#define DOSJS_VERSION 0.95         //!< version number
+#define DOSJS_VERSION_STR "V0.95"  //!< version number as string
 
 #define BOOT_DIR "JSBOOT/"  //!< directory with boot files.
 
@@ -96,6 +96,14 @@ SOFTWARE.
         fflush(LOGSTREAM);             \
     }
 
+//! write info to logfile/console
+#define LOGV(str)                  \
+    {                              \
+        fputs(SYSINFO, LOGSTREAM); \
+        fputs(str, LOGSTREAM);     \
+        fflush(LOGSTREAM);         \
+    }
+
 #ifdef DEBUG_ENABLED
 //! printf-style debug message to logfile/console
 #define DEBUGF(str, ...)                                   \
@@ -123,16 +131,23 @@ extern FILE *logfile;  //!< file for log output.
 #endif
 
 extern bool sound_available;  //!< indicates if WAV sound is available
-extern bool synth_available;  //!< indicates if FM sound is available
 extern bool mouse_available;  //!< indicates if the mouse is available
-extern bool midi_available;   //!< indicates if midi is available
 extern bool ipx_available;    //!< indicates if ipx is available
 extern bool mouse_visible;    //!< indicates if the cursor should be visible.
+bool transparency_available;  //!< indicates if transparency is enabled.
 
 extern float current_frame_rate;  //!< current frame rate
 extern float wanted_frame_rate;   //!< wanted frame rate
 
-extern bool keep_running;   //!< indicates that the script should keep on running
-extern GrKeyType exit_key;  //!< the exit key that will stop the script
+extern bool keep_running;  //!< indicates that the script should keep on running
+extern int exit_key;       //!< the exit key that will stop the script
+
+extern BITMAP *cur;                       //!< current drawing bitmap
+extern volatile unsigned long sys_ticks;  //!< tick counter
+
+/***********************
+** exported functions **
+***********************/
+extern void update_transparency();
 
 #endif  // __DOJS_H__

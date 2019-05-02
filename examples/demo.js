@@ -3,8 +3,8 @@ function Setup() {
     ClearScreen(EGA.BLACK);
     SetFramerate(30);
 
-    Xmax = MaxX();
-    Ymax = MaxY();
+    Xmax = SizeX();
+    Ymax = SizeY();
     XmaxHalf = Xmax / 2;
     stepX = Xmax / 128;
     stepY = Ymax / 128;
@@ -37,7 +37,7 @@ function Loop() {
 
 function Input(e) { }
 function linesRed() {
-    Line(0, 0, x, y, new Color(x, 0, 0));
+    Line(0, 0, x, y, Color(x, 0, 0, 128));
     x += stepX;
     y -= stepY;
     if (x > Xmax || y < 0) {
@@ -48,7 +48,7 @@ function linesRed() {
 }
 
 function linesGreen() {
-    Line(Xmax, 0, x, y, new Color(0, x, 0));
+    Line(Xmax, 0, x, y, Color(0, x, 0, 128));
     x -= stepX;
     y -= stepY;
     if (x < 0 || y < 0) {
@@ -58,7 +58,7 @@ function linesGreen() {
 }
 
 function linesBlue() {
-    Line(Xmax / 2, Ymax, x, 0, new Color(0, 0, x));
+    Line(Xmax / 2, Ymax, x, 0, Color(0, 0, x, 128));
     x -= stepX;
     if (x < 0) {
         state = 4;
@@ -87,7 +87,7 @@ function fontDemo() {
         fnt.DrawString(
             Xmax / 2, Ymax / 2 + fnt.StringHeight(""),
             "DOjS",
-            new Color(Math.random() * 255, Math.random() * 255, Math.random() * 255), NO_COLOR,
+            Color(Math.random() * 255, Math.random() * 255, Math.random() * 255, 128), NO_COLOR,
             FONT.Direction.DEFAULT,
             FONT.Align.CENTER,
             FONT.Align.TOP);
@@ -100,7 +100,7 @@ function fontDemo() {
         fnt.DrawString(
             Xmax / 2, Ymax / 2 + fnt.StringHeight("") - step,
             "DOjS",
-            new Color(Math.random() * 255, Math.random() * 255, Math.random() * 255), NO_COLOR,
+            Color(Math.random() * 255, Math.random() * 255, Math.random() * 255, 128), NO_COLOR,
             FONT.Direction.DEFAULT,
             FONT.Align.CENTER,
             FONT.Align.TOP);
@@ -117,7 +117,7 @@ function fontDemo() {
         fnt.DrawString(
             Xmax / 2, Ymax / 2,
             "DOjS",
-            new Color(Math.random() * 255, Math.random() * 255, Math.random() * 255), NO_COLOR,
+            Color(Math.random() * 255, Math.random() * 255, Math.random() * 255, 128), NO_COLOR,
             FONT.Direction.DEFAULT,
             FONT.Align.CENTER,
             FONT.Align.TOP);

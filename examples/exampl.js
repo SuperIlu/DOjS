@@ -24,7 +24,7 @@ SOFTWARE.
 ** This function is called once when the script is started.
 */
 function Setup() {
-    pink = new Color(241, 66, 244); // define the color pink
+    pink = Color(241, 66, 244, 255); // define the color pink
 }
 
 /*

@@ -11,7 +11,8 @@
         "initializer_list": "c",
         "string_view": "c",
         "conio.h": "c",
-        "stddef.h": "c"
+        "stddef.h": "c",
+        "allegro.h": "c"
     },
     "editor.formatOnSave": true,
     "editor.insertSpaces": false,

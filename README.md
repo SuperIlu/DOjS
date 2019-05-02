@@ -1,6 +1,6 @@
 # DOjS
 ## A DOS JavaScript Canvas with sound.
-[DOjS](https://github.com/SuperIlu/DOjS) is a JavaScript-able canvas with WAV, MIDI and FM sound support for systems running MS-DOS, [FreeDOS](http://freedos.org/) or any DOS based Windows (like 95, 98, ME).
+[DOjS](https://github.com/SuperIlu/DOjS) is a JavaScript-able canvas with WAV and MIDI sound support for systems running MS-DOS, [FreeDOS](http://freedos.org/) or any DOS based Windows (like 95, 98, ME).
 It was inspired by [Processing](https://processing.org/) which is described on [Wikipedia](https://en.wikipedia.org/wiki/Processing_(programming_language)) as:
 
 > Processing is an open-source graphical library and integrated development environment (IDE) / playground built for the electronic arts, new media art, and visual design communities with the purpose of teaching non-programmers the fundamentals of computer programming in a visual context.
@@ -15,9 +15,7 @@ DOjS is pronounces like [doge](https://en.wikipedia.org/wiki/Doge_(meme)), but e
 
 DOjS was only possible due to the work of these people/projects:
 * [MuJS](https://mujs.com/) JavaScript interpreter
-* The [GRX graphics library](http://grx.gnu.de/)
-* [libmikmod](http://mikmod.sourceforge.net/) sound library.
-* The FM and MIDI code from [Steven Don](http://www.shdon.com/dos/sound)
+* The [Allegro library](https://liballeg.org/)
 * [DJGPP](http://www.delorie.com/djgpp/) from DJ Delorie and the [Linux compile scripts](https://github.com/andrewwutw/build-djgpp) by Andrew Wu.
 * The people that contributed to [p5js](https://p5js.org/).
 
@@ -26,7 +24,7 @@ You can find me on [Twitter](https://twitter.com/dec_hl) if you want...
 # Download and quick start
 You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases). Just extract the contents of the archive and run DOjS.
 
-DOjS run in [Dosbox](https://www.dosbox.com/) and on real hardware or a virtual machine with MS-DOS, [FreeDOS](https://www.freedos.org/) or any DOS based Windows like Windows 95/98/ME.
+DOjS runs in [Dosbox](https://www.dosbox.com/) and on real hardware or a virtual machine with MS-DOS, [FreeDOS](https://www.freedos.org/) or any DOS based Windows like Windows 95/98/ME.
 
 If you run it on real hardware you need at least a **80386 with 4MB**. I recommend a **Pentium class machine (>= 100MHz) with at least 32MB RAM**. The example files run fine on an Athlon 1GHz and with 256MB RAM.
 
@@ -37,7 +35,7 @@ You can find the following example in `examples/exampl.js`:
 ** This function is called once when the script is started.
 */
 function Setup() {
-    pink = new Color(241, 66, 244); // define the color pink
+    pink = new Color(241, 66, 244, 255); // define the color pink
 }
 
 /*
@@ -57,7 +55,7 @@ function Input(event) {
     str = JSON.stringify(event);
 }
 ```
-Open this script with `DOjS.EXE tests\exampl.js` or use `DOjS.EXE -r tests\exampl.js` to run it without starting the integrated editor first. If the script does not exist the editor loads the template for a new script.
+Open this script with `DOjS.EXE examples\exampl.js` or use `DOjS.EXE -r examples\exampl.js` to run it without starting the integrated editor first. If the script does not exist the editor loads the template for a new script.
 
 ## p5js compatibility
 If you want to write scripts using the syntax of [p5js](https://p5js.org/) you need to use `Include('p5');` as first line of your script. You can find the following example in `examples/examplp5.js`:
@@ -128,18 +126,10 @@ Now you are ready to compile DOjS with `make clean all`. This might take some ti
 # History
 See the [changelog](/CHANGELOG.md) for the projects history.
 
-# Known bugs/limitations
-* There seems to be a bug in the FM sound system. Sounds created by DOjS sound different to the ones created by Steven Dons original code.
-* Some (nice) functions from GRX are still missing.
-* BMPs must be 2, 4, 8 bpp.
-* `MouseShowCursor(false)` does not work
-* The double buffering (fix for flickering graphics) created visibility issues with the mouse cursor.
-
 # Planed work
 * Fix bugs!
-* Add more GRX functions to JavaScript API.
-* split up `func.c` into `grx.c` and `func.c`.
 * Improve help viewer.
+* Anything fun...
 
 # Licenses
 ## DOjS
@@ -148,14 +138,11 @@ All code from me is released under **MIT license**.
 ## MuJS
 MuJS is released under **ISC license**. See *COPYING* in the MuJS folder for details.
 
+## Allegro
+Allegro 4 is released under the **Giftware license** (https://liballeg.org/license.html).
+
 ## GRX
-GRX itself is released under **LGPL**, the fonts are under **MIT and other licenses**. See *copying.grx* in the grx folder for details.
-
-## Mikmod
-Mikmod is released under **LGPL**.
-
-## MIDI and FM sound
-This code (modified by me) is (c) bei [Steven Don](http://www.shdon.com/). It is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) with kind permission of Steven. `FM.DAT` is released under [WTFPL](http://www.wtfpl.net/).
+The GRX fonts are under **MIT and other licenses**. See copying.grx in `LICENSE` for details.
 
 ## IPX and dosbuffer sub-system
 This code is taken from the game [Cylindrix](https://www.allegro.cc/depot/Cylindrix) by Hotwarez LLC, Goldtree Enterprises.
@@ -179,12 +166,6 @@ All WAV files were downloaded from [BigSoundBank](https://bigsoundbank.com/) and
 ## MIDs
 The MIDI files were downloaded from the [FreeDOOM](https://github.com/freedoom/freedoom) project and are licensed under [this](https://github.com/freedoom/freedoom/blob/master/COPYING.adoc) license.
 
-## libpng
-[libpng](http://www.libpng.org/pub/png/libpng.html) is released under [PNG Reference Library License version 2](http://www.libpng.org/pub/png/src/libpng-LICENSE.txt)
-
-## zlib
-[zlib](http://www.zlib.net/) is released under [zlib license](http://www.zlib.net/zlib_license.html).
-
 ## p5js and examples
 p5js is is released under **LGPL**. 
 
@@ -193,10 +174,13 @@ The examples are licensed under a [Creative Commons Attribution-NonCommercial-Sh
 # Usage
 ## Command line
 ```
-    Usage: DOjS.EXE [-r] [-s <p>:<i>:<d>] <script>
-        -r             : Do not invoke the editor, just run the script.
-        -w <width>     : Screen width: 320 or 640, Default: 640.
-        -b <bbp>       : Bit per pixel:8, 16, 24, 32. Default: 24.
+Usage: DOjS.EXE [-r] [-s <p>:<i>:<d>] <script>
+    -r             : Do not invoke the editor, just run the script.
+    -w <width>     : Screen width: 320 or 640, Default: 640.
+    -b <bpp>       : Bit per pixel:8, 16, 24, 32. Default: 32.
+    -s             : No wave sound.
+    -f             : No FM sound.
+    -a             : Disable alpha (speeds up rendering).
 ```
 
 ## Editor keys
@@ -208,6 +192,7 @@ The examples are licensed under a [Creative Commons Attribution-NonCommercial-Sh
     F9  : Show/Close logfile
     F10 : Quit
 
+    Shift-F4   : Truncate logfile and run script
     Shift-F7   : Find again
     CTRL-D     : Delete current line
     CTRL-LEFT  : Previous word
@@ -227,6 +212,7 @@ The examples are licensed under a [Creative Commons Attribution-NonCommercial-Sh
 
 ## API documentation
 You can find the full API doc in the [doc/html/](http://htmlpreview.github.io/?https://github.com/SuperIlu/DOjS/blob/master/doc/html/index.html) directory.
+Go to the p5.js hompage for [p5.js reference](https://p5js.org/reference/).
 
 ## Script format
 Scripts need to provide three functions: `Setup()`, `Loop()` and `Input()`. Scripts are loaded and executed top-own. After that `Setup()` is called once and then `Loop()` repeatedly. `Input()` is called whenever mouse of keyboard input happens.
@@ -243,20 +229,16 @@ This function is called whenever mouse/keyboard input happens.
 ## IPX networking
 DOjS supports IPX networking. Node addresses are arrays of 6 numbers between 0-255. Default socket number and broadcast address definitions can be found in `jsboot/ipx.js`.
 
-## GRX Drawing functions
-Please take a look a the GRX [documentation](http://grx.gnu.de/grx249um.html) for details of the drawing functions.
-See `jsboot/func.js` for constants.
+## Drawing functions
+See API doc for details.
 
 ## Processing/p5js compatibility layer
 Add `Include('p5');` as first line to your script. After that you have (limited) [p5.js](https://p5js.org/reference/) compatibility.
 Things that don't work:
-* GRX has no transparency when rendering, so all functions that need an alpha channel won't work.
 * Anything 3D (objects, lights camera, etc)
-* Smoothing is not supported.
-* Key release events work different for GRX and are simulated for p5js.
+* Key release events work different for Allegro and are simulated for p5js.
 * Only simple vertices are supported.
 * no DOM
-* no transformations
 
 ## Logfile
 All output via `Print()` and `Println()` is sent to the file `JSLOG.TXT`. You can use `Debug()` instead and output is only generated when you set the global variable `DEBUG=true`.
@@ -268,3 +250,4 @@ This feature allows you to debug a running script via IPX networking and a secon
 * Enable debugging by setting `DEBUG=true` and enable remote debugging by `REMOTE_DEBUG=true`. You can either modify `JSBOOT\FUNC.JS` or change the variables at the very beginning of your script.
 
 This works fine with two instances of DOSBox as well.
+Please note that if the log messages are transmitted to fast the receiving instance of DOJS might skip some of these when displaying.

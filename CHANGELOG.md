@@ -1,3 +1,19 @@
+**Version 0.9.5 (the changed creation)**
+* Replaced libmikmod, GRX and all sound code by Allegro 4.2.2.
+* Transparency/RGBA now works.
+* added `TransparencyEnabled()` to switch during runtime.
+* Internal API changed quite much due to the switch to Allegro.
+* p5js compatibility improved because of the better color handling.
+* Added command line switch to disable transparency for speed reasons.
+* PNGs are no longer supported, Allegro comes with PCX, TGA and BMP support only.
+* Text printing lost a lot of its options due to the switch to Allegro.
+* `SHIFT-F4` now clears the logfile before running the script.
+* Improved internal debugging features.
+* Splitted `func.c` into `gfx.c` and `func.c`.
+* Implemented `push()` and `pop()` in p5js compatibility layer.
+* Added a test-folder with scripts dedicated to test the API.
+* Added `translate()`, `rotate()`, `shearX()`, `shearY()`, `resetMatrix()`, `scale()` and `applyMatrix()` in p5js compatibility layer.
+
 **Version 0.9.1 (the fixed foreboding)**
 * Fixed libmikmod creating a WAV file when no soundcard is detected.
 * Added logging to another machine using IPX. set `REMOTE_DEBUG=true` and start `jsboot/logview.js` on other machine.

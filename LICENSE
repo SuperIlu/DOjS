@@ -4,18 +4,12 @@ For DOjS code, written by me, the MIT license below applies.
 MuJS
 MuJS is released under ISC license.
 
-GRX:
-GRX itself is released under LGPL, the fonts are under "MIT and other licenses".
-See copying.grx below or in the grx folder for details.
+Allegro:
+Allegro 4 is released under the "Giftware license" (https://liballeg.org/license.html).
 
-Mikmod:
-Mikmod is licensed under LGPL 2.1.
-
-MIDI and FM sound code:
-This code (modified by me) is (c) bei Steven Don (http://www.shdon.com/).
-It is licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
-with kind permission of Steven. `FM.DAT` is released under WTFPL
-(http://www.wtfpl.net/).
+GRX Fonts:
+The GRX fonts are under "MIT and other licenses".
+See copying.grx below for details.
 
 IPX and dosbuffer sub-system:
 This code is taken from the game Cylindrix by Hotwarez LLC, Goldtree Enterprises.
@@ -38,11 +32,7 @@ All WAV files were downloaded from https://bigsoundbank.com/ and are licensed un
 
 The MIDI files were downloaded from the https://github.com/freedoom/freedoom project and are licensed under FreeDOOM license.
 
-libpng is released under PNG Reference Library License version 2.
-
-zlib is released under zlib license.
-
-p5.js and vector.js are derived from https://github.com/processing/p5.js and are licensed under LGPL 2.1.
+jsboot/p5*.js are derived from https://github.com/processing/p5.js and are licensed under LGPL 2.1.
 
 The p5js examples are licensed under CC BY-NC-SA 4.0: https://creativecommons.org/licenses/by-nc-sa/4.0/.
 
@@ -87,6 +77,31 @@ INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
 LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
 OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+Allegro 4 (the giftware license)
+Allegro is gift-ware. It was created by a number of people working in cooperation, 
+and is given to you freely as a gift. You may use, modify, redistribute, and 
+generally hack it about in any way you like, and you do not have to give us 
+anything in return.
+
+However, if you like this product you are encouraged to thank us by making a 
+return gift to the Allegro community. This could be by writing an add-on 
+package, providing a useful bug report, making an improvement to the library, 
+or perhaps just releasing the sources of your program so that other people can 
+learn from them. If you redistribute parts of this code or make a game using it, 
+it would be nice if you mentioned Allegro somewhere in the credits, but you are 
+not required to do this. We trust you not to abuse our generosity.
+
+By Shawn Hargreaves, 18 October 1998.
+
+DISCLAIMER: THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL 
+THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE FOR ANY DAMAGES 
+OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF 
+OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -210,22 +225,6 @@ THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-                   Version 2, December 2004
- 
-Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
-
-Everyone is permitted to copy and distribute verbatim or modified
-copies of this license document, and changing it is allowed as long
-as the name is changed.
- 
-           DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-  TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
- 0. You just DO WHAT THE FUCK YOU WANT TO.
- 
- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
 FreeDOOM license
 
 Copyright © 2001-2018
@@ -258,175 +257,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 For a list of contributors to the Freedoom project, see the file
 CREDITS.
-
- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-COPYRIGHT NOTICE, DISCLAIMER, and LICENSE
-=========================================
-
-PNG Reference Library License version 2
----------------------------------------
-
- * Copyright (c) 1995-2018 The PNG Reference Library Authors.
- * Copyright (c) 2018 Cosmin Truta.
- * Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson.
- * Copyright (c) 1996-1997 Andreas Dilger.
- * Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
-
-The software is supplied "as is", without warranty of any kind,
-express or implied, including, without limitation, the warranties
-of merchantability, fitness for a particular purpose, title, and
-non-infringement.  In no even shall the Copyright owners, or
-anyone distributing the software, be liable for any damages or
-other liability, whether in contract, tort or otherwise, arising
-from, out of, or in connection with the software, or the use or
-other dealings in the software, even if advised of the possibility
-of such damage.
-
-Permission is hereby granted to use, copy, modify, and distribute
-this software, or portions hereof, for any purpose, without fee,
-subject to the following restrictions:
-
- 1. The origin of this software must not be misrepresented; you
-    must not claim that you wrote the original software.  If you
-    use this software in a product, an acknowledgment in the product
-    documentation would be appreciated, but is not required.
-
- 2. Altered source versions must be plainly marked as such, and must
-    not be misrepresented as being the original software.
-
- 3. This Copyright notice may not be removed or altered from any
-    source or altered source distribution.
-
-
-PNG Reference Library License version 1 (for libpng 0.5 through 1.6.35)
------------------------------------------------------------------------
-
-libpng versions 1.0.7, July 1, 2000 through 1.6.35, July 15, 2018 are
-Copyright (c) 2000-2002, 2004, 2006-2018 Glenn Randers-Pehrson, are
-derived from libpng-1.0.6, and are distributed according to the same
-disclaimer and license as libpng-1.0.6 with the following individuals
-added to the list of Contributing Authors:
-
-    Simon-Pierre Cadieux
-    Eric S. Raymond
-    Mans Rullgard
-    Cosmin Truta
-    Gilles Vollant
-    James Yu
-    Mandar Sahastrabuddhe
-    Google Inc.
-    Vadim Barkov
-
-and with the following additions to the disclaimer:
-
-    There is no warranty against interference with your enjoyment of
-    the library or against infringement.  There is no warranty that our
-    efforts or the library will fulfill any of your particular purposes
-    or needs.  This library is provided with all faults, and the entire
-    risk of satisfactory quality, performance, accuracy, and effort is
-    with the user.
-
-Some files in the "contrib" directory and some configure-generated
-files that are distributed with libpng have other copyright owners, and
-are released under other open source licenses.
-
-libpng versions 0.97, January 1998, through 1.0.6, March 20, 2000, are
-Copyright (c) 1998-2000 Glenn Randers-Pehrson, are derived from
-libpng-0.96, and are distributed according to the same disclaimer and
-license as libpng-0.96, with the following individuals added to the
-list of Contributing Authors:
-
-    Tom Lane
-    Glenn Randers-Pehrson
-    Willem van Schaik
-
-libpng versions 0.89, June 1996, through 0.96, May 1997, are
-Copyright (c) 1996-1997 Andreas Dilger, are derived from libpng-0.88,
-and are distributed according to the same disclaimer and license as
-libpng-0.88, with the following individuals added to the list of
-Contributing Authors:
-
-    John Bowler
-    Kevin Bracey
-    Sam Bushell
-    Magnus Holmgren
-    Greg Roelofs
-    Tom Tanner
-
-Some files in the "scripts" directory have other copyright owners,
-but are released under this license.
-
-libpng versions 0.5, May 1995, through 0.88, January 1996, are
-Copyright (c) 1995-1996 Guy Eric Schalnat, Group 42, Inc.
-
-For the purposes of this copyright and license, "Contributing Authors"
-is defined as the following set of individuals:
-
-    Andreas Dilger
-    Dave Martindale
-    Guy Eric Schalnat
-    Paul Schmidt
-    Tim Wegner
-
-The PNG Reference Library is supplied "AS IS".  The Contributing
-Authors and Group 42, Inc. disclaim all warranties, expressed or
-implied, including, without limitation, the warranties of
-merchantability and of fitness for any purpose.  The Contributing
-Authors and Group 42, Inc. assume no liability for direct, indirect,
-incidental, special, exemplary, or consequential damages, which may
-result from the use of the PNG Reference Library, even if advised of
-the possibility of such damage.
-
-Permission is hereby granted to use, copy, modify, and distribute this
-source code, or portions hereof, for any purpose, without fee, subject
-to the following restrictions:
-
- 1. The origin of this source code must not be misrepresented.
-
- 2. Altered versions must be plainly marked as such and must not
-    be misrepresented as being the original source.
-
- 3. This Copyright notice may not be removed or altered from any
-    source or altered source distribution.
-
-The Contributing Authors and Group 42, Inc. specifically permit,
-without fee, and encourage the use of this source code as a component
-to supporting the PNG file format in commercial products.  If you use
-this source code in a product, acknowledgment is not required but would
-be appreciated.
-
- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-
-/* zlib.h -- interface of the 'zlib' general purpose compression library
-  version 1.2.11, January 15th, 2017
-
-  Copyright (C) 1995-2017 Jean-loup Gailly and Mark Adler
-
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
-  2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
-  3. This notice may not be removed or altered from any source distribution.
-
-  Jean-loup Gailly        Mark Adler
-  jloup@gzip.org          madler@alumni.caltech.edu
-
-
-  The data format used by the zlib library is described by RFCs (Request for
-  Comments) 1950 to 1952 in the files http://tools.ietf.org/html/rfc1950
-  (zlib format), rfc1951 (deflate format) and rfc1952 (gzip format).
-*/
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 

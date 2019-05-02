@@ -4,9 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/grx249/include/**",
-                "${workspaceFolder}/grx249/addons/bmp/**",
-                "${workspaceFolder}/mujs-1.0.5/**"
+                "${workspaceFolder}/allegro-4.2.2-xc-master/include/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

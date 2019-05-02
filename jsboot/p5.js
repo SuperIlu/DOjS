@@ -34,8 +34,68 @@ Include('jsboot/p5shape.js');
 Include('jsboot/p5typo.js');
 Include('jsboot/p5util.js');
 Include('jsboot/p5vect.js');
+Include('jsboot/p5trans.js');
 
 exports._loop = true;
+exports._lastButtons = 0;
+
+exports._env = [];
+exports._currentEnv = {
+	_fill: EGA.WHITE,
+	_stroke: EGA.BLACK,
+	_colorMode: RGB,
+	_colorMaxes: {
+		rgb: [255, 255, 255, 255],
+		hsb: [360, 100, 100, 1],
+		hsl: [360, 100, 100, 1]
+	},
+	_txtAlignX: LEFT,
+	_txtAlignY: TOP,
+	_font: new Font(),
+	_rectMode: CORNER,
+	_ellipseMode: CENTER,
+	_imageMode: CORNER,
+	_strokeWeight: 1,
+	_matrix: null
+};
+
+// TODO: implement matrix preservation for setup() and draw()
+
+/**
+ * deep copy the current environment.
+ */
+exports._cloneEnv = function () {
+	if (_currentEnv._matrix) {
+		// deep copy matrix
+		var matrix = [
+			_currentEnv._matrix[0].slice(0),
+			_currentEnv._matrix[1].slice(0),
+			_currentEnv._matrix[2].slice(0)
+		]
+	} else {
+		var matrix = null;
+	}
+
+	return {
+		_fill: _currentEnv._fill,
+		_stroke: _currentEnv._stroke,
+		_colorMode: _currentEnv._colorMode,
+		_colorMaxes: {
+			// deep copy color settings
+			rgb: _currentEnv._colorMaxes.rgb.slice(0),
+			hsb: _currentEnv._colorMaxes.hsb.slice(0),
+			hsl: _currentEnv._colorMaxes.hsl.slice(0)
+		},
+		_txtAlignX: _currentEnv._txtAlignX,
+		_txtAlignY: _currentEnv._txtAlignY,
+		_font: _currentEnv._font,
+		_rectMode: _currentEnv._rectMode,
+		_ellipseMode: _currentEnv._ellipseMode,
+		_imageMode: _currentEnv._imageMode,
+		_strokeWeight: _currentEnv._strokeWeight,
+		_matrix: matrix
+	};
+}
 
 /*
  * not documented here.
@@ -45,8 +105,8 @@ exports.Setup = function () {
 	windowHeight = displayHeight = height = SizeY();
 	frameCount = 0;
 	_hasMouseInteracted = false;
-	mouseX = pmouseX = winMouseX = pwinMouseX = MaxX();
-	mouseY = pmouseY = winMouseY = pwinMouseY = MaxY();
+	mouseX = pmouseX = winMouseX = pwinMouseX = SizeX();
+	mouseY = pmouseY = winMouseY = pwinMouseY = SizeY();
 	MouseWarp(mouseX, mouseY);
 	frameRate(60);
 	setup();
@@ -72,26 +132,24 @@ exports.Loop = function () {
  */
 exports.Input = function (e) {
 	// update mouse coordinates
-	if (e.flags & MOUSE.Flags.MOTION) {
-		pwinMouseX = pmouseX = mouseX;
-		pwinMouseY = pmouseY = mouseY;
+	pwinMouseX = pmouseX = mouseX;
+	pwinMouseY = pmouseY = mouseY;
 
-		winMouseX = mouseX = e.x;
-		winMouseY = mouseY = e.y;
+	winMouseX = mouseX = e.x;
+	winMouseY = mouseY = e.y;
 
-		_hasMouseInteracted = true;
+	_hasMouseInteracted = true;
 
-		if (typeof global['mouseMoved'] != 'undefined') {
-			mouseMoved(e);
-		}
-		if (mouseIsPressed) {
-			if (typeof global['mouseDragged'] != 'undefined') {
-				mouseDragged(e);
-			}
+	if (typeof global['mouseMoved'] != 'undefined') {
+		mouseMoved(e);
+	}
+	if (mouseIsPressed) {
+		if (typeof global['mouseDragged'] != 'undefined') {
+			mouseDragged(e);
 		}
 	}
 
-	if (e.flags & MOUSE.Flags.BUTTON_DOWN) {
+	if (e.buttons > _lastButtons) {
 		if (typeof global['mousePressed'] != 'undefined') {
 			mousePressed(e);
 		}
@@ -106,7 +164,8 @@ exports.Input = function (e) {
 			mouseButton = RIGHT;
 		}
 	}
-	if (e.flags & MOUSE.Flags.BUTTON_UP) {
+	if (e.buttons < _lastButtons) {
+		mouseButton = 0;
 		if (mouseIsPressed && typeof global['mouseReleased'] != 'undefined') {
 			mouseReleased(e);
 		}
@@ -114,18 +173,19 @@ exports.Input = function (e) {
 			mouseClicked(e);
 		}
 		mouseIsPressed = false;
-		mouseButton = 0;
 	}
+	_lastButtons = e.buttons;
 
 	// this does not work like with p5 as we don't get a key release
-	if (e.flags & MOUSE.Flags.KEYPRESS) {
+	if (e.key != -1) {
+		key = e.key & 0xFF;	// TODO:
+		keyCode = e.key;	// TODO:
 		if (typeof global['keyPressed'] != 'undefined') {
 			keyPressed(e);
 		}
 		if (typeof global['keyTyped'] != 'undefined') {
 			keyTyped(e);
 		}
-		key = keyCode = e.key;
 		keyIsPressed = true;
 	}
 };
@@ -322,6 +382,7 @@ exports.noLoop = function () {
  * }
  */
 exports.redraw = function () {
+	resetMatrix();	// TODO: fix!
 	draw();
 	frameCount++;
 };
@@ -443,12 +504,6 @@ exports.saveBytes = function (fname, data) {
  * This method is suitable for fetching files up to size of 64MB.
  * @method loadStrings
  * @param  {String}   filename   name of the file or url to load
- * @param  {function} [callback] function to be executed after <a href="#/p5/loadStrings">loadStrings()</a>
- *                               completes, Array is passed in as first
- *                               argument
- * @param  {function} [errorCallback] function to be executed if
- *                               there is an error, response is passed
- *                               in as first argument
  * @return {String[]}            Array of Strings
  * @example
  *
@@ -494,11 +549,7 @@ exports.loadStrings = function (fname) {
  * This method is suitable for fetching files up to size of 64MB.
  * @method loadBytes
  * @param {string}   file            name of the file or URL to load
- * @param {function} [callback]      function to be executed after <a href="#/p5/loadBytes">loadBytes()</a>
- *                                    completes
- * @param {function} [errorCallback] function to be executed if there
- *                                    is an error
- * @returns {Object} an object whose 'bytes' property will be the loaded buffer
+ * @returns {number[]} an object whose 'bytes' property will be the loaded buffer
  *
  * @example
  * let data;
@@ -527,6 +578,113 @@ exports.loadBytes = function (fname) {
 	} catch (e) {
 		Println(e);
 		return null;
+	}
+};
+
+
+/**
+ * The push() function saves the current drawing style settings and
+ * transformations, while pop() restores these settings. Note that these
+ * functions are always used together. They allow you to change the style
+ * and transformation settings and later return to what you had. When a new
+ * state is started with push(), it builds on the current style and transform
+ * information. The push() and pop() functions can be embedded to provide
+ * more control. (See the second example for a demonstration.)
+ * <br><br>
+ * push() stores information related to the current transformation state
+ * and style settings controlled by the following functions: fill(),
+ * stroke(), tint(), strokeWeight(), strokeCap(), strokeJoin(),
+ * imageMode(), rectMode(), ellipseMode(), colorMode(), textAlign(),
+ * textFont(), textSize(), textLeading().
+ *
+ * @method push
+ * @example
+ * ellipse(0, 50, 33, 33); // Left circle
+ *
+ * push(); // Start a new drawing state
+ * strokeWeight(10);
+ * fill(204, 153, 0);
+ * translate(50, 0);
+ * ellipse(0, 50, 33, 33); // Middle circle
+ * pop(); // Restore original state
+ *
+ * ellipse(100, 50, 33, 33); // Right circle
+ * </code>
+ * </div>
+ * <div>
+ * <code>
+ * ellipse(0, 50, 33, 33); // Left circle
+ *
+ * push(); // Start a new drawing state
+ * strokeWeight(10);
+ * fill(204, 153, 0);
+ * ellipse(33, 50, 33, 33); // Left-middle circle
+ *
+ * push(); // Start another new drawing state
+ * stroke(0, 102, 153);
+ * ellipse(66, 50, 33, 33); // Right-middle circle
+ * pop(); // Restore previous state
+ *
+ * pop(); // Restore original state
+ *
+ * ellipse(100, 50, 33, 33); // Right circle
+ */
+exports.push = function () {
+	_env.push(_cloneEnv());
+};
+
+/**
+ * The push() function saves the current drawing style settings and
+ * transformations, while pop() restores these settings. Note that these
+ * functions are always used together. They allow you to change the style
+ * and transformation settings and later return to what you had. When a new
+ * state is started with push(), it builds on the current style and transform
+ * information. The push() and pop() functions can be embedded to provide
+ * more control. (See the second example for a demonstration.)
+ * <br><br>
+ * push() stores information related to the current transformation state
+ * and style settings controlled by the following functions: fill(),
+ * stroke(), tint(), strokeWeight(), strokeCap(), strokeJoin(),
+ * imageMode(), rectMode(), ellipseMode(), colorMode(), textAlign(),
+ * textFont(), textSize(), textLeading().
+ *
+ * @method pop
+ * @example
+ * ellipse(0, 50, 33, 33); // Left circle
+ *
+ * push(); // Start a new drawing state
+ * translate(50, 0);
+ * strokeWeight(10);
+ * fill(204, 153, 0);
+ * ellipse(0, 50, 33, 33); // Middle circle
+ * pop(); // Restore original state
+ *
+ * ellipse(100, 50, 33, 33); // Right circle
+ * </code>
+ * </div>
+ * <div>
+ * <code>
+ * ellipse(0, 50, 33, 33); // Left circle
+ *
+ * push(); // Start a new drawing state
+ * strokeWeight(10);
+ * fill(204, 153, 0);
+ * ellipse(33, 50, 33, 33); // Left-middle circle
+ *
+ * push(); // Start another new drawing state
+ * stroke(0, 102, 153);
+ * ellipse(66, 50, 33, 33); // Right-middle circle
+ * pop(); // Restore previous state
+ *
+ * pop(); // Restore original state
+ *
+ * ellipse(100, 50, 33, 33); // Right circle
+ */
+exports.pop = function () {
+	if (_env.length > 0) {
+		_currentEnv = _env.pop();
+	} else {
+		console.warn('pop() was called without matching push()');
 	}
 };
 

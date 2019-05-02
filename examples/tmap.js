@@ -31,7 +31,7 @@ var fnt;
 function setup() {
 	fnt = new Font("jsboot\\fonts\\pc6x8.fnt");
 	var cur = Stat('.');
-	tree = buildTree("c:", "dojs");
+	tree = buildTree("c:", "");
 }
 
 /**
@@ -40,7 +40,7 @@ function setup() {
 function draw() {
 	background(0);
 	colorMode(HSB);
-	drawTree(tree, 0, 0, 0, MaxX(), MaxY());
+	drawTree(tree, 0, 0, 0, width - 1, height - 1);
 }
 
 /**
@@ -55,7 +55,8 @@ function draw() {
  */
 function drawTree(cur, level, x, y, w, h) {
 	stroke(level * colInc % 255, 255, 255);
-	fill(level * colInc % 255, 200, 128);
+	//fill(level * colInc % 255, 200, 128, 32);
+	noFill();
 	if (level % 2 == 0) {
 		// horizontally
 		var xPos = x;
@@ -68,12 +69,7 @@ function drawTree(cur, level, x, y, w, h) {
 			}
 			rect(xPos, y, eWidth, h);
 			if (w > 8) {
-				// draw elements name downwards if space is sufficient
-				fnt.DrawString(xPos + 1, y + 1, e.name,
-					EGA.BLACK, NO_COLOR,
-					FONT.Direction.DOWN,
-					FONT.Align.LEFT,
-					FONT.Align.TOP);
+				fnt.DrawStringLeft(x + 1, yPos + 2, e.name, EGA.BLACK, NO_COLOR);
 			}
 			if (e.isDir) {
 				drawTree(e, level + 1, xPos, y, eWidth, h);
@@ -92,12 +88,7 @@ function drawTree(cur, level, x, y, w, h) {
 			}
 			rect(x, yPos, w, eHeight);
 			if (h > 8) {
-				fnt.DrawString(x + 1, yPos + 2, e.name,
-					// draw elements name left to right if space is sufficient
-					EGA.BLACK, NO_COLOR,
-					FONT.Direction.DEFAULT,
-					FONT.Align.LEFT,
-					FONT.Align.TOP);
+				fnt.DrawStringLeft(x + 1, yPos + 2, e.name, EGA.BLACK, NO_COLOR);
 			}
 			if (e.isDir) {
 				drawTree(e, level + 1, x, yPos, w, eHeight);

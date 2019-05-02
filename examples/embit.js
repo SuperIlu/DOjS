@@ -12,9 +12,7 @@ Include('p5');
 function setup() {
 	gridSize = 55;
 	noStroke();
-	MouseSetColors(EGA.RED, EGA.GREEN);
-	//MouseShowCursor(false);
-	MouseShowCursor(true);
+	MouseSetCursorMode(MOUSE.Mode.ARROW);
 }
 
 function draw() {

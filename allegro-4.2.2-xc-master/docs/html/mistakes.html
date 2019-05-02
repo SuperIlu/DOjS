@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>
+Common mistakes
+</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" title="Default" type="text/css" href="allegro.css"></head><body bgcolor=white text=black link="#0000ee" alink="#ff0000" vlink="#551a8b">
+<center><h1><b>
+Common mistakes
+</b></h1></center>
+<hr>
+
+<p><br>
+<h1><a name="Contents">Contents</a></h1>
+
+<p>
+<ul>
+<ul>
+<li><a href="#Calling_set_color_depth_without_resetting_graphic_mode_">   Calling set_color_depth without resetting graphic mode.</a> 
+<li><a href="#Creating_bitmaps_before_loading_">   Creating bitmaps before loading.</a> 
+<li><a href="#Destroying_global_objects_like__screen__">   Destroying global objects like <tt>`screen'</tt>.</a> 
+<li><a href="#Getting_bitmap_s_size_">   Getting bitmap's size.</a> 
+<li><a href="#Ignoring_this_manual_">   Ignoring this manual.</a> 
+<li><a href="#Loading_a_bitmap_font_sound_inside_a_global_object_constructor_">   Loading a bitmap/font/sound inside a global object constructor.</a> 
+<li><a href="#main___not_returning_int_">   main() not returning int.</a> 
+<li><a href="#Semicolon_at_END_OF_MAIN_">   Semicolon at END_OF_MAIN.</a> 
+</ul>
+</ul>
+
+
+<p><br>
+<div class="al-api"><b><a name="Ignoring_this_manual_">   Ignoring this manual.</a></b></div><br>
+      Most problems are addressed in this manual. If you aren't sure about
+      some parts of Allegro check particular section of manual. The FAQ
+      section can also be very useful.
+
+<p><br>
+<div class="al-api"><b><a name="main___not_returning_int_">   main() not returning int.</a></b></div><br>
+      On platforms that need it, Allegro uses <code>END_OF_MAIN</code> to
+      mangle your main() function and supply its own that is required by the
+      platform. Allegro assumes that main() returns an integer, as required
+      by various C standards. If you change the return type of your main() to
+      something else Allegro's main() will get confused and return some
+      nonsense value which some system can recognize as an error and crash
+      your program.
+
+<p><br>
+<div class="al-api"><b><a name="Semicolon_at_END_OF_MAIN_">   Semicolon at END_OF_MAIN.</a></b></div><br>
+<blockquote class="code"><pre>
+         int main(void)
+         {
+            allegro_init();
+            /* more stuff goes here */
+            ...
+            return 0;
+         }
+         END_OF_MAIN(); /* wrong */ </pre></blockquote>
+
+<p>
+      The semicolon is not only unnecessary after END_OF_MAIN(), but it can
+      also cause some compilers to issue a warning.
+
+<p><br>
+<div class="al-api"><b><a name="Getting_bitmap_s_size_">   Getting bitmap's size.</a></b></div><br>
+      Many people don't know how to get the dimensions of a bitmap. This can
+      be done by accessing the <tt>`w'</tt> and <tt>`h'</tt> fields of the BITMAP structure:
+<blockquote class="code"><pre>
+         BITMAP *image;
+         ...
+         allegro_message("Bitmap size: %d x %d\n",
+                         image-&gt;w, image-&gt;h);</pre></blockquote>
+
+<p><br>
+<div class="al-api"><b><a name="Creating_bitmaps_before_loading_">   Creating bitmaps before loading.</a></b></div><br>
+<blockquote class="code"><pre>
+         BITMAP *image = create_bitmap(width, height);
+         image = load_bitmap("image.bmp", pal);</pre></blockquote>
+
+<p>
+      When loading a bitmap, Allegro will automatically create a bitmap big
+      enough to store it. In the above code the address returned by
+      create_bitmap() is overwritten by the second assignment statement, to
+      the return value of the call to load_bitmap().  Since the address of
+      the first (unnecessary) bitmap has been lost, there is no way to
+      destroy it so there is a memory leak.
+
+<p><br>
+<div class="al-api"><b><a name="Loading_a_bitmap_font_sound_inside_a_global_object_constructor_">   Loading a bitmap/font/sound inside a global object constructor.</a></b></div><br>
+      Almost all Allegro functions require Allegro to be initialized first,
+      before they can be used. Since global object constructors are called
+      before main() (from where <code>allegro_init()</code> would be called) this
+      condition is violated.  You need to postpone calls to Allegro functions
+      to after initializing Allegro.
+
+<p><br>
+<div class="al-api"><b><a name="Calling_set_color_depth_without_resetting_graphic_mode_">   Calling set_color_depth without resetting graphic mode.</a></b></div><br>
+      <code>set_color_depth()</code> tells Allegro which color depth to use the <em>next</em> time a
+      graphic mode is set or bitmap is created or loaded. It doesn't change
+      the color depth of the current graphic mode or existing bitmaps.  You
+      need to be sure that all your bitmaps and/or graphic mode are in the
+      same color depth or Allegro will be forced to do slow color conversions
+      between them.
+
+<p><br>
+<div class="al-api"><b><a name="Destroying_global_objects_like__screen__">   Destroying global objects like <tt>`screen'</tt>.</a></b></div><br>
+      Unlike other bitmaps <tt>`screen'</tt> is created by calling <code>set_gfx_mode()</code> and
+      must not be destroyed by calling <code>destroy_bitmap()</code>. The proper way to
+      destroy <tt>`screen'</tt> is calling <code>set_gfx_mode(GFX_TEXT, 0, 0, 0, 0)</code>.
+
+
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>
+dat2s
+</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" title="Default" type="text/css" href="allegro.css"></head><body bgcolor=white text=black link="#0000ee" alink="#ff0000" vlink="#551a8b">
+
+<center><h1><b>
+The dat2s utility
+</b></h1></center>
+<hr>
+
+
+
+<p><br>
+<h1><a name="Compiling Datafiles to Assembler">Compiling Datafiles to Assembler</a></h1>
+
+
+<p><br>
+The utility dat2s can be used to convert a datafile into an asm (.s) source 
+file, which can then be assembled and linked into your program. This avoids 
+the need for a separate datafile to accompany your program, and means the 
+data will automatically be loaded into memory at startup. You should be 
+aware, though, that large datafiles can take a long time to compile, and 
+that it is not possible to compress data which is compiled in this way.
+
+<p>
+The simplest way to invoke dat2s is with the command:
+
+<p>
+   dat2s filename.dat -o output.s
+
+<p>
+The resulting asm file can then be assembled with the command:
+
+<p>
+   gcc -c output.s
+
+<p>
+This will produce an object module called output.o, which can be linked into 
+your program, for example:
+
+<p>
+   gcc myprog.c -o myprog.exe output.o -lalleg
+
+<p>
+Your program can then access the contents of the datafile as simple global 
+variables. Definitions for these variables can be obtained by telling dat2s 
+to output a header file as well as the asm file, with the '-h' option. You 
+can also use '-p' to set a prefix string for all the object names. For 
+example, when applied to the datafile:
+
+<p>
+   "BMP"  - A_BITMAP
+   "BMP"  - ANOTHER_BITMAP
+   "SAMP" - EXPLODE
+   "PAL"  - SOME_COLORS
+   "FONT" - THE_FONT
+
+<p>
+the command:
+
+<p>
+   dat2s filename.dat -o output.s -h output.h -p item
+
+<p>
+produces the header:
+
+<p>
+   extern BITMAP item_a_bitmap;
+   extern BITMAP item_another_bitmap;
+   extern SAMPLE item_explode;
+   extern PALETTE item_some_colors;
+   extern FONT item_the_font;
+   extern DATAFILE item_data[];
+
+<p>
+You can refer to these objects directly, for example:
+
+<p>
+   blit(&amp;item_a_bitmap, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+
+<p>
+Alternatively, you can use the datafile array for compatibility with code 
+that was originally written for separately loaded datafiles, with the 
+standard syntax item_data[index].dat.
+
+<p>
+If your datafile contains truecolor images, be sure to call fixup_datafile()
+after you have set the graphics mode. You must also call fixup_datafile()
+if your platform does not support constructors (currently any non GCC-based
+platform).
+
+<p>
+Note that compiled sprites are not supported and will cause dat2s to
+abort whenever it encounters one of them. However you can use the '-S'
+option to instruct dat2s to convert them to regular BITMAP objects.
+
+<p>
+Note that datafiles compiled by dat2s must not be appended to shared objects,
+only to standalone executables. Use dat2c for this purpose.
+
+
+
+
+
+</body>
+</html>

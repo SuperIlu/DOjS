@@ -605,6 +605,13 @@ static edi_exit_t edi_loop(edi_t* edi) {
                 edi_do_save(edi);
                 break;
 
+            case K_Shift_F4:  // truncate logfile and run
+            {
+                FILE* f = fopen(LOGFILE, "w");
+                fflush(f);
+                fclose(f);
+                // FALLTHROUGH!
+            }
             case K_F4:  // run script
                 if (edi->changed) {
                     char* error = edi_save(edi, edi->name);

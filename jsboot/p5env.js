@@ -128,8 +128,6 @@ exports.focused = true;
  *
  * @method frameRate
  * @param  {Number} fps number of frames to be displayed every second
- * @chainable
- *
  * @example
  *
  * let rectX = 0;
@@ -274,7 +272,6 @@ exports.fullScreen = function () {
  *
  * @method pixelDensity
  * @param  {Number} val whether or how much the sketch should scale
- * @chainable
  * @example
  * function setup() {
  *   pixelDensity(1);

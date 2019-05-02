@@ -20,11 +20,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include <allegro.h>
 #include <conio.h>
-#include <grx20.h>
-#include <grxkeys.h>
 #include <jsi.h>
-#include <mikmod.h>
 #include <mujs.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -36,13 +34,15 @@ SOFTWARE.
 #include "color.h"
 #include "edit.h"
 #include "file.h"
-#include "fmmusic.h"
 #include "font.h"
 #include "funcs.h"
+#include "gfx.h"
 #include "ipx.h"
 #include "midiplay.h"
 #include "sound.h"
 #include "util.h"
+
+#define TICK_DELAY 10
 
 /**************
 ** Variables **
@@ -51,11 +51,11 @@ SOFTWARE.
 FILE *logfile;  //!< logfile for LOGF(), LOG(), DEBUG() DEBUGF() and Print()
 #endif
 
-bool sound_available;  //!< indicates if WAV sound is available
-bool synth_available;  //!< indicates if FM sound is available
-bool mouse_available;  //!< indicates if the mouse is available
-bool midi_available;   //!< indicates if midi is available
-bool ipx_available;    //!< indicates if ipx is available
+bool sound_available;         //!< indicates if WAV sound is available
+bool mouse_available;         //!< indicates if the mouse is available
+bool midi_available;          //!< indicates if midi is available
+bool ipx_available;           //!< indicates if ipx is available
+bool transparency_available;  //!< indicates if transparency is enabled.
 
 bool mouse_visible;  //!< indicates if the cursor should be visible.
 bool keep_running;   //!< indicates that the script should keep on running
@@ -65,19 +65,29 @@ float wanted_frame_rate;   //!< wanted frame rate
 
 const char *lastError;
 
-GrKeyType exit_key = GrKey_Escape;  //!< the exit key that will stop the script
+int exit_key = KEY_ESC;  //!< the exit key that will stop the script
+
+BITMAP *cur;
+
+volatile unsigned long sys_ticks;
 
 /*********************
 ** static functions **
 *********************/
+static void tick_handler() { sys_ticks += TICK_DELAY; }
+END_OF_FUNCTION(tick_handler)
+
 /**
  * @brief show usage on console
  */
 static void usage() {
-    fputs("Usage: DOjS.EXE [-r] [-s <p>:<i>:<d>] <script>\n", stderr);
+    fputs("Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script>\n", stderr);
     fputs("    -r             : Do not invoke the editor, just run the script.\n", stderr);
     fputs("    -w <width>     : Screen width: 320 or 640, Default: 640.\n", stderr);
-    fputs("    -b <bbp>       : Bit per pixel:8, 16, 24, 32. Default: 24.\n", stderr);
+    fputs("    -b <bpp>       : Bit per pixel:8, 16, 24, 32. Default: 32.\n", stderr);
+    fputs("    -s             : No wave sound.\n", stderr);
+    fputs("    -f             : No FM sound.\n", stderr);
+    fputs("    -a             : Disable alpha (speeds up rendering).\n", stderr);
     fputs("\n", stderr);
     fputs("This is DOjS " DOSJS_VERSION_STR "\n", stderr);
     fputs("(c) 2019 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
@@ -133,51 +143,75 @@ static bool callGlobal(js_State *J, const char *name) {
  * @return false if no or any other event occured.
  */
 static bool callInput(js_State *J) {
-    GrMouseEvent event;
+    int key;
     bool ret = false;
 
-    if (mouse_available) {
-        GrMouseGetEvent(GR_M_EVENT | GR_M_POLL, &event);
-    } else {
-        event.flags = 0;
-        event.buttons = 0;
-        event.key = 0;
-        event.kbstat = 0;
-        event.dtime = 0;
-        if (GrKeyPressed()) {
-            event.key = GrKeyRead();
-            event.flags = GR_M_KEYPRESS;
-        }
+    if (keyboard_needs_poll()) {
+        poll_keyboard();
+    }
+    if (mouse_needs_poll()) {
+        poll_mouse();
     }
 
-    if (event.flags) {
-        ret = event.key == exit_key;
-        js_getglobal(J, CB_INPUT);
-        js_pushnull(J);
-        js_newobject(J);
-        {
-            js_pushnumber(J, event.x);
-            js_setproperty(J, -2, "x");
-            js_pushnumber(J, event.y);
-            js_setproperty(J, -2, "y");
-            js_pushnumber(J, event.flags);
-            js_setproperty(J, -2, "flags");
-            js_pushnumber(J, event.buttons);
-            js_setproperty(J, -2, "buttons");
-            js_pushnumber(J, event.key);
-            js_setproperty(J, -2, "key");
-            js_pushnumber(J, event.kbstat);
-            js_setproperty(J, -2, "kbstat");
-            js_pushnumber(J, event.dtime);
-            js_setproperty(J, -2, "dtime");
-        }
-        if (js_pcall(J, 1)) {
-            lastError = js_trystring(J, -1, "Error");
-            LOGF("Error calling Input(): %s\n", lastError);
-        }
-        js_pop(J, 1);
+    if (keypressed()) {
+        key = readkey();
+    } else {
+        key = -1;
     }
+
+    ret = ((key >> 8) == exit_key);
+    js_getglobal(J, CB_INPUT);
+    js_pushnull(J);
+    js_newobject(J);
+    {
+        js_pushnumber(J, mouse_x);
+        js_setproperty(J, -2, "x");
+        js_pushnumber(J, mouse_y);
+        js_setproperty(J, -2, "y");
+        js_pushnumber(J, mouse_b);
+        js_setproperty(J, -2, "buttons");
+        js_pushnumber(J, key);
+        js_setproperty(J, -2, "key");
+        js_pushnumber(J, sys_ticks);
+        js_setproperty(J, -2, "ticks");
+    }
+    if (js_pcall(J, 1)) {
+        lastError = js_trystring(J, -1, "Error");
+        LOGF("Error calling Input(): %s\n", lastError);
+    }
+    js_pop(J, 1);
+
     return ret;
+}
+
+/**
+ * @brief alpha calculation function used with transparent colors.
+ * see https://www.gamedev.net/forums/topic/34688-alpha-blend-formula/
+ *
+ * @param src the new color with the alpha information.
+ * @param dest the existing color in the BITMAP.
+ * @param n ignored.
+ * @return unsigned long the color to put into the BITMAP.
+ */
+static unsigned long my_blender(unsigned long src, unsigned long dest, unsigned long n) {
+    int a = (src >> 24) & 0xFF;
+    if (a >= 254) {
+        return src;  // no alpha, just return new color
+    } else {
+        int r1 = (src >> 16) & 0xFF;
+        int g1 = (src >> 8) & 0xFF;
+        int b1 = src & 0xFF;
+
+        int r2 = (dest >> 16) & 0xFF;
+        int g2 = (dest >> 8) & 0xFF;
+        int b2 = dest & 0xFF;
+
+        unsigned long ret = 0xFF000000 |                                          // alpha
+                            (((((a * (r1 - r2)) >> 8) + r2) << 16) & 0xFF0000) |  // new r
+                            (((((a * (g1 - g2)) >> 8) + g2) << 8) & 0x00FF00) |   // new g
+                            ((((a * (b1 - b2)) >> 8) + b2) & 0x0000FF);           // new b
+        return ret;
+    }
 }
 
 /**
@@ -185,9 +219,12 @@ static bool callInput(js_State *J) {
  *
  * @param script the script filename.
  * @param width screen width.
- * @param bbp bit per pixel.
+ * @param bpp bit per pixel.
+ * @param no_sound skip sound init.
+ * @param no_fm skip fm sound init.
+ * @param no_alpha disable alpha.
  */
-static void run_script(char *script, int width, int bbp) {
+static void run_script(char *script, int width, int bpp, bool no_sound, bool no_fm, bool no_alpha) {
     js_State *J;
 #ifndef PLATFORM_UNIX
     // create logfile
@@ -207,49 +244,63 @@ static void run_script(char *script, int width, int bbp) {
     // ut_dumpVideoModes();
 #endif
 
+    if (bpp < 32) {
+        no_alpha = true;
+        LOG("BPP < 32, disabling alpha\n");
+    }
+
     // detect hardware and initialize subsystems
-    if (GrMouseDetect()) {
+    sys_ticks = 0;
+    allegro_init();
+    install_timer();
+    LOCK_VARIABLE(sys_ticks);
+    LOCK_FUNCTION(tick_handler);
+    install_int(tick_handler, TICK_DELAY);
+    install_keyboard();
+    if (install_mouse() >= 0) {
         LOG("Mouse detected\n");
-        GrMouseInit();
-        GrMouseDisplayCursor();
+        enable_hardware_cursor();
+        select_mouse_cursor(MOUSE_CURSOR_ARROW);
         mouse_available = true;
         mouse_visible = true;
     } else {
         LOG("NO Mouse detected\n");
         mouse_available = false;
     }
-    synth_available = init_fmmusic(J);
-    midi_available = init_midi(J);
-    sound_available = init_sound(J);
+    bool sound_ok = install_sound(no_sound ? DIGI_NONE : DIGI_AUTODETECT, no_fm ? MIDI_NONE : MIDI_AUTODETECT, NULL) == 0;
+    midi_available = sound_ok && !no_fm;
+    sound_available = sound_ok && !no_sound;
+    init_midi(J);
+    init_sound(J);
     ipx_available = init_ipx(J);
     init_funcs(J);  // must be called after initalizing the booleans above!
+    init_gfx(J);
     init_color(J);
     init_bitmap(J);
     init_font(J);
     init_file(J);
 
     // create canvas
-#ifndef PLATFORM_UNIX
+    set_color_depth(bpp);
     if (width == 640) {
-        GrSetMode(GR_width_height_bpp_graphics, 640, 480, bbp);
+        if (set_gfx_mode(GFX_AUTODETECT, 640, 480, 0, 0) != 0) {
+            LOGF("Couldn't set a %d bit color resolution at 640x480\n", bpp);
+            return;  // TODO: clean up
+        }
     } else {
-        GrSetMode(GR_width_height_bpp_graphics, 320, 240, bbp);
+        if (set_gfx_mode(GFX_AUTODETECT, 320, 240, 0, 0) != 0) {
+            LOGF("Couldn't set a %d bit color resolution at 320x240\n", bpp);
+            return;  // TODO: clean up
+        }
     }
-#else
-    GrSetMode(GR_default_graphics);
-#endif
-
-    // create context to use for drawing, will be blitted to the screen after Loop()
-    GrClearScreen(GrBlack());
-    GrContext *ctx = GrCreateContext(GrSizeX(), GrSizeY(), NULL, NULL);
-    GrSetContext(ctx);
-    GrClearContext(GrBlack());
+    cur = create_bitmap(SCREEN_W, SCREEN_H);
+    clear_bitmap(cur);
+    transparency_available = !no_alpha;
+    update_transparency();
 
     // do some more init from JS
     js_dofile(J, JSINC_FUNC);
-    js_dofile(J, JSINC_FMMUSIC);
     js_dofile(J, JSINC_COLOR);
-    js_dofile(J, JSINC_FONT);
     js_dofile(J, JSINC_FILE);
     js_dofile(J, JSINC_IPX);
 
@@ -262,59 +313,45 @@ static void run_script(char *script, int width, int bbp) {
         if (callGlobal(J, CB_SETUP)) {
             // call loop() until someone calls Stop()
             while (keep_running) {
-                long start = GrMsecTime();
+                long start = sys_ticks;
                 if (!callGlobal(J, CB_LOOP)) {
-                    lastError = "Loop() not found.";
-                    LOG("Loop() not found.");
+                    if (!lastError) {
+                        lastError = "Loop() not found.";
+                    }
                     break;
                 }
                 if (callInput(J)) {
                     keep_running = false;
                 }
-                int blk = GrMouseBlock(GrScreenContext(), 0, 0, GrMaxX(), GrMaxY());
-                GrBitBltNC(GrScreenContext(), 0, 0, ctx, 0, 0, GrMaxX(), GrMaxY(), GrWRITE);
-                GrMouseUnBlock(blk);
-                long end = GrMsecTime();
+                blit(cur, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+                if (mouse_visible) {
+                    show_mouse(screen);
+                }
+                long end = sys_ticks;
                 long runtime = (end - start) + 1;
                 current_frame_rate = 1000 / runtime;
                 if (current_frame_rate > wanted_frame_rate) {
-                    long delay = (1000 / wanted_frame_rate) - runtime;
-
-                    long elapsed = 0;
-                    while (elapsed < delay) {
-                        MikMod_Update();
-                        GrSleep(2);
-                        elapsed += 2;
-                    }
-                } else {
-                    MikMod_Update();
+                    unsigned int delay = (1000 / wanted_frame_rate) - runtime;
+                    rest(delay);
                 }
-                if (!Player_Active()) {
-                    sound_mod_stop();  // FIX: this stops all module voices but keeps the sample voices active
-                }
-                end = GrMsecTime();
+                end = sys_ticks;
                 runtime = (end - start) + 1;
                 current_frame_rate = 1000 / runtime;
             }
         } else {
-            lastError = "Setup() not found.";
-            LOG("Setup() not found.");
+            if (!lastError) {
+                lastError = "Setup() not found.";
+            }
         }
     }
     LOG("DOjS Shutdown...\n");
     shutdown_midi();
     shutdown_sound();
-    shutdown_fmmusic();
     shutdown_ipx();
 #ifndef PLATFORM_UNIX
     fclose(logfile);
 #endif
-    if (mouse_available) {
-        GrMouseUnInit();
-    }
-    GrSetContext(NULL);
-    GrDestroyContext(ctx);
-    GrSetMode(GR_default_text);
+    allegro_exit();
     if (lastError) {
         fputs(lastError, stdout);
         fputs("\nDOjS ERROR\n", stdout);
@@ -322,6 +359,18 @@ static void run_script(char *script, int width, int bbp) {
         fputs("DOjS OK\n", stdout);
     }
     fflush(stdout);
+}
+
+/***********************
+** exported functions **
+***********************/
+void update_transparency() {
+    if (transparency_available) {
+        set_blender_mode(my_blender, my_blender, my_blender, 0, 0, 0, 0);
+        drawing_mode(DRAW_MODE_TRANS, cur, 0, 0);
+    } else {
+        drawing_mode(DRAW_MODE_SOLID, cur, 0, 0);
+    }
 }
 
 /**
@@ -335,12 +384,15 @@ static void run_script(char *script, int width, int bbp) {
 int main(int argc, char **argv) {
     char *script = NULL;
     bool run = false;
+    bool no_sound = false;
+    bool no_fm = false;
+    bool no_alpha = false;
     int width = 640;
-    int bpp = 24;
+    int bpp = 32;
     int opt;
 
     // check parameters
-    while ((opt = getopt(argc, argv, "rw:b:")) != -1) {
+    while ((opt = getopt(argc, argv, "rsfaw:b:")) != -1) {
         switch (opt) {
             case 'w':
                 width = atoi(optarg);
@@ -350,6 +402,15 @@ int main(int argc, char **argv) {
                 break;
             case 'r':
                 run = true;
+                break;
+            case 's':
+                no_sound = true;
+                break;
+            case 'f':
+                no_fm = true;
+                break;
+            case 'a':
+                no_alpha = true;
                 break;
             default: /* '?' */
                 usage();
@@ -386,7 +447,7 @@ int main(int argc, char **argv) {
         }
 
         if (exit == EDI_RUNSCRIPT) {
-            run_script(script, width, bpp);
+            run_script(script, width, bpp, no_sound, no_fm, no_alpha);
         }
 
         if (run || exit == EDI_QUIT || exit == EDI_ERROR) {
@@ -396,3 +457,4 @@ int main(int argc, char **argv) {
 
     exit(0);
 }
+END_OF_MAIN()

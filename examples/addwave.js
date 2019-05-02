@@ -13,6 +13,7 @@
  * 
  * Create a more complex wave by adding two waves together. 
  */
+Include('p5');
 
 xspacing = 8;   // How far apart should each horizontal location be spaced
 w = 0;              // Width of entire wave
@@ -23,9 +24,10 @@ amplitude = new Array(maxwaves);   // Height of wave
 dx = new Array(maxwaves);          // Value for incrementing X, to be calculated as a function of period and xspacing
 yvalues = 0;                           // Using an array to store height values for the wave (not entirely necessary)
 
-function Setup() {
-	SetFramerate(60);
-	w = SizeX() + 16;
+function setup() {
+	frameRate(60);
+	colorMode(RGB, 255, 255, 255, 100);
+	w = width + 16;
 
 	for (var i = 0; i < maxwaves; i++) {
 		amplitude[i] = (random(10, 30));
@@ -36,13 +38,11 @@ function Setup() {
 	yvalues = new Array(w / xspacing);
 }
 
-function Loop() {
-	ClearScreen(EGA.BLACK);
+function draw() {
+	background(0);
 	calcWave();
 	renderWave();
 }
-
-function Input(e) { }
 
 function calcWave() {
 	// Increment theta (try different values for 'angular velocity' here
@@ -71,11 +71,9 @@ function calcWave() {
 
 function renderWave() {
 	// A simple way to draw the wave with an ellipse at each location
+	noStroke();
+	fill(255, 50);
 	for (var x = 0; x < yvalues.length; x++) {
-		FilledCircle(x * xspacing, SizeY() / 2 + yvalues[x], 4, EGA.WHITE);
+		circle(x * xspacing, SizeY() / 2 + yvalues[x], 16);
 	}
-}
-
-function random(min, max) {
-	return (Math.random() * (max - min)) + min;
 }

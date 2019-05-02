@@ -23,12 +23,9 @@
 * @module p5compat
 */
 
-exports._rectMode = CORNER;
-exports._imageMode = CORNER;
-exports._ellipseMode = CENTER;
+// internal variables
 exports._shapeMode = null;
 exports._shape = [];
-exports._strokeWeight = 1;
 
 /**********************************************************************************************************************
  * 2d shapes
@@ -37,7 +34,7 @@ exports._strokeWeight = 1;
  * Draw an arc to the screen. If called with only x, y, w, h, start, and
  * stop, the arc will be drawn and filled as an open pie segment. If a mode parameter is provided, the arc
  * will be filled like an open semi-circle (OPEN) , a closed semi-circle (CHORD), or as a closed pie segment (PIE). The
- * origin may be changed with the <a href="#/p5/ellipseMode">ellipseMode() function.<br><br>
+ * origin may be changed with the ellipseMode() function.<br><br>
  * The arc is always drawn clockwise from wherever start falls to wherever stop falls on the ellipse.
  * Adding or subtracting TWO_PI to either angle does not change where they fall.
  * If both start and stop fall at the same place, a full ellipse will be drawn.
@@ -52,7 +49,6 @@ exports._strokeWeight = 1;
  * @param  {Constant} [mode] optional parameter to determine the way of drawing
  *                         the arc. either CHORD, PIE or OPEN
  *
- * @chainable
  * @example
  * arc(50, 55, 50, 50, 0, HALF_PI);
  * noFill();
@@ -69,13 +65,13 @@ exports._strokeWeight = 1;
  * arc(50, 50, 80, 80, 0, PI + QUARTER_PI, PIE);
  */
 exports.arc = function (x, y, w, h, start, end, style) {
-	style = style || ARC.OPEN;
+	//TODO: style = style || ARC.OPEN;
 
-	if (_fill != NO_COLOR) {
-		FilledEllipseArc(x, y, w, h, start * 10 * RAD_TO_DEG, end * 10 * RAD_TO_DEG, style, _fill);
+	if (_currentEnv._fill != NO_COLOR) {
+		FilledEllipseArc(x, y, w, h, start * 10 * RAD_TO_DEG, end * 10 * RAD_TO_DEG, _currentEnv._fill);
 	}
-	if (_stroke != NO_COLOR) {
-		EllipseArc(x, y, w, h, start * 10 * RAD_TO_DEG, end * 10 * RAD_TO_DEG, style, _stroke);
+	if (_currentEnv._stroke != NO_COLOR) {
+		EllipseArc(x, y, w, h, start * 10 * RAD_TO_DEG, end * 10 * RAD_TO_DEG, _currentEnv._stroke);
 	}
 };
 
@@ -85,14 +81,13 @@ exports.arc = function (x, y, w, h, start, end, style) {
  * and the third and fourth parameters set the shape's width and height. If
  * no height is specified, the value of width is used for both the width and
  * height. If a negative height or width is specified, the absolute value is taken.
- * The origin may be changed with the <a href="#/p5/ellipseMode">ellipseMode() function.
+ * The origin may be changed with the ellipseMode() function.
  *
  * @method ellipse
  * @param  {Number} x x-coordinate of the ellipse.
  * @param  {Number} y y-coordinate of the ellipse.
  * @param  {Number} w width of the ellipse.
  * @param  {Number} [h] height of the ellipse.
- * @chainable
  * @example
  * ellipse(56, 46, 55, 55);
  */
@@ -102,33 +97,36 @@ exports.ellipse = function (x, y, w, h) {
 	var x1 = x;
 	var y1 = y;
 
-	if (_ellipseMode === CENTER) {
+	if (_currentEnv._ellipseMode === CENTER) {
 		var w1 = w / 2;
 		var h1 = h / 2;
-	} else if (_ellipseMode === RADIUS) {
+	} else if (_currentEnv._ellipseMode === RADIUS) {
 		var w1 = w;
 		var h1 = h;
-	} else if (_ellipseMode === CORNER) {
+	} else if (_currentEnv._ellipseMode === CORNER) {
 		x1 = x - w;
 		y1 = y - h;
 		var w1 = w / 2;
 		var h1 = h / 2;
-	} else if (_ellipseMode === CORNERS) {
+	} else if (_currentEnv._ellipseMode === CORNERS) {
 		var w1 = (w - x) / 2;
 		var h1 = (h - y) / 2;
 	} else {
-		Debug("Unknown ellipseMode=" + _ellipseMode);
+		Debug("Unknown ellipseMode=" + _currentEnv._ellipseMode);
 		return;
 	}
 
-	if (_fill != NO_COLOR) {
-		FilledEllipse(x1, y1, w1, h1, _fill);
+	var tx = _transX(x1, y1);
+	var ty = _transY(x1, y1);
+
+	if (_currentEnv._fill != NO_COLOR) {
+		FilledEllipse(tx, ty, w1, h1, _currentEnv._fill);
 	}
-	if (_stroke != NO_COLOR) {
-		if (_strokeWeight == 1) {
-			Ellipse(x1, y1, w1, h1, _stroke);
+	if (_currentEnv._stroke != NO_COLOR) {
+		if (_currentEnv._strokeWeight == 1) {
+			Ellipse(tx, ty, w1, h1, _currentEnv._stroke);
 		} else {
-			CustomEllipse(x1, y1, w1, h1, _strokeWeight, _stroke);
+			CustomEllipse(tx, ty, w1, h1, _currentEnv._strokeWeight, _currentEnv._stroke);
 		}
 	}
 };
@@ -144,7 +142,6 @@ exports.ellipse = function (x, y, w, h) {
  * @param  {Number} x  x-coordinate of the centre of the circle.
  * @param  {Number} y  y-coordinate of the centre of the circle.
  * @param  {Number} d  diameter of the circle.
- * @chainable
  * @example
  * // Draw a circle at location (30, 30) with a diameter of 20.
  * circle(30, 30, 20);
@@ -155,18 +152,17 @@ exports.circle = function (x, y, r) {
 
 /**
  * Draws a line (a direct path between two points) to the screen. The version
- * of <a href="#/p5/line">line() with four parameters draws the line in 2D. To color a line, use
- * the <a href="#/p5/stroke">stroke() function. A line cannot be filled, therefore the <a href="#/p5/fill">fill()
+ * of line() with four parameters draws the line in 2D. To color a line, use
+ * the stroke() function. A line cannot be filled, therefore the fill()
  * function will not affect the color of a line. 2D lines are drawn with a
  * width of one pixel by default, but this can be changed with the
- * <a href="#/p5/strokeWeight">strokeWeight() function.
+ * strokeWeight() function.
  *
  * @method line
  * @param  {Number} x1 the x-coordinate of the first point
  * @param  {Number} y1 the y-coordinate of the first point
  * @param  {Number} x2 the x-coordinate of the second point
  * @param  {Number} y2 the y-coordinate of the second point
- * @chainable
  * @example
  * line(30, 20, 85, 75);
  *
@@ -177,11 +173,16 @@ exports.circle = function (x, y, r) {
  * line(85, 75, 30, 75);
  */
 exports.line = function (x1, y1, x2, y2) {
-	if (_stroke != NO_COLOR) {
-		if (_strokeWeight == 1) {
-			Line(x1, y1, x2, y2, _stroke);
+	if (_currentEnv._stroke != NO_COLOR) {
+		var tx1 = _transX(x1, y1);
+		var ty1 = _transY(x1, y1);
+		var tx2 = _transX(x2, y2);
+		var ty2 = _transY(x2, y2);
+
+		if (_currentEnv._strokeWeight == 1) {
+			Line(tx1, ty1, tx2, ty2, _currentEnv._stroke);
 		} else {
-			CustomLine(x1, y1, x2, y2, _strokeWeight, _stroke);
+			CustomLine(tx1, ty1, tx2, ty2, _currentEnv._strokeWeight, _currentEnv._stroke);
 		}
 	}
 };
@@ -196,7 +197,6 @@ exports.line = function (x1, y1, x2, y2) {
  * @param  {Number} x the x-coordinate
  * @param  {Number} y the y-coordinate
  * @param  {Number} [z] the z-coordinate (for WebGL mode)
- * @chainable
  * @example
  * point(30, 20);
  * point(85, 20);
@@ -204,8 +204,8 @@ exports.line = function (x1, y1, x2, y2) {
  * point(30, 75);
  */
 exports.point = function (x, y) {
-	if (_stroke != NO_COLOR) {
-		Plot(x, y, _stroke);
+	if (_currentEnv._stroke != NO_COLOR) {
+		Plot(_transX(x, y), _transY(x, y), _currentEnv._stroke);
 	}
 };
 
@@ -225,7 +225,6 @@ exports.point = function (x, y) {
  * @param {Number} y3 the y-coordinate of the third point
  * @param {Number} x4 the x-coordinate of the fourth point
  * @param {Number} y4 the y-coordinate of the fourth point
- * @chainable
  * @example
  * quad(38, 31, 86, 20, 69, 63, 30, 76);
  */
@@ -244,7 +243,7 @@ exports.quad = function (x1, y1, x2, y2, x3, y3, x4, y4) {
  * every angle at ninety degrees. By default, the first two parameters set
  * the location of the upper-left corner, the third sets the width, and the
  * fourth sets the height. The way these parameters are interpreted, however,
- * may be changed with the <a href="#/p5/rectMode">rectMode() function.
+ * may be changed with the rectMode() function.
  * <br><br>
  * The fifth, sixth, seventh and eighth parameters, if specified,
  * determine corner radius for the top-left, top-right, lower-right and
@@ -256,46 +255,76 @@ exports.quad = function (x1, y1, x2, y2, x3, y3, x4, y4) {
  * @param  {Number} y  y-coordinate of the rectangle.
  * @param  {Number} w  width of the rectangle.
  * @param  {Number} h  height of the rectangle.
- * @chainable
  * @example
  * // Draw a rectangle at location (30, 20) with a width and height of 55.
  * rect(30, 20, 55, 55);
  */
 exports.rect = function (x, y, w, h) {
-	var x1 = x;
-	var y1 = y;
-
-	if (_rectMode === CORNER) {
-		var x2 = x + w;
-		var y2 = y + h;
-	} else if (_rectMode === CORNERS) {
-		var x2 = w;
-		var y2 = h;
-	} else if (_rectMode === CENTER) {
-		var wh = w / 2;
-		var hh = h / 2;
-		x1 = x - wh;
-		y1 = y - hh;
-		var x2 = x + wh;
-		var y2 = y + hh;
-	} else if (_rectMode === RADIUS) {
-		x1 = x - h;
-		y1 = y - h;
-		var x2 = x + h;
-		var y2 = y + h;
-	} else {
-		Debug("Unknown rectMode=" + _rectMode);
-		return;
-	}
-
-	if (_fill != NO_COLOR) {
-		FilledBox(x1, y1, x2, y2, _fill);
-	}
-	if (_stroke != NO_COLOR) {
-		if (_strokeWeight == 1) {
-			Box(x1, y1, x2, y2, _stroke);
+	if (_currentEnv._matrix) {
+		beginShape();
+		if (_currentEnv._rectMode === CORNER) {
+			vertex(x, y);
+			vertex(x + w, y);
+			vertex(x + w, y + h);
+			vertex(x, y + h);
+		} else if (_currentEnv._rectMode === CORNERS) {
+			vertex(x, y);
+			vertex(w, y);
+			vertex(w, h);
+			vertex(x, h);
+		} else if (_currentEnv._rectMode === CENTER) {
+			var wh = w / 2;
+			var hh = h / 2;
+			vertex(x - wh, y - hh);
+			vertex(x + wh, y - hh);
+			vertex(x + wh, y + hh);
+			vertex(x - wh, y + hh);
+		} else if (_currentEnv._rectMode === RADIUS) {
+			vertex(x - w, y - h);
+			vertex(x + w, y - h);
+			vertex(x + w, y + h);
+			vertex(x - w, y + h);
 		} else {
-			CustomBox(x1, y1, x2, y2, _strokeWeight, _stroke);
+			Debug("Unknown rectMode=" + _currentEnv._rectMode);
+			return;
+		}
+		endShape(CLOSE);
+	} else {
+		var x1 = x;
+		var y1 = y;
+
+		if (_currentEnv._rectMode === CORNER) {
+			var x2 = x + w;
+			var y2 = y + h;
+		} else if (_currentEnv._rectMode === CORNERS) {
+			var x2 = w;
+			var y2 = h;
+		} else if (_currentEnv._rectMode === CENTER) {
+			var wh = w / 2;
+			var hh = h / 2;
+			x1 = x - wh;
+			y1 = y - hh;
+			var x2 = x + wh;
+			var y2 = y + hh;
+		} else if (_currentEnv._rectMode === RADIUS) {
+			x1 = x - w;
+			y1 = y - h;
+			var x2 = x + w;
+			var y2 = y + h;
+		} else {
+			Debug("Unknown rectMode=" + _currentEnv._rectMode);
+			return;
+		}
+
+		if (_currentEnv._fill != NO_COLOR) {
+			FilledBox(x1, y1, x2, y2, _currentEnv._fill);
+		}
+		if (_currentEnv._stroke != NO_COLOR) {
+			if (_currentEnv._strokeWeight == 1) {
+				Box(x1, y1, x2, y2, _currentEnv._stroke);
+			} else {
+				CustomBox(x1, y1, x2, y2, _currentEnv._strokeWeight, _currentEnv._stroke);
+			}
 		}
 	}
 };
@@ -306,7 +335,7 @@ exports.rect = function (x, y, w, h) {
  * This function is a special case of the rect() function, where the width and height are the same, and the parameter is called "s" for side size.
  * By default, the first two parameters set the location of the upper-left corner, the third sets the side size of the square.
  * The way these parameters are interpreted, however,
- * may be changed with the <a href="#/p5/rectMode">rectMode() function.
+ * may be changed with the rectMode() function.
  * <br><br>
  * The fourth, fifth, sixth and seventh parameters, if specified,
  * determine corner radius for the top-left, top-right, lower-right and
@@ -317,7 +346,6 @@ exports.rect = function (x, y, w, h) {
  * @param  {Number} x  x-coordinate of the square.
  * @param  {Number} y  y-coordinate of the square.
  * @param  {Number} s  side size of the square.
- * @chainable
  * @example
  * // Draw a square at location (30, 20) with a side size of 55.
  * square(30, 20, 55);
@@ -338,7 +366,6 @@ exports.square = function (x, y, s) {
  * @param  {Number} y2 y-coordinate of the second point
  * @param  {Number} x3 x-coordinate of the third point
  * @param  {Number} y3 y-coordinate of the third point
- * @chainable
  * @example
  * triangle(30, 75, 58, 20, 86, 75);
  */
@@ -351,26 +378,25 @@ exports.triangle = function (x1, y1, x2, y2, x3, y3) {
 };
 
 /**
- * Using the <a href="#/p5/beginShape">beginShape() and <a href="#/p5/endShape">endShape() functions allow creating more
- * complex forms. <a href="#/p5/beginShape">beginShape() begins recording vertices for a shape and
- * <a href="#/p5/endShape">endShape() stops recording. The value of the kind parameter tells it which
+ * Using the beginShape() and endShape() functions allow creating more
+ * complex forms. beginShape() begins recording vertices for a shape and
+ * endShape() stops recording. The value of the kind parameter tells it which
  * types of shapes to create from the provided vertices. With no mode
  * specified, the shape can be any irregular polygon.
  * <br><br>
- * The parameters available for <a href="#/p5/beginShape">beginShape() are POINTS, LINES, TRIANGLES,
+ * The parameters available for beginShape() are POINTS, LINES, TRIANGLES,
  * TRIANGLE_FAN, TRIANGLE_STRIP, QUADS, and QUAD_STRIP. After calling the
- * <a href="#/p5/beginShape">beginShape() function, a series of <a href="#/p5/vertex">vertex() commands must follow. To stop
- * drawing the shape, call <a href="#/p5/endShape">endShape(). Each shape will be outlined with the
+ * beginShape() function, a series of vertex() commands must follow. To stop
+ * drawing the shape, call endShape(). Each shape will be outlined with the
  * current stroke color and filled with the fill color.
  * <br><br>
- * Transformations such as <a href="#/p5/translate">translate(), <a href="#/p5/rotate">rotate(), and <a href="#/p5/scale">scale() do not work
- * within <a href="#/p5/beginShape">beginShape(). It is also not possible to use other shapes, such as
- * ellipse() or rect() within <a href="#/p5/beginShape">beginShape().
+ * Transformations such as translate(), rotate(), and scale() do not work
+ * within beginShape(). It is also not possible to use other shapes, such as
+ * ellipse() or rect() within beginShape().
  *
  * @method beginShape
  * @param  {Constant} [kind] either POINTS, LINES, TRIANGLES, TRIANGLE_FAN
  *                                TRIANGLE_STRIP, QUADS, or QUAD_STRIP
- * @chainable
  * @example
  * beginShape();
  * vertex(30, 20);
@@ -433,15 +459,14 @@ exports.beginShape = function (m) {
 };
 
 /**
- * All shapes are constructed by connecting a series of vertices. <a href="#/p5/vertex">vertex()
+ * All shapes are constructed by connecting a series of vertices. vertex()
  * is used to specify the vertex coordinates for points, lines, triangles,
- * quads, and polygons. It is used exclusively within the <a href="#/p5/beginShape">beginShape() and
- * <a href="#/p5/endShape">endShape() functions.
+ * quads, and polygons. It is used exclusively within the beginShape() and
+ * endShape() functions.
  *
  * @method vertex
  * @param  {Number} x x-coordinate of the vertex
  * @param  {Number} y y-coordinate of the vertex
- * @chainable
  * @example
  * strokeWeight(3);
  * beginShape(POINTS);
@@ -452,19 +477,18 @@ exports.beginShape = function (m) {
  * endShape();
  */
 exports.vertex = function (x, y) {
-	_shape.push([x, y]);
+	_shape.push([_transX(x, y), _transY(x, y)]);
 };
 
 /**
- * The <a href="#/p5/endShape">endShape() function is the companion to <a href="#/p5/beginShape">beginShape() and may only be
- * called after <a href="#/p5/beginShape">beginShape(). When <a href="#/p5/endshape">endshape() is called, all of image data
- * defined since the previous call to <a href="#/p5/beginShape">beginShape() is written into the image
+ * The endShape() function is the companion to beginShape() and may only be
+ * called after beginShape(). When endshape() is called, all of image data
+ * defined since the previous call to beginShape() is written into the image
  * buffer. The constant CLOSE as the value for the MODE parameter to close
  * the shape (to connect the beginning and the end).
  *
  * @method endShape
  * @param  {Constant} [mode] use CLOSE to close the shape
- * @chainable
  * @example
  * noFill();
  *
@@ -479,58 +503,68 @@ exports.vertex = function (x, y) {
  * vertex(75, 20);
  * vertex(75, 80);
  * endShape();
+ * 
+ * TODO: QUADS, QUAD_STRIP, TRIANGLE_STRIP
  */
 exports.endShape = function (p) {
 	if (_shapeMode === POINTS) {
 		_shape.forEach(function (p) {
-			Plot(p[0], p[1], _stroke);
+			Plot(p[0], p[1], _currentEnv._stroke);
 		});
 	} else if (_shapeMode === LINES) {
 		for (var i = 0; i < _shape.length; i += 2) {
-			if (_strokeWeight == 1) {
-				Line(_shape[i][0], _shape[i][1], _shape[i + 1][0], _shape[i + 1][1], _stroke);
+			if (_currentEnv._strokeWeight == 1) {
+				Line(_shape[i][0], _shape[i][1], _shape[i + 1][0], _shape[i + 1][1], _currentEnv._stroke);
 			} else {
-				CustomLine(_shape[i][0], _shape[i][1], _shape[i + 1][0], _shape[i + 1][1], _strokeWeight, _stroke);
+				CustomLine(_shape[i][0], _shape[i][1], _shape[i + 1][0], _shape[i + 1][1], _strokeWeight, _currentEnv._stroke);
 			}
-
 		}
 	} else if (_shapeMode === TRIANGLES) {
 		for (var i = 0; i < _shape.length; i += 3) {
 			var tri = [_shape[i], _shape[i + 1], _shape[i + 2]];
-			if (_fill != NO_COLOR) {
-				FilledPolygon(tri, _fill);
+			if (_currentEnv._fill != NO_COLOR) {
+				FilledPolygon(tri, _currentEnv._fill);
 			}
-			if (_stroke != NO_COLOR) {
-				if (_strokeWeight == 1) {
-					Polygon(tri, _stroke);
-				} else {
-					CustomPolygon(tri, _strokeWeight, _stroke);
-				}
+			if (_currentEnv._stroke != NO_COLOR) {
+				_PolyLine(tri, true);
 			}
 		}
 	} else {
 		if (p === CLOSE) {
-			if (_fill != NO_COLOR) {
-				FilledPolygon(_shape, _fill);
+			if (_currentEnv._fill != NO_COLOR) {
+				FilledPolygon(_shape, _currentEnv._fill);
 			}
-			if (_stroke != NO_COLOR) {
-				if (_strokeWeight == 1) {
-					Polygon(_shape, _stroke);
-				} else {
-					CustomPolygon(_shape, _strokeWeight, _stroke);
-				}
+			if (_currentEnv._stroke != NO_COLOR) {
+				_PolyLine(_shape, true);
 			}
 		} else {
-			if (_stroke != NO_COLOR) {
-				if (_strokeWeight == 1) {
-					PolyLine(_shape, _stroke);
-				} else {
-					CustomPolyLine(_shape, _strokeWeight, _stroke);
-				}
+			if (_currentEnv._stroke != NO_COLOR) {
+				_PolyLine(_shape, false);
 			}
 		}
 	}
 };
+
+/**
+ * draw polygon by using lines.
+ */
+exports._PolyLine = function (shape, close) {
+	for (var i = 0; i < shape.length - 1; i++) {
+		if (_currentEnv._strokeWeight == 1) {
+			Line(shape[i][0], shape[i][1], shape[i + 1][0], shape[i + 1][1], _currentEnv._stroke);
+		} else {
+			CustomLine(shape[i][0], shape[i][1], shape[i + 1][0], shape[i + 1][1], _currentEnv._strokeWeight, _currentEnv._stroke);
+		}
+	}
+	if (close) {
+		var last = shape.length - 1;
+		if (_currentEnv._strokeWeight == 1) {
+			Line(shape[0][0], shape[0][1], shape[last][0], shape[last][1], _currentEnv._stroke);
+		} else {
+			CustomLine(shape[0][0], shape[0][1], shape[last][0], shape[last][1], _currentEnv._strokeWeight, _currentEnv._stroke);
+		}
+	}
+}
 
 /**
  * Modifies the location from which rectangles are drawn by changing the way
@@ -557,7 +591,6 @@ exports.endShape = function (p) {
  *
  * @method rectMode
  * @param  {Constant} mode either CORNER, CORNERS, CENTER, or RADIUS
- * @chainable
  * @example
  * rectMode(CORNER); // Default rectMode is CORNER
  * fill(255); // Set fill to white
@@ -582,7 +615,7 @@ exports.rectMode = function (m) {
 		m === RADIUS ||
 		m === CENTER
 	) {
-		_rectMode = m;
+		_currentEnv._rectMode = m;
 	}
 	return this;
 };
@@ -613,7 +646,6 @@ exports.rectMode = function (m) {
  *
  * @method ellipseMode
  * @param  {Constant} mode either CENTER, RADIUS, CORNER, or CORNERS
- * @chainable
  * @example
  * ellipseMode(RADIUS); // Set ellipseMode to RADIUS
  * fill(255); // Set fill to white
@@ -638,7 +670,7 @@ exports.ellipseMode = function (m) {
 		m === RADIUS ||
 		m === CENTER
 	) {
-		_ellipseMode = m;
+		_currentEnv._ellipseMode = m;
 	}
 	return this;
 };
@@ -662,7 +694,16 @@ exports.ellipseMode = function (m) {
  * }
  */
 exports.loadImage = function (path) {
-	return new Image(path);
+	var ret = function (p) {
+		this.bm = new Bitmap(p);
+	};
+	ret.prototype.loadPixels = function () { };
+	ret.prototype.get = function (x, y) {	// TODO: check!
+		var px = this.bm.GetPixel(x, y);
+		return color(GetRed(px), GetGreen(px), GetBlue(px), 255);
+	};
+
+	return new ret(path);
 };
 
 
@@ -679,9 +720,7 @@ exports.loadImage = function (path) {
  * "destination rectangle" (which corresponds to "dx", "dy", etc.) and "source
  * image" (which corresponds to "sx", "sy", etc.) below. Specifying the
  * "source image" dimensions can be useful when you want to display a
- * subsection of the source image instead of the whole thing. Here's a diagram
- * to explain further:
- * <img src="assets/drawImage.png"></img>
+ * subsection of the source image instead of the whole thing. 
  *
  * @method image
  * @param  {Bitmap} img    the image to display
@@ -702,19 +741,19 @@ exports.image = function (img, x, y) {
 	var w = img.width;
 	var h = img.height;
 
-	if (_rectMode === CORNER) {
-	} else if (_rectMode === CORNERS) {
-	} else if (_rectMode === CENTER) {
+	if (_currentEnv._imageMode === CORNER) {
+	} else if (_currentEnv._imageMode === CORNERS) {
+	} else if (_currentEnv._imageMode === CENTER) {
 		var wh = w / 2;
 		var hh = h / 2;
 		x1 = x - wh;
 		y1 = y - hh;
 	} else {
-		Debug("Unknown rectMode=" + _rectMode);
+		Debug("Unknown imageMode=" + _currentEnv._imageMode);
 		return;
 	}
 
-	img.Draw(x1, y1);
+	img.bm.Draw(_transX(x1, y1), _transY(x1, y1));
 };
 
 
@@ -765,7 +804,7 @@ exports.imageMode = function (m) {
 		m === CORNERS ||
 		m === CENTER
 	) {
-		_imageMode = m;
+		_currentEnv._imageMode = m;
 	}
 };
 
@@ -775,24 +814,14 @@ exports.imageMode = function (m) {
  *
  * @method strokeWeight
  * @param  {Number} weight the weight (in pixels) of the stroke
- * @chainable
  * @example
- * <div>
- * <code>
  * strokeWeight(1); // Default
  * line(20, 20, 80, 20);
  * strokeWeight(4); // Thicker
  * line(20, 40, 80, 40);
  * strokeWeight(10); // Beastly
  * line(20, 70, 80, 70);
- * </code>
- * </div>
- *
- * @alt
- * 3 horizontal black lines. Top line: thin, mid: medium, bottom:thick.
- *
  */
 exports.strokeWeight = function (w) {
-	this._strokeWeight = w;
-	return this;
+	_currentEnv._strokeWeight = w;
 };

@@ -30,13 +30,12 @@ SOFTWARE.
 ** defines **
 ************/
 #define TAG_SAMPLE "Sample"  //!< class name for Sample()
-#define TAG_MOD "Module"     //!< class name for Mod()
 
 /***********************
 ** exported functions **
 ***********************/
 extern void sound_mod_stop(void);
-extern bool init_sound(js_State *J);
+extern void init_sound(js_State *J);
 extern void shutdown_sound(void);
 
 #endif  // __SOUND_H__

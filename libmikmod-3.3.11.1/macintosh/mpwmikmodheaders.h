@@ -1,1 +1,0 @@
-	/* standard headers */#include <stdio.h>#include <stdlib.h>	/* missing function prototypes */extern char *strdup(const char *);extern int strcasecmp(const char *,const char *);

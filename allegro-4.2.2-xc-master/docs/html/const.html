@@ -1,0 +1,162 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>
+Allegro `const'-correctness
+</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" title="Default" type="text/css" href="allegro.css"></head><body bgcolor=white text=black link="#0000ee" alink="#ff0000" vlink="#551a8b">
+<center><h1><b>
+Allegro <tt>`const'</tt>-correctness
+</b></h1></center>
+<hr>
+<i>
+This is a short document about the introduction of <tt>`const'</tt>-correctness
+to Allegro. It details what changes have occurred to internal library
+code, the API changes (mainly transparent) and what you will need to do
+to adapt code to compile without warnings (again, mainly nothing).
+</i>
+
+
+<p><br>
+<h1><a name="Contents">Contents</a></h1>
+
+<p>
+<ul>
+<li><a href="#Library changes">Library changes</a>
+<li><a href="#The AL_CONST preprocessor define">The AL_CONST preprocessor define</a>
+<li><a href="#Allegro API changes">Allegro API changes</a>
+<li><a href="#Callback functions and Pointers to Pointers">Callback functions and Pointers to Pointers</a>
+<li><a href="#BITMAP objects">BITMAP objects</a>
+<li><a href="#Finally...">Finally...</a>
+</ul>
+
+
+
+<p><br>
+<h1><a name="Library changes">Library changes</a></h1>
+
+<p>
+There are very few actual changes to the library code itself; only some
+symbol declarations and definitions have been altered to include
+AL_CONST. See below for a description of the AL_CONST preprocessor
+define. In a few places, some string was changed that should not have
+been - in these cases, the string is simply duplicated and then the
+duplicate is erased on exiting the function.
+
+<p>
+In all, there were very few changes to the library code.
+
+
+
+<p><br>
+<h1><a name="The AL_CONST preprocessor define">The AL_CONST preprocessor define</a></h1>
+
+<p>
+In order to support compilers which don't know about the <tt>`const'</tt>
+keyword, or perhaps use a different keyword, the preprocessor symbol
+AL_CONST is used wherever <tt>`const'</tt> would normally be used. Note that in
+the documentation, I have used <tt>`const'</tt> for readability.
+
+
+
+<p><br>
+<h1><a name="Allegro API changes">Allegro API changes</a></h1>
+
+<p>
+These are, generally speaking, totally transparent to the user. I did
+not change the behaviour of any function; only its parameter types.
+Basically, if you can pass it as <code>type* ptr</code>, then you can
+pass it as <code>const type* ptr</code> without any problem whatsoever.
+Note also that certain changes may remove warnings in your program as
+static strings, etc, are now treated as <tt>`const'</tt> by Allegro functions.
+
+<p>
+There are a few places, described below, where there will be an effect
+on existing code.
+
+<p>
+<tt>`const'</tt>-correctness is deemed important for two reasons. Firstly, it can
+increase code readability and comprehension of Allegro functions (for
+instance, you can see which parameters are altered and which are not).
+Secondly, it ensures that the Allegro code is not changing data which it
+should not be, and that client callback functions are not breaking
+Allegro by changing data they should not be.
+
+
+
+<p><br>
+<h1><a name="Callback functions and Pointers to Pointers">Callback functions and Pointers to Pointers</a></h1>
+
+<p>
+Certain callback functions now have a different type - they take <tt>`const'</tt>
+pointers as opposed to non-<tt>`const'</tt> pointers. As far as I know, a
+compiler will issue a warning about incompatible pointer types. You
+should update your callback function to the new format (which will be
+listed in the main Allegro documentation).
+
+<p>
+Also, when passing a pointer to a pointer to an Allegro function which
+is declared as taking an <code>AL_CONST type** ptr</code>, you will need
+to cast your pointer to be <tt>`const'</tt> if it is not already. For instance:
+<blockquote class="code"><pre>
+   int some_allegro_function(AL_CONST char** p);
+   
+   void my_func(char** x)
+   {
+       some_allegro_function((AL_CONST char**) x);
+   }
+</pre></blockquote>
+I realise that this is a change to the Allegro API, and that we are
+supposed to avoid those at all costs, but this is essentially fixing a
+bug in Allegro and changing behaviour. It also ensures that
+client-supplied callback functions are functioning correctly, and not
+altering data that they should not. Callback functions which do not
+treat relevant parameters as <tt>`const'</tt> are, in a small (but potentially
+signficant) way, broken.
+
+<p>
+Please note that for the Unicode function ugetx(), I have provided an
+alternative version ugetxc(), which takes a `const char**' parameter as
+opposed to a `char**' parameter. This is because it is valid to pass
+either a `char**' or a `const char**', but unfortunately there is no way
+to tell the compiler exactly what we mean.
+
+
+
+<p><br>
+<h1><a name="BITMAP objects">BITMAP objects</a></h1>
+
+<p>
+Allegro represents both a screen bitmap and a memory bitmap by a single
+object; a BITMAP. Unfortunately, these two things can be very different.
+For instance, reading a pixel from a bitmap would not seem to change it,
+but if it is a screen bitmap we are reading from, then it is possible
+that some parameter of the video card is changed to select the correct
+line, etc.
+
+<p>
+Therefore, a const BITMAP parameter does not make sense, and is not used
+throughout the library. This is unfortunate, but I cannot see any way
+around it.
+
+
+
+<p><br>
+<h1><a name="Finally...">Finally...</a></h1>
+
+<p>
+Allegro <tt>`const'</tt>-correctness has been tested for quite enough time to say
+that it is working OK. However, if you still find problems with a compiler,
+please contact the Allegro mailing list; see `Contact info' in the Allegro
+documentation (<a href="readme.html">readme.txt</a>).
+
+<p>
+Email: <a href="mailto:lwithers@lwithers.demon.co.uk">lwithers@lwithers.demon.co.uk</a>.
+
+<p>
+Thanks for listening :-)
+
+
+
+</body>
+</html>

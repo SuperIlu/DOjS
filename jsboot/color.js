@@ -20,22 +20,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/**
- * Color flags.
- * @namespace COLOR
- * @property {*} XOR XOR the color onto the screen.
- * @property {*} OR OR the color onto the screen.
- * @property {*} AND AND the color onto the screen.
- */
-COLOR = {
-        XOR: 1,
-        OR: 2,
-        AND: 3
-};
+/** 
+ * Color definition.
+ * @module color */
 
 /**
  * EGA Color definition.
- * @namespace EGA
  * @property {Color} BLACK EGA color.
  * @property {Color} BLUE EGA color.
  * @property {Color} GREEN EGA color.
@@ -56,27 +46,27 @@ COLOR = {
  * @property {Color} WHITE EGA color.
  */
 EGA = {
-        BLACK: new Color(0, 0, 0),
-        BLUE: new Color(0, 0, 170),
-        GREEN: new Color(0, 170, 0),
-        CYAN: new Color(0, 170, 170),
-        RED: new Color(170, 0, 0),
-        MAGENTA: new Color(170, 0, 170),
-        BROWN: new Color(170, 85, 0),
-        LIGHT_GRAY: new Color(170, 170, 170),
-        DARK_GRAY: new Color(85, 85, 85),
-        LIGHT_GREY: new Color(170, 170, 170),
-        DARK_GREY: new Color(85, 85, 85),
-        LIGHT_BLUE: new Color(85, 85, 255),
-        LIGHT_GREEN: new Color(85, 255, 85),
-        LIGHT_CYAN: new Color(85, 255, 255),
-        LIGHT_RED: new Color(255, 85, 85),
-        LIGHT_MAGENTA: new Color(255, 85, 255),
-        YELLOW: new Color(255, 255, 85),
-        WHITE: new Color(255, 255, 255)
+	BLACK: Color(0, 0, 0, 255),
+	BLUE: Color(0, 0, 170, 255),
+	GREEN: Color(0, 170, 0, 255),
+	CYAN: Color(0, 170, 170, 255),
+	RED: Color(170, 0, 0, 255),
+	MAGENTA: Color(170, 0, 170, 255),
+	BROWN: Color(170, 85, 0, 255),
+	LIGHT_GRAY: Color(170, 170, 170, 255),
+	DARK_GRAY: Color(85, 85, 85, 255),
+	LIGHT_GREY: Color(170, 170, 170, 255),
+	DARK_GREY: Color(85, 85, 85, 255),
+	LIGHT_BLUE: Color(85, 85, 255, 255),
+	LIGHT_GREEN: Color(85, 255, 85, 255),
+	LIGHT_CYAN: Color(85, 255, 255, 255),
+	LIGHT_RED: Color(255, 85, 85, 255),
+	LIGHT_MAGENTA: Color(255, 85, 255, 255),
+	YELLOW: Color(255, 255, 85, 255),
+	WHITE: Color(255, 255, 255, 254)
 };
 
 /**
- * @property {Color} NO_COLOR the transparent Color.
- */
-NO_COLOR = new Color(0, 0, 0, COLOR.XOR);
+* @property {Color} NO_COLOR the transparent Color.
+*/
+NO_COLOR = -1;

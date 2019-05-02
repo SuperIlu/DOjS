@@ -32,21 +32,21 @@ exports.RAD_TO_DEG = 180.0 / PI;
 exports.DEGREES = 'degrees';
 exports.RADIANS = 'radians';
 
-exports.LEFT = FONT.Align.LEFT;
-exports.CENTER = FONT.Align.CENTER;
-exports.RIGHT = FONT.Align.RIGHT;
-exports.TOP = FONT.Align.TOP;
-exports.BOTTOM = FONT.Align.BOTTOM;
-exports.BASELINE = exports.TOP;
+exports.LEFT = 'left';
+exports.CENTER = 'center';
+exports.RIGHT = 'right';
+exports.TOP = 'top';
+exports.BOTTOM = 'bottom';
+exports.BASELINE = exports.BOTTOM;
 
 exports.CLOSE = 'close';
 exports.POINTS = 'points';
 exports.LINES = 'lines';
 exports.TRIANGLES = 'triangles';
 
-exports.OPEN = ARC.OPEN;
-exports.CHORD = ARC.CLOSE1;
-exports.PIE = ARC.CLOSE2;
+exports.OPEN = 'open';
+exports.CHORD = 'chord';
+exports.PIE = 'pie';
 
 exports.MIDDLE = -10;
 

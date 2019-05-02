@@ -18,18 +18,20 @@ function Loop() { }
  */
 function Input(event) { }
 
+/**
+ * @property {object} global the global context.
+ */
+global = null;
+
 /********
  * Other properties
+ * 
+ * @module other
  */
 /**
- * @property {boolean} SOUND_AVAILABLE true if WAV sound is available.
+ * @property {boolean} SOUND_AVAILABLE true if sound is available.
  */
 SOUND_AVAILABLE = null;
-
-/**
- * @property {boolean} SYNTH_AVAILABLE true if FM sound is available.
- */
-SYNTH_AVAILABLE = true;
 
 /**
  * @property {boolean} MOUSE_AVAILABLE true if mouse is available.
@@ -37,9 +39,9 @@ SYNTH_AVAILABLE = true;
 MOUSE_AVAILABLE = true;
 
 /**
- * @property {boolean} MIDI_AVAILABLE true if midi is available.
+ * @property {boolean} IPX_AVAILABLE true if networking is available.
  */
-MIDI_AVAILABLE = true;
+IPX_AVAILABLE = true;
 
 /**
  * @property {number} DOJS_VERSION the version
@@ -105,67 +107,32 @@ function MidiIsPlaying() { }
 function MidiStop() { }
 
 /**
- * Module music functions. See {@link Module} on how to load MOD-files.
- * 
- * @module module
+ * Pause playing midi.
  */
-/**
- * Check if the file is still playing.
- * @returns {boolean} true if the file is still playing.
- */
-function ModuleIsPlaying() { }
+function MidiPause() { }
 
 /**
- * Stop playing module.
+ * Resume playing midi after MidiPause().
  */
-function ModuleStop() { }
+function MidiResume() { }
 
 /**
- * All functions for FM music.
- * 
- * @module fm
+ * Get song position.
+ * @returns {number} current song position in seconds.
  */
-/**
- * 
- * Convert the contents of a JS object into an instrument and set the parameters to the given voice.
- * @param {number} voice the voice between 0-8.
- * @param {FmInstrument} instrument an instrument definition.
- */
-function SetInstrument(voice, instrument) { }
+function MidiGetTime() { }
 
 /**
- * Start playing a note.
- * @param {number} voice the voice between 0-8.
- * @param {number} note the note frequency.
- * @param {number} octave the octave.
+ * Send MIDI commands to output.
+ * @param {number[]} data an array of midi commands.
  */
-function NoteOn(voice, note, octave) { }
-
-/**
- * Stop playing a note.
- * @param {number} voice the voice between 0-8.
- * @param {number} note the note frequency.
- * @param {number} octave the octave.
- */
-function NoteOff(voice, note, octave) { }
+function MidiOut(data) { }
 
 /**
  * All graphics functions.
  * 
  * @module gfx
  */
-/**
- * Get number of possible colors.
- * @returns { number } number of possible colors.
- */
-function NumColors() { }
-
-/**
- * Get number of remaining free colors.
- * @returns {number} number of remaining free colors.
- */
-function NumFreeColors() { }
-
 /**
  * get the width of the drawing area.
  * @returns {number} the width of the drawing area.
@@ -179,36 +146,22 @@ function SizeX() { }
 function SizeY() { }
 
 /**
- * get the max X coordinate on the drawing area.
- * @returns {number} the max X coordinate on the drawing area.
+ * Get color depth info.
+ * @returns {number} bits per pixel.
  */
-function MaxX() { }
-
-/**
- * get the max Y coordinate on the drawing area.
- * @returns {number} the max Y coordinate on the drawing area.
- */
-function MaxY() { }
+function GetScreenMode() { }
 
 /**
  * clear the screen with given color.
- * @param {Color} c the color.
+ * @param {number} c the color.
  */
 function ClearScreen(c) { }
-
-/**
- * get color of on-screen pixel.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @returns {Color} pixel color.
- */
-function GetPixel(x, y) { }
 
 /**
  * draw a point.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function Plot(x, y, c) { }
 
@@ -218,7 +171,7 @@ function Plot(x, y, c) { }
  * @param {number} y1 start y coordinate.
  * @param {number} x2 end x coordinate.
  * @param {number} y2 end y coordinate.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function Line(x1, y1, x2, y2, c) { }
 
@@ -229,7 +182,7 @@ function Line(x1, y1, x2, y2, c) { }
  * @param {number} x2 end x coordinate.
  * @param {number} y2 end y coordinate.
  * @param {number} w line width.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function CustomLine(x1, y1, x2, y2, w, c) { }
 
@@ -239,27 +192,16 @@ function CustomLine(x1, y1, x2, y2, w, c) { }
  * @param {number} y1 start y coordinate.
  * @param {number} x2 end x coordinate.
  * @param {number} y2 end y coordinate.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function Box(x1, y1, x2, y2, c) { }
-
-/**
- * draw a box with given width.
- * @param {number} x1 start x coordinate.
- * @param {number} y1 start y coordinate.
- * @param {number} x2 end x coordinate.
- * @param {number} y2 end y coordinate.
- * @param {number} w line width.
- * @param {Color} c color.
- */
-function CustomBox(x1, y1, x2, y2, w, c) { }
 
 /**
  * draw a circle.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
  * @param {number} r radius.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function Circle(x, y, r, c) { }
 
@@ -269,7 +211,7 @@ function Circle(x, y, r, c) { }
  * @param {number} y y coordinate.
  * @param {number} r radius.
  * @param {number} w line width.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function CustomCircle(x, y, r, w, c) { }
 
@@ -279,7 +221,7 @@ function CustomCircle(x, y, r, w, c) { }
  * @param {number} y y coordinate.
  * @param {number} xr radius.
  * @param {number} yr radius.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function Ellipse(x, y, xr, yr, c) { }
 
@@ -290,7 +232,7 @@ function Ellipse(x, y, xr, yr, c) { }
  * @param {number} xr radius.
  * @param {number} yr radius.
  * @param {number} w line width.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function CustomEllipse(x, y, xr, yr, w, c) { }
 
@@ -302,7 +244,7 @@ function CustomEllipse(x, y, xr, yr, w, c) { }
  * @param {number} start start angle in tenths of degrees.
  * @param {number} end end angle in tenths of degrees.
  * @param {*} style value from {@link ARC}.
- * @param {Color} c color.
+ * @param {number} c color.
  * @returns {ArcInfo} detailed info about the drawn arc.
  */
 function CircleArc(x, y, r, start, end, style, c) { }
@@ -316,39 +258,10 @@ function CircleArc(x, y, r, start, end, style, c) { }
  * @param {number} end end angle in tenths of degrees.
  * @param {*} style value from {@link ARC}.
  * @param {number} w line width.
- * @param {Color} c color.
+ * @param {number} c color.
  * @returns {ArcInfo} detailed info about the drawn arc.
  */
 function CustomCircleArc(x, y, r, start, end, style, w, c) { }
-
-/**
- * Draw an ellipse arc.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} xr radius.
- * @param {number} yr radius.
- * @param {number} start start angle in tenths of degrees.
- * @param {number} end end angle in tenths of degrees.
- * @param {*} style value from {@link ARC}.
- * @param {Color} c color.
- * @returns {ArcInfo} detailed info about the drawn arc.
- */
-function EllipseArc(x, y, rx, ry, start, end, style, c) { }
-
-/**
- * Draw an ellipse arc with given width.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} xr radius.
- * @param {number} yr radius.
- * @param {number} start start angle in tenths of degrees.
- * @param {number} end end angle in tenths of degrees.
- * @param {*} style value from {@link ARC}.
- * @param {number} w line width.
- * @param {Color} c color.
- * @returns {ArcInfo} detailed info about the drawn arc.
- */
-function CustomEllipseArc(x, y, rx, ry, start, end, style, w, c) { }
 
 /**
  * draw a filled box.
@@ -356,27 +269,16 @@ function CustomEllipseArc(x, y, rx, ry, start, end, style, w, c) { }
  * @param {number} y1 start y coordinate.
  * @param {number} x2 end x coordinate.
  * @param {number} y2 end y coordinate.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function FilledBox(x1, y1, x2, y2, c) { }
-
-/**
- * draw a framed box (3D effect box).
- * @param {number} x1 start x coordinate.
- * @param {number} y1 start y coordinate.
- * @param {number} x2 end x coordinate.
- * @param {number} y2 end y coordinate.
- * @param {number} wdt border width.
- * @param {Color[]} colors [intcolor, topcolor, rightcolor, bottomcolor, leftcolor]
- */
-function FramedBox(x1, y1, x2, y2, wdt, colors) { }
 
 /**
  * draw a filled circle.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
  * @param {number} r radius.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function FilledCircle(x, y, r, c) { }
 
@@ -386,127 +288,77 @@ function FilledCircle(x, y, r, c) { }
  * @param {number} y y coordinate.
  * @param {number} xr radius.
  * @param {number} yr radius.
- * @param {Color} c color.
+ * @param {number} c color.
  */
 function FilledEllipse(x, y, rx, ry, c) { }
-
-/**
- * Draw a filled circle arc.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} r radius.
- * @param {number} start start angle in tenths of degrees.
- * @param {number} end end angle in tenths of degrees.
- * @param {*} style value from {@link ARC}.
- * @param {Color} c color.
- * @returns {ArcInfo} detailed info about the drawn arc.
- */
-function FilledCircleArc(x, y, r, start, end, style, c) { }
-
-/**
- * Draw a filled ellipse arc.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} xr radius.
- * @param {number} yr radius.
- * @param {number} start start angle in tenths of degrees.
- * @param {number} end end angle in tenths of degrees.
- * @param {*} style value from {@link ARC}.
- * @param {Color} c color.
- * @returns {ArcInfo} detailed info about the drawn arc.
- */
-function FilledEllipseArc(x, y, rx, ry, start, end, style, c) { }
 
 /**
  * do a flood fill.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
- * @param {Color} bound bound color.
- * @param {Color} c fill color.
+ * @param {number} bound bound color.
+ * @param {number} c fill color.
  */
 function FloodFill(x, y, bound, c) { }
 
 /**
- * replace a color with another in given area.
- * @param {number} x1 start x coordinate.
- * @param {number} y1 start y coordinate.
- * @param {number} x2 end x coordinate.
- * @param {number} y2 end y coordinate.
- * @param {*} old color to replace.
- * @param {*} c new color.
- */
-function FloodSpill(x1, y1, x2, y2, old, c) { }
-
-/**
- * replace two colors with another in given area.
- * @param {number} x1 start x coordinate.
- * @param {number} y1 start y coordinate.
- * @param {number} x2 end x coordinate.
- * @param {number} y2 end y coordinate.
- * @param {*} old1 color to replace.
- * @param {*} c1 new color.
- * @param {*} old2 color to replace.
- * @param {*} c2 new color.
- */
-function FloodSpill2(x1, y1, x2, y2, old1, c1, old2, c2) { }
-
-/**
- * draw a polyline.
- * @param {Color} c color.
- * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
- */
-function PolyLine(points, c) { }
-
-/**
- * draw a polyline with given width.
- * @param {Color} c color.
- * @param {number} w line width.
- * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
- */
-function CustomPolyLine(points, w, c) { }
-
-/**
- * draw a polygon.
- * @param {Color} c color.
- * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
- */
-function Polygon(points, c) { }
-
-/**
- * draw a polygon with given width.
- * @param {Color} c color.
- * @param {number} w line width.
- * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
- */
-function CustomPolygon(points, w, c) { }
-
-/**
  * draw a filled polygon.
- * @param {Color} c color.
+ * @param {number} c color.
  * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
  */
 function FilledPolygon(points, c) { }
 
 /**
- * draw a filled convex polygon.
- * @param {Color} c color.
- * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
- */
-function FilledConvexPolygon(points, c) { }
+ * Draw a text with the default font.
+* @param {number} x x coordinate.
+* @param {number} y y coordinate.
+* @param {*} text the text to display.
+* @param {number} fg foreground color.
+* @param {number} bg background color.
+*/
+function TextXY(x, y, text, fg, bg) { }
 
 /**
- * Set mouse speed by multiplying by spmult and dividing by spdiv.
- * @param {number} spmul multiplicator.
- * @param {number} spdiv divider.
+ * Save current screen to BMP file.
+ * @param {string} fname filename.
  */
-function MouseSetSpeed(spmul, spdiv) { }
+function SaveBmpImage(fname) { }
 
 /**
- * Set mouse acceleration. If a mouse coordinate changes between two samplings by more than the thresh parameter, the change is multiplied by the accel parameter.
- * @param {number} thresh threshold
- * @param {number} accel acceleration.
+ * Save current screen to PCX file.
+ * @param {string} fname filename.
  */
-function MouseSetAccel(thresh, accel) { }
+function SavePcxImage(fname) { }
+
+/**
+ * Save current screen to TGA file.
+ * @param {string} fname filename.
+ */
+function SaveTgaImage(fname) { }
+
+/**
+ * get color of on-screen pixel.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @returns {number} pixel color.
+ */
+function GetPixel(x, y) { }
+
+/**
+ * Enable/disable the transparency when drawing.
+ * @param {boolean} en true to enable transparency when drawing (might slow down drawing).
+ */
+function TransparencyEnabled(en) { }
+
+/**
+ * @module other
+ */
+/**
+ * Set mouse speed.
+ * @param {number} x horizontal speed.
+ * @param {number} y vertical speed.
+ */
+function MouseSetSpeed(x, y) { }
 
 /**
  * Limit mouse movement.
@@ -516,12 +368,6 @@ function MouseSetAccel(thresh, accel) { }
  * @param {number} y2 end y coordinate.
  */
 function MouseSetLimits(x1, y1, x2, y2) { }
-
-/**
- * Get mouse limits.
- * @returns {MouseLimits} current mouse limits.
- */
-function MouseGetLimits() { }
 
 /**
  * Move mouse cursor.
@@ -537,61 +383,11 @@ function MouseWarp(x, y) { }
 function MouseShowCursor(b) { }
 
 /**
- * Check if the cursor is visible
- * @returns {boolean} true or false.
- */
-function MouseCursorIsDisplayed() { }
-
-/**
- * Set mouse pointer colors.
- * @param {Color} fg foreground color.
- * @param {Color} bg background color.
- */
-function MouseSetColors(fg, bg) { }
-
-/**
  * Change mode of the mouse cursor.
  * @param {*} mode a mode from {@link MOUSE}.
- * @param {Color} c color.
- * @param {number} x1 start x coordinate.
- * @param {number} y1 start y coordinate.
- * @param {number} x2 end x coordinate.
- * @param {number} y2 end y coordinate.
- * @param {number} xanchor anchor x coordinate.
- * @param {number} yanchor anchor y coordinate.
- * 
- * @example MouseSetCursorMode(MOUSE.Mode.NORMAL)
- * @example MouseSetCursorMode(MOUSE.Mode.RUBBER,xanchor,yanchor,c)
- * @example MouseSetCursorMode(MOUSE.Mode.LINE,xanchor,yanchor,c)
- * @example MouseSetCursorMode(MOUSE.Mode.BOX,x1,y1,x2,y2,c)
  */
 function MouseSetCursorMode(mode) { }
 
-/**
- * Draw a text with the default font.
-* @param {number} x x coordinate.
-* @param {number} y y coordinate.
-* @param {*} text the text to display.
-* @param {Color} fg foreground color.
-* @param {Color} bg background color.
-*/
-function TextXY(x, y, text, fg, bg) { }
-
-/**
- * Save current screen to BMP file.
- * @param {string} fname filename.
- */
-function SaveBmpImage(fname) { }
-
-/**
- * Save current screen to PNG file.
- * @param {string} fname filename.
- */
-function SavePngImage(fname) { }
-
-/**
- * @module other
- */
 /**
  * Write data to JSLOG.TXT logfile.
  * @param {string} s the string to print.
@@ -670,4 +466,45 @@ function GetFramerate() { }
  * @param {number} key 
  */
 function SetExitKey(key) { }
+
+/** @module color */
+
+/**
+ * create RGBA color.
+ * 
+ * @param {number} r red (0-255)
+ * @param {number} g green (0-255)
+ * @param {number} b blue (0-255)
+ * @param {number} a alpha (0-255)
+ * @returns {number} a color.
+ */
+function Color(r, g, b, a) { }
+
+/**
+ * get red part of color.
+ * @param {number} c a color
+ * @returns {number} the red part.
+ */
+function GetRed(c) { }
+
+/**
+ * get green part of color.
+ * @param {number} c a color
+ * @returns {number} the green part.
+ */
+function GetGreen(c) { }
+
+/**
+ * get blue part of color.
+ * @param {number} c a color
+ * @returns {number} the blue part.
+ */
+function GetBlue(c) { }
+
+/**
+ * get alpha part of color.
+ * @param {number} c a color
+ * @returns {number} the alpha part.
+ */
+function GetAlpha(c) { }
 

@@ -7,14 +7,14 @@
  * 
  * It was modified to run with DOjS by Andre Seidelt <superilu@yahoo.com>.
  */
-Require('p5');
+Include('p5');
 
 ps = null;
 
 /*
 ** This function is called once when the script is started.
 */
-function Setup() {
+function setup() {
 	SetFramerate(300);
 
 	ps = new ParticleSystem(new PVector(SizeX() / 2, 50));
@@ -23,17 +23,11 @@ function Setup() {
 /*
 ** This function is repeatedly until ESC is pressed or Stop() is called.
 */
-function Loop() {
-	ClearScreen(EGA.BLACK);
+function draw() {
+	background(51);
 
 	ps.addParticle();
 	ps.run();
-}
-
-/*
-** This function is called on any input.
-*/
-function Input(event) {
 }
 
 function random(min, max) {
@@ -68,18 +62,20 @@ function Particle(l) {
 	this.acceleration = new PVector(0, 0.05);
 	this.velocity = new PVector(random(-1, 1), random(-2, 0));
 	this.position = l.copy();
-	this.lifespan = 128;
+	this.lifespan = 255;
 }
 Particle.prototype.update = function () {
 	// Method to update position
 	this.velocity.add(this.acceleration);
 	this.position.add(this.velocity);
-	this.lifespan -= 1;
+	this.lifespan -= 2;
 }
 Particle.prototype.display = function () {
 	// Method to display
-	var c = new Color(this.lifespan, this.lifespan, this.lifespan * 2);
-	FilledCircle(this.position.x, this.position.y, 4, c);
+	stroke(200, this.lifespan);
+	strokeWeight(2);
+	fill(127, this.lifespan);
+	ellipse(this.position.x, this.position.y, 12, 12);
 }
 Particle.prototype.isDead = function () {
 	// Is the particle still useful?

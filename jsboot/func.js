@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** @module other */
 
 /**
  * @property {boolean} DEBUG enable/disable Debug() output.
@@ -30,8 +31,6 @@ DEBUG = false;
  * @property {boolean} REMOTE_DEBUG enable/disable Debug() sending via IPX.
  */
 REMOTE_DEBUG = false;
-
-/** @module other */
 
 /**
  * print javascript debug output if DEBUG is true.
@@ -118,13 +117,33 @@ Error.prototype.toString = function () {
  */
 function StartupInfo() {
 	var mode = GetScreenMode();
-	var adapter = GetScreenAdapter();
 	var width = SizeX();
 	var height = SizeY();
-	var colors = NumColors();
 
-	_Debug("Screen size=" + width + "x" + height + " with " + colors + " colors, mode=" + mode + ", adapter=" + adapter);
-	_Debug("Memory=" + JSON.stringify(MemoryInfo()));
+	if (DEBUG) {
+		_Debug("Screen size=" + width + "x" + height + "x" + mode);
+		_Debug("Memory=" + JSON.stringify(MemoryInfo()));
+
+		var funcs = [];
+		var other = [];
+		for (var e in global) {
+			if (typeof global[e] === "function") {
+				funcs.push(e + "()");
+			} else {
+				other.push(e);
+			}
+		}
+		funcs.sort();
+		other.sort();
+		_Debug("Known globals:");
+		for (var i = 0; i < other.length; i++) {
+			_Debug("    " + other[i]);
+		}
+		_Debug("Known functions:");
+		for (var i = 0; i < funcs.length; i++) {
+			_Debug("    " + funcs[i]);
+		}
+	}
 }
 StartupInfo();
 
@@ -139,356 +158,179 @@ function CharCode(s) {
 }
 
 /**
- * arc style definition
- * @namespace ARC
- * @property {*} OPEN Open arc.
- * @property {*} CLOSE1 closes the arc with a line between his start and end point.
- * @property {*} CLOSE2 draws the typical cake slice.
+ * compare a keycode with a character.
+ * 
+ * @param {number} k keycode from an Event
+ * @param {string} s a string with one char
  */
-ARC = {
-	OPEN: 0,
-	CLOSE1: 1,
-	CLOSE2: 2
-};
-
-/* @module */
+function CompareKey(k, s) {
+	return (k & 0xFF) == CharCode(s);
+}
 
 /**
  * event interface.
- * @namespace MOUSE
- * @property {*} Mode.NORMAL just the cursor
- * @property {*} Mode.RUBBER rect. rubber band (XOR-d to the screen)
- * @property {*} Mode.LINE line attached to the cursor
- * @property {*} Mode.BOX rectangular box dragged by the cursor
- * @property {*} Flags event flags
+ * @property {*} Mode.NONE no cursor
+ * @property {*} Mode.ARROW arrow cursor
+ * @property {*} Mode.BUSY busy cursor
+ * @property {*} Mode.QUESTION questionmark cursor
+ * @property {*} Mode.CURSOR_EDIT edit cursor
  * @property {*} Buttons mouse button definitions
- * @property {*} Flags.MOTION
- * @property {*} Flags.LEFT_DOWN
- * @property {*} Flags.LEFT_UP
- * @property {*} Flags.RIGHT_DOWN
- * @property {*} Flags.RIGHT_UP
- * @property {*} Flags.MIDDLE_DOWN
- * @property {*} Flags.MIDDLE_UP
- * @property {*} Flags.P4_DOWN
- * @property {*} Flags.P4_UP
- * @property {*} Flags.P5_DOWN
- * @property {*} Flags.P5_UP
- * @property {*} Flags.BUTTON_DOWN
- * @property {*} Flags.BUTTON_UP
- * @property {*} Flags.BUTTON_CHANGE
- * @property {*} Flags.KEYPRESS
- * @property {*} Flags.POLL
- * @property {*} Flags.NOPAINT
- * @property {*} Flags.COMMAND
- * @property {*} Flags.EVENT
  * @property {*} Buttons.LEFT
  * @property {*} Buttons.RIGHT
  * @property {*} Buttons.MIDDLE
- * @property {*} Buttons.P4
- * @property {*} Buttons.WHEEL_UP
- * @property {*} Buttons.P5
- * @property {*} Buttons.WHEEL_DOWN
  */
 MOUSE = {
 	Mode: {
-		NORMAL: 0,
-		RUBBER: 1,
-		LINE: 2,
-		BOX: 3
-	},
-	Flags: {
-		MOTION: 0x001,
-		LEFT_DOWN: 0x002,
-		LEFT_UP: 0x004,
-		RIGHT_DOWN: 0x008,
-		RIGHT_UP: 0x010,
-		MIDDLE_DOWN: 0x020,
-		MIDDLE_UP: 0x040,
-		P4_DOWN: 0x400,
-		P4_UP: 0x800,
-		P5_DOWN: 0x2000,
-		P5_UP: 0x4000,
-		BUTTON_DOWN: (0x002 | 0x020 | 0x008 | 0x400 | 0x2000),
-		BUTTON_UP: (0x004 | 0x040 | 0x010 | 0x800 | 0x4000),
-		BUTTON_CHANGE: ((0x004 | 0x040 | 0x010 | 0x800 | 0x4000) | (0x002 | 0x020 | 0x008 | 0x400 | 0x2000)),
-		KEYPRESS: 0x080,
-		POLL: 0x100,
-		NOPAINT: 0x200,
-		COMMAND: 0x1000,
-		EVENT: (0x001 | 0x080 | ((0x004 | 0x040 | 0x010 | 0x800 | 0x4000) | (0x002 | 0x020 | 0x008 | 0x400 | 0x2000)) | 0x1000)
-
+		NONE: 0,
+		ARROW: 2,
+		BUSY: 3,
+		QUESTION: 4,
+		CURSOR_EDIT: 5
 	},
 	Buttons: {
 		LEFT: 0x01,
 		RIGHT: 0x02,
-		MIDDLE: 0x04,
-		P4: 0x08,
-		WHEEL_UP: 0x08,
-		P5: 0x10,
-		WHEEL_DOWN: 0x10,
+		MIDDLE: 0x04
 	}
 };
 
 /**
  * keyboard input.
- * @namespace KEY
- * @property {*} State kbdstate definitions.
  * @property {*} Code key definitions.
  */
 KEY = {
-	State: {
-		RIGHTSHIFT: 0x01,	/* Keybd states: right shift key depressed */
-		LEFTSHIFT: 0x02,		/* left shift key depressed */
-		CTRL: 0x04,			/* CTRL depressed */
-		ALT: 0x08,			/* ALT depressed */
-		SCROLLOCK: 0x10,		/* SCROLL LOCK active */
-		NUMLOCK: 0x20,			/* NUM LOCK active */
-		CAPSLOCK: 0x40,			/* CAPS LOCK active */
-		INSERT: 0x80,			/* INSERT state active */
-		SHIFT: (0x02 | 0x01)
-	},
 	Code: {
-		NoKey: 0x0000,		/* no key available */
+		NoKey: -1,		/* no key available */
 		/* Letters and numbers are missing from the definitions but can be obtained by e.g. CharCode('A'). */
 
-		OutsideValidRange: 0x0100,	/* key typed but code outside 1..Gr,LastDefinedKeycode */
+		KEY_A: 1,
+		KEY_B: 2,
+		KEY_C: 3,
+		KEY_D: 4,
+		KEY_E: 5,
+		KEY_F: 6,
+		KEY_G: 7,
+		KEY_H: 8,
+		KEY_I: 9,
+		KEY_J: 10,
+		KEY_K: 11,
+		KEY_L: 12,
+		KEY_M: 13,
+		KEY_N: 14,
+		KEY_O: 15,
+		KEY_P: 16,
+		KEY_Q: 17,
+		KEY_R: 18,
+		KEY_S: 19,
+		KEY_T: 20,
+		KEY_U: 21,
+		KEY_V: 22,
+		KEY_W: 23,
+		KEY_X: 24,
+		KEY_Y: 25,
+		KEY_Z: 26,
+		KEY_0: 27,
+		KEY_1: 28,
+		KEY_2: 29,
+		KEY_3: 30,
+		KEY_4: 31,
+		KEY_5: 32,
+		KEY_6: 33,
+		KEY_7: 34,
+		KEY_8: 35,
+		KEY_9: 36,
+		KEY_0_PAD: 37,
+		KEY_1_PAD: 38,
+		KEY_2_PAD: 39,
+		KEY_3_PAD: 40,
+		KEY_4_PAD: 41,
+		KEY_5_PAD: 42,
+		KEY_6_PAD: 43,
+		KEY_7_PAD: 44,
+		KEY_8_PAD: 45,
+		KEY_9_PAD: 46,
+		KEY_F1: 47,
+		KEY_F2: 48,
+		KEY_F3: 49,
+		KEY_F4: 50,
+		KEY_F5: 51,
+		KEY_F6: 52,
+		KEY_F7: 53,
+		KEY_F8: 54,
+		KEY_F9: 55,
+		KEY_F10: 56,
+		KEY_F11: 57,
+		KEY_F12: 58,
+		KEY_ESC: 59,
+		KEY_TILDE: 60,
+		KEY_MINUS: 61,
+		KEY_EQUALS: 62,
+		KEY_BACKSPACE: 63,
+		KEY_TAB: 64,
+		KEY_OPENBRACE: 65,
+		KEY_CLOSEBRACE: 66,
+		KEY_ENTER: 67,
+		KEY_COLON: 68,
+		KEY_QUOTE: 69,
+		KEY_BACKSLASH: 70,
+		KEY_BACKSLASH2: 71,
+		KEY_COMMA: 72,
+		KEY_STOP: 73,
+		KEY_SLASH: 74,
+		KEY_SPACE: 75,
+		KEY_INSERT: 76,
+		KEY_DEL: 77,
+		KEY_HOME: 78,
+		KEY_END: 79,
+		KEY_PGUP: 80,
+		KEY_PGDN: 81,
+		KEY_LEFT: 82,
+		KEY_RIGHT: 83,
+		KEY_UP: 84,
+		KEY_DOWN: 85,
+		KEY_SLASH_PAD: 86,
+		KEY_ASTERISK: 87,
+		KEY_MINUS_PAD: 88,
+		KEY_PLUS_PAD: 89,
+		KEY_DEL_PAD: 90,
+		KEY_ENTER_PAD: 91,
+		KEY_PRTSCR: 92,
+		KEY_PAUSE: 93,
+		KEY_ABNT_C1: 94,
+		KEY_YEN: 95,
+		KEY_KANA: 96,
+		KEY_CONVERT: 97,
+		KEY_NOCONVERT: 98,
+		KEY_AT: 99,
+		KEY_CIRCUMFLEX: 100,
+		KEY_COLON2: 101,
+		KEY_KANJI: 102,
+		KEY_EQUALS_PAD: 103,  /* MacOS X */
+		KEY_BACKQUOTE: 104,  /* MacOS X */
+		KEY_SEMICOLON: 105,  /* MacOS X */
+		KEY_COMMAND: 106,  /* MacOS X */
+		KEY_UNKNOWN1: 107,
+		KEY_UNKNOWN2: 108,
+		KEY_UNKNOWN3: 109,
+		KEY_UNKNOWN4: 110,
+		KEY_UNKNOWN5: 111,
+		KEY_UNKNOWN6: 112,
+		KEY_UNKNOWN7: 113,
+		KEY_UNKNOWN8: 114,
 
-		/* standard ASCII key codes */
-		Control_A: 0x0001,
-		Control_B: 0x0002,
-		Control_C: 0x0003,
-		Control_D: 0x0004,
-		Control_E: 0x0005,
-		Control_F: 0x0006,
-		Control_G: 0x0007,
-		Control_H: 0x0008,
-		BackSpace: 0x0008,
-		Control_I: 0x0009,
-		Tab: 0x0009,
-		Control_J: 0x000a,
-		LineFeed: 0x000a,
-		Control_K: 0x000b,
-		Control_L: 0x000c,
-		Control_M: 0x000d,
-		Return: 0x000d,
-		Control_N: 0x000e,
-		Control_O: 0x000f,
-		Control_P: 0x0010,
-		Control_Q: 0x0011,
-		Control_R: 0x0012,
-		Control_S: 0x0013,
-		Control_T: 0x0014,
-		Control_U: 0x0015,
-		Control_V: 0x0016,
-		Control_W: 0x0017,
-		Control_X: 0x0018,
-		Control_Y: 0x0019,
-		Control_Z: 0x001a,
-		Control_LBracket: 0x001b,
-		Escape: 0x001b,
-		Control_BackSlash: 0x001c,
-		Control_RBracket: 0x001d,
-		Control_Caret: 0x001e,
-		Control_Underscore: 0x001f,
-		Space: 0x0020,
-		ExclamationPoint: 0x0021,
-		DoubleQuote: 0x0022,
-		Hash: 0x0023,
-		Dollar: 0x0024,
-		Percent: 0x0025,
-		Ampersand: 0x0026,
-		Quote: 0x0027,
-		LParen: 0x0028,
-		RParen: 0x0029,
-		Star: 0x002a,
-		Plus: 0x002b,
-		Comma: 0x002c,
-		Dash: 0x002d,
-		Period: 0x002e,
-		Slash: 0x002f,
-		Colon: 0x003a,
-		SemiColon: 0x003b,
-		LAngle: 0x003c,
-		Equals: 0x003d,
-		RAngle: 0x003e,
-		QuestionMark: 0x003f,
-		At: 0x0040,
-		LBracket: 0x005b,
-		BackSlash: 0x005c,
-		RBracket: 0x005d,
-		Caret: 0x005e,
-		UnderScore: 0x005f,
-		BackQuote: 0x0060,
-		LBrace: 0x007b,
-		Pipe: 0x007c,
-		RBrace: 0x007d,
-		Tilde: 0x007e,
-		Control_Backspace: 0x007f,
+		KEY_MODIFIERS: 115,
 
-		/* extended key codes as defined in DJGPP */
-		Alt_Escape: 0x0101,
-		Control_At: 0x0103,
-		Alt_Backspace: 0x010e,
-		BackTab: 0x010f,
-		Alt_Q: 0x0110,
-		Alt_W: 0x0111,
-		Alt_E: 0x0112,
-		Alt_R: 0x0113,
-		Alt_T: 0x0114,
-		Alt_Y: 0x0115,
-		Alt_U: 0x0116,
-		Alt_I: 0x0117,
-		Alt_O: 0x0118,
-		Alt_P: 0x0119,
-		Alt_LBracket: 0x011a,
-		Alt_RBracket: 0x011b,
-		Alt_Return: 0x011c,
-		Alt_A: 0x011e,
-		Alt_S: 0x011f,
-		Alt_D: 0x0120,
-		Alt_F: 0x0121,
-		Alt_G: 0x0122,
-		Alt_H: 0x0123,
-		Alt_J: 0x0124,
-		Alt_K: 0x0125,
-		Alt_L: 0x0126,
-		Alt_Semicolon: 0x0127,
-		Alt_Quote: 0x0128,
-		Alt_Backquote: 0x0129,
-		Alt_Backslash: 0x012b,
-		Alt_Z: 0x012c,
-		Alt_X: 0x012d,
-		Alt_C: 0x012e,
-		Alt_V: 0x012f,
-		Alt_B: 0x0130,
-		Alt_N: 0x0131,
-		Alt_M: 0x0132,
-		Alt_Comma: 0x0133,
-		Alt_Period: 0x0134,
-		Alt_Slash: 0x0135,
-		Alt_KPStar: 0x0137,
-		F1: 0x013b,
-		F2: 0x013c,
-		F3: 0x013d,
-		F4: 0x013e,
-		F5: 0x013f,
-		F6: 0x0140,
-		F7: 0x0141,
-		F8: 0x0142,
-		F9: 0x0143,
-		F10: 0x0144,
-		Home: 0x0147,
-		Up: 0x0148,
-		PageUp: 0x0149,
-		Alt_KPMinus: 0x014a,
-		Left: 0x014b,
-		Center: 0x014c,
-		Right: 0x014d,
-		Alt_KPPlus: 0x014e,
-		End: 0x014f,
-		Down: 0x0150,
-		PageDown: 0x0151,
-		Insert: 0x0152,
-		Delete: 0x0153,
-		Shift_F1: 0x0154,
-		Shift_F2: 0x0155,
-		Shift_F3: 0x0156,
-		Shift_F4: 0x0157,
-		Shift_F5: 0x0158,
-		Shift_F6: 0x0159,
-		Shift_F7: 0x015a,
-		Shift_F8: 0x015b,
-		Shift_F9: 0x015c,
-		Shift_F10: 0x015d,
-		Control_F1: 0x015e,
-		Control_F2: 0x015f,
-		Control_F3: 0x0160,
-		Control_F4: 0x0161,
-		Control_F5: 0x0162,
-		Control_F6: 0x0163,
-		Control_F7: 0x0164,
-		Control_F8: 0x0165,
-		Control_F9: 0x0166,
-		Control_F10: 0x0167,
-		Alt_F1: 0x0168,
-		Alt_F2: 0x0169,
-		Alt_F3: 0x016a,
-		Alt_F4: 0x016b,
-		Alt_F5: 0x016c,
-		Alt_F6: 0x016d,
-		Alt_F7: 0x016e,
-		Alt_F8: 0x016f,
-		Alt_F9: 0x0170,
-		Alt_F10: 0x0171,
-		Control_Print: 0x0172,
-		Control_Left: 0x0173,
-		Control_Right: 0x0174,
-		Control_End: 0x0175,
-		Control_PageDown: 0x0176,
-		Control_Home: 0x0177,
-		Alt_1: 0x0178,
-		Alt_2: 0x0179,
-		Alt_3: 0x017a,
-		Alt_4: 0x017b,
-		Alt_5: 0x017c,
-		Alt_6: 0x017d,
-		Alt_7: 0x017e,
-		Alt_8: 0x017f,
-		Alt_9: 0x0180,
-		Alt_0: 0x0181,
-		Alt_Dash: 0x0182,
-		Alt_Equals: 0x0183,
-		Control_PageUp: 0x0184,
-		F11: 0x0185,
-		F12: 0x0186,
-		Shift_F11: 0x0187,
-		Shift_F12: 0x0188,
-		Control_F11: 0x0189,
-		Control_F12: 0x018a,
-		Alt_F11: 0x018b,
-		Alt_F12: 0x018c,
-		Control_Up: 0x018d,
-		Control_KPDash: 0x018e,
-		Control_Center: 0x018f,
-		Control_KPPlus: 0x0190,
-		Control_Down: 0x0191,
-		Control_Insert: 0x0192,
-		Control_Delete: 0x0193,
-		Control_Tab: 0x0194,
-		Control_KPSlash: 0x0195,
-		Control_KPStar: 0x0196,
-		Alt_KPSlash: 0x01a4,
-		Alt_Tab: 0x01a5,
-		Alt_Enter: 0x01a6,
-
-		/* some additional codes not in DJGPP */
-		Alt_LAngle: 0x01b0,
-		Alt_RAngle: 0x01b1,
-		Alt_At: 0x01b2,
-		Alt_LBrace: 0x01b3,
-		Alt_Pipe: 0x01b4,
-		Alt_RBrace: 0x01b5,
-		Print: 0x01b6,
-		Shift_Insert: 0x01b7,
-		Shift_Home: 0x01b8,
-		Shift_End: 0x01b9,
-		Shift_PageUp: 0x01ba,
-		Shift_PageDown: 0x01bb,
-		Alt_Up: 0x01bc,
-		Alt_Left: 0x01bd,
-		Alt_Center: 0x01be,
-		Alt_Right: 0x01c0,
-		Alt_Down: 0x01c1,
-		Alt_Insert: 0x01c2,
-		Alt_Delete: 0x01c3,
-		Alt_Home: 0x01c4,
-		Alt_End: 0x01c5,
-		Alt_PageUp: 0x01c6,
-		Alt_PageDown: 0x01c7,
-		Shift_Up: 0x01c8,
-		Shift_Down: 0x01c9,
-		Shift_Right: 0x01ca,
-		Shift_Left: 0x01cb,
-		LastDefinedKeycode: 0x01cb
+		KEY_LSHIFT: 115,
+		KEY_RSHIFT: 116,
+		KEY_LCONTROL: 117,
+		KEY_RCONTROL: 118,
+		KEY_ALT: 119,
+		KEY_ALTGR: 120,
+		KEY_LWIN: 121,
+		KEY_RWIN: 122,
+		KEY_MENU: 123,
+		KEY_SCRLOCK: 124,
+		KEY_NUMLOCK: 125,
+		KEY_CAPSLOCK: 126
 	}
 };

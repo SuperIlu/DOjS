@@ -20,9 +20,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** @module ipx */
+
 /**
  * IPX definitions.
- * @namespace IPX
  * @property {*} DEFAULT_SOCKET default socket number for DOjS.
  * @property {*} BROADCAST broadcast address
  */
@@ -33,8 +34,6 @@ IPX = {
 	BROADCAST: [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF],
 	HELLO: "_$HELLO="
 };
-
-/** @module ipx */
 
 /**
  * Convert a node address to a string.

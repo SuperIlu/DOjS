@@ -1,0 +1,2733 @@
+@xrdef{API-title}{API}
+@xrdef{API-snt}{Chapter@tie 1}
+@xrdef{Using-title}{Using Allegro}
+@xrdef{Using-snt}{Section@tie 1.1}
+@xrdef{install_allegro-title}{install_allegro}
+@xrdef{install_allegro-snt}{Section@tie 1.1.1}
+@xrdef{allegro_init-title}{allegro_init}
+@xrdef{allegro_init-snt}{Section@tie 1.1.2}
+@xrdef{API-pg}{1}
+@xrdef{Using-pg}{1}
+@xrdef{install_allegro-pg}{1}
+@xrdef{allegro_init-pg}{1}
+@xrdef{allegro_exit-title}{allegro_exit}
+@xrdef{allegro_exit-snt}{Section@tie 1.1.3}
+@xrdef{END_OF_MAIN-title}{END_OF_MAIN}
+@xrdef{END_OF_MAIN-snt}{Section@tie 1.1.4}
+@xrdef{allegro_exit-pg}{2}
+@xrdef{END_OF_MAIN-pg}{2}
+@xrdef{allegro_id-title}{allegro_id}
+@xrdef{allegro_id-snt}{Section@tie 1.1.5}
+@xrdef{allegro_error-title}{allegro_error}
+@xrdef{allegro_error-snt}{Section@tie 1.1.6}
+@xrdef{ALLEGRO_VERSION-title}{ALLEGRO_VERSION}
+@xrdef{ALLEGRO_VERSION-snt}{Section@tie 1.1.7}
+@xrdef{ALLEGRO_SUB_VERSION-title}{ALLEGRO_SUB_VERSION}
+@xrdef{ALLEGRO_SUB_VERSION-snt}{Section@tie 1.1.8}
+@xrdef{allegro_id-pg}{3}
+@xrdef{allegro_error-pg}{3}
+@xrdef{ALLEGRO_VERSION-pg}{3}
+@xrdef{ALLEGRO_WIP_VERSION-title}{ALLEGRO_WIP_VERSION}
+@xrdef{ALLEGRO_WIP_VERSION-snt}{Section@tie 1.1.9}
+@xrdef{ALLEGRO_VERSION_STR-title}{ALLEGRO_VERSION_STR}
+@xrdef{ALLEGRO_VERSION_STR-snt}{Section@tie 1.1.10}
+@xrdef{ALLEGRO_DATE_STR-title}{ALLEGRO_DATE_STR}
+@xrdef{ALLEGRO_DATE_STR-snt}{Section@tie 1.1.11}
+@xrdef{ALLEGRO_DATE-title}{ALLEGRO_DATE}
+@xrdef{ALLEGRO_DATE-snt}{Section@tie 1.1.12}
+@xrdef{AL_ID-title}{AL_ID}
+@xrdef{AL_ID-snt}{Section@tie 1.1.13}
+@xrdef{MAKE_VERSION-title}{MAKE_VERSION}
+@xrdef{MAKE_VERSION-snt}{Section@tie 1.1.14}
+@xrdef{ALLEGRO_SUB_VERSION-pg}{4}
+@xrdef{ALLEGRO_WIP_VERSION-pg}{4}
+@xrdef{ALLEGRO_VERSION_STR-pg}{4}
+@xrdef{ALLEGRO_DATE_STR-pg}{4}
+@xrdef{ALLEGRO_DATE-pg}{4}
+@xrdef{AL_ID-pg}{4}
+@xrdef{os_type-title}{os_type}
+@xrdef{os_type-snt}{Section@tie 1.1.15}
+@xrdef{MAKE_VERSION-pg}{5}
+@xrdef{os_type-pg}{5}
+@xrdef{os_version-title}{os_version}
+@xrdef{os_version-snt}{Section@tie 1.1.16}
+@xrdef{os_multitasking-title}{os_multitasking}
+@xrdef{os_multitasking-snt}{Section@tie 1.1.17}
+@xrdef{allegro_message-title}{allegro_message}
+@xrdef{allegro_message-snt}{Section@tie 1.1.18}
+@xrdef{os_version-pg}{6}
+@xrdef{os_multitasking-pg}{6}
+@xrdef{allegro_message-pg}{6}
+@xrdef{set_window_title-title}{set_window_title}
+@xrdef{set_window_title-snt}{Section@tie 1.1.19}
+@xrdef{set_close_button_callback-title}{set_close_button_callback}
+@xrdef{set_close_button_callback-snt}{Section@tie 1.1.20}
+@xrdef{set_window_title-pg}{7}
+@xrdef{set_close_button_callback-pg}{7}
+@xrdef{desktop_color_depth-title}{desktop_color_depth}
+@xrdef{desktop_color_depth-snt}{Section@tie 1.1.21}
+@xrdef{desktop_color_depth-pg}{8}
+@xrdef{get_desktop_resolution-title}{get_desktop_resolution}
+@xrdef{get_desktop_resolution-snt}{Section@tie 1.1.22}
+@xrdef{check_cpu-title}{check_cpu}
+@xrdef{check_cpu-snt}{Section@tie 1.1.23}
+@xrdef{get_desktop_resolution-pg}{9}
+@xrdef{check_cpu-pg}{9}
+@xrdef{cpu_vendor-title}{cpu_vendor}
+@xrdef{cpu_vendor-snt}{Section@tie 1.1.24}
+@xrdef{cpu_family-title}{cpu_family}
+@xrdef{cpu_family-snt}{Section@tie 1.1.25}
+@xrdef{cpu_vendor-pg}{10}
+@xrdef{cpu_family-pg}{10}
+@xrdef{cpu_model-title}{cpu_model}
+@xrdef{cpu_model-snt}{Section@tie 1.1.26}
+@xrdef{cpu_capabilities-title}{cpu_capabilities}
+@xrdef{cpu_capabilities-snt}{Section@tie 1.1.27}
+@xrdef{cpu_model-pg}{11}
+@xrdef{cpu_capabilities-pg}{11}
+@xrdef{Structures-title}{Structures and types defined by Allegro}
+@xrdef{Structures-snt}{Section@tie 1.2}
+@xrdef{fixed-title}{fixed}
+@xrdef{fixed-snt}{Section@tie 1.2.1}
+@xrdef{Structures-pg}{12}
+@xrdef{BITMAP-title}{BITMAP}
+@xrdef{BITMAP-snt}{Section@tie 1.2.2}
+@xrdef{fixed-pg}{13}
+@xrdef{BITMAP-pg}{13}
+@xrdef{RLE_SPRITE-title}{RLE_SPRITE}
+@xrdef{RLE_SPRITE-snt}{Section@tie 1.2.3}
+@xrdef{COMPILED_SPRITE-title}{COMPILED_SPRITE}
+@xrdef{COMPILED_SPRITE-snt}{Section@tie 1.2.4}
+@xrdef{JOYSTICK_INFO-title}{JOYSTICK_INFO}
+@xrdef{JOYSTICK_INFO-snt}{Section@tie 1.2.5}
+@xrdef{RLE_SPRITE-pg}{14}
+@xrdef{COMPILED_SPRITE-pg}{14}
+@xrdef{JOYSTICK_BUTTON_INFO-title}{JOYSTICK_BUTTON_INFO}
+@xrdef{JOYSTICK_BUTTON_INFO-snt}{Section@tie 1.2.6}
+@xrdef{JOYSTICK_STICK_INFO-title}{JOYSTICK_STICK_INFO}
+@xrdef{JOYSTICK_STICK_INFO-snt}{Section@tie 1.2.7}
+@xrdef{JOYSTICK_INFO-pg}{15}
+@xrdef{JOYSTICK_BUTTON_INFO-pg}{15}
+@xrdef{JOYSTICK_STICK_INFO-pg}{15}
+@xrdef{JOYSTICK_AXIS_INFO-title}{JOYSTICK_AXIS_INFO}
+@xrdef{JOYSTICK_AXIS_INFO-snt}{Section@tie 1.2.8}
+@xrdef{GFX_MODE_LIST-title}{GFX_MODE_LIST}
+@xrdef{GFX_MODE_LIST-snt}{Section@tie 1.2.9}
+@xrdef{GFX_MODE-title}{GFX_MODE}
+@xrdef{GFX_MODE-snt}{Section@tie 1.2.10}
+@xrdef{PAL_SIZE-title}{PAL_SIZE}
+@xrdef{PAL_SIZE-snt}{Section@tie 1.2.11}
+@xrdef{JOYSTICK_AXIS_INFO-pg}{16}
+@xrdef{GFX_MODE_LIST-pg}{16}
+@xrdef{GFX_MODE-pg}{16}
+@xrdef{PAL_SIZE-pg}{16}
+@xrdef{PALETTE-title}{PALETTE}
+@xrdef{PALETTE-snt}{Section@tie 1.2.12}
+@xrdef{RGB-title}{RGB}
+@xrdef{RGB-snt}{Section@tie 1.2.13}
+@xrdef{V3D-title}{V3D}
+@xrdef{V3D-snt}{Section@tie 1.2.14}
+@xrdef{PALETTE-pg}{17}
+@xrdef{RGB-pg}{17}
+@xrdef{V3D-pg}{17}
+@xrdef{V3D_f-title}{V3D_f}
+@xrdef{V3D_f-snt}{Section@tie 1.2.15}
+@xrdef{COLOR_MAP-title}{COLOR_MAP}
+@xrdef{COLOR_MAP-snt}{Section@tie 1.2.16}
+@xrdef{V3D_f-pg}{18}
+@xrdef{COLOR_MAP-pg}{18}
+@xrdef{RGB_MAP-title}{RGB_MAP}
+@xrdef{RGB_MAP-snt}{Section@tie 1.2.17}
+@xrdef{al_ffblk-title}{al_ffblk}
+@xrdef{al_ffblk-snt}{Section@tie 1.2.18}
+@xrdef{DATAFILE-title}{DATAFILE}
+@xrdef{DATAFILE-snt}{Section@tie 1.2.19}
+@xrdef{RGB_MAP-pg}{19}
+@xrdef{al_ffblk-pg}{19}
+@xrdef{DATAFILE-pg}{19}
+@xrdef{MATRIX-title}{MATRIX}
+@xrdef{MATRIX-snt}{Section@tie 1.2.20}
+@xrdef{MATRIX_f-title}{MATRIX_f}
+@xrdef{MATRIX_f-snt}{Section@tie 1.2.21}
+@xrdef{QUAT-title}{QUAT}
+@xrdef{QUAT-snt}{Section@tie 1.2.22}
+@xrdef{MATRIX-pg}{20}
+@xrdef{MATRIX_f-pg}{20}
+@xrdef{DIALOG-title}{DIALOG}
+@xrdef{DIALOG-snt}{Section@tie 1.2.23}
+@xrdef{MENU-title}{MENU}
+@xrdef{MENU-snt}{Section@tie 1.2.24}
+@xrdef{QUAT-pg}{21}
+@xrdef{DIALOG-pg}{21}
+@xrdef{MENU-pg}{21}
+@xrdef{DIALOG_PLAYER-title}{DIALOG_PLAYER}
+@xrdef{DIALOG_PLAYER-snt}{Section@tie 1.2.25}
+@xrdef{MENU_PLAYER-title}{MENU_PLAYER}
+@xrdef{MENU_PLAYER-snt}{Section@tie 1.2.26}
+@xrdef{FONT-title}{FONT}
+@xrdef{FONT-snt}{Section@tie 1.2.27}
+@xrdef{ZBUFFER-title}{ZBUFFER}
+@xrdef{ZBUFFER-snt}{Section@tie 1.2.28}
+@xrdef{DIALOG_PLAYER-pg}{22}
+@xrdef{MENU_PLAYER-pg}{22}
+@xrdef{FONT-pg}{22}
+@xrdef{SAMPLE-title}{SAMPLE}
+@xrdef{SAMPLE-snt}{Section@tie 1.2.29}
+@xrdef{ZBUFFER-pg}{23}
+@xrdef{SAMPLE-pg}{23}
+@xrdef{MIDI-title}{MIDI}
+@xrdef{MIDI-snt}{Section@tie 1.2.30}
+@xrdef{AUDIOSTREAM-title}{AUDIOSTREAM}
+@xrdef{AUDIOSTREAM-snt}{Section@tie 1.2.31}
+@xrdef{PACKFILE-title}{PACKFILE}
+@xrdef{PACKFILE-snt}{Section@tie 1.2.32}
+@xrdef{MIDI-pg}{24}
+@xrdef{AUDIOSTREAM-pg}{24}
+@xrdef{PACKFILE-pg}{24}
+@xrdef{PACKFILE_VTABLE-title}{PACKFILE_VTABLE}
+@xrdef{PACKFILE_VTABLE-snt}{Section@tie 1.2.33}
+@xrdef{LZSS_PACK_DATA-title}{LZSS_PACK_DATA}
+@xrdef{LZSS_PACK_DATA-snt}{Section@tie 1.2.34}
+@xrdef{LZSS_UNPACK_DATA-title}{LZSS_UNPACK_DATA}
+@xrdef{LZSS_UNPACK_DATA-snt}{Section@tie 1.2.35}
+@xrdef{Unicode-title}{Unicode routines}
+@xrdef{Unicode-snt}{Section@tie 1.3}
+@xrdef{PACKFILE_VTABLE-pg}{25}
+@xrdef{LZSS_PACK_DATA-pg}{25}
+@xrdef{LZSS_UNPACK_DATA-pg}{25}
+@xrdef{set_uformat-title}{set_uformat}
+@xrdef{set_uformat-snt}{Section@tie 1.3.1}
+@xrdef{Unicode-pg}{26}
+@xrdef{set_uformat-pg}{26}
+@xrdef{get_uformat-title}{get_uformat}
+@xrdef{get_uformat-snt}{Section@tie 1.3.2}
+@xrdef{get_uformat-pg}{27}
+@xrdef{register_uformat-title}{register_uformat}
+@xrdef{register_uformat-snt}{Section@tie 1.3.3}
+@xrdef{set_ucodepage-title}{set_ucodepage}
+@xrdef{set_ucodepage-snt}{Section@tie 1.3.4}
+@xrdef{register_uformat-pg}{28}
+@xrdef{set_ucodepage-pg}{28}
+@xrdef{need_uconvert-title}{need_uconvert}
+@xrdef{need_uconvert-snt}{Section@tie 1.3.5}
+@xrdef{uconvert_size-title}{uconvert_size}
+@xrdef{uconvert_size-snt}{Section@tie 1.3.6}
+@xrdef{need_uconvert-pg}{29}
+@xrdef{uconvert_size-pg}{29}
+@xrdef{do_uconvert-title}{do_uconvert}
+@xrdef{do_uconvert-snt}{Section@tie 1.3.7}
+@xrdef{uconvert-title}{uconvert}
+@xrdef{uconvert-snt}{Section@tie 1.3.8}
+@xrdef{do_uconvert-pg}{30}
+@xrdef{uconvert-pg}{30}
+@xrdef{uconvert_ascii-title}{uconvert_ascii}
+@xrdef{uconvert_ascii-snt}{Section@tie 1.3.9}
+@xrdef{uconvert_toascii-title}{uconvert_toascii}
+@xrdef{uconvert_toascii-snt}{Section@tie 1.3.10}
+@xrdef{empty_string-title}{empty_string}
+@xrdef{empty_string-snt}{Section@tie 1.3.11}
+@xrdef{ugetc-title}{ugetc}
+@xrdef{ugetc-snt}{Section@tie 1.3.12}
+@xrdef{uconvert_ascii-pg}{31}
+@xrdef{uconvert_toascii-pg}{31}
+@xrdef{empty_string-pg}{31}
+@xrdef{ugetx-title}{ugetx}
+@xrdef{ugetx-snt}{Section@tie 1.3.13}
+@xrdef{usetc-title}{usetc}
+@xrdef{usetc-snt}{Section@tie 1.3.14}
+@xrdef{ugetc-pg}{32}
+@xrdef{ugetx-pg}{32}
+@xrdef{usetc-pg}{32}
+@xrdef{uwidth-title}{uwidth}
+@xrdef{uwidth-snt}{Section@tie 1.3.15}
+@xrdef{ucwidth-title}{ucwidth}
+@xrdef{ucwidth-snt}{Section@tie 1.3.16}
+@xrdef{uisok-title}{uisok}
+@xrdef{uisok-snt}{Section@tie 1.3.17}
+@xrdef{uwidth-pg}{33}
+@xrdef{ucwidth-pg}{33}
+@xrdef{uisok-pg}{33}
+@xrdef{uoffset-title}{uoffset}
+@xrdef{uoffset-snt}{Section@tie 1.3.18}
+@xrdef{ugetat-title}{ugetat}
+@xrdef{ugetat-snt}{Section@tie 1.3.19}
+@xrdef{usetat-title}{usetat}
+@xrdef{usetat-snt}{Section@tie 1.3.20}
+@xrdef{uoffset-pg}{34}
+@xrdef{ugetat-pg}{34}
+@xrdef{uinsert-title}{uinsert}
+@xrdef{uinsert-snt}{Section@tie 1.3.21}
+@xrdef{uremove-title}{uremove}
+@xrdef{uremove-snt}{Section@tie 1.3.22}
+@xrdef{usetat-pg}{35}
+@xrdef{uinsert-pg}{35}
+@xrdef{uremove-pg}{35}
+@xrdef{ustrsize-title}{ustrsize}
+@xrdef{ustrsize-snt}{Section@tie 1.3.23}
+@xrdef{ustrsizez-title}{ustrsizez}
+@xrdef{ustrsizez-snt}{Section@tie 1.3.24}
+@xrdef{uwidth_max-title}{uwidth_max}
+@xrdef{uwidth_max-snt}{Section@tie 1.3.25}
+@xrdef{utolower-title}{utolower}
+@xrdef{utolower-snt}{Section@tie 1.3.26}
+@xrdef{ustrsize-pg}{36}
+@xrdef{ustrsizez-pg}{36}
+@xrdef{uwidth_max-pg}{36}
+@xrdef{utoupper-title}{utoupper}
+@xrdef{utoupper-snt}{Section@tie 1.3.27}
+@xrdef{uisspace-title}{uisspace}
+@xrdef{uisspace-snt}{Section@tie 1.3.28}
+@xrdef{utolower-pg}{37}
+@xrdef{utoupper-pg}{37}
+@xrdef{uisspace-pg}{37}
+@xrdef{uisdigit-title}{uisdigit}
+@xrdef{uisdigit-snt}{Section@tie 1.3.29}
+@xrdef{ustrdup-title}{ustrdup}
+@xrdef{ustrdup-snt}{Section@tie 1.3.30}
+@xrdef{_ustrdup-title}{_ustrdup}
+@xrdef{_ustrdup-snt}{Section@tie 1.3.31}
+@xrdef{uisdigit-pg}{38}
+@xrdef{ustrdup-pg}{38}
+@xrdef{ustrcpy-title}{ustrcpy}
+@xrdef{ustrcpy-snt}{Section@tie 1.3.32}
+@xrdef{ustrzcpy-title}{ustrzcpy}
+@xrdef{ustrzcpy-snt}{Section@tie 1.3.33}
+@xrdef{ustrcat-title}{ustrcat}
+@xrdef{ustrcat-snt}{Section@tie 1.3.34}
+@xrdef{_ustrdup-pg}{39}
+@xrdef{ustrcpy-pg}{39}
+@xrdef{ustrzcpy-pg}{39}
+@xrdef{ustrzcat-title}{ustrzcat}
+@xrdef{ustrzcat-snt}{Section@tie 1.3.35}
+@xrdef{ustrlen-title}{ustrlen}
+@xrdef{ustrlen-snt}{Section@tie 1.3.36}
+@xrdef{ustrcmp-title}{ustrcmp}
+@xrdef{ustrcmp-snt}{Section@tie 1.3.37}
+@xrdef{ustrcat-pg}{40}
+@xrdef{ustrzcat-pg}{40}
+@xrdef{ustrlen-pg}{40}
+@xrdef{ustrncpy-title}{ustrncpy}
+@xrdef{ustrncpy-snt}{Section@tie 1.3.38}
+@xrdef{ustrzncpy-title}{ustrzncpy}
+@xrdef{ustrzncpy-snt}{Section@tie 1.3.39}
+@xrdef{ustrcmp-pg}{41}
+@xrdef{ustrncpy-pg}{41}
+@xrdef{ustrzncpy-pg}{41}
+@xrdef{ustrncat-title}{ustrncat}
+@xrdef{ustrncat-snt}{Section@tie 1.3.40}
+@xrdef{ustrzncat-title}{ustrzncat}
+@xrdef{ustrzncat-snt}{Section@tie 1.3.41}
+@xrdef{ustrncmp-title}{ustrncmp}
+@xrdef{ustrncmp-snt}{Section@tie 1.3.42}
+@xrdef{ustrncat-pg}{42}
+@xrdef{ustrzncat-pg}{42}
+@xrdef{ustrncmp-pg}{42}
+@xrdef{ustricmp-title}{ustricmp}
+@xrdef{ustricmp-snt}{Section@tie 1.3.43}
+@xrdef{ustrnicmp-title}{ustrnicmp}
+@xrdef{ustrnicmp-snt}{Section@tie 1.3.44}
+@xrdef{ustricmp-pg}{43}
+@xrdef{ustrnicmp-pg}{43}
+@xrdef{ustrlwr-title}{ustrlwr}
+@xrdef{ustrlwr-snt}{Section@tie 1.3.45}
+@xrdef{ustrupr-title}{ustrupr}
+@xrdef{ustrupr-snt}{Section@tie 1.3.46}
+@xrdef{ustrchr-title}{ustrchr}
+@xrdef{ustrchr-snt}{Section@tie 1.3.47}
+@xrdef{ustrlwr-pg}{44}
+@xrdef{ustrupr-pg}{44}
+@xrdef{ustrchr-pg}{44}
+@xrdef{ustrrchr-title}{ustrrchr}
+@xrdef{ustrrchr-snt}{Section@tie 1.3.48}
+@xrdef{ustrstr-title}{ustrstr}
+@xrdef{ustrstr-snt}{Section@tie 1.3.49}
+@xrdef{ustrpbrk-title}{ustrpbrk}
+@xrdef{ustrpbrk-snt}{Section@tie 1.3.50}
+@xrdef{ustrrchr-pg}{45}
+@xrdef{ustrstr-pg}{45}
+@xrdef{ustrtok-title}{ustrtok}
+@xrdef{ustrtok-snt}{Section@tie 1.3.51}
+@xrdef{ustrpbrk-pg}{46}
+@xrdef{ustrtok-pg}{46}
+@xrdef{ustrtok_r-title}{ustrtok_r}
+@xrdef{ustrtok_r-snt}{Section@tie 1.3.52}
+@xrdef{uatof-title}{uatof}
+@xrdef{uatof-snt}{Section@tie 1.3.53}
+@xrdef{ustrtol-title}{ustrtol}
+@xrdef{ustrtol-snt}{Section@tie 1.3.54}
+@xrdef{ustrtok_r-pg}{47}
+@xrdef{uatof-pg}{47}
+@xrdef{ustrtol-pg}{47}
+@xrdef{ustrtod-title}{ustrtod}
+@xrdef{ustrtod-snt}{Section@tie 1.3.55}
+@xrdef{ustrerror-title}{ustrerror}
+@xrdef{ustrerror-snt}{Section@tie 1.3.56}
+@xrdef{usprintf-title}{usprintf}
+@xrdef{usprintf-snt}{Section@tie 1.3.57}
+@xrdef{ustrtod-pg}{48}
+@xrdef{ustrerror-pg}{48}
+@xrdef{uszprintf-title}{uszprintf}
+@xrdef{uszprintf-snt}{Section@tie 1.3.58}
+@xrdef{uvsprintf-title}{uvsprintf}
+@xrdef{uvsprintf-snt}{Section@tie 1.3.59}
+@xrdef{usprintf-pg}{49}
+@xrdef{uszprintf-pg}{49}
+@xrdef{uvsprintf-pg}{49}
+@xrdef{uvszprintf-title}{uvszprintf}
+@xrdef{uvszprintf-snt}{Section@tie 1.3.60}
+@xrdef{Configuration-title}{Configuration routines}
+@xrdef{Configuration-snt}{Section@tie 1.4}
+@xrdef{uvszprintf-pg}{50}
+@xrdef{Configuration-pg}{50}
+@xrdef{set_config_file-title}{set_config_file}
+@xrdef{set_config_file-snt}{Section@tie 1.4.1}
+@xrdef{set_config_file-pg}{51}
+@xrdef{set_config_data-title}{set_config_data}
+@xrdef{set_config_data-snt}{Section@tie 1.4.2}
+@xrdef{override_config_file-title}{override_config_file}
+@xrdef{override_config_file-snt}{Section@tie 1.4.3}
+@xrdef{set_config_data-pg}{52}
+@xrdef{override_config_file-pg}{52}
+@xrdef{override_config_data-title}{override_config_data}
+@xrdef{override_config_data-snt}{Section@tie 1.4.4}
+@xrdef{push_config_state-title}{push_config_state}
+@xrdef{push_config_state-snt}{Section@tie 1.4.5}
+@xrdef{override_config_data-pg}{53}
+@xrdef{push_config_state-pg}{53}
+@xrdef{pop_config_state-title}{pop_config_state}
+@xrdef{pop_config_state-snt}{Section@tie 1.4.6}
+@xrdef{flush_config_file-title}{flush_config_file}
+@xrdef{flush_config_file-snt}{Section@tie 1.4.7}
+@xrdef{reload_config_texts-title}{reload_config_texts}
+@xrdef{reload_config_texts-snt}{Section@tie 1.4.8}
+@xrdef{pop_config_state-pg}{54}
+@xrdef{flush_config_file-pg}{54}
+@xrdef{reload_config_texts-pg}{54}
+@xrdef{hook_config_section-title}{hook_config_section}
+@xrdef{hook_config_section-snt}{Section@tie 1.4.9}
+@xrdef{config_is_hooked-title}{config_is_hooked}
+@xrdef{config_is_hooked-snt}{Section@tie 1.4.10}
+@xrdef{hook_config_section-pg}{55}
+@xrdef{config_is_hooked-pg}{55}
+@xrdef{get_config_string-title}{get_config_string}
+@xrdef{get_config_string-snt}{Section@tie 1.4.11}
+@xrdef{get_config_int-title}{get_config_int}
+@xrdef{get_config_int-snt}{Section@tie 1.4.12}
+@xrdef{get_config_string-pg}{56}
+@xrdef{get_config_int-pg}{56}
+@xrdef{get_config_hex-title}{get_config_hex}
+@xrdef{get_config_hex-snt}{Section@tie 1.4.13}
+@xrdef{get_config_float-title}{get_config_float}
+@xrdef{get_config_float-snt}{Section@tie 1.4.14}
+@xrdef{get_config_id-title}{get_config_id}
+@xrdef{get_config_id-snt}{Section@tie 1.4.15}
+@xrdef{get_config_hex-pg}{57}
+@xrdef{get_config_float-pg}{57}
+@xrdef{get_config_id-pg}{57}
+@xrdef{get_config_argv-title}{get_config_argv}
+@xrdef{get_config_argv-snt}{Section@tie 1.4.16}
+@xrdef{get_config_text-title}{get_config_text}
+@xrdef{get_config_text-snt}{Section@tie 1.4.17}
+@xrdef{get_config_argv-pg}{58}
+@xrdef{get_config_text-pg}{58}
+@xrdef{set_config_string-title}{set_config_string}
+@xrdef{set_config_string-snt}{Section@tie 1.4.18}
+@xrdef{set_config_int-title}{set_config_int}
+@xrdef{set_config_int-snt}{Section@tie 1.4.19}
+@xrdef{set_config_hex-title}{set_config_hex}
+@xrdef{set_config_hex-snt}{Section@tie 1.4.20}
+@xrdef{set_config_string-pg}{59}
+@xrdef{set_config_int-pg}{59}
+@xrdef{set_config_float-title}{set_config_float}
+@xrdef{set_config_float-snt}{Section@tie 1.4.21}
+@xrdef{set_config_id-title}{set_config_id}
+@xrdef{set_config_id-snt}{Section@tie 1.4.22}
+@xrdef{list_config_entries-title}{list_config_entries}
+@xrdef{list_config_entries-snt}{Section@tie 1.4.23}
+@xrdef{set_config_hex-pg}{60}
+@xrdef{set_config_float-pg}{60}
+@xrdef{set_config_id-pg}{60}
+@xrdef{list_config_sections-title}{list_config_sections}
+@xrdef{list_config_sections-snt}{Section@tie 1.4.24}
+@xrdef{list_config_entries-pg}{61}
+@xrdef{free_config_entries-title}{free_config_entries}
+@xrdef{free_config_entries-snt}{Section@tie 1.4.25}
+@xrdef{Standard config variables-title}{Standard config variables}
+@xrdef{Standard config variables-snt}{Section@tie 1.4.26}
+@xrdef{list_config_sections-pg}{62}
+@xrdef{free_config_entries-pg}{62}
+@xrdef{Standard config variables-pg}{62}
+@xrdef{Mouse-title}{Mouse routines}
+@xrdef{Mouse-snt}{Section@tie 1.5}
+@xrdef{Mouse-pg}{69}
+@xrdef{install_mouse-title}{install_mouse}
+@xrdef{install_mouse-snt}{Section@tie 1.5.1}
+@xrdef{remove_mouse-title}{remove_mouse}
+@xrdef{remove_mouse-snt}{Section@tie 1.5.2}
+@xrdef{poll_mouse-title}{poll_mouse}
+@xrdef{poll_mouse-snt}{Section@tie 1.5.3}
+@xrdef{install_mouse-pg}{70}
+@xrdef{remove_mouse-pg}{70}
+@xrdef{poll_mouse-pg}{70}
+@xrdef{mouse_needs_poll-title}{mouse_needs_poll}
+@xrdef{mouse_needs_poll-snt}{Section@tie 1.5.4}
+@xrdef{enable_hardware_cursor-title}{enable_hardware_cursor}
+@xrdef{enable_hardware_cursor-snt}{Section@tie 1.5.5}
+@xrdef{mouse_needs_poll-pg}{71}
+@xrdef{enable_hardware_cursor-pg}{71}
+@xrdef{disable_hardware_cursor-title}{disable_hardware_cursor}
+@xrdef{disable_hardware_cursor-snt}{Section@tie 1.5.6}
+@xrdef{select_mouse_cursor-title}{select_mouse_cursor}
+@xrdef{select_mouse_cursor-snt}{Section@tie 1.5.7}
+@xrdef{disable_hardware_cursor-pg}{72}
+@xrdef{select_mouse_cursor-pg}{72}
+@xrdef{set_mouse_cursor_bitmap-title}{set_mouse_cursor_bitmap}
+@xrdef{set_mouse_cursor_bitmap-snt}{Section@tie 1.5.8}
+@xrdef{set_mouse_cursor_bitmap-pg}{73}
+@xrdef{mouse_x-title}{mouse_x}
+@xrdef{mouse_x-snt}{Section@tie 1.5.9}
+@xrdef{mouse_x-pg}{74}
+@xrdef{mouse_sprite-title}{mouse_sprite}
+@xrdef{mouse_sprite-snt}{Section@tie 1.5.10}
+@xrdef{show_mouse-title}{show_mouse}
+@xrdef{show_mouse-snt}{Section@tie 1.5.11}
+@xrdef{mouse_sprite-pg}{75}
+@xrdef{show_mouse-pg}{75}
+@xrdef{scare_mouse-title}{scare_mouse}
+@xrdef{scare_mouse-snt}{Section@tie 1.5.12}
+@xrdef{scare_mouse_area-title}{scare_mouse_area}
+@xrdef{scare_mouse_area-snt}{Section@tie 1.5.13}
+@xrdef{scare_mouse-pg}{76}
+@xrdef{scare_mouse_area-pg}{76}
+@xrdef{unscare_mouse-title}{unscare_mouse}
+@xrdef{unscare_mouse-snt}{Section@tie 1.5.14}
+@xrdef{show_os_cursor-title}{show_os_cursor}
+@xrdef{show_os_cursor-snt}{Section@tie 1.5.15}
+@xrdef{freeze_mouse_flag-title}{freeze_mouse_flag}
+@xrdef{freeze_mouse_flag-snt}{Section@tie 1.5.16}
+@xrdef{unscare_mouse-pg}{77}
+@xrdef{show_os_cursor-pg}{77}
+@xrdef{position_mouse-title}{position_mouse}
+@xrdef{position_mouse-snt}{Section@tie 1.5.17}
+@xrdef{position_mouse_z-title}{position_mouse_z}
+@xrdef{position_mouse_z-snt}{Section@tie 1.5.18}
+@xrdef{position_mouse_w-title}{position_mouse_w}
+@xrdef{position_mouse_w-snt}{Section@tie 1.5.19}
+@xrdef{set_mouse_range-title}{set_mouse_range}
+@xrdef{set_mouse_range-snt}{Section@tie 1.5.20}
+@xrdef{freeze_mouse_flag-pg}{78}
+@xrdef{position_mouse-pg}{78}
+@xrdef{position_mouse_z-pg}{78}
+@xrdef{position_mouse_w-pg}{78}
+@xrdef{set_mouse_speed-title}{set_mouse_speed}
+@xrdef{set_mouse_speed-snt}{Section@tie 1.5.21}
+@xrdef{set_mouse_sprite-title}{set_mouse_sprite}
+@xrdef{set_mouse_sprite-snt}{Section@tie 1.5.22}
+@xrdef{set_mouse_sprite_focus-title}{set_mouse_sprite_focus}
+@xrdef{set_mouse_sprite_focus-snt}{Section@tie 1.5.23}
+@xrdef{set_mouse_range-pg}{79}
+@xrdef{set_mouse_speed-pg}{79}
+@xrdef{set_mouse_sprite-pg}{79}
+@xrdef{set_mouse_sprite_focus-pg}{79}
+@xrdef{get_mouse_mickeys-title}{get_mouse_mickeys}
+@xrdef{get_mouse_mickeys-snt}{Section@tie 1.5.24}
+@xrdef{mouse_callback-title}{mouse_callback}
+@xrdef{mouse_callback-snt}{Section@tie 1.5.25}
+@xrdef{Timer-title}{Timer routines}
+@xrdef{Timer-snt}{Section@tie 1.6}
+@xrdef{get_mouse_mickeys-pg}{80}
+@xrdef{mouse_callback-pg}{80}
+@xrdef{Timer-pg}{80}
+@xrdef{install_timer-title}{install_timer}
+@xrdef{install_timer-snt}{Section@tie 1.6.1}
+@xrdef{remove_timer-title}{remove_timer}
+@xrdef{remove_timer-snt}{Section@tie 1.6.2}
+@xrdef{install_int-title}{install_int}
+@xrdef{install_int-snt}{Section@tie 1.6.3}
+@xrdef{install_timer-pg}{81}
+@xrdef{remove_timer-pg}{81}
+@xrdef{install_int-pg}{81}
+@xrdef{install_int_ex-title}{install_int_ex}
+@xrdef{install_int_ex-snt}{Section@tie 1.6.4}
+@xrdef{install_int_ex-pg}{82}
+@xrdef{LOCK_VARIABLE-title}{LOCK_VARIABLE}
+@xrdef{LOCK_VARIABLE-snt}{Section@tie 1.6.5}
+@xrdef{LOCK_VARIABLE-pg}{83}
+@xrdef{LOCK_FUNCTION-title}{LOCK_FUNCTION}
+@xrdef{LOCK_FUNCTION-snt}{Section@tie 1.6.6}
+@xrdef{END_OF_FUNCTION-title}{END_OF_FUNCTION}
+@xrdef{END_OF_FUNCTION-snt}{Section@tie 1.6.7}
+@xrdef{remove_int-title}{remove_int}
+@xrdef{remove_int-snt}{Section@tie 1.6.8}
+@xrdef{LOCK_FUNCTION-pg}{84}
+@xrdef{END_OF_FUNCTION-pg}{84}
+@xrdef{install_param_int-title}{install_param_int}
+@xrdef{install_param_int-snt}{Section@tie 1.6.9}
+@xrdef{install_param_int_ex-title}{install_param_int_ex}
+@xrdef{install_param_int_ex-snt}{Section@tie 1.6.10}
+@xrdef{remove_param_int-title}{remove_param_int}
+@xrdef{remove_param_int-snt}{Section@tie 1.6.11}
+@xrdef{remove_int-pg}{85}
+@xrdef{install_param_int-pg}{85}
+@xrdef{install_param_int_ex-pg}{85}
+@xrdef{remove_param_int-pg}{85}
+@xrdef{retrace_count-title}{retrace_count}
+@xrdef{retrace_count-snt}{Section@tie 1.6.12}
+@xrdef{rest-title}{rest}
+@xrdef{rest-snt}{Section@tie 1.6.13}
+@xrdef{retrace_count-pg}{86}
+@xrdef{rest-pg}{86}
+@xrdef{rest_callback-title}{rest_callback}
+@xrdef{rest_callback-snt}{Section@tie 1.6.14}
+@xrdef{Keyboard-title}{Keyboard routines}
+@xrdef{Keyboard-snt}{Section@tie 1.7}
+@xrdef{install_keyboard-title}{install_keyboard}
+@xrdef{install_keyboard-snt}{Section@tie 1.7.1}
+@xrdef{rest_callback-pg}{87}
+@xrdef{Keyboard-pg}{87}
+@xrdef{install_keyboard-pg}{87}
+@xrdef{remove_keyboard-title}{remove_keyboard}
+@xrdef{remove_keyboard-snt}{Section@tie 1.7.2}
+@xrdef{remove_keyboard-pg}{88}
+@xrdef{install_keyboard_hooks-title}{install_keyboard_hooks}
+@xrdef{install_keyboard_hooks-snt}{Section@tie 1.7.3}
+@xrdef{poll_keyboard-title}{poll_keyboard}
+@xrdef{poll_keyboard-snt}{Section@tie 1.7.4}
+@xrdef{install_keyboard_hooks-pg}{89}
+@xrdef{poll_keyboard-pg}{89}
+@xrdef{keyboard_needs_poll-title}{keyboard_needs_poll}
+@xrdef{keyboard_needs_poll-snt}{Section@tie 1.7.5}
+@xrdef{key-title}{key}
+@xrdef{key-snt}{Section@tie 1.7.6}
+@xrdef{keyboard_needs_poll-pg}{90}
+@xrdef{key-pg}{90}
+@xrdef{key_shifts-title}{key_shifts}
+@xrdef{key_shifts-snt}{Section@tie 1.7.7}
+@xrdef{key_shifts-pg}{91}
+@xrdef{keypressed-title}{keypressed}
+@xrdef{keypressed-snt}{Section@tie 1.7.8}
+@xrdef{readkey-title}{readkey}
+@xrdef{readkey-snt}{Section@tie 1.7.9}
+@xrdef{keypressed-pg}{92}
+@xrdef{ureadkey-title}{ureadkey}
+@xrdef{ureadkey-snt}{Section@tie 1.7.10}
+@xrdef{readkey-pg}{93}
+@xrdef{ureadkey-pg}{93}
+@xrdef{scancode_to_ascii-title}{scancode_to_ascii}
+@xrdef{scancode_to_ascii-snt}{Section@tie 1.7.11}
+@xrdef{scancode_to_name-title}{scancode_to_name}
+@xrdef{scancode_to_name-snt}{Section@tie 1.7.12}
+@xrdef{scancode_to_ascii-pg}{94}
+@xrdef{simulate_keypress-title}{simulate_keypress}
+@xrdef{simulate_keypress-snt}{Section@tie 1.7.13}
+@xrdef{simulate_ukeypress-title}{simulate_ukeypress}
+@xrdef{simulate_ukeypress-snt}{Section@tie 1.7.14}
+@xrdef{scancode_to_name-pg}{95}
+@xrdef{simulate_keypress-pg}{95}
+@xrdef{simulate_ukeypress-pg}{95}
+@xrdef{keyboard_callback-title}{keyboard_callback}
+@xrdef{keyboard_callback-snt}{Section@tie 1.7.15}
+@xrdef{keyboard_ucallback-title}{keyboard_ucallback}
+@xrdef{keyboard_ucallback-snt}{Section@tie 1.7.16}
+@xrdef{keyboard_callback-pg}{96}
+@xrdef{keyboard_ucallback-pg}{96}
+@xrdef{keyboard_lowlevel_callback-title}{keyboard_lowlevel_callback}
+@xrdef{keyboard_lowlevel_callback-snt}{Section@tie 1.7.17}
+@xrdef{keyboard_lowlevel_callback-pg}{97}
+@xrdef{set_leds-title}{set_leds}
+@xrdef{set_leds-snt}{Section@tie 1.7.18}
+@xrdef{set_leds-pg}{98}
+@xrdef{set_keyboard_rate-title}{set_keyboard_rate}
+@xrdef{set_keyboard_rate-snt}{Section@tie 1.7.19}
+@xrdef{clear_keybuf-title}{clear_keybuf}
+@xrdef{clear_keybuf-snt}{Section@tie 1.7.20}
+@xrdef{three_finger_flag-title}{three_finger_flag}
+@xrdef{three_finger_flag-snt}{Section@tie 1.7.21}
+@xrdef{key_led_flag-title}{key_led_flag}
+@xrdef{key_led_flag-snt}{Section@tie 1.7.22}
+@xrdef{set_keyboard_rate-pg}{99}
+@xrdef{clear_keybuf-pg}{99}
+@xrdef{three_finger_flag-pg}{99}
+@xrdef{Joystick-title}{Joystick routines}
+@xrdef{Joystick-snt}{Section@tie 1.8}
+@xrdef{install_joystick-title}{install_joystick}
+@xrdef{install_joystick-snt}{Section@tie 1.8.1}
+@xrdef{key_led_flag-pg}{100}
+@xrdef{Joystick-pg}{100}
+@xrdef{install_joystick-pg}{100}
+@xrdef{remove_joystick-title}{remove_joystick}
+@xrdef{remove_joystick-snt}{Section@tie 1.8.2}
+@xrdef{poll_joystick-title}{poll_joystick}
+@xrdef{poll_joystick-snt}{Section@tie 1.8.3}
+@xrdef{num_joysticks-title}{num_joysticks}
+@xrdef{num_joysticks-snt}{Section@tie 1.8.4}
+@xrdef{remove_joystick-pg}{101}
+@xrdef{poll_joystick-pg}{101}
+@xrdef{joy-title}{joy}
+@xrdef{joy-snt}{Section@tie 1.8.5}
+@xrdef{num_joysticks-pg}{102}
+@xrdef{joy-pg}{102}
+@xrdef{calibrate_joystick_name-title}{calibrate_joystick_name}
+@xrdef{calibrate_joystick_name-snt}{Section@tie 1.8.6}
+@xrdef{calibrate_joystick-title}{calibrate_joystick}
+@xrdef{calibrate_joystick-snt}{Section@tie 1.8.7}
+@xrdef{calibrate_joystick_name-pg}{104}
+@xrdef{calibrate_joystick-pg}{104}
+@xrdef{save_joystick_data-title}{save_joystick_data}
+@xrdef{save_joystick_data-snt}{Section@tie 1.8.8}
+@xrdef{load_joystick_data-title}{load_joystick_data}
+@xrdef{load_joystick_data-snt}{Section@tie 1.8.9}
+@xrdef{save_joystick_data-pg}{105}
+@xrdef{load_joystick_data-pg}{105}
+@xrdef{initialise_joystick-title}{initialise_joystick}
+@xrdef{initialise_joystick-snt}{Section@tie 1.8.10}
+@xrdef{Graphics-title}{Graphics modes}
+@xrdef{Graphics-snt}{Section@tie 1.9}
+@xrdef{initialise_joystick-pg}{106}
+@xrdef{Graphics-pg}{106}
+@xrdef{set_color_depth-title}{set_color_depth}
+@xrdef{set_color_depth-snt}{Section@tie 1.9.1}
+@xrdef{set_color_depth-pg}{108}
+@xrdef{get_color_depth-title}{get_color_depth}
+@xrdef{get_color_depth-snt}{Section@tie 1.9.2}
+@xrdef{request_refresh_rate-title}{request_refresh_rate}
+@xrdef{request_refresh_rate-snt}{Section@tie 1.9.3}
+@xrdef{get_color_depth-pg}{109}
+@xrdef{request_refresh_rate-pg}{109}
+@xrdef{get_refresh_rate-title}{get_refresh_rate}
+@xrdef{get_refresh_rate-snt}{Section@tie 1.9.4}
+@xrdef{get_gfx_mode_list-title}{get_gfx_mode_list}
+@xrdef{get_gfx_mode_list-snt}{Section@tie 1.9.5}
+@xrdef{destroy_gfx_mode_list-title}{destroy_gfx_mode_list}
+@xrdef{destroy_gfx_mode_list-snt}{Section@tie 1.9.6}
+@xrdef{get_refresh_rate-pg}{110}
+@xrdef{get_gfx_mode_list-pg}{110}
+@xrdef{set_gfx_mode-title}{set_gfx_mode}
+@xrdef{set_gfx_mode-snt}{Section@tie 1.9.7}
+@xrdef{destroy_gfx_mode_list-pg}{111}
+@xrdef{set_gfx_mode-pg}{111}
+@xrdef{set_display_switch_mode-title}{set_display_switch_mode}
+@xrdef{set_display_switch_mode-snt}{Section@tie 1.9.8}
+@xrdef{set_display_switch_mode-pg}{112}
+@xrdef{set_display_switch_callback-title}{set_display_switch_callback}
+@xrdef{set_display_switch_callback-snt}{Section@tie 1.9.9}
+@xrdef{set_display_switch_callback-pg}{113}
+@xrdef{remove_display_switch_callback-title}{remove_display_switch_callback}
+@xrdef{remove_display_switch_callback-snt}{Section@tie 1.9.10}
+@xrdef{get_display_switch_mode-title}{get_display_switch_mode}
+@xrdef{get_display_switch_mode-snt}{Section@tie 1.9.11}
+@xrdef{is_windowed_mode-title}{is_windowed_mode}
+@xrdef{is_windowed_mode-snt}{Section@tie 1.9.12}
+@xrdef{gfx_capabilities-title}{gfx_capabilities}
+@xrdef{gfx_capabilities-snt}{Section@tie 1.9.13}
+@xrdef{remove_display_switch_callback-pg}{114}
+@xrdef{get_display_switch_mode-pg}{114}
+@xrdef{is_windowed_mode-pg}{114}
+@xrdef{gfx_capabilities-pg}{115}
+@xrdef{enable_triple_buffer-title}{enable_triple_buffer}
+@xrdef{enable_triple_buffer-snt}{Section@tie 1.9.14}
+@xrdef{scroll_screen-title}{scroll_screen}
+@xrdef{scroll_screen-snt}{Section@tie 1.9.15}
+@xrdef{enable_triple_buffer-pg}{118}
+@xrdef{scroll_screen-pg}{118}
+@xrdef{request_scroll-title}{request_scroll}
+@xrdef{request_scroll-snt}{Section@tie 1.9.16}
+@xrdef{poll_scroll-title}{poll_scroll}
+@xrdef{poll_scroll-snt}{Section@tie 1.9.17}
+@xrdef{show_video_bitmap-title}{show_video_bitmap}
+@xrdef{show_video_bitmap-snt}{Section@tie 1.9.18}
+@xrdef{request_scroll-pg}{119}
+@xrdef{poll_scroll-pg}{119}
+@xrdef{request_video_bitmap-title}{request_video_bitmap}
+@xrdef{request_video_bitmap-snt}{Section@tie 1.9.19}
+@xrdef{show_video_bitmap-pg}{120}
+@xrdef{request_video_bitmap-pg}{120}
+@xrdef{vsync-title}{vsync}
+@xrdef{vsync-snt}{Section@tie 1.9.20}
+@xrdef{vsync-pg}{121}
+@xrdef{Bitmap-title}{Bitmap objects}
+@xrdef{Bitmap-snt}{Section@tie 1.10}
+@xrdef{screen-title}{screen}
+@xrdef{screen-snt}{Section@tie 1.10.1}
+@xrdef{Bitmap-pg}{122}
+@xrdef{SCREEN_W-title}{SCREEN_W}
+@xrdef{SCREEN_W-snt}{Section@tie 1.10.2}
+@xrdef{screen-pg}{123}
+@xrdef{SCREEN_W-pg}{123}
+@xrdef{VIRTUAL_W-title}{VIRTUAL_W}
+@xrdef{VIRTUAL_W-snt}{Section@tie 1.10.3}
+@xrdef{create_bitmap-title}{create_bitmap}
+@xrdef{create_bitmap-snt}{Section@tie 1.10.4}
+@xrdef{VIRTUAL_W-pg}{124}
+@xrdef{create_bitmap-pg}{124}
+@xrdef{create_bitmap_ex-title}{create_bitmap_ex}
+@xrdef{create_bitmap_ex-snt}{Section@tie 1.10.5}
+@xrdef{create_bitmap_ex-pg}{125}
+@xrdef{create_sub_bitmap-title}{create_sub_bitmap}
+@xrdef{create_sub_bitmap-snt}{Section@tie 1.10.6}
+@xrdef{create_video_bitmap-title}{create_video_bitmap}
+@xrdef{create_video_bitmap-snt}{Section@tie 1.10.7}
+@xrdef{create_sub_bitmap-pg}{126}
+@xrdef{create_video_bitmap-pg}{126}
+@xrdef{create_system_bitmap-title}{create_system_bitmap}
+@xrdef{create_system_bitmap-snt}{Section@tie 1.10.8}
+@xrdef{create_system_bitmap-pg}{127}
+@xrdef{destroy_bitmap-title}{destroy_bitmap}
+@xrdef{destroy_bitmap-snt}{Section@tie 1.10.9}
+@xrdef{lock_bitmap-title}{lock_bitmap}
+@xrdef{lock_bitmap-snt}{Section@tie 1.10.10}
+@xrdef{bitmap_color_depth-title}{bitmap_color_depth}
+@xrdef{bitmap_color_depth-snt}{Section@tie 1.10.11}
+@xrdef{destroy_bitmap-pg}{128}
+@xrdef{lock_bitmap-pg}{128}
+@xrdef{bitmap_color_depth-pg}{128}
+@xrdef{bitmap_mask_color-title}{bitmap_mask_color}
+@xrdef{bitmap_mask_color-snt}{Section@tie 1.10.12}
+@xrdef{is_same_bitmap-title}{is_same_bitmap}
+@xrdef{is_same_bitmap-snt}{Section@tie 1.10.13}
+@xrdef{is_planar_bitmap-title}{is_planar_bitmap}
+@xrdef{is_planar_bitmap-snt}{Section@tie 1.10.14}
+@xrdef{bitmap_mask_color-pg}{129}
+@xrdef{is_same_bitmap-pg}{129}
+@xrdef{is_linear_bitmap-title}{is_linear_bitmap}
+@xrdef{is_linear_bitmap-snt}{Section@tie 1.10.15}
+@xrdef{is_memory_bitmap-title}{is_memory_bitmap}
+@xrdef{is_memory_bitmap-snt}{Section@tie 1.10.16}
+@xrdef{is_screen_bitmap-title}{is_screen_bitmap}
+@xrdef{is_screen_bitmap-snt}{Section@tie 1.10.17}
+@xrdef{is_planar_bitmap-pg}{130}
+@xrdef{is_linear_bitmap-pg}{130}
+@xrdef{is_memory_bitmap-pg}{130}
+@xrdef{is_screen_bitmap-pg}{130}
+@xrdef{is_video_bitmap-title}{is_video_bitmap}
+@xrdef{is_video_bitmap-snt}{Section@tie 1.10.18}
+@xrdef{is_system_bitmap-title}{is_system_bitmap}
+@xrdef{is_system_bitmap-snt}{Section@tie 1.10.19}
+@xrdef{is_sub_bitmap-title}{is_sub_bitmap}
+@xrdef{is_sub_bitmap-snt}{Section@tie 1.10.20}
+@xrdef{acquire_bitmap-title}{acquire_bitmap}
+@xrdef{acquire_bitmap-snt}{Section@tie 1.10.21}
+@xrdef{is_video_bitmap-pg}{131}
+@xrdef{is_system_bitmap-pg}{131}
+@xrdef{is_sub_bitmap-pg}{131}
+@xrdef{acquire_bitmap-pg}{131}
+@xrdef{release_bitmap-title}{release_bitmap}
+@xrdef{release_bitmap-snt}{Section@tie 1.10.22}
+@xrdef{acquire_screen-title}{acquire_screen}
+@xrdef{acquire_screen-snt}{Section@tie 1.10.23}
+@xrdef{release_screen-title}{release_screen}
+@xrdef{release_screen-snt}{Section@tie 1.10.24}
+@xrdef{set_clip_rect-title}{set_clip_rect}
+@xrdef{set_clip_rect-snt}{Section@tie 1.10.25}
+@xrdef{release_bitmap-pg}{133}
+@xrdef{acquire_screen-pg}{133}
+@xrdef{release_screen-pg}{133}
+@xrdef{get_clip_rect-title}{get_clip_rect}
+@xrdef{get_clip_rect-snt}{Section@tie 1.10.26}
+@xrdef{add_clip_rect-title}{add_clip_rect}
+@xrdef{add_clip_rect-snt}{Section@tie 1.10.27}
+@xrdef{set_clip_rect-pg}{134}
+@xrdef{get_clip_rect-pg}{134}
+@xrdef{set_clip_state-title}{set_clip_state}
+@xrdef{set_clip_state-snt}{Section@tie 1.10.28}
+@xrdef{get_clip_state-title}{get_clip_state}
+@xrdef{get_clip_state-snt}{Section@tie 1.10.29}
+@xrdef{is_inside_bitmap-title}{is_inside_bitmap}
+@xrdef{is_inside_bitmap-snt}{Section@tie 1.10.30}
+@xrdef{add_clip_rect-pg}{135}
+@xrdef{set_clip_state-pg}{135}
+@xrdef{get_clip_state-pg}{135}
+@xrdef{Loading-title}{Loading image files}
+@xrdef{Loading-snt}{Section@tie 1.11}
+@xrdef{load_bitmap-title}{load_bitmap}
+@xrdef{load_bitmap-snt}{Section@tie 1.11.1}
+@xrdef{is_inside_bitmap-pg}{136}
+@xrdef{Loading-pg}{136}
+@xrdef{load_bitmap-pg}{136}
+@xrdef{load_bmp-title}{load_bmp}
+@xrdef{load_bmp-snt}{Section@tie 1.11.2}
+@xrdef{load_bmp_pf-title}{load_bmp_pf}
+@xrdef{load_bmp_pf-snt}{Section@tie 1.11.3}
+@xrdef{load_bmp-pg}{137}
+@xrdef{load_lbm-title}{load_lbm}
+@xrdef{load_lbm-snt}{Section@tie 1.11.4}
+@xrdef{load_pcx-title}{load_pcx}
+@xrdef{load_pcx-snt}{Section@tie 1.11.5}
+@xrdef{load_bmp_pf-pg}{138}
+@xrdef{load_lbm-pg}{138}
+@xrdef{load_pcx-pg}{138}
+@xrdef{load_pcx_pf-title}{load_pcx_pf}
+@xrdef{load_pcx_pf-snt}{Section@tie 1.11.6}
+@xrdef{load_tga-title}{load_tga}
+@xrdef{load_tga-snt}{Section@tie 1.11.7}
+@xrdef{load_pcx_pf-pg}{139}
+@xrdef{load_tga-pg}{139}
+@xrdef{load_tga_pf-title}{load_tga_pf}
+@xrdef{load_tga_pf-snt}{Section@tie 1.11.8}
+@xrdef{save_bitmap-title}{save_bitmap}
+@xrdef{save_bitmap-snt}{Section@tie 1.11.9}
+@xrdef{load_tga_pf-pg}{140}
+@xrdef{save_bitmap-pg}{140}
+@xrdef{save_bmp-title}{save_bmp}
+@xrdef{save_bmp-snt}{Section@tie 1.11.10}
+@xrdef{save_bmp_pf-title}{save_bmp_pf}
+@xrdef{save_bmp_pf-snt}{Section@tie 1.11.11}
+@xrdef{save_pcx-title}{save_pcx}
+@xrdef{save_pcx-snt}{Section@tie 1.11.12}
+@xrdef{save_bmp-pg}{141}
+@xrdef{save_bmp_pf-pg}{141}
+@xrdef{save_pcx-pg}{141}
+@xrdef{save_pcx_pf-title}{save_pcx_pf}
+@xrdef{save_pcx_pf-snt}{Section@tie 1.11.13}
+@xrdef{save_tga-title}{save_tga}
+@xrdef{save_tga-snt}{Section@tie 1.11.14}
+@xrdef{save_tga_pf-title}{save_tga_pf}
+@xrdef{save_tga_pf-snt}{Section@tie 1.11.15}
+@xrdef{register_bitmap_file_type-title}{register_bitmap_file_type}
+@xrdef{register_bitmap_file_type-snt}{Section@tie 1.11.16}
+@xrdef{save_pcx_pf-pg}{142}
+@xrdef{save_tga-pg}{142}
+@xrdef{save_tga_pf-pg}{142}
+@xrdef{set_color_conversion-title}{set_color_conversion}
+@xrdef{set_color_conversion-snt}{Section@tie 1.11.17}
+@xrdef{register_bitmap_file_type-pg}{143}
+@xrdef{set_color_conversion-pg}{143}
+@xrdef{get_color_conversion-title}{get_color_conversion}
+@xrdef{get_color_conversion-snt}{Section@tie 1.11.18}
+@xrdef{Palette-title}{Palette routines}
+@xrdef{Palette-snt}{Section@tie 1.12}
+@xrdef{get_color_conversion-pg}{145}
+@xrdef{Palette-pg}{145}
+@xrdef{set_color-title}{set_color}
+@xrdef{set_color-snt}{Section@tie 1.12.1}
+@xrdef{_set_color-title}{_set_color}
+@xrdef{_set_color-snt}{Section@tie 1.12.2}
+@xrdef{set_color-pg}{146}
+@xrdef{_set_color-pg}{146}
+@xrdef{set_palette-title}{set_palette}
+@xrdef{set_palette-snt}{Section@tie 1.12.3}
+@xrdef{set_palette_range-title}{set_palette_range}
+@xrdef{set_palette_range-snt}{Section@tie 1.12.4}
+@xrdef{set_palette-pg}{147}
+@xrdef{set_palette_range-pg}{147}
+@xrdef{get_color-title}{get_color}
+@xrdef{get_color-snt}{Section@tie 1.12.5}
+@xrdef{get_palette-title}{get_palette}
+@xrdef{get_palette-snt}{Section@tie 1.12.6}
+@xrdef{get_palette_range-title}{get_palette_range}
+@xrdef{get_palette_range-snt}{Section@tie 1.12.7}
+@xrdef{get_color-pg}{148}
+@xrdef{get_palette-pg}{148}
+@xrdef{get_palette_range-pg}{148}
+@xrdef{fade_interpolate-title}{fade_interpolate}
+@xrdef{fade_interpolate-snt}{Section@tie 1.12.8}
+@xrdef{fade_from_range-title}{fade_from_range}
+@xrdef{fade_from_range-snt}{Section@tie 1.12.9}
+@xrdef{fade_in_range-title}{fade_in_range}
+@xrdef{fade_in_range-snt}{Section@tie 1.12.10}
+@xrdef{fade_interpolate-pg}{149}
+@xrdef{fade_from_range-pg}{149}
+@xrdef{fade_in_range-pg}{149}
+@xrdef{fade_out_range-title}{fade_out_range}
+@xrdef{fade_out_range-snt}{Section@tie 1.12.11}
+@xrdef{fade_from-title}{fade_from}
+@xrdef{fade_from-snt}{Section@tie 1.12.12}
+@xrdef{fade_in-title}{fade_in}
+@xrdef{fade_in-snt}{Section@tie 1.12.13}
+@xrdef{fade_out_range-pg}{150}
+@xrdef{fade_from-pg}{150}
+@xrdef{fade_in-pg}{150}
+@xrdef{fade_out-title}{fade_out}
+@xrdef{fade_out-snt}{Section@tie 1.12.14}
+@xrdef{select_palette-title}{select_palette}
+@xrdef{select_palette-snt}{Section@tie 1.12.15}
+@xrdef{unselect_palette-title}{unselect_palette}
+@xrdef{unselect_palette-snt}{Section@tie 1.12.16}
+@xrdef{generate_332_palette-title}{generate_332_palette}
+@xrdef{generate_332_palette-snt}{Section@tie 1.12.17}
+@xrdef{fade_out-pg}{151}
+@xrdef{select_palette-pg}{151}
+@xrdef{unselect_palette-pg}{151}
+@xrdef{generate_optimized_palette-title}{generate_optimized_palette}
+@xrdef{generate_optimized_palette-snt}{Section@tie 1.12.18}
+@xrdef{default_palette-title}{default_palette}
+@xrdef{default_palette-snt}{Section@tie 1.12.19}
+@xrdef{generate_332_palette-pg}{152}
+@xrdef{generate_optimized_palette-pg}{152}
+@xrdef{default_palette-pg}{152}
+@xrdef{black_palette-title}{black_palette}
+@xrdef{black_palette-snt}{Section@tie 1.12.20}
+@xrdef{desktop_palette-title}{desktop_palette}
+@xrdef{desktop_palette-snt}{Section@tie 1.12.21}
+@xrdef{black_palette-pg}{153}
+@xrdef{desktop_palette-pg}{153}
+@xrdef{Truecolor-title}{Truecolor pixel formats}
+@xrdef{Truecolor-snt}{Section@tie 1.13}
+@xrdef{makecol8-title}{makecol8}
+@xrdef{makecol8-snt}{Section@tie 1.13.1}
+@xrdef{Truecolor-pg}{154}
+@xrdef{makecol8-pg}{154}
+@xrdef{makeacol32-title}{makeacol32}
+@xrdef{makeacol32-snt}{Section@tie 1.13.2}
+@xrdef{makecol-title}{makecol}
+@xrdef{makecol-snt}{Section@tie 1.13.3}
+@xrdef{makecol_depth-title}{makecol_depth}
+@xrdef{makecol_depth-snt}{Section@tie 1.13.4}
+@xrdef{makeacol32-pg}{155}
+@xrdef{makecol-pg}{155}
+@xrdef{makecol_depth-pg}{155}
+@xrdef{makeacol-title}{makeacol}
+@xrdef{makeacol-snt}{Section@tie 1.13.5}
+@xrdef{makecol15_dither-title}{makecol15_dither}
+@xrdef{makecol15_dither-snt}{Section@tie 1.13.6}
+@xrdef{makeacol-pg}{156}
+@xrdef{makecol15_dither-pg}{156}
+@xrdef{getr8-title}{getr8}
+@xrdef{getr8-snt}{Section@tie 1.13.7}
+@xrdef{getr8-pg}{157}
+@xrdef{geta32-title}{geta32}
+@xrdef{geta32-snt}{Section@tie 1.13.8}
+@xrdef{getr-title}{getr}
+@xrdef{getr-snt}{Section@tie 1.13.9}
+@xrdef{getr_depth-title}{getr_depth}
+@xrdef{getr_depth-snt}{Section@tie 1.13.10}
+@xrdef{geta32-pg}{158}
+@xrdef{getr-pg}{158}
+@xrdef{palette_color-title}{palette_color}
+@xrdef{palette_color-snt}{Section@tie 1.13.11}
+@xrdef{getr_depth-pg}{159}
+@xrdef{palette_color-pg}{159}
+@xrdef{MASK_COLOR_8-title}{MASK_COLOR_8}
+@xrdef{MASK_COLOR_8-snt}{Section@tie 1.13.12}
+@xrdef{Drawing-title}{Drawing primitives}
+@xrdef{Drawing-snt}{Section@tie 1.14}
+@xrdef{clear_bitmap-title}{clear_bitmap}
+@xrdef{clear_bitmap-snt}{Section@tie 1.14.1}
+@xrdef{clear_to_color-title}{clear_to_color}
+@xrdef{clear_to_color-snt}{Section@tie 1.14.2}
+@xrdef{MASK_COLOR_8-pg}{160}
+@xrdef{Drawing-pg}{160}
+@xrdef{clear_bitmap-pg}{160}
+@xrdef{clear_to_color-pg}{160}
+@xrdef{putpixel-title}{putpixel}
+@xrdef{putpixel-snt}{Section@tie 1.14.3}
+@xrdef{_putpixel-title}{_putpixel}
+@xrdef{_putpixel-snt}{Section@tie 1.14.4}
+@xrdef{getpixel-title}{getpixel}
+@xrdef{getpixel-snt}{Section@tie 1.14.5}
+@xrdef{putpixel-pg}{161}
+@xrdef{_putpixel-pg}{161}
+@xrdef{_getpixel-title}{_getpixel}
+@xrdef{_getpixel-snt}{Section@tie 1.14.6}
+@xrdef{getpixel-pg}{162}
+@xrdef{_getpixel-pg}{162}
+@xrdef{vline-title}{vline}
+@xrdef{vline-snt}{Section@tie 1.14.7}
+@xrdef{hline-title}{hline}
+@xrdef{hline-snt}{Section@tie 1.14.8}
+@xrdef{do_line-title}{do_line}
+@xrdef{do_line-snt}{Section@tie 1.14.9}
+@xrdef{vline-pg}{163}
+@xrdef{hline-pg}{163}
+@xrdef{do_line-pg}{163}
+@xrdef{line-title}{line}
+@xrdef{line-snt}{Section@tie 1.14.10}
+@xrdef{fastline-title}{fastline}
+@xrdef{fastline-snt}{Section@tie 1.14.11}
+@xrdef{line-pg}{164}
+@xrdef{fastline-pg}{164}
+@xrdef{triangle-title}{triangle}
+@xrdef{triangle-snt}{Section@tie 1.14.12}
+@xrdef{polygon-title}{polygon}
+@xrdef{polygon-snt}{Section@tie 1.14.13}
+@xrdef{rect-title}{rect}
+@xrdef{rect-snt}{Section@tie 1.14.14}
+@xrdef{triangle-pg}{165}
+@xrdef{polygon-pg}{165}
+@xrdef{rect-pg}{165}
+@xrdef{rectfill-title}{rectfill}
+@xrdef{rectfill-snt}{Section@tie 1.14.15}
+@xrdef{do_circle-title}{do_circle}
+@xrdef{do_circle-snt}{Section@tie 1.14.16}
+@xrdef{rectfill-pg}{166}
+@xrdef{do_circle-pg}{166}
+@xrdef{circle-title}{circle}
+@xrdef{circle-snt}{Section@tie 1.14.17}
+@xrdef{circlefill-title}{circlefill}
+@xrdef{circlefill-snt}{Section@tie 1.14.18}
+@xrdef{circle-pg}{167}
+@xrdef{circlefill-pg}{167}
+@xrdef{do_ellipse-title}{do_ellipse}
+@xrdef{do_ellipse-snt}{Section@tie 1.14.19}
+@xrdef{ellipse-title}{ellipse}
+@xrdef{ellipse-snt}{Section@tie 1.14.20}
+@xrdef{do_ellipse-pg}{168}
+@xrdef{ellipse-pg}{168}
+@xrdef{ellipsefill-title}{ellipsefill}
+@xrdef{ellipsefill-snt}{Section@tie 1.14.21}
+@xrdef{do_arc-title}{do_arc}
+@xrdef{do_arc-snt}{Section@tie 1.14.22}
+@xrdef{ellipsefill-pg}{169}
+@xrdef{do_arc-pg}{169}
+@xrdef{arc-title}{arc}
+@xrdef{arc-snt}{Section@tie 1.14.23}
+@xrdef{calc_spline-title}{calc_spline}
+@xrdef{calc_spline-snt}{Section@tie 1.14.24}
+@xrdef{arc-pg}{170}
+@xrdef{calc_spline-pg}{170}
+@xrdef{spline-title}{spline}
+@xrdef{spline-snt}{Section@tie 1.14.25}
+@xrdef{floodfill-title}{floodfill}
+@xrdef{floodfill-snt}{Section@tie 1.14.26}
+@xrdef{Blitting-title}{Blitting and sprites}
+@xrdef{Blitting-snt}{Section@tie 1.15}
+@xrdef{spline-pg}{171}
+@xrdef{floodfill-pg}{171}
+@xrdef{Blitting-pg}{171}
+@xrdef{blit-title}{blit}
+@xrdef{blit-snt}{Section@tie 1.15.1}
+@xrdef{blit-pg}{172}
+@xrdef{stretch_blit-title}{stretch_blit}
+@xrdef{stretch_blit-snt}{Section@tie 1.15.2}
+@xrdef{masked_blit-title}{masked_blit}
+@xrdef{masked_blit-snt}{Section@tie 1.15.3}
+@xrdef{stretch_blit-pg}{174}
+@xrdef{masked_blit-pg}{174}
+@xrdef{masked_stretch_blit-title}{masked_stretch_blit}
+@xrdef{masked_stretch_blit-snt}{Section@tie 1.15.4}
+@xrdef{draw_sprite-title}{draw_sprite}
+@xrdef{draw_sprite-snt}{Section@tie 1.15.5}
+@xrdef{masked_stretch_blit-pg}{175}
+@xrdef{stretch_sprite-title}{stretch_sprite}
+@xrdef{stretch_sprite-snt}{Section@tie 1.15.6}
+@xrdef{draw_sprite-pg}{176}
+@xrdef{draw_sprite_v_flip-title}{draw_sprite_v_flip}
+@xrdef{draw_sprite_v_flip-snt}{Section@tie 1.15.7}
+@xrdef{stretch_sprite-pg}{177}
+@xrdef{draw_sprite_v_flip-pg}{177}
+@xrdef{draw_trans_sprite-title}{draw_trans_sprite}
+@xrdef{draw_trans_sprite-snt}{Section@tie 1.15.8}
+@xrdef{draw_trans_sprite-pg}{178}
+@xrdef{draw_lit_sprite-title}{draw_lit_sprite}
+@xrdef{draw_lit_sprite-snt}{Section@tie 1.15.9}
+@xrdef{draw_gouraud_sprite-title}{draw_gouraud_sprite}
+@xrdef{draw_gouraud_sprite-snt}{Section@tie 1.15.10}
+@xrdef{draw_lit_sprite-pg}{179}
+@xrdef{draw_character_ex-title}{draw_character_ex}
+@xrdef{draw_character_ex-snt}{Section@tie 1.15.11}
+@xrdef{draw_gouraud_sprite-pg}{180}
+@xrdef{draw_character_ex-pg}{180}
+@xrdef{rotate_sprite-title}{rotate_sprite}
+@xrdef{rotate_sprite-snt}{Section@tie 1.15.12}
+@xrdef{rotate_sprite_v_flip-title}{rotate_sprite_v_flip}
+@xrdef{rotate_sprite_v_flip-snt}{Section@tie 1.15.13}
+@xrdef{rotate_sprite-pg}{181}
+@xrdef{rotate_scaled_sprite-title}{rotate_scaled_sprite}
+@xrdef{rotate_scaled_sprite-snt}{Section@tie 1.15.14}
+@xrdef{rotate_scaled_sprite_v_flip-title}{rotate_scaled_sprite_v_flip}
+@xrdef{rotate_scaled_sprite_v_flip-snt}{Section@tie 1.15.15}
+@xrdef{pivot_sprite-title}{pivot_sprite}
+@xrdef{pivot_sprite-snt}{Section@tie 1.15.16}
+@xrdef{rotate_sprite_v_flip-pg}{182}
+@xrdef{rotate_scaled_sprite-pg}{182}
+@xrdef{rotate_scaled_sprite_v_flip-pg}{182}
+@xrdef{pivot_sprite_v_flip-title}{pivot_sprite_v_flip}
+@xrdef{pivot_sprite_v_flip-snt}{Section@tie 1.15.17}
+@xrdef{pivot_scaled_sprite-title}{pivot_scaled_sprite}
+@xrdef{pivot_scaled_sprite-snt}{Section@tie 1.15.18}
+@xrdef{pivot_scaled_sprite_v_flip-title}{pivot_scaled_sprite_v_flip}
+@xrdef{pivot_scaled_sprite_v_flip-snt}{Section@tie 1.15.19}
+@xrdef{pivot_sprite-pg}{183}
+@xrdef{pivot_sprite_v_flip-pg}{183}
+@xrdef{pivot_scaled_sprite-pg}{183}
+@xrdef{RLE-title}{RLE sprites}
+@xrdef{RLE-snt}{Section@tie 1.16}
+@xrdef{get_rle_sprite-title}{get_rle_sprite}
+@xrdef{get_rle_sprite-snt}{Section@tie 1.16.1}
+@xrdef{pivot_scaled_sprite_v_flip-pg}{184}
+@xrdef{RLE-pg}{184}
+@xrdef{get_rle_sprite-pg}{184}
+@xrdef{destroy_rle_sprite-title}{destroy_rle_sprite}
+@xrdef{destroy_rle_sprite-snt}{Section@tie 1.16.2}
+@xrdef{draw_rle_sprite-title}{draw_rle_sprite}
+@xrdef{draw_rle_sprite-snt}{Section@tie 1.16.3}
+@xrdef{destroy_rle_sprite-pg}{185}
+@xrdef{draw_rle_sprite-pg}{185}
+@xrdef{draw_trans_rle_sprite-title}{draw_trans_rle_sprite}
+@xrdef{draw_trans_rle_sprite-snt}{Section@tie 1.16.4}
+@xrdef{draw_lit_rle_sprite-title}{draw_lit_rle_sprite}
+@xrdef{draw_lit_rle_sprite-snt}{Section@tie 1.16.5}
+@xrdef{draw_trans_rle_sprite-pg}{186}
+@xrdef{Compiled-title}{Compiled sprites}
+@xrdef{Compiled-snt}{Section@tie 1.17}
+@xrdef{get_compiled_sprite-title}{get_compiled_sprite}
+@xrdef{get_compiled_sprite-snt}{Section@tie 1.17.1}
+@xrdef{draw_lit_rle_sprite-pg}{187}
+@xrdef{Compiled-pg}{187}
+@xrdef{destroy_compiled_sprite-title}{destroy_compiled_sprite}
+@xrdef{destroy_compiled_sprite-snt}{Section@tie 1.17.2}
+@xrdef{draw_compiled_sprite-title}{draw_compiled_sprite}
+@xrdef{draw_compiled_sprite-snt}{Section@tie 1.17.3}
+@xrdef{get_compiled_sprite-pg}{188}
+@xrdef{destroy_compiled_sprite-pg}{188}
+@xrdef{Fonts-title}{Fonts}
+@xrdef{Fonts-snt}{Section@tie 1.18}
+@xrdef{register_font_file_type-title}{register_font_file_type}
+@xrdef{register_font_file_type-snt}{Section@tie 1.18.1}
+@xrdef{draw_compiled_sprite-pg}{189}
+@xrdef{Fonts-pg}{189}
+@xrdef{register_font_file_type-pg}{189}
+@xrdef{load_font-title}{load_font}
+@xrdef{load_font-snt}{Section@tie 1.18.2}
+@xrdef{load_font-pg}{190}
+@xrdef{destroy_font-title}{destroy_font}
+@xrdef{destroy_font-snt}{Section@tie 1.18.3}
+@xrdef{make_trans_font-title}{make_trans_font}
+@xrdef{make_trans_font-snt}{Section@tie 1.18.4}
+@xrdef{destroy_font-pg}{191}
+@xrdef{make_trans_font-pg}{191}
+@xrdef{is_trans_font-title}{is_trans_font}
+@xrdef{is_trans_font-snt}{Section@tie 1.18.5}
+@xrdef{is_color_font-title}{is_color_font}
+@xrdef{is_color_font-snt}{Section@tie 1.18.6}
+@xrdef{is_mono_font-title}{is_mono_font}
+@xrdef{is_mono_font-snt}{Section@tie 1.18.7}
+@xrdef{font_has_alpha-title}{font_has_alpha}
+@xrdef{font_has_alpha-snt}{Section@tie 1.18.8}
+@xrdef{is_trans_font-pg}{192}
+@xrdef{is_color_font-pg}{192}
+@xrdef{is_mono_font-pg}{192}
+@xrdef{font_has_alpha-pg}{192}
+@xrdef{is_compatible_font-title}{is_compatible_font}
+@xrdef{is_compatible_font-snt}{Section@tie 1.18.9}
+@xrdef{get_font_ranges-title}{get_font_ranges}
+@xrdef{get_font_ranges-snt}{Section@tie 1.18.10}
+@xrdef{is_compatible_font-pg}{193}
+@xrdef{get_font_ranges-pg}{193}
+@xrdef{get_font_range_begin-title}{get_font_range_begin}
+@xrdef{get_font_range_begin-snt}{Section@tie 1.18.11}
+@xrdef{get_font_range_end-title}{get_font_range_end}
+@xrdef{get_font_range_end-snt}{Section@tie 1.18.12}
+@xrdef{get_font_range_begin-pg}{194}
+@xrdef{get_font_range_end-pg}{194}
+@xrdef{extract_font_range-title}{extract_font_range}
+@xrdef{extract_font_range-snt}{Section@tie 1.18.13}
+@xrdef{transpose_font-title}{transpose_font}
+@xrdef{transpose_font-snt}{Section@tie 1.18.14}
+@xrdef{extract_font_range-pg}{195}
+@xrdef{transpose_font-pg}{195}
+@xrdef{merge_fonts-title}{merge_fonts}
+@xrdef{merge_fonts-snt}{Section@tie 1.18.15}
+@xrdef{merge_fonts-pg}{196}
+@xrdef{load_dat_font-title}{load_dat_font}
+@xrdef{load_dat_font-snt}{Section@tie 1.18.16}
+@xrdef{load_dat_font-pg}{197}
+@xrdef{load_bios_font-title}{load_bios_font}
+@xrdef{load_bios_font-snt}{Section@tie 1.18.17}
+@xrdef{load_grx_font-title}{load_grx_font}
+@xrdef{load_grx_font-snt}{Section@tie 1.18.18}
+@xrdef{load_bios_font-pg}{198}
+@xrdef{load_grx_font-pg}{198}
+@xrdef{load_grx_or_bios_font-title}{load_grx_or_bios_font}
+@xrdef{load_grx_or_bios_font-snt}{Section@tie 1.18.19}
+@xrdef{load_bitmap_font-title}{load_bitmap_font}
+@xrdef{load_bitmap_font-snt}{Section@tie 1.18.20}
+@xrdef{load_grx_or_bios_font-pg}{199}
+@xrdef{load_bitmap_font-pg}{199}
+@xrdef{grab_font_from_bitmap-title}{grab_font_from_bitmap}
+@xrdef{grab_font_from_bitmap-snt}{Section@tie 1.18.21}
+@xrdef{load_txt_font-title}{load_txt_font}
+@xrdef{load_txt_font-snt}{Section@tie 1.18.22}
+@xrdef{grab_font_from_bitmap-pg}{200}
+@xrdef{load_txt_font-pg}{200}
+@xrdef{Text-title}{Text output}
+@xrdef{Text-snt}{Section@tie 1.19}
+@xrdef{font-title}{font}
+@xrdef{font-snt}{Section@tie 1.19.1}
+@xrdef{allegro_404_char-title}{allegro_404_char}
+@xrdef{allegro_404_char-snt}{Section@tie 1.19.2}
+@xrdef{Text-pg}{201}
+@xrdef{font-pg}{201}
+@xrdef{allegro_404_char-pg}{201}
+@xrdef{text_length-title}{text_length}
+@xrdef{text_length-snt}{Section@tie 1.19.3}
+@xrdef{text_height-title}{text_height}
+@xrdef{text_height-snt}{Section@tie 1.19.4}
+@xrdef{textout_ex-title}{textout_ex}
+@xrdef{textout_ex-snt}{Section@tie 1.19.5}
+@xrdef{text_length-pg}{202}
+@xrdef{text_height-pg}{202}
+@xrdef{textout_centre_ex-title}{textout_centre_ex}
+@xrdef{textout_centre_ex-snt}{Section@tie 1.19.6}
+@xrdef{textout_ex-pg}{203}
+@xrdef{textout_centre_ex-pg}{203}
+@xrdef{textout_right_ex-title}{textout_right_ex}
+@xrdef{textout_right_ex-snt}{Section@tie 1.19.7}
+@xrdef{textout_justify_ex-title}{textout_justify_ex}
+@xrdef{textout_justify_ex-snt}{Section@tie 1.19.8}
+@xrdef{textprintf_ex-title}{textprintf_ex}
+@xrdef{textprintf_ex-snt}{Section@tie 1.19.9}
+@xrdef{textout_right_ex-pg}{204}
+@xrdef{textout_justify_ex-pg}{204}
+@xrdef{textprintf_centre_ex-title}{textprintf_centre_ex}
+@xrdef{textprintf_centre_ex-snt}{Section@tie 1.19.10}
+@xrdef{textprintf_ex-pg}{205}
+@xrdef{textprintf_centre_ex-pg}{205}
+@xrdef{textprintf_right_ex-title}{textprintf_right_ex}
+@xrdef{textprintf_right_ex-snt}{Section@tie 1.19.11}
+@xrdef{textprintf_justify_ex-title}{textprintf_justify_ex}
+@xrdef{textprintf_justify_ex-snt}{Section@tie 1.19.12}
+@xrdef{textprintf_right_ex-pg}{206}
+@xrdef{textprintf_justify_ex-pg}{206}
+@xrdef{Polygon-title}{Polygon rendering}
+@xrdef{Polygon-snt}{Section@tie 1.20}
+@xrdef{POLYTYPE_FLAT-title}{POLYTYPE_FLAT}
+@xrdef{POLYTYPE_FLAT-snt}{Section@tie 1.20.1}
+@xrdef{POLYTYPE_GCOL-title}{POLYTYPE_GCOL}
+@xrdef{POLYTYPE_GCOL-snt}{Section@tie 1.20.2}
+@xrdef{POLYTYPE_GRGB-title}{POLYTYPE_GRGB}
+@xrdef{POLYTYPE_GRGB-snt}{Section@tie 1.20.3}
+@xrdef{Polygon-pg}{207}
+@xrdef{POLYTYPE_FLAT-pg}{207}
+@xrdef{POLYTYPE_GCOL-pg}{207}
+@xrdef{POLYTYPE_ATEX-title}{POLYTYPE_ATEX}
+@xrdef{POLYTYPE_ATEX-snt}{Section@tie 1.20.4}
+@xrdef{POLYTYPE_PTEX-title}{POLYTYPE_PTEX}
+@xrdef{POLYTYPE_PTEX-snt}{Section@tie 1.20.5}
+@xrdef{POLYTYPE_GRGB-pg}{208}
+@xrdef{POLYTYPE_ATEX-pg}{208}
+@xrdef{POLYTYPE_PTEX-pg}{208}
+@xrdef{POLYTYPE_ATEX_MASK-title}{POLYTYPE_ATEX_MASK}
+@xrdef{POLYTYPE_ATEX_MASK-snt}{Section@tie 1.20.6}
+@xrdef{POLYTYPE_ATEX_LIT-title}{POLYTYPE_ATEX_LIT}
+@xrdef{POLYTYPE_ATEX_LIT-snt}{Section@tie 1.20.7}
+@xrdef{POLYTYPE_ATEX_MASK_LIT-title}{POLYTYPE_ATEX_MASK_LIT}
+@xrdef{POLYTYPE_ATEX_MASK_LIT-snt}{Section@tie 1.20.8}
+@xrdef{POLYTYPE_ATEX_MASK-pg}{209}
+@xrdef{POLYTYPE_ATEX_LIT-pg}{209}
+@xrdef{POLYTYPE_ATEX_MASK_LIT-pg}{209}
+@xrdef{POLYTYPE_ATEX_TRANS-title}{POLYTYPE_ATEX_TRANS}
+@xrdef{POLYTYPE_ATEX_TRANS-snt}{Section@tie 1.20.9}
+@xrdef{POLYTYPE_ATEX_MASK_TRANS-title}{POLYTYPE_ATEX_MASK_TRANS}
+@xrdef{POLYTYPE_ATEX_MASK_TRANS-snt}{Section@tie 1.20.10}
+@xrdef{polygon3d-title}{polygon3d}
+@xrdef{polygon3d-snt}{Section@tie 1.20.11}
+@xrdef{POLYTYPE_ATEX_TRANS-pg}{210}
+@xrdef{POLYTYPE_ATEX_MASK_TRANS-pg}{210}
+@xrdef{polygon3d-pg}{210}
+@xrdef{triangle3d-title}{triangle3d}
+@xrdef{triangle3d-snt}{Section@tie 1.20.12}
+@xrdef{quad3d-title}{quad3d}
+@xrdef{quad3d-snt}{Section@tie 1.20.13}
+@xrdef{triangle3d-pg}{212}
+@xrdef{clip3d_f-title}{clip3d_f}
+@xrdef{clip3d_f-snt}{Section@tie 1.20.14}
+@xrdef{clip3d-title}{clip3d}
+@xrdef{clip3d-snt}{Section@tie 1.20.15}
+@xrdef{quad3d-pg}{213}
+@xrdef{clip3d_f-pg}{213}
+@xrdef{Zbuffered rendering-title}{Zbuffered rendering}
+@xrdef{Zbuffered rendering-snt}{Section@tie 1.20.16}
+@xrdef{create_zbuffer-title}{create_zbuffer}
+@xrdef{create_zbuffer-snt}{Section@tie 1.20.17}
+@xrdef{clip3d-pg}{214}
+@xrdef{Zbuffered rendering-pg}{214}
+@xrdef{create_sub_zbuffer-title}{create_sub_zbuffer}
+@xrdef{create_sub_zbuffer-snt}{Section@tie 1.20.18}
+@xrdef{set_zbuffer-title}{set_zbuffer}
+@xrdef{set_zbuffer-snt}{Section@tie 1.20.19}
+@xrdef{create_zbuffer-pg}{215}
+@xrdef{create_sub_zbuffer-pg}{215}
+@xrdef{clear_zbuffer-title}{clear_zbuffer}
+@xrdef{clear_zbuffer-snt}{Section@tie 1.20.20}
+@xrdef{destroy_zbuffer-title}{destroy_zbuffer}
+@xrdef{destroy_zbuffer-snt}{Section@tie 1.20.21}
+@xrdef{Scene rendering-title}{Scene rendering}
+@xrdef{Scene rendering-snt}{Section@tie 1.20.22}
+@xrdef{set_zbuffer-pg}{216}
+@xrdef{clear_zbuffer-pg}{216}
+@xrdef{destroy_zbuffer-pg}{216}
+@xrdef{Scene rendering-pg}{216}
+@xrdef{create_scene-title}{create_scene}
+@xrdef{create_scene-snt}{Section@tie 1.20.23}
+@xrdef{clear_scene-title}{clear_scene}
+@xrdef{clear_scene-snt}{Section@tie 1.20.24}
+@xrdef{destroy_scene-title}{destroy_scene}
+@xrdef{destroy_scene-snt}{Section@tie 1.20.25}
+@xrdef{create_scene-pg}{218}
+@xrdef{clear_scene-pg}{218}
+@xrdef{destroy_scene-pg}{218}
+@xrdef{scene_polygon3d-title}{scene_polygon3d}
+@xrdef{scene_polygon3d-snt}{Section@tie 1.20.26}
+@xrdef{render_scene-title}{render_scene}
+@xrdef{render_scene-snt}{Section@tie 1.20.27}
+@xrdef{scene_polygon3d-pg}{219}
+@xrdef{scene_gap-title}{scene_gap}
+@xrdef{scene_gap-snt}{Section@tie 1.20.28}
+@xrdef{Transparency-title}{Transparency and patterned drawing}
+@xrdef{Transparency-snt}{Section@tie 1.21}
+@xrdef{render_scene-pg}{220}
+@xrdef{scene_gap-pg}{220}
+@xrdef{drawing_mode-title}{drawing_mode}
+@xrdef{drawing_mode-snt}{Section@tie 1.21.1}
+@xrdef{Transparency-pg}{221}
+@xrdef{drawing_mode-pg}{221}
+@xrdef{xor_mode-title}{xor_mode}
+@xrdef{xor_mode-snt}{Section@tie 1.21.2}
+@xrdef{solid_mode-title}{solid_mode}
+@xrdef{solid_mode-snt}{Section@tie 1.21.3}
+@xrdef{xor_mode-pg}{222}
+@xrdef{solid_mode-pg}{222}
+@xrdef{256-color transparency-title}{256-color transparency}
+@xrdef{256-color transparency-snt}{Section@tie 1.21.4}
+@xrdef{color_map-title}{color_map}
+@xrdef{color_map-snt}{Section@tie 1.21.5}
+@xrdef{create_trans_table-title}{create_trans_table}
+@xrdef{create_trans_table-snt}{Section@tie 1.21.6}
+@xrdef{256-color transparency-pg}{223}
+@xrdef{color_map-pg}{223}
+@xrdef{create_light_table-title}{create_light_table}
+@xrdef{create_light_table-snt}{Section@tie 1.21.7}
+@xrdef{create_trans_table-pg}{224}
+@xrdef{create_light_table-pg}{224}
+@xrdef{create_color_table-title}{create_color_table}
+@xrdef{create_color_table-snt}{Section@tie 1.21.8}
+@xrdef{create_color_table-pg}{225}
+@xrdef{create_blender_table-title}{create_blender_table}
+@xrdef{create_blender_table-snt}{Section@tie 1.21.9}
+@xrdef{create_blender_table-pg}{226}
+@xrdef{Truecolor transparency-title}{Truecolor transparency}
+@xrdef{Truecolor transparency-snt}{Section@tie 1.21.10}
+@xrdef{set_trans_blender-title}{set_trans_blender}
+@xrdef{set_trans_blender-snt}{Section@tie 1.21.11}
+@xrdef{Truecolor transparency-pg}{227}
+@xrdef{set_trans_blender-pg}{227}
+@xrdef{set_alpha_blender-title}{set_alpha_blender}
+@xrdef{set_alpha_blender-snt}{Section@tie 1.21.12}
+@xrdef{set_write_alpha_blender-title}{set_write_alpha_blender}
+@xrdef{set_write_alpha_blender-snt}{Section@tie 1.21.13}
+@xrdef{set_alpha_blender-pg}{228}
+@xrdef{set_write_alpha_blender-pg}{228}
+@xrdef{set_add_blender-title}{set_add_blender}
+@xrdef{set_add_blender-snt}{Section@tie 1.21.14}
+@xrdef{set_burn_blender-title}{set_burn_blender}
+@xrdef{set_burn_blender-snt}{Section@tie 1.21.15}
+@xrdef{set_color_blender-title}{set_color_blender}
+@xrdef{set_color_blender-snt}{Section@tie 1.21.16}
+@xrdef{set_difference_blender-title}{set_difference_blender}
+@xrdef{set_difference_blender-snt}{Section@tie 1.21.17}
+@xrdef{set_add_blender-pg}{229}
+@xrdef{set_burn_blender-pg}{229}
+@xrdef{set_color_blender-pg}{229}
+@xrdef{set_dissolve_blender-title}{set_dissolve_blender}
+@xrdef{set_dissolve_blender-snt}{Section@tie 1.21.18}
+@xrdef{set_dodge_blender-title}{set_dodge_blender}
+@xrdef{set_dodge_blender-snt}{Section@tie 1.21.19}
+@xrdef{set_hue_blender-title}{set_hue_blender}
+@xrdef{set_hue_blender-snt}{Section@tie 1.21.20}
+@xrdef{set_invert_blender-title}{set_invert_blender}
+@xrdef{set_invert_blender-snt}{Section@tie 1.21.21}
+@xrdef{set_difference_blender-pg}{230}
+@xrdef{set_dissolve_blender-pg}{230}
+@xrdef{set_dodge_blender-pg}{230}
+@xrdef{set_hue_blender-pg}{230}
+@xrdef{set_luminance_blender-title}{set_luminance_blender}
+@xrdef{set_luminance_blender-snt}{Section@tie 1.21.22}
+@xrdef{set_multiply_blender-title}{set_multiply_blender}
+@xrdef{set_multiply_blender-snt}{Section@tie 1.21.23}
+@xrdef{set_saturation_blender-title}{set_saturation_blender}
+@xrdef{set_saturation_blender-snt}{Section@tie 1.21.24}
+@xrdef{set_screen_blender-title}{set_screen_blender}
+@xrdef{set_screen_blender-snt}{Section@tie 1.21.25}
+@xrdef{set_invert_blender-pg}{231}
+@xrdef{set_luminance_blender-pg}{231}
+@xrdef{set_multiply_blender-pg}{231}
+@xrdef{set_saturation_blender-pg}{231}
+@xrdef{set_blender_mode-title}{set_blender_mode}
+@xrdef{set_blender_mode-snt}{Section@tie 1.21.26}
+@xrdef{set_blender_mode_ex-title}{set_blender_mode_ex}
+@xrdef{set_blender_mode_ex-snt}{Section@tie 1.21.27}
+@xrdef{Converting-title}{Converting between color formats}
+@xrdef{Converting-snt}{Section@tie 1.22}
+@xrdef{set_screen_blender-pg}{232}
+@xrdef{set_blender_mode-pg}{232}
+@xrdef{set_blender_mode_ex-pg}{232}
+@xrdef{bestfit_color-title}{bestfit_color}
+@xrdef{bestfit_color-snt}{Section@tie 1.22.1}
+@xrdef{rgb_map-title}{rgb_map}
+@xrdef{rgb_map-snt}{Section@tie 1.22.2}
+@xrdef{Converting-pg}{233}
+@xrdef{bestfit_color-pg}{233}
+@xrdef{rgb_map-pg}{233}
+@xrdef{create_rgb_table-title}{create_rgb_table}
+@xrdef{create_rgb_table-snt}{Section@tie 1.22.3}
+@xrdef{hsv_to_rgb-title}{hsv_to_rgb}
+@xrdef{hsv_to_rgb-snt}{Section@tie 1.22.4}
+@xrdef{create_rgb_table-pg}{234}
+@xrdef{Direct-title}{Direct access to video memory}
+@xrdef{Direct-snt}{Section@tie 1.23}
+@xrdef{hsv_to_rgb-pg}{235}
+@xrdef{Direct-pg}{235}
+@xrdef{bmp_write_line-title}{bmp_write_line}
+@xrdef{bmp_write_line-snt}{Section@tie 1.23.1}
+@xrdef{bmp_read_line-title}{bmp_read_line}
+@xrdef{bmp_read_line-snt}{Section@tie 1.23.2}
+@xrdef{bmp_unwrite_line-title}{bmp_unwrite_line}
+@xrdef{bmp_unwrite_line-snt}{Section@tie 1.23.3}
+@xrdef{bmp_write_line-pg}{236}
+@xrdef{bmp_read_line-pg}{236}
+@xrdef{More on banked direct memory access-title}{More on banked direct memory access}
+@xrdef{More on banked direct memory access-snt}{Section@tie 1.23.4}
+@xrdef{bmp_unwrite_line-pg}{237}
+@xrdef{More on banked direct memory access-pg}{237}
+@xrdef{FLIC-title}{FLIC routines}
+@xrdef{FLIC-snt}{Section@tie 1.24}
+@xrdef{FLIC-pg}{238}
+@xrdef{play_fli-title}{play_fli}
+@xrdef{play_fli-snt}{Section@tie 1.24.1}
+@xrdef{play_memory_fli-title}{play_memory_fli}
+@xrdef{play_memory_fli-snt}{Section@tie 1.24.2}
+@xrdef{play_fli-pg}{239}
+@xrdef{open_fli-title}{open_fli}
+@xrdef{open_fli-snt}{Section@tie 1.24.3}
+@xrdef{play_memory_fli-pg}{240}
+@xrdef{open_fli-pg}{240}
+@xrdef{close_fli-title}{close_fli}
+@xrdef{close_fli-snt}{Section@tie 1.24.4}
+@xrdef{next_fli_frame-title}{next_fli_frame}
+@xrdef{next_fli_frame-snt}{Section@tie 1.24.5}
+@xrdef{fli_bitmap-title}{fli_bitmap}
+@xrdef{fli_bitmap-snt}{Section@tie 1.24.6}
+@xrdef{close_fli-pg}{241}
+@xrdef{next_fli_frame-pg}{241}
+@xrdef{fli_bitmap-pg}{241}
+@xrdef{fli_palette-title}{fli_palette}
+@xrdef{fli_palette-snt}{Section@tie 1.24.7}
+@xrdef{fli_bmp_dirty_from-title}{fli_bmp_dirty_from}
+@xrdef{fli_bmp_dirty_from-snt}{Section@tie 1.24.8}
+@xrdef{fli_pal_dirty_from-title}{fli_pal_dirty_from}
+@xrdef{fli_pal_dirty_from-snt}{Section@tie 1.24.9}
+@xrdef{fli_palette-pg}{242}
+@xrdef{fli_bmp_dirty_from-pg}{242}
+@xrdef{fli_pal_dirty_from-pg}{242}
+@xrdef{reset_fli_variables-title}{reset_fli_variables}
+@xrdef{reset_fli_variables-snt}{Section@tie 1.24.10}
+@xrdef{fli_frame-title}{fli_frame}
+@xrdef{fli_frame-snt}{Section@tie 1.24.11}
+@xrdef{fli_timer-title}{fli_timer}
+@xrdef{fli_timer-snt}{Section@tie 1.24.12}
+@xrdef{reset_fli_variables-pg}{243}
+@xrdef{fli_frame-pg}{243}
+@xrdef{fli_timer-pg}{243}
+@xrdef{Sound-title}{Sound init routines}
+@xrdef{Sound-snt}{Section@tie 1.25}
+@xrdef{detect_digi_driver-title}{detect_digi_driver}
+@xrdef{detect_digi_driver-snt}{Section@tie 1.25.1}
+@xrdef{Sound-pg}{244}
+@xrdef{detect_digi_driver-pg}{244}
+@xrdef{detect_midi_driver-title}{detect_midi_driver}
+@xrdef{detect_midi_driver-snt}{Section@tie 1.25.2}
+@xrdef{reserve_voices-title}{reserve_voices}
+@xrdef{reserve_voices-snt}{Section@tie 1.25.3}
+@xrdef{detect_midi_driver-pg}{245}
+@xrdef{reserve_voices-pg}{245}
+@xrdef{set_volume_per_voice-title}{set_volume_per_voice}
+@xrdef{set_volume_per_voice-snt}{Section@tie 1.25.4}
+@xrdef{set_volume_per_voice-pg}{246}
+@xrdef{install_sound-title}{install_sound}
+@xrdef{install_sound-snt}{Section@tie 1.25.5}
+@xrdef{install_sound-pg}{247}
+@xrdef{remove_sound-title}{remove_sound}
+@xrdef{remove_sound-snt}{Section@tie 1.25.6}
+@xrdef{set_volume-title}{set_volume}
+@xrdef{set_volume-snt}{Section@tie 1.25.7}
+@xrdef{set_hardware_volume-title}{set_hardware_volume}
+@xrdef{set_hardware_volume-snt}{Section@tie 1.25.8}
+@xrdef{remove_sound-pg}{248}
+@xrdef{set_volume-pg}{248}
+@xrdef{set_hardware_volume-pg}{248}
+@xrdef{get_volume-title}{get_volume}
+@xrdef{get_volume-snt}{Section@tie 1.25.9}
+@xrdef{get_hardware_volume-title}{get_hardware_volume}
+@xrdef{get_hardware_volume-snt}{Section@tie 1.25.10}
+@xrdef{Mixer-title}{Mixer routines}
+@xrdef{Mixer-snt}{Section@tie 1.26}
+@xrdef{set_mixer_quality-title}{set_mixer_quality}
+@xrdef{set_mixer_quality-snt}{Section@tie 1.26.1}
+@xrdef{get_mixer_quality-title}{get_mixer_quality}
+@xrdef{get_mixer_quality-snt}{Section@tie 1.26.2}
+@xrdef{get_volume-pg}{249}
+@xrdef{get_hardware_volume-pg}{249}
+@xrdef{Mixer-pg}{249}
+@xrdef{set_mixer_quality-pg}{249}
+@xrdef{get_mixer_frequency-title}{get_mixer_frequency}
+@xrdef{get_mixer_frequency-snt}{Section@tie 1.26.3}
+@xrdef{get_mixer_bits-title}{get_mixer_bits}
+@xrdef{get_mixer_bits-snt}{Section@tie 1.26.4}
+@xrdef{get_mixer_channels-title}{get_mixer_channels}
+@xrdef{get_mixer_channels-snt}{Section@tie 1.26.5}
+@xrdef{get_mixer_voices-title}{get_mixer_voices}
+@xrdef{get_mixer_voices-snt}{Section@tie 1.26.6}
+@xrdef{get_mixer_buffer_length-title}{get_mixer_buffer_length}
+@xrdef{get_mixer_buffer_length-snt}{Section@tie 1.26.7}
+@xrdef{get_mixer_quality-pg}{250}
+@xrdef{get_mixer_frequency-pg}{250}
+@xrdef{get_mixer_bits-pg}{250}
+@xrdef{get_mixer_channels-pg}{250}
+@xrdef{get_mixer_voices-pg}{250}
+@xrdef{Digital-title}{Digital sample routines}
+@xrdef{Digital-snt}{Section@tie 1.27}
+@xrdef{load_sample-title}{load_sample}
+@xrdef{load_sample-snt}{Section@tie 1.27.1}
+@xrdef{load_wav-title}{load_wav}
+@xrdef{load_wav-snt}{Section@tie 1.27.2}
+@xrdef{get_mixer_buffer_length-pg}{251}
+@xrdef{Digital-pg}{251}
+@xrdef{load_sample-pg}{251}
+@xrdef{load_wav-pg}{251}
+@xrdef{load_wav_pf-title}{load_wav_pf}
+@xrdef{load_wav_pf-snt}{Section@tie 1.27.3}
+@xrdef{load_voc-title}{load_voc}
+@xrdef{load_voc-snt}{Section@tie 1.27.4}
+@xrdef{load_voc_pf-title}{load_voc_pf}
+@xrdef{load_voc_pf-snt}{Section@tie 1.27.5}
+@xrdef{load_wav_pf-pg}{252}
+@xrdef{load_voc-pg}{252}
+@xrdef{save_sample-title}{save_sample}
+@xrdef{save_sample-snt}{Section@tie 1.27.6}
+@xrdef{create_sample-title}{create_sample}
+@xrdef{create_sample-snt}{Section@tie 1.27.7}
+@xrdef{load_voc_pf-pg}{253}
+@xrdef{save_sample-pg}{253}
+@xrdef{create_sample-pg}{253}
+@xrdef{destroy_sample-title}{destroy_sample}
+@xrdef{destroy_sample-snt}{Section@tie 1.27.8}
+@xrdef{lock_sample-title}{lock_sample}
+@xrdef{lock_sample-snt}{Section@tie 1.27.9}
+@xrdef{register_sample_file_type-title}{register_sample_file_type}
+@xrdef{register_sample_file_type-snt}{Section@tie 1.27.10}
+@xrdef{destroy_sample-pg}{254}
+@xrdef{lock_sample-pg}{254}
+@xrdef{register_sample_file_type-pg}{254}
+@xrdef{play_sample-title}{play_sample}
+@xrdef{play_sample-snt}{Section@tie 1.27.11}
+@xrdef{adjust_sample-title}{adjust_sample}
+@xrdef{adjust_sample-snt}{Section@tie 1.27.12}
+@xrdef{play_sample-pg}{255}
+@xrdef{adjust_sample-pg}{255}
+@xrdef{stop_sample-title}{stop_sample}
+@xrdef{stop_sample-snt}{Section@tie 1.27.13}
+@xrdef{Voice control-title}{Voice control}
+@xrdef{Voice control-snt}{Section@tie 1.27.14}
+@xrdef{allocate_voice-title}{allocate_voice}
+@xrdef{allocate_voice-snt}{Section@tie 1.27.15}
+@xrdef{stop_sample-pg}{256}
+@xrdef{Voice control-pg}{256}
+@xrdef{deallocate_voice-title}{deallocate_voice}
+@xrdef{deallocate_voice-snt}{Section@tie 1.27.16}
+@xrdef{reallocate_voice-title}{reallocate_voice}
+@xrdef{reallocate_voice-snt}{Section@tie 1.27.17}
+@xrdef{release_voice-title}{release_voice}
+@xrdef{release_voice-snt}{Section@tie 1.27.18}
+@xrdef{allocate_voice-pg}{257}
+@xrdef{deallocate_voice-pg}{257}
+@xrdef{reallocate_voice-pg}{257}
+@xrdef{voice_start-title}{voice_start}
+@xrdef{voice_start-snt}{Section@tie 1.27.19}
+@xrdef{voice_stop-title}{voice_stop}
+@xrdef{voice_stop-snt}{Section@tie 1.27.20}
+@xrdef{voice_set_priority-title}{voice_set_priority}
+@xrdef{voice_set_priority-snt}{Section@tie 1.27.21}
+@xrdef{voice_check-title}{voice_check}
+@xrdef{voice_check-snt}{Section@tie 1.27.22}
+@xrdef{release_voice-pg}{258}
+@xrdef{voice_start-pg}{258}
+@xrdef{voice_stop-pg}{258}
+@xrdef{voice_set_priority-pg}{258}
+@xrdef{voice_get_position-title}{voice_get_position}
+@xrdef{voice_get_position-snt}{Section@tie 1.27.23}
+@xrdef{voice_set_position-title}{voice_set_position}
+@xrdef{voice_set_position-snt}{Section@tie 1.27.24}
+@xrdef{voice_set_playmode-title}{voice_set_playmode}
+@xrdef{voice_set_playmode-snt}{Section@tie 1.27.25}
+@xrdef{voice_check-pg}{259}
+@xrdef{voice_get_position-pg}{259}
+@xrdef{voice_set_position-pg}{259}
+@xrdef{voice_set_playmode-pg}{259}
+@xrdef{voice_get_volume-title}{voice_get_volume}
+@xrdef{voice_get_volume-snt}{Section@tie 1.27.26}
+@xrdef{voice_set_volume-title}{voice_set_volume}
+@xrdef{voice_set_volume-snt}{Section@tie 1.27.27}
+@xrdef{voice_ramp_volume-title}{voice_ramp_volume}
+@xrdef{voice_ramp_volume-snt}{Section@tie 1.27.28}
+@xrdef{voice_get_volume-pg}{260}
+@xrdef{voice_set_volume-pg}{260}
+@xrdef{voice_ramp_volume-pg}{260}
+@xrdef{voice_stop_volumeramp-title}{voice_stop_volumeramp}
+@xrdef{voice_stop_volumeramp-snt}{Section@tie 1.27.29}
+@xrdef{voice_get_frequency-title}{voice_get_frequency}
+@xrdef{voice_get_frequency-snt}{Section@tie 1.27.30}
+@xrdef{voice_set_frequency-title}{voice_set_frequency}
+@xrdef{voice_set_frequency-snt}{Section@tie 1.27.31}
+@xrdef{voice_sweep_frequency-title}{voice_sweep_frequency}
+@xrdef{voice_sweep_frequency-snt}{Section@tie 1.27.32}
+@xrdef{voice_stop_frequency_sweep-title}{voice_stop_frequency_sweep}
+@xrdef{voice_stop_frequency_sweep-snt}{Section@tie 1.27.33}
+@xrdef{voice_stop_volumeramp-pg}{261}
+@xrdef{voice_get_frequency-pg}{261}
+@xrdef{voice_set_frequency-pg}{261}
+@xrdef{voice_sweep_frequency-pg}{261}
+@xrdef{voice_stop_frequency_sweep-pg}{261}
+@xrdef{voice_get_pan-title}{voice_get_pan}
+@xrdef{voice_get_pan-snt}{Section@tie 1.27.34}
+@xrdef{voice_set_pan-title}{voice_set_pan}
+@xrdef{voice_set_pan-snt}{Section@tie 1.27.35}
+@xrdef{voice_sweep_pan-title}{voice_sweep_pan}
+@xrdef{voice_sweep_pan-snt}{Section@tie 1.27.36}
+@xrdef{voice_stop_pan_sweep-title}{voice_stop_pan_sweep}
+@xrdef{voice_stop_pan_sweep-snt}{Section@tie 1.27.37}
+@xrdef{voice_set_echo-title}{voice_set_echo}
+@xrdef{voice_set_echo-snt}{Section@tie 1.27.38}
+@xrdef{voice_get_pan-pg}{262}
+@xrdef{voice_set_pan-pg}{262}
+@xrdef{voice_sweep_pan-pg}{262}
+@xrdef{voice_stop_pan_sweep-pg}{262}
+@xrdef{voice_set_echo-pg}{262}
+@xrdef{voice_set_tremolo-title}{voice_set_tremolo}
+@xrdef{voice_set_tremolo-snt}{Section@tie 1.27.39}
+@xrdef{voice_set_vibrato-title}{voice_set_vibrato}
+@xrdef{voice_set_vibrato-snt}{Section@tie 1.27.40}
+@xrdef{Music-title}{Music routines (MIDI)}
+@xrdef{Music-snt}{Section@tie 1.28}
+@xrdef{load_midi-title}{load_midi}
+@xrdef{load_midi-snt}{Section@tie 1.28.1}
+@xrdef{voice_set_tremolo-pg}{263}
+@xrdef{voice_set_vibrato-pg}{263}
+@xrdef{Music-pg}{263}
+@xrdef{load_midi-pg}{263}
+@xrdef{destroy_midi-title}{destroy_midi}
+@xrdef{destroy_midi-snt}{Section@tie 1.28.2}
+@xrdef{lock_midi-title}{lock_midi}
+@xrdef{lock_midi-snt}{Section@tie 1.28.3}
+@xrdef{play_midi-title}{play_midi}
+@xrdef{play_midi-snt}{Section@tie 1.28.4}
+@xrdef{destroy_midi-pg}{264}
+@xrdef{lock_midi-pg}{264}
+@xrdef{play_midi-pg}{264}
+@xrdef{play_looped_midi-title}{play_looped_midi}
+@xrdef{play_looped_midi-snt}{Section@tie 1.28.5}
+@xrdef{stop_midi-title}{stop_midi}
+@xrdef{stop_midi-snt}{Section@tie 1.28.6}
+@xrdef{midi_pause-title}{midi_pause}
+@xrdef{midi_pause-snt}{Section@tie 1.28.7}
+@xrdef{play_looped_midi-pg}{265}
+@xrdef{stop_midi-pg}{265}
+@xrdef{midi_pause-pg}{265}
+@xrdef{midi_resume-title}{midi_resume}
+@xrdef{midi_resume-snt}{Section@tie 1.28.8}
+@xrdef{midi_seek-title}{midi_seek}
+@xrdef{midi_seek-snt}{Section@tie 1.28.9}
+@xrdef{get_midi_length-title}{get_midi_length}
+@xrdef{get_midi_length-snt}{Section@tie 1.28.10}
+@xrdef{midi_resume-pg}{266}
+@xrdef{midi_seek-pg}{266}
+@xrdef{get_midi_length-pg}{266}
+@xrdef{midi_out-title}{midi_out}
+@xrdef{midi_out-snt}{Section@tie 1.28.11}
+@xrdef{load_midi_patches-title}{load_midi_patches}
+@xrdef{load_midi_patches-snt}{Section@tie 1.28.12}
+@xrdef{midi_pos-title}{midi_pos}
+@xrdef{midi_pos-snt}{Section@tie 1.28.13}
+@xrdef{midi_out-pg}{267}
+@xrdef{load_midi_patches-pg}{267}
+@xrdef{midi_pos-pg}{267}
+@xrdef{midi_time-title}{midi_time}
+@xrdef{midi_time-snt}{Section@tie 1.28.14}
+@xrdef{midi_loop_start-title}{midi_loop_start}
+@xrdef{midi_loop_start-snt}{Section@tie 1.28.15}
+@xrdef{midi_msg_callback-title}{midi_msg_callback}
+@xrdef{midi_msg_callback-snt}{Section@tie 1.28.16}
+@xrdef{midi_time-pg}{268}
+@xrdef{midi_loop_start-pg}{268}
+@xrdef{midi_msg_callback-pg}{268}
+@xrdef{load_ibk-title}{load_ibk}
+@xrdef{load_ibk-snt}{Section@tie 1.28.17}
+@xrdef{Audio-title}{Audio stream routines}
+@xrdef{Audio-snt}{Section@tie 1.29}
+@xrdef{play_audio_stream-title}{play_audio_stream}
+@xrdef{play_audio_stream-snt}{Section@tie 1.29.1}
+@xrdef{load_ibk-pg}{269}
+@xrdef{Audio-pg}{269}
+@xrdef{play_audio_stream-pg}{269}
+@xrdef{stop_audio_stream-title}{stop_audio_stream}
+@xrdef{stop_audio_stream-snt}{Section@tie 1.29.2}
+@xrdef{get_audio_stream_buffer-title}{get_audio_stream_buffer}
+@xrdef{get_audio_stream_buffer-snt}{Section@tie 1.29.3}
+@xrdef{stop_audio_stream-pg}{270}
+@xrdef{get_audio_stream_buffer-pg}{270}
+@xrdef{free_audio_stream_buffer-title}{free_audio_stream_buffer}
+@xrdef{free_audio_stream_buffer-snt}{Section@tie 1.29.4}
+@xrdef{Recording-title}{Recording routines}
+@xrdef{Recording-snt}{Section@tie 1.30}
+@xrdef{free_audio_stream_buffer-pg}{271}
+@xrdef{install_sound_input-title}{install_sound_input}
+@xrdef{install_sound_input-snt}{Section@tie 1.30.1}
+@xrdef{remove_sound_input-title}{remove_sound_input}
+@xrdef{remove_sound_input-snt}{Section@tie 1.30.2}
+@xrdef{Recording-pg}{272}
+@xrdef{install_sound_input-pg}{272}
+@xrdef{get_sound_input_cap_bits-title}{get_sound_input_cap_bits}
+@xrdef{get_sound_input_cap_bits-snt}{Section@tie 1.30.3}
+@xrdef{get_sound_input_cap_stereo-title}{get_sound_input_cap_stereo}
+@xrdef{get_sound_input_cap_stereo-snt}{Section@tie 1.30.4}
+@xrdef{remove_sound_input-pg}{273}
+@xrdef{get_sound_input_cap_bits-pg}{273}
+@xrdef{get_sound_input_cap_stereo-pg}{273}
+@xrdef{get_sound_input_cap_rate-title}{get_sound_input_cap_rate}
+@xrdef{get_sound_input_cap_rate-snt}{Section@tie 1.30.5}
+@xrdef{get_sound_input_cap_parm-title}{get_sound_input_cap_parm}
+@xrdef{get_sound_input_cap_parm-snt}{Section@tie 1.30.6}
+@xrdef{get_sound_input_cap_rate-pg}{274}
+@xrdef{get_sound_input_cap_parm-pg}{274}
+@xrdef{set_sound_input_source-title}{set_sound_input_source}
+@xrdef{set_sound_input_source-snt}{Section@tie 1.30.7}
+@xrdef{start_sound_input-title}{start_sound_input}
+@xrdef{start_sound_input-snt}{Section@tie 1.30.8}
+@xrdef{stop_sound_input-title}{stop_sound_input}
+@xrdef{stop_sound_input-snt}{Section@tie 1.30.9}
+@xrdef{set_sound_input_source-pg}{275}
+@xrdef{start_sound_input-pg}{275}
+@xrdef{stop_sound_input-pg}{275}
+@xrdef{read_sound_input-title}{read_sound_input}
+@xrdef{read_sound_input-snt}{Section@tie 1.30.10}
+@xrdef{digi_recorder-title}{digi_recorder}
+@xrdef{digi_recorder-snt}{Section@tie 1.30.11}
+@xrdef{midi_recorder-title}{midi_recorder}
+@xrdef{midi_recorder-snt}{Section@tie 1.30.12}
+@xrdef{read_sound_input-pg}{276}
+@xrdef{digi_recorder-pg}{276}
+@xrdef{midi_recorder-pg}{276}
+@xrdef{File-title}{File and compression routines}
+@xrdef{File-snt}{Section@tie 1.31}
+@xrdef{get_executable_name-title}{get_executable_name}
+@xrdef{get_executable_name-snt}{Section@tie 1.31.1}
+@xrdef{File-pg}{277}
+@xrdef{get_executable_name-pg}{277}
+@xrdef{fix_filename_case-title}{fix_filename_case}
+@xrdef{fix_filename_case-snt}{Section@tie 1.31.2}
+@xrdef{fix_filename_slashes-title}{fix_filename_slashes}
+@xrdef{fix_filename_slashes-snt}{Section@tie 1.31.3}
+@xrdef{canonicalize_filename-title}{canonicalize_filename}
+@xrdef{canonicalize_filename-snt}{Section@tie 1.31.4}
+@xrdef{fix_filename_case-pg}{278}
+@xrdef{fix_filename_slashes-pg}{278}
+@xrdef{make_absolute_filename-title}{make_absolute_filename}
+@xrdef{make_absolute_filename-snt}{Section@tie 1.31.5}
+@xrdef{make_relative_filename-title}{make_relative_filename}
+@xrdef{make_relative_filename-snt}{Section@tie 1.31.6}
+@xrdef{canonicalize_filename-pg}{279}
+@xrdef{make_absolute_filename-pg}{279}
+@xrdef{is_relative_filename-title}{is_relative_filename}
+@xrdef{is_relative_filename-snt}{Section@tie 1.31.7}
+@xrdef{replace_filename-title}{replace_filename}
+@xrdef{replace_filename-snt}{Section@tie 1.31.8}
+@xrdef{make_relative_filename-pg}{280}
+@xrdef{is_relative_filename-pg}{280}
+@xrdef{replace_filename-pg}{280}
+@xrdef{replace_extension-title}{replace_extension}
+@xrdef{replace_extension-snt}{Section@tie 1.31.9}
+@xrdef{append_filename-title}{append_filename}
+@xrdef{append_filename-snt}{Section@tie 1.31.10}
+@xrdef{get_filename-title}{get_filename}
+@xrdef{get_filename-snt}{Section@tie 1.31.11}
+@xrdef{replace_extension-pg}{281}
+@xrdef{append_filename-pg}{281}
+@xrdef{get_extension-title}{get_extension}
+@xrdef{get_extension-snt}{Section@tie 1.31.12}
+@xrdef{put_backslash-title}{put_backslash}
+@xrdef{put_backslash-snt}{Section@tie 1.31.13}
+@xrdef{get_filename-pg}{282}
+@xrdef{get_extension-pg}{282}
+@xrdef{file_exists-title}{file_exists}
+@xrdef{file_exists-snt}{Section@tie 1.31.14}
+@xrdef{exists-title}{exists}
+@xrdef{exists-snt}{Section@tie 1.31.15}
+@xrdef{file_size_ex-title}{file_size_ex}
+@xrdef{file_size_ex-snt}{Section@tie 1.31.16}
+@xrdef{put_backslash-pg}{283}
+@xrdef{file_exists-pg}{283}
+@xrdef{exists-pg}{283}
+@xrdef{file_time-title}{file_time}
+@xrdef{file_time-snt}{Section@tie 1.31.17}
+@xrdef{delete_file-title}{delete_file}
+@xrdef{delete_file-snt}{Section@tie 1.31.18}
+@xrdef{for_each_file_ex-title}{for_each_file_ex}
+@xrdef{for_each_file_ex-snt}{Section@tie 1.31.19}
+@xrdef{file_size_ex-pg}{284}
+@xrdef{file_time-pg}{284}
+@xrdef{delete_file-pg}{284}
+@xrdef{for_each_file_ex-pg}{284}
+@xrdef{al_findfirst-title}{al_findfirst}
+@xrdef{al_findfirst-snt}{Section@tie 1.31.20}
+@xrdef{al_findfirst-pg}{285}
+@xrdef{al_findnext-title}{al_findnext}
+@xrdef{al_findnext-snt}{Section@tie 1.31.21}
+@xrdef{al_findclose-title}{al_findclose}
+@xrdef{al_findclose-snt}{Section@tie 1.31.22}
+@xrdef{al_ffblk_get_size-title}{al_ffblk_get_size}
+@xrdef{al_ffblk_get_size-snt}{Section@tie 1.31.23}
+@xrdef{al_findnext-pg}{286}
+@xrdef{al_findclose-pg}{286}
+@xrdef{al_ffblk_get_size-pg}{286}
+@xrdef{find_allegro_resource-title}{find_allegro_resource}
+@xrdef{find_allegro_resource-snt}{Section@tie 1.31.24}
+@xrdef{set_allegro_resource_path-title}{set_allegro_resource_path}
+@xrdef{set_allegro_resource_path-snt}{Section@tie 1.31.25}
+@xrdef{find_allegro_resource-pg}{287}
+@xrdef{set_allegro_resource_path-pg}{287}
+@xrdef{packfile_password-title}{packfile_password}
+@xrdef{packfile_password-snt}{Section@tie 1.31.26}
+@xrdef{packfile_password-pg}{288}
+@xrdef{pack_fopen-title}{pack_fopen}
+@xrdef{pack_fopen-snt}{Section@tie 1.31.27}
+@xrdef{pack_fopen-pg}{289}
+@xrdef{pack_fopen_vtable-title}{pack_fopen_vtable}
+@xrdef{pack_fopen_vtable-snt}{Section@tie 1.31.28}
+@xrdef{pack_fclose-title}{pack_fclose}
+@xrdef{pack_fclose-snt}{Section@tie 1.31.29}
+@xrdef{pack_fopen_vtable-pg}{290}
+@xrdef{pack_fseek-title}{pack_fseek}
+@xrdef{pack_fseek-snt}{Section@tie 1.31.30}
+@xrdef{pack_feof-title}{pack_feof}
+@xrdef{pack_feof-snt}{Section@tie 1.31.31}
+@xrdef{pack_fclose-pg}{291}
+@xrdef{pack_fseek-pg}{291}
+@xrdef{pack_feof-pg}{291}
+@xrdef{pack_ferror-title}{pack_ferror}
+@xrdef{pack_ferror-snt}{Section@tie 1.31.32}
+@xrdef{pack_getc-title}{pack_getc}
+@xrdef{pack_getc-snt}{Section@tie 1.31.33}
+@xrdef{pack_ungetc-title}{pack_ungetc}
+@xrdef{pack_ungetc-snt}{Section@tie 1.31.34}
+@xrdef{pack_ferror-pg}{292}
+@xrdef{pack_getc-pg}{292}
+@xrdef{pack_ungetc-pg}{292}
+@xrdef{pack_putc-title}{pack_putc}
+@xrdef{pack_putc-snt}{Section@tie 1.31.35}
+@xrdef{pack_igetw-title}{pack_igetw}
+@xrdef{pack_igetw-snt}{Section@tie 1.31.36}
+@xrdef{pack_iputw-title}{pack_iputw}
+@xrdef{pack_iputw-snt}{Section@tie 1.31.37}
+@xrdef{pack_igetl-title}{pack_igetl}
+@xrdef{pack_igetl-snt}{Section@tie 1.31.38}
+@xrdef{pack_iputl-title}{pack_iputl}
+@xrdef{pack_iputl-snt}{Section@tie 1.31.39}
+@xrdef{pack_putc-pg}{293}
+@xrdef{pack_igetw-pg}{293}
+@xrdef{pack_iputw-pg}{293}
+@xrdef{pack_igetl-pg}{293}
+@xrdef{pack_mgetw-title}{pack_mgetw}
+@xrdef{pack_mgetw-snt}{Section@tie 1.31.40}
+@xrdef{pack_mputw-title}{pack_mputw}
+@xrdef{pack_mputw-snt}{Section@tie 1.31.41}
+@xrdef{pack_mgetl-title}{pack_mgetl}
+@xrdef{pack_mgetl-snt}{Section@tie 1.31.42}
+@xrdef{pack_mputl-title}{pack_mputl}
+@xrdef{pack_mputl-snt}{Section@tie 1.31.43}
+@xrdef{pack_iputl-pg}{294}
+@xrdef{pack_mgetw-pg}{294}
+@xrdef{pack_mputw-pg}{294}
+@xrdef{pack_mgetl-pg}{294}
+@xrdef{pack_mputl-pg}{294}
+@xrdef{pack_fread-title}{pack_fread}
+@xrdef{pack_fread-snt}{Section@tie 1.31.44}
+@xrdef{pack_fwrite-title}{pack_fwrite}
+@xrdef{pack_fwrite-snt}{Section@tie 1.31.45}
+@xrdef{pack_fgets-title}{pack_fgets}
+@xrdef{pack_fgets-snt}{Section@tie 1.31.46}
+@xrdef{pack_fread-pg}{295}
+@xrdef{pack_fwrite-pg}{295}
+@xrdef{pack_fgets-pg}{295}
+@xrdef{pack_fputs-title}{pack_fputs}
+@xrdef{pack_fputs-snt}{Section@tie 1.31.47}
+@xrdef{pack_fopen_chunk-title}{pack_fopen_chunk}
+@xrdef{pack_fopen_chunk-snt}{Section@tie 1.31.48}
+@xrdef{pack_fputs-pg}{296}
+@xrdef{pack_fopen_chunk-pg}{296}
+@xrdef{pack_fclose_chunk-title}{pack_fclose_chunk}
+@xrdef{pack_fclose_chunk-snt}{Section@tie 1.31.49}
+@xrdef{create_lzss_pack_data-title}{create_lzss_pack_data}
+@xrdef{create_lzss_pack_data-snt}{Section@tie 1.31.50}
+@xrdef{free_lzss_pack_data-title}{free_lzss_pack_data}
+@xrdef{free_lzss_pack_data-snt}{Section@tie 1.31.51}
+@xrdef{lzss_write-title}{lzss_write}
+@xrdef{lzss_write-snt}{Section@tie 1.31.52}
+@xrdef{pack_fclose_chunk-pg}{298}
+@xrdef{create_lzss_pack_data-pg}{298}
+@xrdef{free_lzss_pack_data-pg}{298}
+@xrdef{lzss_write-pg}{298}
+@xrdef{create_lzss_unpack_data-title}{create_lzss_unpack_data}
+@xrdef{create_lzss_unpack_data-snt}{Section@tie 1.31.53}
+@xrdef{free_lzss_unpack_data-title}{free_lzss_unpack_data}
+@xrdef{free_lzss_unpack_data-snt}{Section@tie 1.31.54}
+@xrdef{lzss_read-title}{lzss_read}
+@xrdef{lzss_read-snt}{Section@tie 1.31.55}
+@xrdef{Datafile-title}{Datafile routines}
+@xrdef{Datafile-snt}{Section@tie 1.32}
+@xrdef{create_lzss_unpack_data-pg}{299}
+@xrdef{free_lzss_unpack_data-pg}{299}
+@xrdef{lzss_read-pg}{299}
+@xrdef{Datafile-pg}{299}
+@xrdef{load_datafile-title}{load_datafile}
+@xrdef{load_datafile-snt}{Section@tie 1.32.1}
+@xrdef{load_datafile-pg}{300}
+@xrdef{load_datafile_callback-title}{load_datafile_callback}
+@xrdef{load_datafile_callback-snt}{Section@tie 1.32.2}
+@xrdef{load_datafile_callback-pg}{301}
+@xrdef{unload_datafile-title}{unload_datafile}
+@xrdef{unload_datafile-snt}{Section@tie 1.32.3}
+@xrdef{load_datafile_object-title}{load_datafile_object}
+@xrdef{load_datafile_object-snt}{Section@tie 1.32.4}
+@xrdef{unload_datafile-pg}{302}
+@xrdef{unload_datafile_object-title}{unload_datafile_object}
+@xrdef{unload_datafile_object-snt}{Section@tie 1.32.5}
+@xrdef{find_datafile_object-title}{find_datafile_object}
+@xrdef{find_datafile_object-snt}{Section@tie 1.32.6}
+@xrdef{load_datafile_object-pg}{303}
+@xrdef{unload_datafile_object-pg}{303}
+@xrdef{find_datafile_object-pg}{303}
+@xrdef{create_datafile_index-title}{create_datafile_index}
+@xrdef{create_datafile_index-snt}{Section@tie 1.32.7}
+@xrdef{load_datafile_object_indexed-title}{load_datafile_object_indexed}
+@xrdef{load_datafile_object_indexed-snt}{Section@tie 1.32.8}
+@xrdef{create_datafile_index-pg}{304}
+@xrdef{destroy_datafile_index-title}{destroy_datafile_index}
+@xrdef{destroy_datafile_index-snt}{Section@tie 1.32.9}
+@xrdef{get_datafile_property-title}{get_datafile_property}
+@xrdef{get_datafile_property-snt}{Section@tie 1.32.10}
+@xrdef{register_datafile_object-title}{register_datafile_object}
+@xrdef{register_datafile_object-snt}{Section@tie 1.32.11}
+@xrdef{load_datafile_object_indexed-pg}{305}
+@xrdef{destroy_datafile_index-pg}{305}
+@xrdef{get_datafile_property-pg}{305}
+@xrdef{fixup_datafile-title}{fixup_datafile}
+@xrdef{fixup_datafile-snt}{Section@tie 1.32.12}
+@xrdef{DAT_ID-title}{DAT_ID}
+@xrdef{DAT_ID-snt}{Section@tie 1.32.13}
+@xrdef{register_datafile_object-pg}{306}
+@xrdef{fixup_datafile-pg}{306}
+@xrdef{Using datafiles-title}{Using datafiles}
+@xrdef{Using datafiles-snt}{Section@tie 1.32.14}
+@xrdef{DAT_ID-pg}{307}
+@xrdef{Using datafiles-pg}{307}
+@xrdef{Custom datafile objects-title}{Custom datafile objects}
+@xrdef{Custom datafile objects-snt}{Section@tie 1.32.15}
+@xrdef{Custom datafile objects-pg}{310}
+@xrdef{Fixed-title}{Fixed point math routines}
+@xrdef{Fixed-snt}{Section@tie 1.33}
+@xrdef{Fixed-pg}{312}
+@xrdef{itofix-title}{itofix}
+@xrdef{itofix-snt}{Section@tie 1.33.1}
+@xrdef{fixtoi-title}{fixtoi}
+@xrdef{fixtoi-snt}{Section@tie 1.33.2}
+@xrdef{itofix-pg}{313}
+@xrdef{fixtoi-pg}{313}
+@xrdef{fixfloor-title}{fixfloor}
+@xrdef{fixfloor-snt}{Section@tie 1.33.3}
+@xrdef{fixceil-title}{fixceil}
+@xrdef{fixceil-snt}{Section@tie 1.33.4}
+@xrdef{fixfloor-pg}{314}
+@xrdef{fixceil-pg}{314}
+@xrdef{ftofix-title}{ftofix}
+@xrdef{ftofix-snt}{Section@tie 1.33.5}
+@xrdef{fixtof-title}{fixtof}
+@xrdef{fixtof-snt}{Section@tie 1.33.6}
+@xrdef{ftofix-pg}{315}
+@xrdef{fixtof-pg}{315}
+@xrdef{fixmul-title}{fixmul}
+@xrdef{fixmul-snt}{Section@tie 1.33.7}
+@xrdef{fixdiv-title}{fixdiv}
+@xrdef{fixdiv-snt}{Section@tie 1.33.8}
+@xrdef{fixmul-pg}{316}
+@xrdef{fixadd-title}{fixadd}
+@xrdef{fixadd-snt}{Section@tie 1.33.9}
+@xrdef{fixdiv-pg}{317}
+@xrdef{fixadd-pg}{317}
+@xrdef{fixsub-title}{fixsub}
+@xrdef{fixsub-snt}{Section@tie 1.33.10}
+@xrdef{Fixed point trig-title}{Fixed point trig}
+@xrdef{Fixed point trig-snt}{Section@tie 1.33.11}
+@xrdef{fixtorad_r-title}{fixtorad_r}
+@xrdef{fixtorad_r-snt}{Section@tie 1.33.12}
+@xrdef{fixsub-pg}{318}
+@xrdef{Fixed point trig-pg}{318}
+@xrdef{radtofix_r-title}{radtofix_r}
+@xrdef{radtofix_r-snt}{Section@tie 1.33.13}
+@xrdef{fixsin-title}{fixsin}
+@xrdef{fixsin-snt}{Section@tie 1.33.14}
+@xrdef{fixtorad_r-pg}{319}
+@xrdef{radtofix_r-pg}{319}
+@xrdef{fixsin-pg}{319}
+@xrdef{fixcos-title}{fixcos}
+@xrdef{fixcos-snt}{Section@tie 1.33.15}
+@xrdef{fixtan-title}{fixtan}
+@xrdef{fixtan-snt}{Section@tie 1.33.16}
+@xrdef{fixcos-pg}{320}
+@xrdef{fixtan-pg}{320}
+@xrdef{fixasin-title}{fixasin}
+@xrdef{fixasin-snt}{Section@tie 1.33.17}
+@xrdef{fixacos-title}{fixacos}
+@xrdef{fixacos-snt}{Section@tie 1.33.18}
+@xrdef{fixasin-pg}{321}
+@xrdef{fixatan-title}{fixatan}
+@xrdef{fixatan-snt}{Section@tie 1.33.19}
+@xrdef{fixatan2-title}{fixatan2}
+@xrdef{fixatan2-snt}{Section@tie 1.33.20}
+@xrdef{fixacos-pg}{322}
+@xrdef{fixatan-pg}{322}
+@xrdef{fixatan2-pg}{322}
+@xrdef{fixsqrt-title}{fixsqrt}
+@xrdef{fixsqrt-snt}{Section@tie 1.33.21}
+@xrdef{fixhypot-title}{fixhypot}
+@xrdef{fixhypot-snt}{Section@tie 1.33.22}
+@xrdef{Fix class-title}{Fix class}
+@xrdef{Fix class-snt}{Section@tie 1.33.23}
+@xrdef{fixsqrt-pg}{323}
+@xrdef{fixhypot-pg}{323}
+@xrdef{3D-title}{3D math routines}
+@xrdef{3D-snt}{Section@tie 1.34}
+@xrdef{Fix class-pg}{324}
+@xrdef{3D-pg}{324}
+@xrdef{identity_matrix-title}{identity_matrix}
+@xrdef{identity_matrix-snt}{Section@tie 1.34.1}
+@xrdef{get_translation_matrix-title}{get_translation_matrix}
+@xrdef{get_translation_matrix-snt}{Section@tie 1.34.2}
+@xrdef{get_scaling_matrix-title}{get_scaling_matrix}
+@xrdef{get_scaling_matrix-snt}{Section@tie 1.34.3}
+@xrdef{identity_matrix-pg}{326}
+@xrdef{get_translation_matrix-pg}{326}
+@xrdef{get_scaling_matrix-pg}{326}
+@xrdef{get_x_rotate_matrix-title}{get_x_rotate_matrix}
+@xrdef{get_x_rotate_matrix-snt}{Section@tie 1.34.4}
+@xrdef{get_y_rotate_matrix-title}{get_y_rotate_matrix}
+@xrdef{get_y_rotate_matrix-snt}{Section@tie 1.34.5}
+@xrdef{get_z_rotate_matrix-title}{get_z_rotate_matrix}
+@xrdef{get_z_rotate_matrix-snt}{Section@tie 1.34.6}
+@xrdef{get_x_rotate_matrix-pg}{327}
+@xrdef{get_y_rotate_matrix-pg}{327}
+@xrdef{get_z_rotate_matrix-pg}{327}
+@xrdef{get_rotation_matrix-title}{get_rotation_matrix}
+@xrdef{get_rotation_matrix-snt}{Section@tie 1.34.7}
+@xrdef{get_align_matrix-title}{get_align_matrix}
+@xrdef{get_align_matrix-snt}{Section@tie 1.34.8}
+@xrdef{get_rotation_matrix-pg}{328}
+@xrdef{get_align_matrix-pg}{328}
+@xrdef{get_align_matrix_f-title}{get_align_matrix_f}
+@xrdef{get_align_matrix_f-snt}{Section@tie 1.34.9}
+@xrdef{get_vector_rotation_matrix-title}{get_vector_rotation_matrix}
+@xrdef{get_vector_rotation_matrix-snt}{Section@tie 1.34.10}
+@xrdef{get_transformation_matrix-title}{get_transformation_matrix}
+@xrdef{get_transformation_matrix-snt}{Section@tie 1.34.11}
+@xrdef{get_align_matrix_f-pg}{329}
+@xrdef{get_vector_rotation_matrix-pg}{329}
+@xrdef{get_transformation_matrix-pg}{329}
+@xrdef{get_transformation_matrix_f-title}{get_transformation_matrix_f}
+@xrdef{get_transformation_matrix_f-snt}{Section@tie 1.34.12}
+@xrdef{get_camera_matrix-title}{get_camera_matrix}
+@xrdef{get_camera_matrix-snt}{Section@tie 1.34.13}
+@xrdef{get_transformation_matrix_f-pg}{330}
+@xrdef{get_camera_matrix-pg}{330}
+@xrdef{get_camera_matrix_f-title}{get_camera_matrix_f}
+@xrdef{get_camera_matrix_f-snt}{Section@tie 1.34.14}
+@xrdef{qtranslate_matrix-title}{qtranslate_matrix}
+@xrdef{qtranslate_matrix-snt}{Section@tie 1.34.15}
+@xrdef{qscale_matrix-title}{qscale_matrix}
+@xrdef{qscale_matrix-snt}{Section@tie 1.34.16}
+@xrdef{get_camera_matrix_f-pg}{331}
+@xrdef{qtranslate_matrix-pg}{331}
+@xrdef{qscale_matrix-pg}{331}
+@xrdef{matrix_mul-title}{matrix_mul}
+@xrdef{matrix_mul-snt}{Section@tie 1.34.17}
+@xrdef{vector_length-title}{vector_length}
+@xrdef{vector_length-snt}{Section@tie 1.34.18}
+@xrdef{normalize_vector-title}{normalize_vector}
+@xrdef{normalize_vector-snt}{Section@tie 1.34.19}
+@xrdef{matrix_mul-pg}{332}
+@xrdef{vector_length-pg}{332}
+@xrdef{normalize_vector-pg}{332}
+@xrdef{dot_product-title}{dot_product}
+@xrdef{dot_product-snt}{Section@tie 1.34.20}
+@xrdef{cross_product-title}{cross_product}
+@xrdef{cross_product-snt}{Section@tie 1.34.21}
+@xrdef{polygon_z_normal-title}{polygon_z_normal}
+@xrdef{polygon_z_normal-snt}{Section@tie 1.34.22}
+@xrdef{dot_product-pg}{333}
+@xrdef{cross_product-pg}{333}
+@xrdef{polygon_z_normal-pg}{333}
+@xrdef{apply_matrix-title}{apply_matrix}
+@xrdef{apply_matrix-snt}{Section@tie 1.34.23}
+@xrdef{set_projection_viewport-title}{set_projection_viewport}
+@xrdef{set_projection_viewport-snt}{Section@tie 1.34.24}
+@xrdef{apply_matrix-pg}{334}
+@xrdef{set_projection_viewport-pg}{334}
+@xrdef{persp_project-title}{persp_project}
+@xrdef{persp_project-snt}{Section@tie 1.34.25}
+@xrdef{Quaternion-title}{Quaternion math routines}
+@xrdef{Quaternion-snt}{Section@tie 1.35}
+@xrdef{persp_project-pg}{335}
+@xrdef{Quaternion-pg}{335}
+@xrdef{identity_quat-title}{identity_quat}
+@xrdef{identity_quat-snt}{Section@tie 1.35.1}
+@xrdef{get_x_rotate_quat-title}{get_x_rotate_quat}
+@xrdef{get_x_rotate_quat-snt}{Section@tie 1.35.2}
+@xrdef{get_rotation_quat-title}{get_rotation_quat}
+@xrdef{get_rotation_quat-snt}{Section@tie 1.35.3}
+@xrdef{get_vector_rotation_quat-title}{get_vector_rotation_quat}
+@xrdef{get_vector_rotation_quat-snt}{Section@tie 1.35.4}
+@xrdef{quat_to_matrix-title}{quat_to_matrix}
+@xrdef{quat_to_matrix-snt}{Section@tie 1.35.5}
+@xrdef{identity_quat-pg}{336}
+@xrdef{get_x_rotate_quat-pg}{336}
+@xrdef{get_rotation_quat-pg}{336}
+@xrdef{get_vector_rotation_quat-pg}{336}
+@xrdef{quat_to_matrix-pg}{336}
+@xrdef{matrix_to_quat-title}{matrix_to_quat}
+@xrdef{matrix_to_quat-snt}{Section@tie 1.35.6}
+@xrdef{quat_mul-title}{quat_mul}
+@xrdef{quat_mul-snt}{Section@tie 1.35.7}
+@xrdef{apply_quat-title}{apply_quat}
+@xrdef{apply_quat-snt}{Section@tie 1.35.8}
+@xrdef{quat_interpolate-title}{quat_interpolate}
+@xrdef{quat_interpolate-snt}{Section@tie 1.35.9}
+@xrdef{matrix_to_quat-pg}{337}
+@xrdef{quat_mul-pg}{337}
+@xrdef{apply_quat-pg}{337}
+@xrdef{quat_interpolate-pg}{337}
+@xrdef{quat_slerp-title}{quat_slerp}
+@xrdef{quat_slerp-snt}{Section@tie 1.35.10}
+@xrdef{GUI-title}{GUI routines}
+@xrdef{GUI-snt}{Section@tie 1.36}
+@xrdef{quat_slerp-pg}{338}
+@xrdef{GUI-pg}{338}
+@xrdef{d_clear_proc-title}{d_clear_proc}
+@xrdef{d_clear_proc-snt}{Section@tie 1.36.1}
+@xrdef{d_box_proc-title}{d_box_proc}
+@xrdef{d_box_proc-snt}{Section@tie 1.36.2}
+@xrdef{d_bitmap_proc-title}{d_bitmap_proc}
+@xrdef{d_bitmap_proc-snt}{Section@tie 1.36.3}
+@xrdef{d_text_proc-title}{d_text_proc}
+@xrdef{d_text_proc-snt}{Section@tie 1.36.4}
+@xrdef{d_clear_proc-pg}{342}
+@xrdef{d_box_proc-pg}{342}
+@xrdef{d_bitmap_proc-pg}{342}
+@xrdef{d_text_proc-pg}{342}
+@xrdef{d_button_proc-title}{d_button_proc}
+@xrdef{d_button_proc-snt}{Section@tie 1.36.5}
+@xrdef{d_check_proc-title}{d_check_proc}
+@xrdef{d_check_proc-snt}{Section@tie 1.36.6}
+@xrdef{d_radio_proc-title}{d_radio_proc}
+@xrdef{d_radio_proc-snt}{Section@tie 1.36.7}
+@xrdef{d_icon_proc-title}{d_icon_proc}
+@xrdef{d_icon_proc-snt}{Section@tie 1.36.8}
+@xrdef{d_button_proc-pg}{343}
+@xrdef{d_check_proc-pg}{343}
+@xrdef{d_radio_proc-pg}{343}
+@xrdef{d_keyboard_proc-title}{d_keyboard_proc}
+@xrdef{d_keyboard_proc-snt}{Section@tie 1.36.9}
+@xrdef{d_edit_proc-title}{d_edit_proc}
+@xrdef{d_edit_proc-snt}{Section@tie 1.36.10}
+@xrdef{d_list_proc-title}{d_list_proc}
+@xrdef{d_list_proc-snt}{Section@tie 1.36.11}
+@xrdef{d_icon_proc-pg}{344}
+@xrdef{d_keyboard_proc-pg}{344}
+@xrdef{d_edit_proc-pg}{344}
+@xrdef{d_text_list_proc-title}{d_text_list_proc}
+@xrdef{d_text_list_proc-snt}{Section@tie 1.36.12}
+@xrdef{d_textbox_proc-title}{d_textbox_proc}
+@xrdef{d_textbox_proc-snt}{Section@tie 1.36.13}
+@xrdef{d_list_proc-pg}{345}
+@xrdef{d_text_list_proc-pg}{345}
+@xrdef{d_textbox_proc-pg}{345}
+@xrdef{d_slider_proc-title}{d_slider_proc}
+@xrdef{d_slider_proc-snt}{Section@tie 1.36.14}
+@xrdef{d_menu_proc-title}{d_menu_proc}
+@xrdef{d_menu_proc-snt}{Section@tie 1.36.15}
+@xrdef{d_yield_proc-title}{d_yield_proc}
+@xrdef{d_yield_proc-snt}{Section@tie 1.36.16}
+@xrdef{d_slider_proc-pg}{346}
+@xrdef{d_menu_proc-pg}{346}
+@xrdef{GUI variables-title}{GUI variables}
+@xrdef{GUI variables-snt}{Section@tie 1.36.17}
+@xrdef{gui_mouse_focus-title}{gui_mouse_focus}
+@xrdef{gui_mouse_focus-snt}{Section@tie 1.36.18}
+@xrdef{gui_fg_color-title}{gui_fg_color}
+@xrdef{gui_fg_color-snt}{Section@tie 1.36.19}
+@xrdef{gui_mg_color-title}{gui_mg_color}
+@xrdef{gui_mg_color-snt}{Section@tie 1.36.20}
+@xrdef{gui_font_baseline-title}{gui_font_baseline}
+@xrdef{gui_font_baseline-snt}{Section@tie 1.36.21}
+@xrdef{d_yield_proc-pg}{347}
+@xrdef{GUI variables-pg}{347}
+@xrdef{gui_mouse_focus-pg}{347}
+@xrdef{gui_fg_color-pg}{347}
+@xrdef{gui_mg_color-pg}{347}
+@xrdef{gui_mouse_x-title}{gui_mouse_x}
+@xrdef{gui_mouse_x-snt}{Section@tie 1.36.22}
+@xrdef{GUI font-title}{GUI font}
+@xrdef{GUI font-snt}{Section@tie 1.36.23}
+@xrdef{gui_textout_ex-title}{gui_textout_ex}
+@xrdef{gui_textout_ex-snt}{Section@tie 1.36.24}
+@xrdef{gui_strlen-title}{gui_strlen}
+@xrdef{gui_strlen-snt}{Section@tie 1.36.25}
+@xrdef{gui_set_screen-title}{gui_set_screen}
+@xrdef{gui_set_screen-snt}{Section@tie 1.36.26}
+@xrdef{gui_font_baseline-pg}{348}
+@xrdef{gui_mouse_x-pg}{348}
+@xrdef{GUI font-pg}{348}
+@xrdef{gui_textout_ex-pg}{348}
+@xrdef{gui_strlen-pg}{348}
+@xrdef{gui_get_screen-title}{gui_get_screen}
+@xrdef{gui_get_screen-snt}{Section@tie 1.36.27}
+@xrdef{position_dialog-title}{position_dialog}
+@xrdef{position_dialog-snt}{Section@tie 1.36.28}
+@xrdef{centre_dialog-title}{centre_dialog}
+@xrdef{centre_dialog-snt}{Section@tie 1.36.29}
+@xrdef{gui_set_screen-pg}{349}
+@xrdef{gui_get_screen-pg}{349}
+@xrdef{position_dialog-pg}{349}
+@xrdef{set_dialog_color-title}{set_dialog_color}
+@xrdef{set_dialog_color-snt}{Section@tie 1.36.30}
+@xrdef{find_dialog_focus-title}{find_dialog_focus}
+@xrdef{find_dialog_focus-snt}{Section@tie 1.36.31}
+@xrdef{offer_focus-title}{offer_focus}
+@xrdef{offer_focus-snt}{Section@tie 1.36.32}
+@xrdef{centre_dialog-pg}{350}
+@xrdef{set_dialog_color-pg}{350}
+@xrdef{find_dialog_focus-pg}{350}
+@xrdef{offer_focus-pg}{350}
+@xrdef{object_message-title}{object_message}
+@xrdef{object_message-snt}{Section@tie 1.36.33}
+@xrdef{dialog_message-title}{dialog_message}
+@xrdef{dialog_message-snt}{Section@tie 1.36.34}
+@xrdef{broadcast_dialog_message-title}{broadcast_dialog_message}
+@xrdef{broadcast_dialog_message-snt}{Section@tie 1.36.35}
+@xrdef{do_dialog-title}{do_dialog}
+@xrdef{do_dialog-snt}{Section@tie 1.36.36}
+@xrdef{object_message-pg}{351}
+@xrdef{dialog_message-pg}{351}
+@xrdef{broadcast_dialog_message-pg}{351}
+@xrdef{popup_dialog-title}{popup_dialog}
+@xrdef{popup_dialog-snt}{Section@tie 1.36.37}
+@xrdef{init_dialog-title}{init_dialog}
+@xrdef{init_dialog-snt}{Section@tie 1.36.38}
+@xrdef{do_dialog-pg}{352}
+@xrdef{popup_dialog-pg}{352}
+@xrdef{init_dialog-pg}{352}
+@xrdef{update_dialog-title}{update_dialog}
+@xrdef{update_dialog-snt}{Section@tie 1.36.39}
+@xrdef{shutdown_dialog-title}{shutdown_dialog}
+@xrdef{shutdown_dialog-snt}{Section@tie 1.36.40}
+@xrdef{active_dialog-title}{active_dialog}
+@xrdef{active_dialog-snt}{Section@tie 1.36.41}
+@xrdef{update_dialog-pg}{353}
+@xrdef{shutdown_dialog-pg}{353}
+@xrdef{active_dialog-pg}{353}
+@xrdef{GUI menus-title}{GUI menus}
+@xrdef{GUI menus-snt}{Section@tie 1.36.42}
+@xrdef{do_menu-title}{do_menu}
+@xrdef{do_menu-snt}{Section@tie 1.36.43}
+@xrdef{GUI menus-pg}{354}
+@xrdef{do_menu-pg}{354}
+@xrdef{init_menu-title}{init_menu}
+@xrdef{init_menu-snt}{Section@tie 1.36.44}
+@xrdef{update_menu-title}{update_menu}
+@xrdef{update_menu-snt}{Section@tie 1.36.45}
+@xrdef{shutdown_menu-title}{shutdown_menu}
+@xrdef{shutdown_menu-snt}{Section@tie 1.36.46}
+@xrdef{init_menu-pg}{355}
+@xrdef{update_menu-pg}{355}
+@xrdef{shutdown_menu-pg}{355}
+@xrdef{active_menu-title}{active_menu}
+@xrdef{active_menu-snt}{Section@tie 1.36.47}
+@xrdef{gui_menu_draw_menu-title}{gui_menu_draw_menu}
+@xrdef{gui_menu_draw_menu-snt}{Section@tie 1.36.48}
+@xrdef{alert-title}{alert}
+@xrdef{alert-snt}{Section@tie 1.36.49}
+@xrdef{active_menu-pg}{356}
+@xrdef{gui_menu_draw_menu-pg}{356}
+@xrdef{alert-pg}{356}
+@xrdef{alert3-title}{alert3}
+@xrdef{alert3-snt}{Section@tie 1.36.50}
+@xrdef{file_select_ex-title}{file_select_ex}
+@xrdef{file_select_ex-snt}{Section@tie 1.36.51}
+@xrdef{alert3-pg}{357}
+@xrdef{file_select_ex-pg}{357}
+@xrdef{gfx_mode_select-title}{gfx_mode_select}
+@xrdef{gfx_mode_select-snt}{Section@tie 1.36.52}
+@xrdef{gfx_mode_select_ex-title}{gfx_mode_select_ex}
+@xrdef{gfx_mode_select_ex-snt}{Section@tie 1.36.53}
+@xrdef{gfx_mode_select_filter-title}{gfx_mode_select_filter}
+@xrdef{gfx_mode_select_filter-snt}{Section@tie 1.36.54}
+@xrdef{gfx_mode_select-pg}{358}
+@xrdef{gfx_mode_select_ex-pg}{358}
+@xrdef{gui_shadow_box_proc-title}{gui_shadow_box_proc}
+@xrdef{gui_shadow_box_proc-snt}{Section@tie 1.36.55}
+@xrdef{Platform-title}{Platform specifics}
+@xrdef{Platform-snt}{Chapter@tie 2}
+@xrdef{DOS-title}{DOS specifics}
+@xrdef{DOS-snt}{Section@tie 2.1}
+@xrdef{gfx_mode_select_filter-pg}{359}
+@xrdef{gui_shadow_box_proc-pg}{359}
+@xrdef{Platform-pg}{359}
+@xrdef{JOY_TYPE_*/DOS-title}{JOY_TYPE_*/DOS}
+@xrdef{JOY_TYPE_*/DOS-snt}{Section@tie 2.1.1}
+@xrdef{DOS-pg}{360}
+@xrdef{JOY_TYPE_*/DOS-pg}{360}
+@xrdef{GFX_*/DOS-title}{GFX_*/DOS}
+@xrdef{GFX_*/DOS-snt}{Section@tie 2.1.2}
+@xrdef{GFX_*/DOS-pg}{363}
+@xrdef{DIGI_*/DOS-title}{DIGI_*/DOS}
+@xrdef{DIGI_*/DOS-snt}{Section@tie 2.1.3}
+@xrdef{MIDI_*/DOS-title}{MIDI_*/DOS}
+@xrdef{MIDI_*/DOS-snt}{Section@tie 2.1.4}
+@xrdef{DOS integration routines-title}{DOS integration routines}
+@xrdef{DOS integration routines-snt}{Section@tie 2.1.5}
+@xrdef{DIGI_*/DOS-pg}{366}
+@xrdef{MIDI_*/DOS-pg}{366}
+@xrdef{i_love_bill-title}{i_love_bill}
+@xrdef{i_love_bill-snt}{Section@tie 2.1.6}
+@xrdef{Windows-title}{Windows specifics}
+@xrdef{Windows-snt}{Section@tie 2.2}
+@xrdef{DOS integration routines-pg}{367}
+@xrdef{i_love_bill-pg}{367}
+@xrdef{Windows-pg}{367}
+@xrdef{JOY_TYPE_*/Windows-title}{JOY_TYPE_*/Windows}
+@xrdef{JOY_TYPE_*/Windows-snt}{Section@tie 2.2.1}
+@xrdef{GFX_*/Windows-title}{GFX_*/Windows}
+@xrdef{GFX_*/Windows-snt}{Section@tie 2.2.2}
+@xrdef{JOY_TYPE_*/Windows-pg}{368}
+@xrdef{GFX_*/Windows-pg}{369}
+@xrdef{DIGI_*/Windows-title}{DIGI_*/Windows}
+@xrdef{DIGI_*/Windows-snt}{Section@tie 2.2.3}
+@xrdef{DIGI_*/Windows-pg}{370}
+@xrdef{MIDI_*/Windows-title}{MIDI_*/Windows}
+@xrdef{MIDI_*/Windows-snt}{Section@tie 2.2.4}
+@xrdef{Windows integration routines-title}{Windows integration routines}
+@xrdef{Windows integration routines-snt}{Section@tie 2.2.5}
+@xrdef{win_get_window-title}{win_get_window}
+@xrdef{win_get_window-snt}{Section@tie 2.2.6}
+@xrdef{win_set_window-title}{win_set_window}
+@xrdef{win_set_window-snt}{Section@tie 2.2.7}
+@xrdef{MIDI_*/Windows-pg}{371}
+@xrdef{Windows integration routines-pg}{371}
+@xrdef{win_get_window-pg}{371}
+@xrdef{win_set_window-pg}{371}
+@xrdef{win_set_wnd_create_proc-title}{win_set_wnd_create_proc}
+@xrdef{win_set_wnd_create_proc-snt}{Section@tie 2.2.8}
+@xrdef{win_get_dc-title}{win_get_dc}
+@xrdef{win_get_dc-snt}{Section@tie 2.2.9}
+@xrdef{win_release_dc-title}{win_release_dc}
+@xrdef{win_release_dc-snt}{Section@tie 2.2.10}
+@xrdef{GDI routines-title}{GDI routines}
+@xrdef{GDI routines-snt}{Section@tie 2.2.11}
+@xrdef{win_set_wnd_create_proc-pg}{372}
+@xrdef{win_get_dc-pg}{372}
+@xrdef{win_release_dc-pg}{372}
+@xrdef{set_gdi_color_format-title}{set_gdi_color_format}
+@xrdef{set_gdi_color_format-snt}{Section@tie 2.2.12}
+@xrdef{set_palette_to_hdc-title}{set_palette_to_hdc}
+@xrdef{set_palette_to_hdc-snt}{Section@tie 2.2.13}
+@xrdef{convert_palette_to_hpalette-title}{convert_palette_to_hpalette}
+@xrdef{convert_palette_to_hpalette-snt}{Section@tie 2.2.14}
+@xrdef{convert_hpalette_to_palette-title}{convert_hpalette_to_palette}
+@xrdef{convert_hpalette_to_palette-snt}{Section@tie 2.2.15}
+@xrdef{GDI routines-pg}{373}
+@xrdef{set_gdi_color_format-pg}{373}
+@xrdef{set_palette_to_hdc-pg}{373}
+@xrdef{convert_palette_to_hpalette-pg}{373}
+@xrdef{convert_bitmap_to_hbitmap-title}{convert_bitmap_to_hbitmap}
+@xrdef{convert_bitmap_to_hbitmap-snt}{Section@tie 2.2.16}
+@xrdef{convert_hbitmap_to_bitmap-title}{convert_hbitmap_to_bitmap}
+@xrdef{convert_hbitmap_to_bitmap-snt}{Section@tie 2.2.17}
+@xrdef{draw_to_hdc-title}{draw_to_hdc}
+@xrdef{draw_to_hdc-snt}{Section@tie 2.2.18}
+@xrdef{blit_to_hdc-title}{blit_to_hdc}
+@xrdef{blit_to_hdc-snt}{Section@tie 2.2.19}
+@xrdef{convert_hpalette_to_palette-pg}{374}
+@xrdef{convert_bitmap_to_hbitmap-pg}{374}
+@xrdef{convert_hbitmap_to_bitmap-pg}{374}
+@xrdef{draw_to_hdc-pg}{374}
+@xrdef{blit_to_hdc-pg}{374}
+@xrdef{stretch_blit_to_hdc-title}{stretch_blit_to_hdc}
+@xrdef{stretch_blit_to_hdc-snt}{Section@tie 2.2.20}
+@xrdef{blit_from_hdc-title}{blit_from_hdc}
+@xrdef{blit_from_hdc-snt}{Section@tie 2.2.21}
+@xrdef{stretch_blit_from_hdc-title}{stretch_blit_from_hdc}
+@xrdef{stretch_blit_from_hdc-snt}{Section@tie 2.2.22}
+@xrdef{stretch_blit_to_hdc-pg}{375}
+@xrdef{blit_from_hdc-pg}{375}
+@xrdef{stretch_blit_from_hdc-pg}{375}
+@xrdef{Unix-title}{Unix specifics}
+@xrdef{Unix-snt}{Section@tie 2.3}
+@xrdef{Unix-pg}{376}
+@xrdef{JOY_TYPE_*/Linux-title}{JOY_TYPE_*/Linux}
+@xrdef{JOY_TYPE_*/Linux-snt}{Section@tie 2.3.1}
+@xrdef{GFX_*/Linux-title}{GFX_*/Linux}
+@xrdef{GFX_*/Linux-snt}{Section@tie 2.3.2}
+@xrdef{JOY_TYPE_*/Linux-pg}{377}
+@xrdef{GFX_*/X-title}{GFX_*/X}
+@xrdef{GFX_*/X-snt}{Section@tie 2.3.3}
+@xrdef{GFX_*/Linux-pg}{378}
+@xrdef{DIGI_*/Unix-title}{DIGI_*/Unix}
+@xrdef{DIGI_*/Unix-snt}{Section@tie 2.3.4}
+@xrdef{GFX_*/X-pg}{379}
+@xrdef{MIDI_*/Unix-title}{MIDI_*/Unix}
+@xrdef{MIDI_*/Unix-snt}{Section@tie 2.3.5}
+@xrdef{Unix integration routines-title}{Unix integration routines}
+@xrdef{Unix integration routines-snt}{Section@tie 2.3.6}
+@xrdef{xwin_set_window_name-title}{xwin_set_window_name}
+@xrdef{xwin_set_window_name-snt}{Section@tie 2.3.7}
+@xrdef{DIGI_*/Unix-pg}{380}
+@xrdef{MIDI_*/Unix-pg}{380}
+@xrdef{Unix integration routines-pg}{380}
+@xrdef{xwin_set_window_name-pg}{380}
+@xrdef{allegro_icon-title}{allegro_icon}
+@xrdef{allegro_icon-snt}{Section@tie 2.3.8}
+@xrdef{BeOS-title}{BeOS specifics}
+@xrdef{BeOS-snt}{Section@tie 2.4}
+@xrdef{GFX_*/BeOS-title}{GFX_*/BeOS}
+@xrdef{GFX_*/BeOS-snt}{Section@tie 2.4.1}
+@xrdef{allegro_icon-pg}{381}
+@xrdef{BeOS-pg}{381}
+@xrdef{GFX_*/BeOS-pg}{381}
+@xrdef{DIGI_*/BeOS-title}{DIGI_*/BeOS}
+@xrdef{DIGI_*/BeOS-snt}{Section@tie 2.4.2}
+@xrdef{MIDI_*/BeOS-title}{MIDI_*/BeOS}
+@xrdef{MIDI_*/BeOS-snt}{Section@tie 2.4.3}
+@xrdef{QNX-title}{QNX specifics}
+@xrdef{QNX-snt}{Section@tie 2.5}
+@xrdef{GFX_*/QNX-title}{GFX_*/QNX}
+@xrdef{GFX_*/QNX-snt}{Section@tie 2.5.1}
+@xrdef{DIGI_*/BeOS-pg}{382}
+@xrdef{MIDI_*/BeOS-pg}{382}
+@xrdef{QNX-pg}{382}
+@xrdef{DIGI_*/QNX-title}{DIGI_*/QNX}
+@xrdef{DIGI_*/QNX-snt}{Section@tie 2.5.2}
+@xrdef{GFX_*/QNX-pg}{383}
+@xrdef{DIGI_*/QNX-pg}{383}
+@xrdef{MIDI_*/QNX-title}{MIDI_*/QNX}
+@xrdef{MIDI_*/QNX-snt}{Section@tie 2.5.3}
+@xrdef{QNX integration routines-title}{QNX integration routines}
+@xrdef{QNX integration routines-snt}{Section@tie 2.5.4}
+@xrdef{qnx_get_window-title}{qnx_get_window}
+@xrdef{qnx_get_window-snt}{Section@tie 2.5.5}
+@xrdef{MacOS-title}{MacOS X specifics}
+@xrdef{MacOS-snt}{Section@tie 2.6}
+@xrdef{MIDI_*/QNX-pg}{384}
+@xrdef{QNX integration routines-pg}{384}
+@xrdef{qnx_get_window-pg}{384}
+@xrdef{MacOS-pg}{384}
+@xrdef{GFX_*/MacOSX-title}{GFX_*/MacOSX}
+@xrdef{GFX_*/MacOSX-snt}{Section@tie 2.6.1}
+@xrdef{GFX_*/MacOSX-pg}{385}
+@xrdef{DIGI_*/MacOSX-title}{DIGI_*/MacOSX}
+@xrdef{DIGI_*/MacOSX-snt}{Section@tie 2.6.2}
+@xrdef{MIDI_*/MacOSX-title}{MIDI_*/MacOSX}
+@xrdef{MIDI_*/MacOSX-snt}{Section@tie 2.6.3}
+@xrdef{Differences-title}{Differences between platforms}
+@xrdef{Differences-snt}{Section@tie 2.7}
+@xrdef{DIGI_*/MacOSX-pg}{386}
+@xrdef{MIDI_*/MacOSX-pg}{386}
+@xrdef{Differences-pg}{386}
+@xrdef{Miscellaneous-title}{Miscellaneous}
+@xrdef{Miscellaneous-snt}{Chapter@tie 3}
+@xrdef{Reducing-title}{Reducing your executable size}
+@xrdef{Reducing-snt}{Section@tie 3.1}
+@xrdef{Miscellaneous-pg}{390}
+@xrdef{Reducing-pg}{390}
+@xrdef{Debugging-title}{Debugging}
+@xrdef{Debugging-snt}{Section@tie 3.2}
+@xrdef{ASSERT-title}{ASSERT}
+@xrdef{ASSERT-snt}{Section@tie 3.2.1}
+@xrdef{TRACE-title}{TRACE}
+@xrdef{TRACE-snt}{Section@tie 3.2.2}
+@xrdef{Debugging-pg}{393}
+@xrdef{ASSERT-pg}{393}
+@xrdef{TRACE-pg}{393}
+@xrdef{register_assert_handler-title}{register_assert_handler}
+@xrdef{register_assert_handler-snt}{Section@tie 3.2.3}
+@xrdef{register_trace_handler-title}{register_trace_handler}
+@xrdef{register_trace_handler-snt}{Section@tie 3.2.4}
+@xrdef{register_assert_handler-pg}{394}
+@xrdef{register_trace_handler-pg}{394}
+@xrdef{al_assert-title}{al_assert}
+@xrdef{al_assert-snt}{Section@tie 3.2.5}
+@xrdef{al_trace-title}{al_trace}
+@xrdef{al_trace-snt}{Section@tie 3.2.6}
+@xrdef{al_assert-pg}{395}
+@xrdef{al_trace-pg}{395}
+@xrdef{Makefile-title}{Makefile targets}
+@xrdef{Makefile-snt}{Section@tie 3.3}
+@xrdef{Makefile-pg}{396}
+@xrdef{Available-title}{Available Allegro examples}
+@xrdef{Available-snt}{Section@tie 3.4}
+@xrdef{exhello-title}{exhello}
+@xrdef{exhello-snt}{Section@tie 3.4.1}
+@xrdef{Available-pg}{399}
+@xrdef{exhello-pg}{399}
+@xrdef{exmem-title}{exmem}
+@xrdef{exmem-snt}{Section@tie 3.4.2}
+@xrdef{exmem-pg}{400}
+@xrdef{expal-title}{expal}
+@xrdef{expal-snt}{Section@tie 3.4.3}
+@xrdef{expat-title}{expat}
+@xrdef{expat-snt}{Section@tie 3.4.4}
+@xrdef{expal-pg}{401}
+@xrdef{expat-pg}{401}
+@xrdef{exflame-title}{exflame}
+@xrdef{exflame-snt}{Section@tie 3.4.5}
+@xrdef{exflame-pg}{402}
+@xrdef{exdbuf-title}{exdbuf}
+@xrdef{exdbuf-snt}{Section@tie 3.4.6}
+@xrdef{exdbuf-pg}{403}
+@xrdef{exflip-title}{exflip}
+@xrdef{exflip-snt}{Section@tie 3.4.7}
+@xrdef{exfixed-title}{exfixed}
+@xrdef{exfixed-snt}{Section@tie 3.4.8}
+@xrdef{exflip-pg}{404}
+@xrdef{exfont-title}{exfont}
+@xrdef{exfont-snt}{Section@tie 3.4.9}
+@xrdef{exfixed-pg}{405}
+@xrdef{exfont-pg}{405}
+@xrdef{exmouse-title}{exmouse}
+@xrdef{exmouse-snt}{Section@tie 3.4.10}
+@xrdef{exmouse-pg}{406}
+@xrdef{extimer-title}{extimer}
+@xrdef{extimer-snt}{Section@tie 3.4.11}
+@xrdef{extimer-pg}{407}
+@xrdef{exkeys-title}{exkeys}
+@xrdef{exkeys-snt}{Section@tie 3.4.12}
+@xrdef{exkeys-pg}{408}
+@xrdef{exjoy-title}{exjoy}
+@xrdef{exjoy-snt}{Section@tie 3.4.13}
+@xrdef{exjoy-pg}{409}
+@xrdef{exsample-title}{exsample}
+@xrdef{exsample-snt}{Section@tie 3.4.14}
+@xrdef{exsample-pg}{410}
+@xrdef{exmidi-title}{exmidi}
+@xrdef{exmidi-snt}{Section@tie 3.4.15}
+@xrdef{exmidi-pg}{411}
+@xrdef{exgui-title}{exgui}
+@xrdef{exgui-snt}{Section@tie 3.4.16}
+@xrdef{exgui-pg}{412}
+@xrdef{excustom-title}{excustom}
+@xrdef{excustom-snt}{Section@tie 3.4.17}
+@xrdef{excustom-pg}{413}
+@xrdef{exunicod-title}{exunicod}
+@xrdef{exunicod-snt}{Section@tie 3.4.18}
+@xrdef{exunicod-pg}{415}
+@xrdef{exbitmap-title}{exbitmap}
+@xrdef{exbitmap-snt}{Section@tie 3.4.19}
+@xrdef{exscale-title}{exscale}
+@xrdef{exscale-snt}{Section@tie 3.4.20}
+@xrdef{exbitmap-pg}{416}
+@xrdef{exscale-pg}{416}
+@xrdef{exconfig-title}{exconfig}
+@xrdef{exconfig-snt}{Section@tie 3.4.21}
+@xrdef{exconfig-pg}{417}
+@xrdef{exdata-title}{exdata}
+@xrdef{exdata-snt}{Section@tie 3.4.22}
+@xrdef{exsprite-title}{exsprite}
+@xrdef{exsprite-snt}{Section@tie 3.4.23}
+@xrdef{exdata-pg}{418}
+@xrdef{exsprite-pg}{419}
+@xrdef{exexedat-title}{exexedat}
+@xrdef{exexedat-snt}{Section@tie 3.4.24}
+@xrdef{exexedat-pg}{420}
+@xrdef{extrans-title}{extrans}
+@xrdef{extrans-snt}{Section@tie 3.4.25}
+@xrdef{extrans-pg}{421}
+@xrdef{extruec-title}{extruec}
+@xrdef{extruec-snt}{Section@tie 3.4.26}
+@xrdef{excolmap-title}{excolmap}
+@xrdef{excolmap-snt}{Section@tie 3.4.27}
+@xrdef{extruec-pg}{423}
+@xrdef{excolmap-pg}{423}
+@xrdef{exrgbhsv-title}{exrgbhsv}
+@xrdef{exrgbhsv-snt}{Section@tie 3.4.28}
+@xrdef{exrgbhsv-pg}{424}
+@xrdef{exshade-title}{exshade}
+@xrdef{exshade-snt}{Section@tie 3.4.29}
+@xrdef{exshade-pg}{426}
+@xrdef{exblend-title}{exblend}
+@xrdef{exblend-snt}{Section@tie 3.4.30}
+@xrdef{exblend-pg}{427}
+@xrdef{exxfade-title}{exxfade}
+@xrdef{exxfade-snt}{Section@tie 3.4.31}
+@xrdef{exxfade-pg}{428}
+@xrdef{exalpha-title}{exalpha}
+@xrdef{exalpha-snt}{Section@tie 3.4.32}
+@xrdef{exalpha-pg}{429}
+@xrdef{exlights-title}{exlights}
+@xrdef{exlights-snt}{Section@tie 3.4.33}
+@xrdef{exlights-pg}{430}
+@xrdef{ex3d-title}{ex3d}
+@xrdef{ex3d-snt}{Section@tie 3.4.34}
+@xrdef{ex3d-pg}{432}
+@xrdef{excamera-title}{excamera}
+@xrdef{excamera-snt}{Section@tie 3.4.35}
+@xrdef{excamera-pg}{434}
+@xrdef{exquat-title}{exquat}
+@xrdef{exquat-snt}{Section@tie 3.4.36}
+@xrdef{exquat-pg}{435}
+@xrdef{exstars-title}{exstars}
+@xrdef{exstars-snt}{Section@tie 3.4.37}
+@xrdef{exstars-pg}{436}
+@xrdef{exscn3d-title}{exscn3d}
+@xrdef{exscn3d-snt}{Section@tie 3.4.38}
+@xrdef{exscn3d-pg}{438}
+@xrdef{exzbuf-title}{exzbuf}
+@xrdef{exzbuf-snt}{Section@tie 3.4.39}
+@xrdef{exzbuf-pg}{439}
+@xrdef{exscroll-title}{exscroll}
+@xrdef{exscroll-snt}{Section@tie 3.4.40}
+@xrdef{exscroll-pg}{440}
+@xrdef{ex3buf-title}{ex3buf}
+@xrdef{ex3buf-snt}{Section@tie 3.4.41}
+@xrdef{ex3buf-pg}{441}
+@xrdef{ex12bit-title}{ex12bit}
+@xrdef{ex12bit-snt}{Section@tie 3.4.42}
+@xrdef{ex12bit-pg}{442}
+@xrdef{exaccel-title}{exaccel}
+@xrdef{exaccel-snt}{Section@tie 3.4.43}
+@xrdef{exaccel-pg}{444}
+@xrdef{exspline-title}{exspline}
+@xrdef{exspline-snt}{Section@tie 3.4.44}
+@xrdef{exspline-pg}{445}
+@xrdef{exsyscur-title}{exsyscur}
+@xrdef{exsyscur-snt}{Section@tie 3.4.45}
+@xrdef{exupdate-title}{exupdate}
+@xrdef{exupdate-snt}{Section@tie 3.4.46}
+@xrdef{exsyscur-pg}{447}
+@xrdef{exupdate-pg}{447}
+@xrdef{exswitch-title}{exswitch}
+@xrdef{exswitch-snt}{Section@tie 3.4.47}
+@xrdef{exswitch-pg}{449}
+@xrdef{exstream-title}{exstream}
+@xrdef{exstream-snt}{Section@tie 3.4.48}
+@xrdef{exstream-pg}{450}
+@xrdef{expackf-title}{expackf}
+@xrdef{expackf-snt}{Section@tie 3.4.49}
+@xrdef{expackf-pg}{451}
+@xrdef{Tools-title}{Tools}
+@xrdef{Tools-snt}{Chapter@tie 4}
+@xrdef{Additional-title}{Additional programs included with Allegro}
+@xrdef{Additional-snt}{Section@tie 4.1}
+@xrdef{Community-title}{Community}
+@xrdef{Community-snt}{Chapter@tie 5}
+@xrdef{Tools-pg}{452}
+@xrdef{Additional-pg}{452}
+@xrdef{Community-pg}{452}
+@xrdef{Conclusion-title}{Conclusion}
+@xrdef{Conclusion-snt}{Chapter@tie 6}
+@xrdef{Conclusion-pg}{453}

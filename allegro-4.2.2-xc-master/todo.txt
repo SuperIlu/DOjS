@@ -1,0 +1,156 @@
+---------------------------------------------------------------------------
+This is the public TODO list for the Allegro Game/Multimedia Library.
+---------------------------------------------------------------------------
+
+Updates or comments can be sent to the Allegro developer's mailing list
+<alleg-developers@lists.sourceforge.net>, preferrably with the text [TODO]
+in the subject.
+
+
+4.2.1 todos:
+---------------------------------------------------------------------------
+
+- Investigate video bitmap problems reported in http://www.allegro.cc/forums/view_thread.php?_id=453220
+- Investigate mouse problem reported in http://www.allegro.cc/forums/view_thread.php?_id=459972
+- Mouse problems in Windows reported in http://www.allegro.cc/forums/view_thread.php?_id=497651
+- Make the grabber (try to) use system cursors
+- Purge main docs of DOSisms if that hasn't been done already
+- some gcc 4.0 fixes for DJGPP and MinGW need to be applied
+- some remaining problem with keyboards in Windows
+  http://www.allegro.cc/forums/view_thread.php?_id=484193
+  http://www.allegro.cc/forums/view_thread.php?_id=493712
+- configure/OSS detection problems on Solaris
+- guilt's patches
+- settings CFLAGS from configure, http://bugs.gentoo.org/show_bug.cgi?id=90049
+- grabber.txt was moved, so the grabber can't find it anymore
+- improved demo
+- if we keep the old demo, make it show correct characters with
+  accents or upgrade font (reported by Marcio Fialho)
+- MacOS X problems with 8-bit mode, http://www.allegro.cc/forums/view_thread.php?_id=517057
+- 64-bit portability warnings with MSVC7.1, http://www.allegro.cc/forums/view_thread.php?_id=523945
+- DirectInput joystick bug, http://www.allegro.cc/forums/view_thread.php?_id=507375
+- Allegro loses keyboard focus on opening, http://www.allegro.cc/forums/view_thread.php?_id=551330
+- fbcon driver doesn't restore original resolution
+- fbcon driver requires 2 video mode sets to change the resolution, [AD] 2005-11-08 "fbcon directcolor modes patch"
+- disable or embed .manifest files when using MSVC 8,
+  http://www.allegro.cc/forums/view_thread.php?_id=543226&page=2
+- make the evdev driver the default linux mouse driver
+- fix mouse coordinates in GFX_DIRECTX_WIN, [AD] 2005-12-09
+  "Inconsistent behaviour with mouse coordinates in different windowed modes in Windows."
+- add is_mouse_inside_window() function
+
+General (Platform independent) todos:
+---------------------------------------------------------------------------
+
+- make the library internally thread-safe
+- The dependency generation seems to be quite broken, and far more
+  complicated than necessary. Remove all the misc/dep*scripts, and simply
+  call "gcc -M" on every source file.
+- Investigate making the mixer mutex globally accessible, and add locking e.g.
+  to set_volume
+
+DOS todos:
+---------------------------------------------------------------------------
+
+- Write a unified Sidewinder driver
+- Fix buggy dos/wss.c
+- grabber compiled with bcc32 5.5.1 crashes on exit in release mode,
+  but not debug mode
+
+Win32 todos:
+---------------------------------------------------------------------------
+
+- Add a configuration option to specify the monitor on multi-monitor systems
+- Re-enable docs build with a MinGW cross-compiler
+- Investigate Alt+Tab pop-up window being overdrawn in windowed mode
+- Investigate problem with keyboard in the dxwindow test
+- Modify convert_hbitmap_to_bitmap() behaviour with 8-bit DDBs
+
+Linux todos:
+---------------------------------------------------------------------------
+
+- fix fb 24-bit scrolling (allegro presuming padding?)
+- awaiting svgalib folks to provide an atexit-free vga_init
+  [forget it, svgalib is dead]
+- make at least one sound driver take advantage of multiple hardware voices
+
+X11 todos:
+---------------------------------------------------------------------------
+
+- Investigate problems with the SIGALRM version
+- Investigate fullscreen without XVidMode if the desktop already has the right mode: http://www.allegro.cc/forums/thread/561876
+- Investigate quadruple color lookup in X11 color converter: http://www.allegro.cc/forums/thread/561876
+
+Unix todos:
+---------------------------------------------------------------------------
+
+- tidy up the configure machinery
+- implement load-on-demand for modules
+- fix modules support on IRIX (export-dynamic is ignored)
+- fix problem with alunixac.h #defines leaking into user programs
+
+MacOS X todos
+---------------------------------------------------------------------------
+
+- asm routines (altivec?) to speed things up
+- Mac default installation path?
+
+BeOS todos:
+---------------------------------------------------------------------------
+
+- Launching programs from the Be menu still doesn't work (Tracker works though)
+
+QNX todos:
+---------------------------------------------------------------------------
+
+- Display switching in fullscreen mode
+- Overlay gfx driver
+
+Wishlist:
+---------------------------------------------------------------------------
+
+- polygon() should draw bottom pixels. I.e. polygon() with 4 points should
+  produce the same shape as rectfill()
+  (http://www.allegro.cc/forums/view_thread.php?_id=480867)
+- ellipse/circle should use a better algorithm to give a uniform outline,
+  not the current "crispy" look (in fact, it's just very inaccurate). And
+  there should be a way to have even width ellipses.
+  (http://www.allegro.cc/forums/view_thread.php?_id=483211)
+- Variable line thickness on graphics primitives
+- OSS MIDI pitch bend is wrong
+- size_t where appropriate (get more opinions first)
+- keyboard set_rate
+- More hardware accelerated functions? Trans/lit sprites come to mind.
+- framebuffer hardware accel via XFB or DirectFB (?) library/driver
+- implementation of request_refresh_rate for fbdev, since apparently you can
+  set video modes with a great detail (scanlines, memory, etc).
+- Better get_config_text support, with multiple fallback configuration
+  files (you can have lot's of them under linux), which is not supported at
+  the moment (IIRC two at most).
+- Split setup in two: user program and configuration library. This would
+  allow easier merge process of configuration program into real user
+  programs, as well as modifying the interface and "look'n'feel". The lib
+  should be written in such a way to support future additions without the
+  need of rewritting the user setup ui.
+- hook function to handle window resizing
+- DirectMusic 6 MIDI driver
+- more modularity under Linux
+- Threaded Alsa driver, since the current one doesn't work properly for at
+  least one person.
+- Speed up the X11 driver, so it is comparable to SDL in performance.
+- Add an option to the X11 driver to use the current palette in 8-bit mode.
+- Disable screensaver in X11, as the Windows port does currently.
+- Make (at least truecolor) mask color modifyable.
+
+Makedoc wishlist:
+---------------------------------------------------------------------------
+
+- Add shortdesc support for makeinfo.
+- Make makeinfo spit out a "detailed node listing" after the short one,
+  like many other info manuals (like GNU make).
+- Generate plain LaTeX output for proper pdf/postscript output. This
+  would potentially allow more flexibility with the final look.
+- Lout output?
+- makexml as template for next generation makedoc?
+
+---------------------------------------------------------------------------

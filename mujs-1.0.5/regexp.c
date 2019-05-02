@@ -31,7 +31,7 @@ struct Reprog {
 	Reinst *start, *end;
 	int flags;
 	int nsub;
-	Reclass cclass[16];
+	Reclass cclass[64];
 };
 
 struct cstate {

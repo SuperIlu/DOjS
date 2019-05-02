@@ -26,13 +26,10 @@ function Setup() {
         Quit(1);
     }
 
-    MouseSetColors(EGA.RED, EGA.GREEN);
-    //MouseShowCursor(false);
     MouseShowCursor(true);
     ClearScreen(EGA.DARK_GRAY);
 
     draw = false;
-    Gc(true);
     SetFramerate(50);
 
     mouseX = 0;
@@ -44,14 +41,15 @@ function Loop() {
         Plot(mouseX, mouseY, EGA.WHITE);
     }
 
-    TextXY(10, 10, "rate=" + GetFramerate(), EGA.BLACK, EGA.LIGHT_BLUE);
+    FilledBox(10, 9, 70, 20, EGA.WHITE);
+    TextXY(10, 10, "rate=" + GetFramerate(), EGA.BLACK, EGA.WHITE);
 }
 
 function Input(event) {
-    if (event.flags & MOUSE.Flags.LEFT_DOWN) {
+    if (event.buttons & MOUSE.Buttons.LEFT) {
         draw = true;
 
-    } else if (event.flags & MOUSE.Flags.LEFT_UP) {
+    } else {
         draw = false;
     }
     mouseX = event.x;

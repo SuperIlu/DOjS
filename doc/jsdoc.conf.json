@@ -7,8 +7,6 @@
 			"../jsboot/func.js",
 			"../jsboot/color.js",
 			"../jsboot/file.js",
-			"../jsboot/fmmusic.js",
-			"../jsboot/font.js",
 			"../jsboot/ipx.js",
 			"../jsboot/p5.js",
 			"../jsboot/p5color.js",
@@ -19,6 +17,7 @@
 			"../jsboot/p5shape.js",
 			"../jsboot/p5typo.js",
 			"../jsboot/p5util.js",
+			"../jsboot/p5trans.js",
 			"../jsboot/p5vect.js"
 		],
 		"excludePattern": ""

@@ -7,6 +7,8 @@
  * 
  * It was modified to run with DOjS by Andre Seidelt <superilu@yahoo.com>.
  */
+Include('p5');
+
 lastEvent = null;
 
 s1 = s2 = s3 = s4 = null;
@@ -17,39 +19,31 @@ mass = 2.0;
 /*
 ** This function is called once when the script is started.
 */
-function Setup() {
-	MouseSetColors(EGA.RED, EGA.BLACK);
-	SetFramerate(40);
+function setup() {
+	MouseSetCursorMode(MOUSE.Mode.ARROW);
+	frameRate(40);
 
-	s1 = new Spring2D(0.0, SizeX() / 2, mass, gravity);
-	s2 = new Spring2D(0.0, SizeX() / 2, mass, gravity);
-	s3 = new Spring2D(0.0, SizeX() / 2, mass, gravity);
-	s4 = new Spring2D(0.0, SizeX() / 2, mass, gravity);
+	fill(255, 126);
+	s1 = new Spring2D(0.0, width / 2, mass, gravity);
+	s2 = new Spring2D(0.0, width / 2, mass, gravity);
+	s3 = new Spring2D(0.0, width / 2, mass, gravity);
+	s4 = new Spring2D(0.0, width / 2, mass, gravity);
 }
 
 /*
 ** This function is repeatedly until ESC is pressed or Stop() is called.
 */
-function Loop() {
-	if (lastEvent) {
-		ClearScreen(EGA.BLACK);
+function draw() {
+	background(0);
 
-		s1.update(lastEvent.x, lastEvent.y);
-		s1.display(lastEvent.x, lastEvent.y);
-		s2.update(s1.x, s1.y);
-		s2.display(s1.x, s1.y);
-		s3.update(s2.x, s2.y);
-		s3.display(s2.x, s2.y);
-		s4.update(s3.x, s3.y);
-		s4.display(s3.x, s3.y);
-	}
-}
-
-/*
-** This function is called on any input.
-*/
-function Input(event) {
-	lastEvent = event;
+	s1.update(mouseX, mouseY);
+	s1.display(mouseX, mouseY);
+	s2.update(s1.x, s1.y);
+	s2.display(s1.x, s1.y);
+	s3.update(s2.x, s2.y);
+	s3.display(s2.x, s2.y);
+	s4.update(s3.x, s3.y);
+	s4.display(s3.x, s3.y);
 }
 
 //////
@@ -77,6 +71,8 @@ Spring2D.prototype.update = function (targetX, targetY) {
 	this.y += this.vy;
 }
 Spring2D.prototype.display = function (nx, ny) {
-	FilledCircle(this.x, this.y, this.radius, EGA.WHITE);
-	Line(this.x, this.y, nx, ny, EGA.RED);
+	noStroke();
+	ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
+	stroke(255);
+	line(this.x, this.y, nx, ny);
 }

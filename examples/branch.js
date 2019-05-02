@@ -5,7 +5,7 @@
  * Original by @reona396, http://reona396.information.jp/
  * 
  * The original source can be found here:
- * https://www.openprocessing.org/sketch/177852
+ * https://www.openprocessing.org/sketch/223474
  * 
  * It was modified to run with DOjS by Andre Seidelt <superilu@yahoo.com>.
  */

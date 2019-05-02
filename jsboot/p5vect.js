@@ -126,7 +126,6 @@ exports.PVector.prototype.toString = function p5VectorToString() {
  * @param {Number} [x] the x component of the vector
  * @param {Number} [y] the y component of the vector
  * @param {Number} [z] the z component of the vector
- * @chainable
  * @example
  * function setup() {
  *   let v = createVector(1, 2, 3);
@@ -214,7 +213,6 @@ exports.PVector.prototype.copy = function copy() {
  * @param  {Number} x   the x component of the vector to be added
  * @param  {Number} [y] the y component of the vector to be added
  * @param  {Number} [z] the z component of the vector to be added
- * @chainable
  * @example
  * let v = createVector(1, 2, 3);
  * v.add(4, 5, 6);
@@ -286,7 +284,6 @@ exports.PVector.prototype.add = function add(x, y, z) {
  * @param  {Number} x   the x component of the vector to subtract
  * @param  {Number} [y] the y component of the vector to subtract
  * @param  {Number} [z] the z component of the vector to subtract
- * @chainable
  * @example
  * let v = createVector(4, 5, 6);
  * v.sub(1, 1, 1);
@@ -356,7 +353,6 @@ exports.PVector.prototype.sub = function sub(x, y, z) {
  *
  * @method mult
  * @param  {Number}    n the number to multiply with the vector
- * @chainable
  * @example
  * let v = createVector(1, 2, 3);
  * v.mult(2);
@@ -419,7 +415,6 @@ exports.PVector.prototype.mult = function mult(n) {
  *
  * @method div
  * @param  {number}    n the number to divide the vector by
- * @chainable
  * @example
  * let v = createVector(6, 4, 2);
  * v.div(2); //v's components are set to [3, 2, 1]
@@ -742,7 +737,6 @@ exports.PVector.prototype.normalize = function normalize() {
  *
  * @method limit
  * @param  {Number}    max the maximum magnitude for the vector
- * @chainable
  * @example
  * let v = createVector(10, 20, 2);
  * // v has components [10.0, 20.0, 2.0]
@@ -792,7 +786,6 @@ exports.PVector.prototype.limit = function limit(max) {
  *
  * @method setMag
  * @param  {number}    len the new length for this vector
- * @chainable
  * @example
  * let v = createVector(10, 20, 2);
  * // v has components [10.0, 20.0, 2.0]
@@ -900,7 +893,6 @@ exports.PVector.prototype.heading = function heading() {
  *
  * @method rotate
  * @param  {number}    angle the angle of rotation
- * @chainable
  * @example
  * let v = createVector(10.0, 20.0);
  * // v has components [10.0, 20.0, 0.0]
@@ -1016,8 +1008,6 @@ exports.PVector.prototype.angleBetween = function angleBetween(v) {
  * @param  {Number}    amt the amount of interpolation; some value between 0.0
  *                         (old vector) and 1.0 (new vector). 0.9 is very near
  *                         the new vector. 0.5 is halfway in between.
- * @chainable
- *
  * @example
  * let v = createVector(1, 1, 0);
  *
@@ -1459,3 +1449,6 @@ exports.PVector.mag = function mag(vecT) {
 	var magSq = x * x + y * y + z * z;
 	return Math.sqrt(magSq);
 };
+
+exports.p5 = {};
+exports.p5.Vector = exports.PVector;

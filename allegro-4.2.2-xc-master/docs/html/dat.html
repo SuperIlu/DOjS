@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>
+dat
+</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" title="Default" type="text/css" href="allegro.css"></head><body bgcolor=white text=black link="#0000ee" alink="#ff0000" vlink="#551a8b">
+
+<center><h1><b>
+The DAT archiver 
+</b></h1></center>
+<hr>
+
+<p><br>
+<h1><a name="Commandline options">Commandline options</a></h1>
+
+<p>
+As an alternative to the graphical grabber program, you can use the command 
+line dat utility. This accepts the following options:
+
+<p>
+   '-a &lt;files&gt;'
+
+<p>
+      Adds the named files to the datafile, for example:
+
+<blockquote class="text"><pre>
+         dat myfile.dat -a title.pcx scream.wav
+</pre></blockquote>
+
+<p>
+      If the objects are already present in the datafile, their current 
+      contents will be replaced. Names for the new objects will be generated 
+      from the input filenames, and the object type will be detected from 
+      the file extensions. In some cases this is ambiguous, for example a 
+      PCX file can be read as a bitmap, RLE sprite, compiled sprite, or font 
+      object, so you may need to explicitly specify the object type with the 
+      '-t' flag. For example, to insert alien.pcx as an RLE sprite, use the 
+      command:
+
+<blockquote class="text"><pre>
+         dat myfile.dat -a alien.pcx -t RLE
+</pre></blockquote>
+
+<p>
+   '-bpp colordepth'
+      Specifies which color format bitmap data should be grabbed in (valid 
+      depths are 8, 15, 16, 24, and 32 bits per pixel).
+
+<p>
+   '-c0' - no compression
+
+<p>
+   '-c1' - compress objects individually
+
+<p>
+   '-c2' - global compression on the entire datafile
+
+<p>
+      Sets the compression mode (see below). These can be used on their own 
+      to convert a datafile from one format to another, or in combination 
+      with any other options.
+
+<p>
+   '-d &lt;objects&gt;'
+
+<p>
+      Deletes the named objects from the datafile.
+
+<p>
+   '-dither'
+
+<p>
+      Dithers graphics when reducing color depths.
+
+<p>
+   '-e &lt;objects&gt;'
+
+<p>
+      Extracts the named objects from the datafile. To extract everything, 
+      use the wildcard * as the object name. To set the output filename or 
+      directory, use the '-o filename' option. For example, to extract an 
+      object called TITLE_SCREEN to the file title.pcx, use the command:
+
+<blockquote class="text"><pre>
+         dat myfile.dat -e title_screen -o title.pcx
+</pre></blockquote>
+
+<p>
+      To extract the entire contents of the datafile to the directory 
+      c:\output, use:
+
+<blockquote class="text"><pre>
+         dat myfile.dat -e * -o c:\output\
+</pre></blockquote>
+
+<p>
+   '-f'
+
+<p>
+      Stores the references to original files as relative filenames instead of
+      absolute filenames. This greatly increases the portability of complete
+      source trees containing the source data.
+
+<p>
+   '-g x y w h'
+
+<p>
+      Grabs bitmap data from a specific grid location.
+
+<p>
+   '-h outputfile.h'
+
+<p>
+      Sets the output header file, for exporting object index definitions. 
+      This may be used on its own to produce a header file from an existing 
+      datafile, or in combination with any other commands. You can also use 
+      the '-p prefixstring' option to set a prefix string for the object 
+      definitions.
+
+<p>
+   '-k'
+
+<p>
+      Keep original names while grabbing objects. Without this switch, a 
+      file called image.pcx will be imported as an object called IMAGE_PCX, 
+      to ensure that all the object names are valid symbols for the output 
+      header defines.
+
+<p>
+   '-l'
+
+<p>
+      Lists the contents of the datafile. This can be combined with the '-v' 
+      option to list object properties along with the names, and you can 
+      specify particular objects to produce a partial listing.
+
+<p>
+   '-m dependencyfile'
+
+<p>
+      Writes a set of makefile dependencies into the specified file, which 
+      can be used to automatically update the file whenever any of the 
+      source data changes.
+
+<p>
+   '-n0' - no sort: list the objects in the order they were added
+
+<p>
+   '-n1' - sort the objects of the datafile alphabetically by name
+
+<p>
+      Sets the sort mode (see below). These can be used on their own to 
+      sort the objects of the datafile, or in combination with any other 
+      options.
+
+<p>
+   '-o output'
+
+<p>
+      Sets the output file or directory when extracting data.
+
+<p>
+   '-p prefixstring'
+
+<p>
+      Sets the prefix for the output header file.
+
+<p>
+   '-pal objectname'
+
+<p>
+      Specifies which palette to use.
+
+<p>
+   '-r'
+
+<p>
+      Recursively adds directories as nested datafiles. This makes it possible
+      to maintain the data hierarchy within the datafile.
+
+<p>
+   '-s0' - no strip: save everything
+
+<p>
+   '-s1' - strip grabber specific information from the file
+
+<p>
+   '-s2' - strip all object properties and names from the file
+
+<p>
+   '-s-PROP' do not strip object property PROP from the file
+
+<p>
+      Sets the strip mode (see below). These can be used on their own to 
+      strip properties from the datafile, or in combination with any other 
+      options.
+
+<p>
+   '-t type'
+
+<p>
+      Sets the object type when adding files.
+
+<p>
+   '-transparency'
+
+<p>
+      Preserves transparency when converting between color depths.
+
+<p>
+   '-u'
+
+<p>
+      Updates the contents of the datafile. See below.
+
+<p>
+   '-v'
+
+<p>
+      Selects verbose mode. This can be used in combination with any other 
+      options to produce more detailed output.
+
+<p>
+   '-w'
+
+<p>
+      Always updates the entire contents of the datafile.
+
+<p>
+   '-x &lt;objects&gt;'
+
+<p>
+      Alias for '-e &lt;objects&gt;'.
+
+<p>
+   '-007 password'
+
+<p>
+      Sets the file encryption key.
+
+<p>
+   '&lt;objects&gt; PROP=value'
+
+<p>
+      Sets properties for the specified objects. This works like environment 
+      variables, in that setting a property to an empty string removes it. 
+      Because object names are stored as NAME properties, you can use this 
+      command to rename objects. For example, to rename MY_OBJECT to 
+      WHAT_A_SILLY_NAME, use the command:
+
+<blockquote class="text"><pre>
+         dat myfile.dat my_object NAME=what_a_silly_name
+</pre></blockquote>
+
+<p>
+      You can use the wildcard * to apply the property to everything in the 
+      file, so to remove the ORIG property from the entire datafile, you 
+      could execute:
+
+<blockquote class="text"><pre>
+         dat myfile.dat * ORIG=
+</pre></blockquote>
+
+<p>
+You can create hierarchical nested datafiles by inserting one datafile into 
+another with the '-a' command. Objects in the nested datafile can then be 
+referred to by as "parentname/objectname". For example if the datafile 
+myfile.dat contains a nested datafile called nestedfile, which contains a 
+bitmap called thepicture, you could export the bitmap with the command:
+
+<blockquote class="text"><pre>
+         dat myfile.dat -e nestedfile/thepicture -o output.pcx
+</pre></blockquote>
+
+
+
+
+
+</body>
+</html>

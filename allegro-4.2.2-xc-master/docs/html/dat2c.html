@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>
+dat2c
+</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" title="Default" type="text/css" href="allegro.css"></head><body bgcolor=white text=black link="#0000ee" alink="#ff0000" vlink="#551a8b">
+
+<center><h1><b>
+The dat2c utility
+</b></h1></center>
+<hr>
+
+<p><br>
+<h1><a name="Contents">Contents</a></h1>
+<ul>
+<li><a href="#Introduction">Introduction</a>
+<li><a href="#Commandline Options">Commandline Options</a>
+<li><a href="#Notes">Notes</a>
+</ul>
+
+<p>
+<h1><a name="Introduction">Introduction</a></h1>
+
+
+<p><br>
+The utility dat2c can be used in much the same way as dat2s, above, except
+that it writes C code rather than assembler. This has the advantage that it
+is portable - you can compile it anywhere you can use Allegro.
+
+
+
+<p><br>
+<h1><a name="Commandline Options">Commandline Options</a></h1>
+
+
+<p><br>
+Each option may appear only once. To specify which datafile to convert,
+give the filename without a preceding option.
+
+<p>
+--cfile, -o
+    Arguments: filename
+    
+<p>
+    Gives the name of the C source file to output. Won't add a .c 
+    extension, even if you don't specify one. By default, dat2c will
+    write to stdout.
+    
+<p>
+--hfile, -h
+    Arguments: filename
+    
+<p>
+    Gives the name of the C header file to output. Won't add a .h
+    extension, even if you don't specify one.
+    
+<p>
+--prefix, -p
+    Arguments: prefix (must be a valid macro name)
+    
+<p>
+    If you specify a prefix, then this will be used when constructing a
+    macro name for each object in the datafile. This is the same as the
+    grabber; if you don't specify a prefix, the macro name is simply
+    &lt;obj_name&gt;, but if you do, then the macro name becomes
+    &lt;prefix&gt;_&lt;obj_name&gt; .
+
+<p>
+--crlf, -C
+    Arguments: none
+    
+<p>
+    Forces the file to be output in CRLF (DOS) format. This is the
+    default on DOS/Windows platforms.
+    
+<p>
+--unix, -U
+    Arguments: none
+    
+<p>
+    Sets the output to be in Unix (LF only) text format. This is the
+    default on non-DOS non-Mac platforms.
+    
+<p>
+--mac, -M
+    Arguments: none
+    
+<p>
+    Sets the output to be in Macintosh (CR only) text format. This is
+    the default on Mac platforms.
+
+<p>
+--global, -g
+    Arguments: none
+    
+<p>
+    Specifies that the objects should be globally visible (default is
+    for objects to be local to the compilation unit). If they are
+    globally visible, then you can refer to them in your code.
+
+<p>
+--convert-compiled-sprites, -S
+    Arguments: none
+    
+<p>
+    (See note below for more info on compiled sprites). Tells dat2c to
+    convert any compiled sprite objects it finds into bitmap objects.
+    More a convenience feature for lazy people :-)
+
+<p>
+--datafile-name, -n
+    Arguments: C identifier
+    
+<p>
+    By default, the datafile is exported as:
+        PREFIX_data
+    or  data
+    But with this option, you can change 'data' to be something else.
+
+
+
+<p><br>
+<h1><a name="Notes">Notes</a></h1>
+
+<p>
+ - If your datafile contains truecolor images, be sure to call 
+   fixup_datafile() after you have set the graphics mode. You must
+   also call fixup_datafile() if your platform does not support
+   constructors (currently any non GCC-based platform).
+   
+<p>
+ - Compiled sprites are *not* supported (but see the commandline option
+   --convert-compiled-sprites , above). This is because Allegro silently
+   switches to an RLE_SPRITE implementation on platforms which don't 
+   support compiled sprites, and to get dat2c to implement that behaviour
+   would be more effort than it is worth (especially since you can just
+   call get_compiled_sprite() anyway!).
+
+
+</body>
+</html>

@@ -2,11 +2,9 @@
  * @type Event
  * @property {number} x mouse X coordinate.
  * @property {number} y mouse X coordinate.
- * @property {number} flags event flags, see {@link MOUSE}
- * @property {number} button mouse buttons, see {@link MOUSE}
+ * @property {number} buttons mouse buttons, see {@link MOUSE}
  * @property {number} key key code, see {@link KEY}
- * @property {number} kbstat key state, see {@link KEY}
- * @property {number} dtime event time.
+ * @property {number} ticks event time.
  */
 class Event { }
 
@@ -23,15 +21,6 @@ class Event { }
 class ArcInfo { }
 
 /**
- * @type MouseLimits
- * @property {number} x1 start x coordinate.
- * @property {number} y1 start y coordinate.
- * @property {number} x2 end x coordinate.
- * @property {number} y2 end y coordinate.
- */
-class MouseLimits { }
-
-/**
  * Node addresses are arrays of 6 numbers between 0-255.
  * @type IpcAddress
  */
@@ -44,31 +33,6 @@ class IpxAddress { }
  * @property {IpxAddress} source address of the sending node.
  */
 class IpxPacket { }
-
-/**
- * instrument definition.
- * @type FmInstrument
- * @property {number} Modulator.Attack
- * @property {number} Modulator.Decay
- * @property {number} Modulator.Sustain
- * @property {number} Modulator.Release
- * @property {number} Modulator.Vibrato
- * @property {number} Modulator.Tremolo
- * @property {number} Modulator.EGType
- * @property {number} Modulator.KSL
- * @property {number} Modulator.TotalLevel
- * @property {number} Carrier.Attack
- * @property {number} Carrier.Decay
- * @property {number} Carrier.Sustain
- * @property {number} Carrier.Release
- * @property {number} Carrier.Vibrato
- * @property {number} Carrier.EGType
- * @property {number} Carrier.TotalLevel
- * @property {number} Carrier.Multi
- * @property {number} Feedback
- * @property {number} SynType
- */
-class FmInstrument { }
 
 /**
  * @type StatInfo

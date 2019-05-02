@@ -35,11 +35,7 @@ typedef enum { CF_YES, CF_NO, CF_ERROR } check_file_t;
 /***********************
 ** exported functions **
 ***********************/
-extern const char *ut_getModeString();
-extern const char *ut_getAdapterString();
 extern check_file_t ut_check_file(char *fname);
 extern bool ut_endsWith(const char *str, const char *suffix);
-extern const char *ut_getFrameModeString(GrFrameMode fm);
-extern void ut_dumpVideoModes();
 
 #endif  // __UTIL_H__

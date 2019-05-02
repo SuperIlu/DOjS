@@ -1,0 +1,957 @@
+\initial {#}
+\entry {\code {\t {#define ALLEGRO_DATE}}}{4}
+\entry {\code {\t {#define ALLEGRO_DATE_STR}}}{4}
+\entry {\code {\t {#define ALLEGRO_SUB_VERSION}}}{4}
+\entry {\code {\t {#define ALLEGRO_VERSION}}}{3}
+\entry {\code {\t {#define ALLEGRO_VERSION_STR}}}{4}
+\entry {\code {\t {#define ALLEGRO_WIP_VERSION}}}{4}
+\entry {\code {\t {#define MASK_COLOR_15 (5.5.5 pink)}}}{160}
+\entry {\code {\t {#define MASK_COLOR_16 (5.6.5 pink)}}}{160}
+\entry {\code {\t {#define MASK_COLOR_24 (8.8.8 pink)}}}{160}
+\entry {\code {\t {#define MASK_COLOR_32 (8.8.8 pink)}}}{160}
+\entry {\code {\t {#define MASK_COLOR_8 0}}}{160}
+\entry {\code {\t {#define PAL_SIZE}}}{16}
+\entry {\code {\t {#define POLYTYPE_ATEX}}}{208}
+\entry {\code {\t {#define POLYTYPE_ATEX_LIT}}}{209}
+\entry {\code {\t {#define POLYTYPE_ATEX_MASK}}}{209}
+\entry {\code {\t {#define POLYTYPE_ATEX_MASK_LIT}}}{209}
+\entry {\code {\t {#define POLYTYPE_ATEX_MASK_TRANS}}}{210}
+\entry {\code {\t {#define POLYTYPE_ATEX_TRANS}}}{210}
+\entry {\code {\t {#define POLYTYPE_FLAT}}}{207}
+\entry {\code {\t {#define POLYTYPE_GCOL}}}{207}
+\entry {\code {\t {#define POLYTYPE_GRGB}}}{208}
+\entry {\code {\t {#define POLYTYPE_PTEX}}}{208}
+\entry {\code {\t {#define POLYTYPE_PTEX_LIT}}}{209}
+\entry {\code {\t {#define POLYTYPE_PTEX_MASK}}}{209}
+\entry {\code {\t {#define POLYTYPE_PTEX_MASK_LIT}}}{209}
+\entry {\code {\t {#define POLYTYPE_PTEX_MASK_TRANS}}}{210}
+\entry {\code {\t {#define POLYTYPE_PTEX_TRANS}}}{210}
+\entry {\code {\t {#define SCREEN_H;}}}{123}
+\entry {\code {\t {#define SCREEN_W;}}}{123}
+\entry {\code {\t {#define VIRTUAL_H;}}}{124}
+\entry {\code {\t {#define VIRTUAL_W;}}}{124}
+\initial {A}
+\entry {\code {\t {AUDIOSTREAM *play_audio_stream(int len, int bits, int stereo, int freq, int vol, int pan);}}}{269}
+\initial {B}
+\entry {\code {\t {BITMAP *convert_hbitmap_to_bitmap(HBITMAP bitmap);}}}{374}
+\entry {\code {\t {BITMAP *create_bitmap(int width, int height);}}}{124}
+\entry {\code {\t {BITMAP *create_bitmap_ex(int color_depth, int width, int height);}}}{125}
+\entry {\code {\t {BITMAP *create_sub_bitmap(BITMAP *parent, int x, y, width, height);}}}{126}
+\entry {\code {\t {BITMAP *create_system_bitmap(int width, int height);}}}{127}
+\entry {\code {\t {BITMAP *create_video_bitmap(int width, int height);}}}{126}
+\entry {\code {\t {BITMAP *gui_get_screen(void);}}}{349}
+\entry {\code {\t {BITMAP *load_bitmap(const char *filename, RGB *pal);}}}{136}
+\entry {\code {\t {BITMAP *load_bmp(const char *filename, RGB *pal);}}}{137}
+\entry {\code {\t {BITMAP *load_bmp_pf(PACKFILE *f, RGB *pal);}}}{138}
+\entry {\code {\t {BITMAP *load_lbm(const char *filename, RGB *pal);}}}{138}
+\entry {\code {\t {BITMAP *load_pcx(const char *filename, RGB *pal);}}}{138}
+\entry {\code {\t {BITMAP *load_pcx_pf(PACKFILE *f, RGB *pal);}}}{139}
+\entry {\code {\t {BITMAP *load_tga(const char *filename, RGB *pal);}}}{139}
+\entry {\code {\t {BITMAP *load_tga_pf(PACKFILE *f, RGB *pal);}}}{140}
+\initial {C}
+\entry {\code {\t {char **get_config_argv(const char *section, const char *name, int *argc);}}}{58}
+\entry {\code {\t {char *_ustrdup(const char *src, void* (*malloc_func)(size_t))}}}{39}
+\entry {\code {\t {char *append_filename(char *dest, const char *path, const char *filename, int size);}}}{281}
+\entry {\code {\t {char *canonicalize_filename(char *dest, const char *filename, int size);}}}{279}
+\entry {\code {\t {char *fix_filename_case(char *path);}}}{278}
+\entry {\code {\t {char *fix_filename_slashes(char *path);}}}{278}
+\entry {\code {\t {char *get_extension(const char *filename);}}}{282}
+\entry {\code {\t {char *get_filename(const char *path);}}}{282}
+\entry {\code {\t {char *make_absolute_filename(char *dest, const char *path, const char *filename, int size);}}}{279}
+\entry {\code {\t {char *make_relative_filename(char *dest, const char *path, const char *filename, int size);}}}{280}
+\entry {\code {\t {char *pack_fgets(char *p, int max, PACKFILE *f);}}}{295}
+\entry {\code {\t {char *replace_extension(char *dest, const char *filename, const char *ext, int size);}}}{281}
+\entry {\code {\t {char *replace_filename(char *dest, const char *path, const char *filename, int size);}}}{280}
+\entry {\code {\t {char *uconvert(const char *s, int type, char *buf, int newtype, int size);}}}{30}
+\entry {\code {\t {char *uconvert_ascii(const char *s, char buf[]);}}}{31}
+\entry {\code {\t {char *uconvert_toascii(const char *s, char buf[]);}}}{31}
+\entry {\code {\t {char *ustrcat(char *dest, const char *src);}}}{40}
+\entry {\code {\t {char *ustrchr(const char *s, int c);}}}{44}
+\entry {\code {\t {char *ustrcpy(char *dest, const char *src);}}}{39}
+\entry {\code {\t {char *ustrdup(const char *src)}}}{38}
+\entry {\code {\t {char *ustrlwr(char *s);}}}{44}
+\entry {\code {\t {char *ustrncat(char *dest, const char *src, int n);}}}{42}
+\entry {\code {\t {char *ustrncpy(char *dest, const char *src, int n);}}}{41}
+\entry {\code {\t {char *ustrpbrk(const char *s, const char *set);}}}{46}
+\entry {\code {\t {char *ustrrchr(const char *s, int c);}}}{45}
+\entry {\code {\t {char *ustrstr(const char *s1, const char *s2);}}}{45}
+\entry {\code {\t {char *ustrtok(char *s, const char *set);}}}{46}
+\entry {\code {\t {char *ustrtok_r(char *s, const char *set, char **last);}}}{47}
+\entry {\code {\t {char *ustrupr(char *s);}}}{44}
+\entry {\code {\t {char *ustrzcat(char *dest, int size, const char *src);}}}{40}
+\entry {\code {\t {char *ustrzcpy(char *dest, int size, const char *src);}}}{39}
+\entry {\code {\t {char *ustrzncat(char *dest, int size, const char *src, int n);}}}{42}
+\entry {\code {\t {char *ustrzncpy(char *dest, int size, const char *src, int n);}}}{41}
+\entry {\code {\t {COMPILED_SPRITE *get_compiled_sprite(BITMAP *bitmap, int planar);}}}{188}
+\entry {\code {\t {const char *calibrate_joystick_name(int n);}}}{104}
+\entry {\code {\t {const char *get_config_string(const char *section, const char *name, const char *def);}}}{56}
+\entry {\code {\t {const char *get_config_text(const char *msg);}}}{58}
+\entry {\code {\t {const char *get_datafile_property(const DATAFILE *dat, int type);}}}{305}
+\entry {\code {\t {const char *scancode_to_name(int scancode);}}}{95}
+\entry {\code {\t {const char *ustrerror(int err);}}}{48}
+\initial {D}
+\entry {\code {\t {DATAFILE *find_datafile_object(const DATAFILE *dat, const char *objectname);}}}{303}
+\entry {\code {\t {DATAFILE *load_datafile(const char *filename);}}}{300}
+\entry {\code {\t {DATAFILE *load_datafile_callback(const char *filename, void (*callback)(DATAFILE *d));}}}{301}
+\entry {\code {\t {DATAFILE *load_datafile_object(const char *filename, const char *objectname);}}}{303}
+\entry {\code {\t {DATAFILE *load_datafile_object_indexed(const DATAFILE_INDEX *index, int item)}}}{305}
+\entry {\code {\t {DATAFILE_INDEX *create_datafile_index(const char *filename);}}}{304}
+\entry {\code {\t {DIALOG_PLAYER *init_dialog(DIALOG *dialog, int focus_obj);}}}{352}
+\entry {\code {\t {double fixtof(fixed x);}}}{315}
+\entry {\code {\t {double uatof(const char *s);}}}{47}
+\entry {\code {\t {double ustrtod(const char *s, char **endp);}}}{48}
+\entry {\code {\t {Drivers DIGI_*/BeOS}}}{382}
+\entry {\code {\t {Drivers DIGI_*/DOS}}}{366}
+\entry {\code {\t {Drivers DIGI_*/MacOSX}}}{386}
+\entry {\code {\t {Drivers DIGI_*/QNX}}}{383}
+\entry {\code {\t {Drivers DIGI_*/Unix}}}{380}
+\entry {\code {\t {Drivers DIGI_*/Windows}}}{370}
+\entry {\code {\t {Drivers GFX_*/BeOS}}}{381}
+\entry {\code {\t {Drivers GFX_*/DOS}}}{363}
+\entry {\code {\t {Drivers GFX_*/Linux}}}{378}
+\entry {\code {\t {Drivers GFX_*/MacOSX}}}{385}
+\entry {\code {\t {Drivers GFX_*/QNX}}}{383}
+\entry {\code {\t {Drivers GFX_*/Windows}}}{369}
+\entry {\code {\t {Drivers GFX_*/X}}}{379}
+\entry {\code {\t {Drivers JOY_TYPE_*/DOS}}}{360}
+\entry {\code {\t {Drivers JOY_TYPE_*/Linux}}}{377}
+\entry {\code {\t {Drivers JOY_TYPE_*/Windows}}}{368}
+\entry {\code {\t {Drivers MIDI_*/BeOS}}}{382}
+\entry {\code {\t {Drivers MIDI_*/DOS}}}{366}
+\entry {\code {\t {Drivers MIDI_*/MacOSX}}}{386}
+\entry {\code {\t {Drivers MIDI_*/QNX}}}{384}
+\entry {\code {\t {Drivers MIDI_*/Unix}}}{380}
+\entry {\code {\t {Drivers MIDI_*/Windows}}}{371}
+\initial {E}
+\entry {\code {\t {Example ex12bit}}}{442}
+\entry {\code {\t {Example ex3buf}}}{441}
+\entry {\code {\t {Example ex3d}}}{432}
+\entry {\code {\t {Example exaccel}}}{444}
+\entry {\code {\t {Example exalpha}}}{429}
+\entry {\code {\t {Example exbitmap}}}{416}
+\entry {\code {\t {Example exblend}}}{427}
+\entry {\code {\t {Example excamera}}}{434}
+\entry {\code {\t {Example excolmap}}}{423}
+\entry {\code {\t {Example exconfig}}}{417}
+\entry {\code {\t {Example excustom}}}{413}
+\entry {\code {\t {Example exdata}}}{418}
+\entry {\code {\t {Example exdbuf}}}{403}
+\entry {\code {\t {Example exexedat}}}{420}
+\entry {\code {\t {Example exfixed}}}{405}
+\entry {\code {\t {Example exflame}}}{402}
+\entry {\code {\t {Example exflip}}}{404}
+\entry {\code {\t {Example exfont}}}{405}
+\entry {\code {\t {Example exgui}}}{412}
+\entry {\code {\t {Example exhello}}}{399}
+\entry {\code {\t {Example exjoy}}}{409}
+\entry {\code {\t {Example exkeys}}}{408}
+\entry {\code {\t {Example exlights}}}{430}
+\entry {\code {\t {Example exmem}}}{400}
+\entry {\code {\t {Example exmidi}}}{411}
+\entry {\code {\t {Example exmouse}}}{406}
+\entry {\code {\t {Example expackf}}}{451}
+\entry {\code {\t {Example expal}}}{401}
+\entry {\code {\t {Example expat}}}{401}
+\entry {\code {\t {Example exquat}}}{435}
+\entry {\code {\t {Example exrgbhsv}}}{424}
+\entry {\code {\t {Example exsample}}}{410}
+\entry {\code {\t {Example exscale}}}{416}
+\entry {\code {\t {Example exscn3d}}}{438}
+\entry {\code {\t {Example exscroll}}}{440}
+\entry {\code {\t {Example exshade}}}{426}
+\entry {\code {\t {Example exspline}}}{445}
+\entry {\code {\t {Example exsprite}}}{419}
+\entry {\code {\t {Example exstars}}}{436}
+\entry {\code {\t {Example exstream}}}{450}
+\entry {\code {\t {Example exswitch}}}{449}
+\entry {\code {\t {Example exsyscur}}}{447}
+\entry {\code {\t {Example extimer}}}{407}
+\entry {\code {\t {Example extrans}}}{421}
+\entry {\code {\t {Example extruec}}}{423}
+\entry {\code {\t {Example exunicod}}}{415}
+\entry {\code {\t {Example exupdate}}}{447}
+\entry {\code {\t {Example exxfade}}}{428}
+\entry {\code {\t {Example exzbuf}}}{439}
+\entry {\code {\t {extern BITMAP *fli_bitmap;}}}{241}
+\entry {\code {\t {extern BITMAP *mouse_sprite;}}}{75}
+\entry {\code {\t {extern BITMAP *screen;}}}{123}
+\entry {\code {\t {extern char allegro_error[ALLEGRO_ERROR_SIZE];}}}{3}
+\entry {\code {\t {extern char allegro_id[];}}}{3}
+\entry {\code {\t {extern char cpu_vendor[];}}}{10}
+\entry {\code {\t {extern char empty_string[];}}}{31}
+\entry {\code {\t {extern COLOR_MAP *color_map;}}}{223}
+\entry {\code {\t {extern const fixed fixtorad_r;}}}{319}
+\entry {\code {\t {extern const fixed radtofix_r;}}}{319}
+\entry {\code {\t {extern DIALOG *active_dialog;}}}{353}
+\entry {\code {\t {extern float scene_gap;}}}{220}
+\entry {\code {\t {extern FONT *font;}}}{201}
+\entry {\code {\t {extern int (*gui_button_proc)(int msg, struct DIALOG *d, int c);}}}{359}
+\entry {\code {\t {extern int (*gui_ctext_proc)(int msg, struct DIALOG *d, int c);}}}{359}
+\entry {\code {\t {extern int (*gui_edit_proc)(int msg, struct DIALOG *d, int c);}}}{359}
+\entry {\code {\t {extern int (*gui_list_proc)(int msg, struct DIALOG *d, int c);}}}{359}
+\entry {\code {\t {extern int (*gui_mouse_b)();}}}{348}
+\entry {\code {\t {extern int (*gui_mouse_x)();}}}{348}
+\entry {\code {\t {extern int (*gui_mouse_y)();}}}{348}
+\entry {\code {\t {extern int (*gui_mouse_z)();}}}{348}
+\entry {\code {\t {extern int (*gui_shadow_box_proc)(int msg, struct DIALOG *d, int c);}}}{359}
+\entry {\code {\t {extern int (*gui_text_list_proc)(int msg, struct DIALOG *d, int c);}}}{359}
+\entry {\code {\t {extern int (*keyboard_callback)(int key);}}}{96}
+\entry {\code {\t {extern int (*keyboard_ucallback)(int key, int *scancode);}}}{96}
+\entry {\code {\t {extern int allegro_404_char;}}}{201}
+\entry {\code {\t {extern int cpu_capabilities;}}}{11}
+\entry {\code {\t {extern int cpu_family;}}}{10}
+\entry {\code {\t {extern int cpu_model;}}}{11}
+\entry {\code {\t {extern int fli_bmp_dirty_from;}}}{242}
+\entry {\code {\t {extern int fli_bmp_dirty_to;}}}{242}
+\entry {\code {\t {extern int fli_frame;}}}{243}
+\entry {\code {\t {extern int fli_pal_dirty_from;}}}{242}
+\entry {\code {\t {extern int fli_pal_dirty_to;}}}{242}
+\entry {\code {\t {extern int gfx_capabilities;}}}{115}
+\entry {\code {\t {extern int gui_bg_color;}}}{347}
+\entry {\code {\t {extern int gui_fg_color;}}}{347}
+\entry {\code {\t {extern int gui_font_baseline;}}}{348}
+\entry {\code {\t {extern int gui_mg_color;}}}{347}
+\entry {\code {\t {extern int gui_mouse_focus;}}}{347}
+\entry {\code {\t {extern int i_love_bill;}}}{367}
+\entry {\code {\t {extern int key_led_flag;}}}{100}
+\entry {\code {\t {extern int mouse_x_focus;}}}{75}
+\entry {\code {\t {extern int mouse_y_focus;}}}{75}
+\entry {\code {\t {extern int num_joysticks;}}}{102}
+\entry {\code {\t {extern int os_multitasking;}}}{6}
+\entry {\code {\t {extern int os_revision;}}}{6}
+\entry {\code {\t {extern int os_type;}}}{5}
+\entry {\code {\t {extern int os_version;}}}{6}
+\entry {\code {\t {extern int palette_color[256];}}}{159}
+\entry {\code {\t {extern int three_finger_flag;}}}{99}
+\entry {\code {\t {extern JOYSTICK_INFO joy[n];}}}{102}
+\entry {\code {\t {extern long midi_loop_end;}}}{268}
+\entry {\code {\t {extern long midi_loop_start;}}}{268}
+\entry {\code {\t {extern MATRIX identity_matrix;}}}{326}
+\entry {\code {\t {extern MATRIX_f identity_matrix_f;}}}{326}
+\entry {\code {\t {extern MENU *active_menu;}}}{356}
+\entry {\code {\t {extern PALETTE black_palette;}}}{153}
+\entry {\code {\t {extern PALETTE default_palette;}}}{152}
+\entry {\code {\t {extern PALETTE desktop_palette;}}}{153}
+\entry {\code {\t {extern PALETTE fli_palette;}}}{242}
+\entry {\code {\t {extern QUAT identity_quat;}}}{336}
+\entry {\code {\t {extern RGB_MAP *rgb_map;}}}{233}
+\entry {\code {\t {extern void (*digi_recorder)();}}}{276}
+\entry {\code {\t {extern void (*gui_menu_draw_menu)(int x, int y, int w, int h);}}}{356}
+\entry {\code {\t {extern void (*gui_menu_draw_menu_item)(MENU *m, int x, int y, int w, int h, int bar, int sel);}}}{356}
+\entry {\code {\t {extern void (*keyboard_lowlevel_callback)(int scancode);}}}{97}
+\entry {\code {\t {extern void (*midi_meta_callback)(int type, const unsigned char *data, int length);}}}{268}
+\entry {\code {\t {extern void (*midi_msg_callback)(int msg, int byte1, int byte2);}}}{268}
+\entry {\code {\t {extern void (*midi_recorder)(unsigned char data);}}}{276}
+\entry {\code {\t {extern void (*midi_sysex_callback)(const unsigned char *data, int length);}}}{268}
+\entry {\code {\t {extern void (*mouse_callback)(int flags);}}}{80}
+\entry {\code {\t {extern void *allegro_icon;}}}{381}
+\entry {\code {\t {extern volatile char key[KEY_MAX];}}}{90}
+\entry {\code {\t {extern volatile int fli_timer;}}}{243}
+\entry {\code {\t {extern volatile int freeze_mouse_flag;}}}{78}
+\entry {\code {\t {extern volatile int key_shifts;}}}{91}
+\entry {\code {\t {extern volatile int mouse_b;}}}{74}
+\entry {\code {\t {extern volatile int mouse_pos;}}}{74}
+\entry {\code {\t {extern volatile int mouse_w;}}}{74}
+\entry {\code {\t {extern volatile int mouse_x;}}}{74}
+\entry {\code {\t {extern volatile int mouse_y;}}}{74}
+\entry {\code {\t {extern volatile int mouse_z;}}}{74}
+\entry {\code {\t {extern volatile int retrace_count;}}}{86}
+\entry {\code {\t {extern volatile long midi_pos;}}}{267}
+\entry {\code {\t {extern volatile long midi_time;}}}{268}
+\initial {F}
+\entry {\code {\t {fixed dot_product(fixed x1, y1, z1, x2, y2, z2);}}}{333}
+\entry {\code {\t {fixed fixacos(fixed x);}}}{322}
+\entry {\code {\t {fixed fixadd(fixed x, fixed y);}}}{317}
+\entry {\code {\t {fixed fixasin(fixed x);}}}{321}
+\entry {\code {\t {fixed fixatan(fixed x);}}}{322}
+\entry {\code {\t {fixed fixatan2(fixed y, fixed x);}}}{322}
+\entry {\code {\t {fixed fixcos(fixed x);}}}{320}
+\entry {\code {\t {fixed fixdiv(fixed x, fixed y);}}}{317}
+\entry {\code {\t {fixed fixhypot(fixed x, fixed y);}}}{323}
+\entry {\code {\t {fixed fixmul(fixed x, fixed y);}}}{316}
+\entry {\code {\t {fixed fixsin(fixed x);}}}{319}
+\entry {\code {\t {fixed fixsqrt(fixed x);}}}{323}
+\entry {\code {\t {fixed fixsub(fixed x, fixed y);}}}{318}
+\entry {\code {\t {fixed fixtan(fixed x);}}}{320}
+\entry {\code {\t {fixed ftofix(double x);}}}{315}
+\entry {\code {\t {fixed itofix(int x);}}}{313}
+\entry {\code {\t {fixed polygon_z_normal(const V3D *v1, const V3D *v2, const V3D *v3);}}}{333}
+\entry {\code {\t {fixed vector_length(fixed x, fixed y, fixed z);}}}{332}
+\entry {\code {\t {float dot_product_f(float x1, y1, z1, x2, y2, z2);}}}{333}
+\entry {\code {\t {float get_config_float(const char *section, const char *name, float def);}}}{57}
+\entry {\code {\t {float polygon_z_normal_f(const V3D_f *v1, const V3D_f *v2, const V3D_f *v3);}}}{333}
+\entry {\code {\t {float vector_length_f(float x, float y, float z);}}}{332}
+\entry {\code {\t {FONT *extract_font_range(FONT *f, int begin, int end)}}}{195}
+\entry {\code {\t {FONT *grab_font_from_bitmap(BITMAP *bmp)}}}{200}
+\entry {\code {\t {FONT *load_bios_font(const char *filename, RGB *pal, void *param)}}}{198}
+\entry {\code {\t {FONT *load_bitmap_font(const char *filename, RGB *pal, void *param)}}}{199}
+\entry {\code {\t {FONT *load_dat_font(const char *filename, RGB *pal, void *param)}}}{197}
+\entry {\code {\t {FONT *load_font(const char *filename, RGB *pal, void *param);}}}{190}
+\entry {\code {\t {FONT *load_grx_font(const char *filename, RGB *pal, void *param)}}}{198}
+\entry {\code {\t {FONT *load_grx_or_bios_font(const char *filename, RGB *pal, void *param)}}}{199}
+\entry {\code {\t {FONT *load_txt_font(const char *filename, RGB *pal, void *param)}}}{200}
+\entry {\code {\t {FONT *merge_fonts(FONT *f1, FONT *f2)}}}{196}
+\initial {G}
+\entry {\code {\t {GFX_MODE_LIST *get_gfx_mode_list(int card);}}}{110}
+\initial {H}
+\entry {\code {\t {HBITMAP convert_bitmap_to_hbitmap(BITMAP *bitmap);}}}{374}
+\entry {\code {\t {HDC win_get_dc(BITMAP *bmp);}}}{372}
+\entry {\code {\t {HPALETTE convert_palette_to_hpalette(PALETTE pal);}}}{373}
+\entry {\code {\t {HWND win_get_window(void);}}}{371}
+\initial {I}
+\entry {\code {\t {int *is_compatible_font(FONT *f1, FONT *f2)}}}{193}
+\entry {\code {\t {int _getpixel(BITMAP *bmp, int x, int y);}}}{162}
+\entry {\code {\t {int _getpixel15(BITMAP *bmp, int x, int y);}}}{162}
+\entry {\code {\t {int _getpixel16(BITMAP *bmp, int x, int y);}}}{162}
+\entry {\code {\t {int _getpixel24(BITMAP *bmp, int x, int y);}}}{162}
+\entry {\code {\t {int _getpixel32(BITMAP *bmp, int x, int y);}}}{162}
+\entry {\code {\t {int al_findfirst(const char *pattern, struct al_ffblk *info, int attrib);}}}{285}
+\entry {\code {\t {int al_findnext(struct al_ffblk *info);}}}{286}
+\entry {\code {\t {int alert(const char *s1, *s2, *s3, const char *b1, *b2, int c1, c2);}}}{356}
+\entry {\code {\t {int alert3(const char *s1, *s2, *s3, const char *b1, *b2, *b3, int c1, c2, c3);}}}{357}
+\entry {\code {\t {int allegro_init();}}}{1}
+\entry {\code {\t {int allocate_voice(const SAMPLE *spl);}}}{257}
+\entry {\code {\t {int bestfit_color(const PALETTE pal, int r, int g, int b);}}}{233}
+\entry {\code {\t {int bitmap_color_depth(BITMAP *bmp);}}}{128}
+\entry {\code {\t {int bitmap_mask_color(BITMAP *bmp);}}}{129}
+\entry {\code {\t {int broadcast_dialog_message(int msg, int c);}}}{351}
+\entry {\code {\t {int calibrate_joystick(int n);}}}{104}
+\entry {\code {\t {int clip3d(int type, fixed min_z, fixed max_z, int vc, const V3D *vtx[], V3D *vout[], V3D *vtmp[], int out[]);}}}{214}
+\entry {\code {\t {int clip3d_f(int type, float min_z, float max_z, int vc, const V3D_f *vtx[], V3D_f *vout[], V3D_f *vtmp[], int out[]);}}}{213}
+\entry {\code {\t {int config_is_hooked(const char *section);}}}{55}
+\entry {\code {\t {int create_scene(int nedge, int npoly);}}}{218}
+\entry {\code {\t {int d_bitmap_proc(int msg, DIALOG *d, int c);}}}{342}
+\entry {\code {\t {int d_box_proc(int msg, DIALOG *d, int c);}}}{342}
+\entry {\code {\t {int d_button_proc(int msg, DIALOG *d, int c);}}}{343}
+\entry {\code {\t {int d_check_proc(int msg, DIALOG *d, int c);}}}{343}
+\entry {\code {\t {int d_clear_proc(int msg, DIALOG *d, int c);}}}{342}
+\entry {\code {\t {int d_ctext_proc(int msg, DIALOG *d, int c);}}}{342}
+\entry {\code {\t {int d_edit_proc(int msg, DIALOG *d, int c);}}}{344}
+\entry {\code {\t {int d_icon_proc(int msg, DIALOG *d, int c);}}}{344}
+\entry {\code {\t {int d_keyboard_proc(int msg, DIALOG *d, int c);}}}{344}
+\entry {\code {\t {int d_list_proc(int msg, DIALOG *d, int c);}}}{345}
+\entry {\code {\t {int d_menu_proc(int msg, DIALOG *d, int c);}}}{346}
+\entry {\code {\t {int d_radio_proc(int msg, DIALOG *d, int c);}}}{343}
+\entry {\code {\t {int d_rtext_proc(int msg, DIALOG *d, int c);}}}{342}
+\entry {\code {\t {int d_shadow_box_proc(int msg, DIALOG *d, int c);}}}{342}
+\entry {\code {\t {int d_slider_proc(int msg, DIALOG *d, int c);}}}{346}
+\entry {\code {\t {int d_text_list_proc(int msg, DIALOG *d, int c);}}}{345}
+\entry {\code {\t {int d_text_proc(int msg, DIALOG *d, int c);}}}{342}
+\entry {\code {\t {int d_textbox_proc(int msg, DIALOG *d, int c);}}}{345}
+\entry {\code {\t {int d_yield_proc(int msg, DIALOG *d, int c);}}}{347}
+\entry {\code {\t {int delete_file(const char *filename);}}}{284}
+\entry {\code {\t {int desktop_color_depth();}}}{8}
+\entry {\code {\t {int detect_digi_driver(int driver_id);}}}{244}
+\entry {\code {\t {int detect_midi_driver(int driver_id);}}}{245}
+\entry {\code {\t {int dialog_message(DIALOG *dialog, int msg, int c, int *obj);}}}{351}
+\entry {\code {\t {int do_dialog(DIALOG *dialog, int focus_obj);}}}{352}
+\entry {\code {\t {int do_menu(MENU *menu, int x, int y);}}}{354}
+\entry {\code {\t {int enable_triple_buffer();}}}{118}
+\entry {\code {\t {int exists(const char *filename);}}}{283}
+\entry {\code {\t {int file_exists(const char *filename, int attrib, int *aret);}}}{283}
+\entry {\code {\t {int file_select_ex(const char *message, char *path, const char *ext, int size, int w, int h);}}}{357}
+\entry {\code {\t {int find_allegro_resource(char *dest, const char *resource, const char *ext, const char *datafile, const char *objectname, const char *envvar, const char *subdir, int size);}}}{287}
+\entry {\code {\t {int find_dialog_focus(DIALOG *dialog);}}}{350}
+\entry {\code {\t {int fixceil(fixed x);}}}{314}
+\entry {\code {\t {int fixfloor(fixed x);}}}{314}
+\entry {\code {\t {int fixtoi(fixed x);}}}{313}
+\entry {\code {\t {int font_has_alpha(FONT *f)}}}{192}
+\entry {\code {\t {int for_each_file_ex(const char *name, int in_attrib, int out_attrib, int (*callback)(const char *filename, int attrib, void *param), void *param);}}}{284}
+\entry {\code {\t {int free_config_entries(const char ***names);}}}{62}
+\entry {\code {\t {int generate_optimized_palette(BITMAP *bmp, PALETTE pal, const char rsvd[PAL_SIZE]);}}}{152}
+\entry {\code {\t {int get_clip_state(BITMAP *bitmap)}}}{135}
+\entry {\code {\t {int get_color_conversion();}}}{145}
+\entry {\code {\t {int get_color_depth(void);}}}{109}
+\entry {\code {\t {int get_config_hex(const char *section, const char *name, int def);}}}{57}
+\entry {\code {\t {int get_config_id(const char *section, const char *name, int def);}}}{57}
+\entry {\code {\t {int get_config_int(const char *section, const char *name, int def);}}}{56}
+\entry {\code {\t {int get_desktop_resolution(int *width, int *height);}}}{9}
+\entry {\code {\t {int get_display_switch_mode();}}}{114}
+\entry {\code {\t {int get_font_range_begin(FONT *f, int range)}}}{194}
+\entry {\code {\t {int get_font_range_end(FONT *f, int range)}}}{194}
+\entry {\code {\t {int get_font_ranges(FONT *f)}}}{193}
+\entry {\code {\t {int get_midi_length(MIDI *midi);}}}{266}
+\entry {\code {\t {int get_mixer_bits(void);}}}{250}
+\entry {\code {\t {int get_mixer_buffer_length(void);}}}{251}
+\entry {\code {\t {int get_mixer_channels(void);}}}{250}
+\entry {\code {\t {int get_mixer_frequency(void);}}}{250}
+\entry {\code {\t {int get_mixer_quality(void);}}}{250}
+\entry {\code {\t {int get_mixer_voices(void);}}}{250}
+\entry {\code {\t {int get_refresh_rate(void);}}}{110}
+\entry {\code {\t {int get_sound_input_cap_bits();}}}{273}
+\entry {\code {\t {int get_sound_input_cap_parm(int rate, int bits, int stereo);}}}{274}
+\entry {\code {\t {int get_sound_input_cap_rate(int bits, int stereo);}}}{274}
+\entry {\code {\t {int get_sound_input_cap_stereo();}}}{273}
+\entry {\code {\t {int get_uformat(void);}}}{27}
+\entry {\code {\t {int geta(int c);}}}{158}
+\entry {\code {\t {int geta_depth(int color_depth, int c);}}}{159}
+\entry {\code {\t {int geta32(int c);}}}{158}
+\entry {\code {\t {int getb(int c);}}}{158}
+\entry {\code {\t {int getb_depth(int color_depth, int c);}}}{159}
+\entry {\code {\t {int getb15(int c);}}}{157}
+\entry {\code {\t {int getb16(int c);}}}{157}
+\entry {\code {\t {int getb24(int c);}}}{157}
+\entry {\code {\t {int getb32(int c);}}}{157}
+\entry {\code {\t {int getb8(int c);}}}{157}
+\entry {\code {\t {int getg(int c);}}}{158}
+\entry {\code {\t {int getg_depth(int color_depth, int c);}}}{159}
+\entry {\code {\t {int getg15(int c);}}}{157}
+\entry {\code {\t {int getg16(int c);}}}{157}
+\entry {\code {\t {int getg24(int c);}}}{157}
+\entry {\code {\t {int getg32(int c);}}}{157}
+\entry {\code {\t {int getg8(int c);}}}{157}
+\entry {\code {\t {int getpixel(BITMAP *bmp, int x, int y);}}}{162}
+\entry {\code {\t {int getr(int c);}}}{158}
+\entry {\code {\t {int getr_depth(int color_depth, int c);}}}{159}
+\entry {\code {\t {int getr15(int c);}}}{157}
+\entry {\code {\t {int getr16(int c);}}}{157}
+\entry {\code {\t {int getr24(int c);}}}{157}
+\entry {\code {\t {int getr32(int c);}}}{157}
+\entry {\code {\t {int getr8(int c);}}}{157}
+\entry {\code {\t {int gfx_mode_select(int *card, int *w, int *h);}}}{358}
+\entry {\code {\t {int gfx_mode_select_ex(int *card, int *w, int *h, int *color_depth);}}}{358}
+\entry {\code {\t {int gfx_mode_select_filter(int *card, int *w, int *h, int *color_depth, int (*filter)(int, int, int, int));}}}{359}
+\entry {\code {\t {int gui_strlen(const char *s);}}}{348}
+\entry {\code {\t {int gui_textout_ex(BITMAP *bmp, const char *s, int x, y, color, bg, centre);}}}{348}
+\entry {\code {\t {int initialise_joystick();}}}{106}
+\entry {\code {\t {int install_allegro(int system_id, int *errno_ptr, int (*atexit_ptr)());}}}{1}
+\entry {\code {\t {int install_int(void (*proc)(), int speed);}}}{81}
+\entry {\code {\t {int install_int_ex(void (*proc)(), int speed);}}}{82}
+\entry {\code {\t {int install_joystick(int type);}}}{100}
+\entry {\code {\t {int install_keyboard();}}}{87}
+\entry {\code {\t {int install_mouse();}}}{70}
+\entry {\code {\t {int install_param_int(void (*proc)(void *), void *param, int speed);}}}{85}
+\entry {\code {\t {int install_param_int_ex(void (*proc)(void *), void *param, int speed);}}}{85}
+\entry {\code {\t {int install_sound(int digi, int midi, const char *cfg_path);}}}{247}
+\entry {\code {\t {int install_sound_input(int digi, int midi);}}}{272}
+\entry {\code {\t {int install_timer();}}}{81}
+\entry {\code {\t {int is_color_font(FONT *f)}}}{192}
+\entry {\code {\t {int is_inside_bitmap(BITMAP *bmp, int x, int y, int clip);}}}{136}
+\entry {\code {\t {int is_linear_bitmap(BITMAP *bmp);}}}{130}
+\entry {\code {\t {int is_memory_bitmap(BITMAP *bmp);}}}{130}
+\entry {\code {\t {int is_mono_font(FONT *f)}}}{192}
+\entry {\code {\t {int is_planar_bitmap(BITMAP *bmp);}}}{130}
+\entry {\code {\t {int is_relative_filename(const char *filename);}}}{280}
+\entry {\code {\t {int is_same_bitmap(BITMAP *bmp1, BITMAP *bmp2);}}}{129}
+\entry {\code {\t {int is_screen_bitmap(BITMAP *bmp);}}}{130}
+\entry {\code {\t {int is_sub_bitmap(BITMAP *bmp);}}}{131}
+\entry {\code {\t {int is_system_bitmap(BITMAP *bmp);}}}{131}
+\entry {\code {\t {int is_trans_font(FONT *f)}}}{192}
+\entry {\code {\t {int is_video_bitmap(BITMAP *bmp);}}}{131}
+\entry {\code {\t {int is_windowed_mode(void);}}}{114}
+\entry {\code {\t {int keyboard_needs_poll();}}}{90}
+\entry {\code {\t {int keypressed();}}}{92}
+\entry {\code {\t {int list_config_entries(const char *section, const char ***names);}}}{61}
+\entry {\code {\t {int list_config_sections(const char ***names);}}}{62}
+\entry {\code {\t {int load_ibk(char *filename, int drums);}}}{269}
+\entry {\code {\t {int load_joystick_data(const char *filename);}}}{105}
+\entry {\code {\t {int load_midi_patches();}}}{267}
+\entry {\code {\t {int lzss_read(PACKFILE *file, LZSS_UNPACK_DATA *dat, int s, unsigned char *buf);}}}{299}
+\entry {\code {\t {int lzss_write(PACKFILE *file, LZSS_PACK_DATA *dat, int size, unsigned char *buf, int last);}}}{298}
+\entry {\code {\t {int makeacol(int r, int g, int b, int a);}}}{156}
+\entry {\code {\t {int makeacol_depth(int color_depth, int r, int g, int b, int a);}}}{156}
+\entry {\code {\t {int makeacol32(int r, int g, int b, int a);}}}{155}
+\entry {\code {\t {int makecol(int r, int g, int b);}}}{155}
+\entry {\code {\t {int makecol_depth(int color_depth, int r, int g, int b);}}}{155}
+\entry {\code {\t {int makecol15(int r, int g, int b);}}}{154}
+\entry {\code {\t {int makecol15_dither(int r, int g, int b, int x, int y);}}}{156}
+\entry {\code {\t {int makecol16(int r, int g, int b);}}}{154}
+\entry {\code {\t {int makecol16_dither(int r, int g, int b, int x, int y);}}}{156}
+\entry {\code {\t {int makecol24(int r, int g, int b);}}}{154}
+\entry {\code {\t {int makecol32(int r, int g, int b);}}}{154}
+\entry {\code {\t {int makecol8(int r, int g, int b);}}}{154}
+\entry {\code {\t {int midi_seek(int target);}}}{266}
+\entry {\code {\t {int mouse_needs_poll();}}}{71}
+\entry {\code {\t {int need_uconvert(const char *s, int type, int newtype);}}}{29}
+\entry {\code {\t {int next_fli_frame(int loop);}}}{241}
+\entry {\code {\t {int object_message(DIALOG *dialog, int msg, int c);}}}{351}
+\entry {\code {\t {int offer_focus(DIALOG *dialog, int obj, int *focus_obj, int force);}}}{350}
+\entry {\code {\t {int open_fli(const char *filename);}}}{240}
+\entry {\code {\t {int open_memory_fli(const void *fli_data);}}}{240}
+\entry {\code {\t {int pack_fclose(PACKFILE *f);}}}{291}
+\entry {\code {\t {int pack_feof(PACKFILE *f);}}}{291}
+\entry {\code {\t {int pack_ferror(PACKFILE *f);}}}{292}
+\entry {\code {\t {int pack_fputs(const char *p, PACKFILE *f);}}}{296}
+\entry {\code {\t {int pack_fseek(PACKFILE *f, int offset);}}}{291}
+\entry {\code {\t {int pack_getc(PACKFILE *f);}}}{292}
+\entry {\code {\t {int pack_igetw(PACKFILE *f);}}}{293}
+\entry {\code {\t {int pack_iputw(int c, PACKFILE *f);}}}{293}
+\entry {\code {\t {int pack_mgetw(PACKFILE *f);}}}{294}
+\entry {\code {\t {int pack_mputw(int c, PACKFILE *f);}}}{294}
+\entry {\code {\t {int pack_putc(int c, PACKFILE *f);}}}{293}
+\entry {\code {\t {int pack_ungetc(int c, PACKFILE *f);}}}{292}
+\entry {\code {\t {int play_fli(const char *filename, BITMAP *bmp, int loop, int (*callback)());}}}{239}
+\entry {\code {\t {int play_looped_midi(MIDI *midi, int loop_start, int loop_end);}}}{265}
+\entry {\code {\t {int play_memory_fli(const void *fli_data, BITMAP *bmp, int loop, int (*callback)());}}}{240}
+\entry {\code {\t {int play_midi(MIDI *midi, int loop);}}}{264}
+\entry {\code {\t {int play_sample(const SAMPLE *spl, int vol, int pan, int freq, int loop);}}}{255}
+\entry {\code {\t {int poll_joystick();}}}{101}
+\entry {\code {\t {int poll_keyboard();}}}{89}
+\entry {\code {\t {int poll_mouse();}}}{70}
+\entry {\code {\t {int poll_scroll();}}}{119}
+\entry {\code {\t {int popup_dialog(DIALOG *dialog, int focus_obj);}}}{352}
+\entry {\code {\t {int read_sound_input(void *buffer);}}}{276}
+\entry {\code {\t {int readkey();}}}{93}
+\entry {\code {\t {int request_scroll(int x, int y);}}}{119}
+\entry {\code {\t {int request_video_bitmap(BITMAP *bitmap);}}}{120}
+\entry {\code {\t {int save_bitmap(const char *filename, BITMAP *bmp, const RGB *pal);}}}{140}
+\entry {\code {\t {int save_bmp(const char *filename, BITMAP *bmp, const RGB *pal);}}}{141}
+\entry {\code {\t {int save_bmp_pf(PACKFILE *f, BITMAP *bmp, RGB *pal);}}}{141}
+\entry {\code {\t {int save_joystick_data(const char *filename);}}}{105}
+\entry {\code {\t {int save_pcx(const char *filename, BITMAP *bmp, const RGB *pal);}}}{141}
+\entry {\code {\t {int save_pcx_pf(PACKFILE *f, BITMAP *bmp, RGB *pal);}}}{142}
+\entry {\code {\t {int save_sample(const char *filename, SAMPLE *spl);}}}{253}
+\entry {\code {\t {int save_tga(const char *filename, BITMAP *bmp, const RGB *pal);}}}{142}
+\entry {\code {\t {int save_tga_pf(PACKFILE *f, BITMAP *bmp, RGB *pal);}}}{142}
+\entry {\code {\t {int scancode_to_ascii(int scancode);}}}{94}
+\entry {\code {\t {int scene_polygon3d(int type, BITMAP *texture, int vc, V3D *vtx[]);}}}{219}
+\entry {\code {\t {int scene_polygon3d_f(int type, BITMAP *texture, int vc, V3D_f *vtx[]);}}}{219}
+\entry {\code {\t {int scroll_screen(int x, int y);}}}{118}
+\entry {\code {\t {int set_allegro_resource_path(int priority, const char *path);}}}{287}
+\entry {\code {\t {int set_close_button_callback(void (*proc)(void));}}}{7}
+\entry {\code {\t {int set_display_switch_callback(int dir, void (*cb)());}}}{113}
+\entry {\code {\t {int set_display_switch_mode(int mode);}}}{112}
+\entry {\code {\t {int set_gfx_mode(int card, int w, int h, int v_w, int v_h);}}}{111}
+\entry {\code {\t {int set_sound_input_source(int source);}}}{275}
+\entry {\code {\t {int show_os_cursor(int cursor);}}}{77}
+\entry {\code {\t {int show_video_bitmap(BITMAP *bitmap);}}}{120}
+\entry {\code {\t {int shutdown_dialog(DIALOG_PLAYER *player);}}}{353}
+\entry {\code {\t {int shutdown_menu(MENU_PLAYER *player);}}}{355}
+\entry {\code {\t {int start_sound_input(int rate, int bits, int stereo);}}}{275}
+\entry {\code {\t {int text_height(const FONT *f)}}}{202}
+\entry {\code {\t {int text_length(const FONT *f, const char *str);}}}{202}
+\entry {\code {\t {int transpose_font(FONT *f, int drange)}}}{195}
+\entry {\code {\t {int uconvert_size(const char *s, int type, int newtype);}}}{29}
+\entry {\code {\t {int ucwidth(int c);}}}{33}
+\entry {\code {\t {int ugetat(const char *s, int index);}}}{34}
+\entry {\code {\t {int ugetc(const char *s);}}}{32}
+\entry {\code {\t {int ugetx(char **s);}}}{32}
+\entry {\code {\t {int ugetxc(const char **s);}}}{32}
+\entry {\code {\t {int uinsert(char *s, int index, int c);}}}{35}
+\entry {\code {\t {int uisdigit(int c);}}}{38}
+\entry {\code {\t {int uisok(int c);}}}{33}
+\entry {\code {\t {int uisspace(int c);}}}{37}
+\entry {\code {\t {int uoffset(const char *s, int index);}}}{34}
+\entry {\code {\t {int update_dialog(DIALOG_PLAYER *player);}}}{353}
+\entry {\code {\t {int update_menu(MENU_PLAYER *player);}}}{355}
+\entry {\code {\t {int ureadkey(int *scancode);}}}{93}
+\entry {\code {\t {int uremove(char *s, int index);}}}{35}
+\entry {\code {\t {int usetat(char *s, int index, int c);}}}{35}
+\entry {\code {\t {int usetc(char *s, int c);}}}{32}
+\entry {\code {\t {int usprintf(char *buf, const char *format, ...);}}}{49}
+\entry {\code {\t {int ustrcmp(const char *s1, const char *s2);}}}{41}
+\entry {\code {\t {int ustricmp(const char *s1, const char *s2);}}}{43}
+\entry {\code {\t {int ustrlen(const char *s);}}}{40}
+\entry {\code {\t {int ustrncmp(const char *s1, const char *s2, int n);}}}{42}
+\entry {\code {\t {int ustrnicmp(const char *s1, const char *s2, int n);}}}{43}
+\entry {\code {\t {int ustrsize(const char *s);}}}{36}
+\entry {\code {\t {int ustrsizez(const char *s);}}}{36}
+\entry {\code {\t {int uszprintf(char *buf, int size, const char *format, ...);}}}{49}
+\entry {\code {\t {int utolower(int c);}}}{37}
+\entry {\code {\t {int utoupper(int c);}}}{37}
+\entry {\code {\t {int uvsprintf(char *buf, const char *format, va_list args);}}}{49}
+\entry {\code {\t {int uvszprintf(char *buf, int size, const char *format, va_list args);}}}{50}
+\entry {\code {\t {int uwidth(const char *s);}}}{33}
+\entry {\code {\t {int uwidth_max(int type);}}}{36}
+\entry {\code {\t {int voice_get_frequency(int voice);}}}{261}
+\entry {\code {\t {int voice_get_pan(int voice);}}}{262}
+\entry {\code {\t {int voice_get_position(int voice);}}}{259}
+\entry {\code {\t {int voice_get_volume(int voice);}}}{260}
+\initial {L}
+\entry {\code {\t {long pack_fread(void *p, long n, PACKFILE *f);}}}{295}
+\entry {\code {\t {long pack_fwrite(const void *p, long n, PACKFILE *f);}}}{295}
+\entry {\code {\t {long pack_igetl(PACKFILE *f);}}}{293}
+\entry {\code {\t {long pack_iputl(long c, PACKFILE *f);}}}{294}
+\entry {\code {\t {long pack_mgetl(PACKFILE *f);}}}{294}
+\entry {\code {\t {long pack_mputl(long c, PACKFILE *f);}}}{294}
+\entry {\code {\t {long ustrtol(const char *s, char **endp, int base);}}}{47}
+\entry {\code {\t {LZSS_PACK_DATA *create_lzss_pack_data(void);}}}{298}
+\entry {\code {\t {LZSS_UNPACK_DATA *create_lzss_unpack_data(void);}}}{299}
+\initial {M}
+\entry {\code {\t {Macro AL_ID(a,b,c,d)}}}{4}
+\entry {\code {\t {Macro DAT_ID(a, b, c, d);}}}{307}
+\entry {\code {\t {Macro END_OF_FUNCTION(function_name);}}}{84}
+\entry {\code {\t {Macro END_OF_MAIN()}}}{2}
+\entry {\code {\t {Macro LOCK_FUNCTION(function_name);}}}{84}
+\entry {\code {\t {Macro LOCK_VARIABLE(variable_name);}}}{83}
+\entry {\code {\t {Macro MAKE_VERSION(a, b, c)}}}{5}
+\entry {\code {\t {MENU_PLAYER *init_menu(MENU *menu, int x, int y);}}}{355}
+\entry {\code {\t {MIDI *load_midi(const char *filename);}}}{263}
+\initial {P}
+\entry {\code {\t {PACKFILE *pack_fclose_chunk(PACKFILE *f);}}}{298}
+\entry {\code {\t {PACKFILE *pack_fopen(const char *filename, const char *mode);}}}{289}
+\entry {\code {\t {PACKFILE *pack_fopen_chunk(PACKFILE *f, int pack);}}}{296}
+\entry {\code {\t {PACKFILE *pack_fopen_vtable(const PACKFILE_VTABLE *vtable, void *userdata);}}}{290}
+\entry {\code {\t {PtWidget_t qnx_get_window(void);}}}{384}
+\initial {R}
+\entry {\code {\t {RLE_SPRITE *get_rle_sprite(BITMAP *bitmap);}}}{184}
+\initial {S}
+\entry {\code {\t {SAMPLE *create_sample(int bits, int stereo, int freq, int len);}}}{253}
+\entry {\code {\t {SAMPLE *load_sample(const char *filename);}}}{251}
+\entry {\code {\t {SAMPLE *load_voc(const char *filename);}}}{252}
+\entry {\code {\t {SAMPLE *load_voc_pf(PACKFILE *f);}}}{253}
+\entry {\code {\t {SAMPLE *load_wav(const char *filename);}}}{251}
+\entry {\code {\t {SAMPLE *load_wav_pf(PACKFILE *f);}}}{252}
+\entry {\code {\t {SAMPLE *voice_check(int voice);}}}{259}
+\entry {\code {\t {struct al_ffblk}}}{19}
+\initial {T}
+\entry {\code {\t {time_t file_time(const char *filename);}}}{284}
+\entry {\code {\t {typedef long fixed}}}{13}
+\entry {\code {\t {typedef PALETTE RGB[PAL_SIZE]}}}{17}
+\entry {\code {\t {typedef struct AUDIOSTREAM}}}{24}
+\entry {\code {\t {typedef struct BITMAP}}}{13}
+\entry {\code {\t {typedef struct BITMAP ZBUFFER}}}{23}
+\entry {\code {\t {typedef struct COLOR_MAP}}}{18}
+\entry {\code {\t {typedef struct COMPILED_SPRITE}}}{14}
+\entry {\code {\t {typedef struct DATAFILE}}}{19}
+\entry {\code {\t {typedef struct DIALOG}}}{21}
+\entry {\code {\t {typedef struct DIALOG_PLAYER}}}{22}
+\entry {\code {\t {typedef struct FONT}}}{22}
+\entry {\code {\t {typedef struct GFX_MODE}}}{16}
+\entry {\code {\t {typedef struct GFX_MODE_LIST}}}{16}
+\entry {\code {\t {typedef struct JOYSTICK_AXIS_INFO}}}{16}
+\entry {\code {\t {typedef struct JOYSTICK_BUTTON_INFO}}}{15}
+\entry {\code {\t {typedef struct JOYSTICK_INFO}}}{15}
+\entry {\code {\t {typedef struct JOYSTICK_STICK_INFO}}}{15}
+\entry {\code {\t {typedef struct LZSS_PACK_DATA}}}{25}
+\entry {\code {\t {typedef struct LZSS_UNPACK_DATA}}}{25}
+\entry {\code {\t {typedef struct MATRIX}}}{20}
+\entry {\code {\t {typedef struct MATRIX_f}}}{20}
+\entry {\code {\t {typedef struct MENU}}}{21}
+\entry {\code {\t {typedef struct MENU_PLAYER}}}{22}
+\entry {\code {\t {typedef struct MIDI}}}{24}
+\entry {\code {\t {typedef struct PACKFILE}}}{24}
+\entry {\code {\t {typedef struct PACKFILE_VTABLE}}}{25}
+\entry {\code {\t {typedef struct QUAT}}}{21}
+\entry {\code {\t {typedef struct RGB}}}{17}
+\entry {\code {\t {typedef struct RGB_MAP}}}{19}
+\entry {\code {\t {typedef struct RLE_SPRITE}}}{14}
+\entry {\code {\t {typedef struct SAMPLE}}}{23}
+\entry {\code {\t {typedef struct V3D}}}{17}
+\entry {\code {\t {typedef struct V3D_f}}}{18}
+\initial {U}
+\entry {\code {\t {uint64_t al_ffblk_get_size(struct al_ffblk *info);}}}{286}
+\entry {\code {\t {uint64_t file_size_ex(const char *filename);}}}{284}
+\entry {\code {\t {unsigned long bmp_read_line(BITMAP *bmp, int line);}}}{236}
+\entry {\code {\t {unsigned long bmp_write_line(BITMAP *bmp, int line);}}}{236}
+\initial {V}
+\entry {\code {\t {void *get_audio_stream_buffer(AUDIOSTREAM *stream);}}}{270}
+\entry {\code {\t {void _putpixel(BITMAP *bmp, int x, int y, int color);}}}{161}
+\entry {\code {\t {void _putpixel15(BITMAP *bmp, int x, int y, int color);}}}{161}
+\entry {\code {\t {void _putpixel16(BITMAP *bmp, int x, int y, int color);}}}{161}
+\entry {\code {\t {void _putpixel24(BITMAP *bmp, int x, int y, int color);}}}{161}
+\entry {\code {\t {void _putpixel32(BITMAP *bmp, int x, int y, int color);}}}{161}
+\entry {\code {\t {void _set_color(int index, const RGB *p);}}}{146}
+\entry {\code {\t {void acquire_bitmap(BITMAP *bmp);}}}{131}
+\entry {\code {\t {void acquire_screen();}}}{133}
+\entry {\code {\t {void add_clip_rect(BITMAP *bitmap, int x1, int y1, int x2, int y2);}}}{135}
+\entry {\code {\t {void adjust_sample(const SAMPLE *spl, int vol, int pan, int freq, int loop);}}}{255}
+\entry {\code {\t {void al_assert(const char *file, int line);}}}{395}
+\entry {\code {\t {void al_findclose(struct al_ffblk *info);}}}{286}
+\entry {\code {\t {void al_trace(const char *msg, ...);}}}{395}
+\entry {\code {\t {void allegro_exit();}}}{2}
+\entry {\code {\t {void allegro_message(const char *text_format, ...);}}}{6}
+\entry {\code {\t {void apply_matrix(const MATRIX *m, fixed x, y, z, *xout, *yout, *zout);}}}{334}
+\entry {\code {\t {void apply_matrix_f(const MATRIX_f *m, float x, y, z, *xout, *yout, *zout);}}}{334}
+\entry {\code {\t {void apply_quat(const QUAT *q, float x, y, z, *xout, *yout, *zout);}}}{337}
+\entry {\code {\t {void arc(BITMAP *bmp, int x, y, fixed ang1, ang2, int r, int color);}}}{170}
+\entry {\code {\t {void ASSERT(condition);}}}{393}
+\entry {\code {\t {void blit(BITMAP *source, BITMAP *dest, int source_x, int source_y, int dest_x, int dest_y, int width, int height);}}}{172}
+\entry {\code {\t {void blit_from_hdc(HDC hdc, BITMAP *bitmap, int sx, sy, dx, dy, w, h);}}}{375}
+\entry {\code {\t {void blit_to_hdc(BITMAP *bitmap, HDC dc, int sx, sy, dx, dy, w, h);}}}{374}
+\entry {\code {\t {void bmp_unwrite_line(BITMAP *bmp);}}}{237}
+\entry {\code {\t {void calc_spline(const int points[8], int npts, int *x, int *y);}}}{170}
+\entry {\code {\t {void centre_dialog(DIALOG *dialog);}}}{350}
+\entry {\code {\t {void check_cpu();}}}{9}
+\entry {\code {\t {void circle(BITMAP *bmp, int x, int y, int radius, int color);}}}{167}
+\entry {\code {\t {void circlefill(BITMAP *bmp, int x, int y, int radius, int color);}}}{167}
+\entry {\code {\t {void clear_bitmap(BITMAP *bitmap);}}}{160}
+\entry {\code {\t {void clear_keybuf();}}}{99}
+\entry {\code {\t {void clear_scene(BITMAP *bmp);}}}{218}
+\entry {\code {\t {void clear_to_color(BITMAP *bitmap, int color);}}}{160}
+\entry {\code {\t {void clear_zbuffer(ZBUFFER *zbuf, float z);}}}{216}
+\entry {\code {\t {void close_fli();}}}{241}
+\entry {\code {\t {void convert_hpalette_to_palette(HPALETTE hpal, PALETTE pal);}}}{374}
+\entry {\code {\t {void create_blender_table(COLOR_MAP *table, const PALETTE pal, void (*callback)(int pos));}}}{226}
+\entry {\code {\t {void create_color_table(COLOR_MAP *table, const PALETTE pal, void (*blend)(PALETTE pal, int x, int y, RGB *rgb), void (*callback)(int pos));}}}{225}
+\entry {\code {\t {void create_light_table(COLOR_MAP *table, const PALETTE pal, int r, g, b, void (*callback)(int pos));}}}{224}
+\entry {\code {\t {void create_rgb_table(RGB_MAP *table, const PALETTE pal, void (*callback)(int pos));}}}{234}
+\entry {\code {\t {void create_trans_table(COLOR_MAP *table, const PALETTE pal, int r, g, b, void (*callback)(int pos));}}}{224}
+\entry {\code {\t {void cross_product(fixed x1, y1, z1, x2, y2, z2, *xout, *yout, *zout);}}}{333}
+\entry {\code {\t {void cross_product_f(float x1, y1, z1, x2, y2, z2, *xout, *yout, *zout);}}}{333}
+\entry {\code {\t {void deallocate_voice(int voice);}}}{257}
+\entry {\code {\t {void destroy_bitmap(BITMAP *bitmap);}}}{128}
+\entry {\code {\t {void destroy_compiled_sprite(COMPILED_SPRITE *sprite);}}}{188}
+\entry {\code {\t {void destroy_datafile_index(DATAFILE_INDEX *index)}}}{305}
+\entry {\code {\t {void destroy_font(FONT *f);}}}{191}
+\entry {\code {\t {void destroy_gfx_mode_list(GFX_MODE_LIST *mode_list);}}}{111}
+\entry {\code {\t {void destroy_midi(MIDI *midi);}}}{264}
+\entry {\code {\t {void destroy_rle_sprite(RLE_SPRITE *sprite);}}}{185}
+\entry {\code {\t {void destroy_sample(SAMPLE *spl);}}}{254}
+\entry {\code {\t {void destroy_scene();}}}{218}
+\entry {\code {\t {void destroy_zbuffer(ZBUFFER *zbuf);}}}{216}
+\entry {\code {\t {void disable_hardware_cursor(void);}}}{72}
+\entry {\code {\t {void do_arc(BITMAP *bmp, int x, int y, fixed a1, fixed a2, int r, int d, void (*proc)(BITMAP *bmp, int x, int y, int d));}}}{169}
+\entry {\code {\t {void do_circle(BITMAP *bmp, int x, int y, int radius, int d, void (*proc)(BITMAP *bmp, int x, int y, int d));}}}{166}
+\entry {\code {\t {void do_ellipse(BITMAP *bmp, int x, int y, int rx, ry, int d, void (*proc)(BITMAP *bmp, int x, int y, int d));}}}{168}
+\entry {\code {\t {void do_line(BITMAP *bmp, int x1, y1, x2, y2, int d, void (*proc)(BITMAP *bmp, int x, int y, int d));}}}{163}
+\entry {\code {\t {void do_uconvert(const char *s, int type, char *buf, int newtype, int size);}}}{30}
+\entry {\code {\t {void draw_character_ex(BITMAP *bmp, BITMAP *sprite, int x, int y, color, bg);}}}{180}
+\entry {\code {\t {void draw_compiled_sprite(BITMAP *bmp, const COMPILED_SPRITE *sprite, int x, int y);}}}{189}
+\entry {\code {\t {void draw_gouraud_sprite(BITMAP *bmp, BITMAP *sprite, int x, int y, int c1, int c2, int c3, int c4);}}}{180}
+\entry {\code {\t {void draw_lit_rle_sprite(BITMAP *bmp, const RLE_SPRITE *sprite, int x, y, color);}}}{187}
+\entry {\code {\t {void draw_lit_sprite(BITMAP *bmp, BITMAP *sprite, int x, int y, int color);}}}{179}
+\entry {\code {\t {void draw_rle_sprite(BITMAP *bmp, const RLE_SPRITE *sprite, int x, int y);}}}{185}
+\entry {\code {\t {void draw_sprite(BITMAP *bmp, BITMAP *sprite, int x, int y);}}}{176}
+\entry {\code {\t {void draw_sprite_h_flip(BITMAP *bmp, BITMAP *sprite, int x, int y);}}}{177}
+\entry {\code {\t {void draw_sprite_v_flip(BITMAP *bmp, BITMAP *sprite, int x, int y);}}}{177}
+\entry {\code {\t {void draw_sprite_vh_flip(BITMAP *bmp, BITMAP *sprite, int x, int y);}}}{177}
+\entry {\code {\t {void draw_to_hdc(HDC dc, BITMAP *bitmap, int x, int y);}}}{374}
+\entry {\code {\t {void draw_trans_rle_sprite(BITMAP *bmp, const RLE_SPRITE *sprite, int x, int y);}}}{186}
+\entry {\code {\t {void draw_trans_sprite(BITMAP *bmp, BITMAP *sprite, int x, int y);}}}{178}
+\entry {\code {\t {void drawing_mode(int mode, BITMAP *pattern, int x_anchor, int y_anchor);}}}{221}
+\entry {\code {\t {void ellipse(BITMAP *bmp, int x, int y, int rx, int ry, int color);}}}{168}
+\entry {\code {\t {void ellipsefill(BITMAP *bmp, int x, int y, int rx, int ry, int color);}}}{169}
+\entry {\code {\t {void enable_hardware_cursor(void);}}}{71}
+\entry {\code {\t {void fade_from(const PALETTE source, const PALETTE dest, int speed);}}}{150}
+\entry {\code {\t {void fade_from_range(const PALETTE source, const PALETTE dest, int speed, int from, int to);}}}{149}
+\entry {\code {\t {void fade_in(const PALETTE p, int speed);}}}{150}
+\entry {\code {\t {void fade_in_range(const PALETTE p, int speed, int from, int to);}}}{149}
+\entry {\code {\t {void fade_interpolate(const PALETTE source, const PALETTE dest, PALETTE output, int pos, int from, int to);}}}{149}
+\entry {\code {\t {void fade_out(int speed);}}}{151}
+\entry {\code {\t {void fade_out_range(int speed, int from, int to);}}}{150}
+\entry {\code {\t {void fastline(BITMAP *bmp, int x1, int y1, int x2, int y2, int color);}}}{164}
+\entry {\code {\t {void fixup_datafile(DATAFILE *data);}}}{306}
+\entry {\code {\t {void floodfill(BITMAP *bmp, int x, int y, int color);}}}{171}
+\entry {\code {\t {void flush_config_file();}}}{54}
+\entry {\code {\t {void free_audio_stream_buffer(AUDIOSTREAM *stream);}}}{271}
+\entry {\code {\t {void free_lzss_pack_data(LZSS_PACK_DATA *dat);}}}{298}
+\entry {\code {\t {void free_lzss_unpack_data(LZSS_UNPACK_DATA *dat);}}}{299}
+\entry {\code {\t {void generate_332_palette(PALETTE pal);}}}{152}
+\entry {\code {\t {void get_align_matrix(MATRIX *m, fixed xfront, yfront, zfront, fixed xup, fixed yup, fixed zup);}}}{328}
+\entry {\code {\t {void get_align_matrix_f(MATRIX *m, float xfront, yfront, zfront, float xup, yup, zup);}}}{329}
+\entry {\code {\t {void get_camera_matrix(MATRIX *m, fixed x, y, z, xfront, yfront, zfront, fixed xup, yup, zup, fov, aspect);}}}{330}
+\entry {\code {\t {void get_camera_matrix_f(MATRIX_f *m, float x, y, z, xfront, yfront, zfront, float xup, yup, zup, fov, aspect);}}}{331}
+\entry {\code {\t {void get_clip_rect(BITMAP *bitmap, int *x1, int *y1, int *x2, int *y2);}}}{134}
+\entry {\code {\t {void get_color(int index, RGB *p);}}}{148}
+\entry {\code {\t {void get_executable_name(char *buf, int size);}}}{277}
+\entry {\code {\t {void get_hardware_volume(int *digi_volume, int *midi_volume);}}}{249}
+\entry {\code {\t {void get_mouse_mickeys(int *mickeyx, int *mickeyy);}}}{80}
+\entry {\code {\t {void get_palette(PALETTE p);}}}{148}
+\entry {\code {\t {void get_palette_range(PALETTE p, int from, int to);}}}{148}
+\entry {\code {\t {void get_rotation_matrix(MATRIX *m, fixed x, fixed y, fixed z);}}}{328}
+\entry {\code {\t {void get_rotation_matrix_f(MATRIX_f *m, float x, float y, float z);}}}{328}
+\entry {\code {\t {void get_rotation_quat(QUAT *q, float x, float y, float z);}}}{336}
+\entry {\code {\t {void get_scaling_matrix(MATRIX *m, fixed x, fixed y, fixed z);}}}{326}
+\entry {\code {\t {void get_scaling_matrix_f(MATRIX_f *m, float x, float y, float z);}}}{326}
+\entry {\code {\t {void get_transformation_matrix(MATRIX *m, fixed scale, fixed xrot, yrot, zrot, x, y, z);}}}{329}
+\entry {\code {\t {void get_transformation_matrix_f(MATRIX_f *m, float scale, float xrot, yrot, zrot, x, y, z);}}}{330}
+\entry {\code {\t {void get_translation_matrix(MATRIX *m, fixed x, fixed y, fixed z);}}}{326}
+\entry {\code {\t {void get_translation_matrix_f(MATRIX_f *m, float x, float y, float z);}}}{326}
+\entry {\code {\t {void get_vector_rotation_matrix(MATRIX *m, fixed x, y, z, fixed a);}}}{329}
+\entry {\code {\t {void get_vector_rotation_matrix_f(MATRIX_f *m, float x, y, z, float a);}}}{329}
+\entry {\code {\t {void get_vector_rotation_quat(QUAT *q, float x, y, z, float a);}}}{336}
+\entry {\code {\t {void get_volume(int *digi_volume, int *midi_volume);}}}{249}
+\entry {\code {\t {void get_x_rotate_matrix(MATRIX *m, fixed r);}}}{327}
+\entry {\code {\t {void get_x_rotate_matrix_f(MATRIX_f *m, float r);}}}{327}
+\entry {\code {\t {void get_x_rotate_quat(QUAT *q, float r);}}}{336}
+\entry {\code {\t {void get_y_rotate_matrix(MATRIX *m, fixed r);}}}{327}
+\entry {\code {\t {void get_y_rotate_matrix_f(MATRIX_f *m, float r);}}}{327}
+\entry {\code {\t {void get_y_rotate_quat(QUAT *q, float r);}}}{336}
+\entry {\code {\t {void get_z_rotate_matrix(MATRIX *m, fixed r);}}}{327}
+\entry {\code {\t {void get_z_rotate_matrix_f(MATRIX_f *m, float r);}}}{327}
+\entry {\code {\t {void get_z_rotate_quat(QUAT *q, float r);}}}{336}
+\entry {\code {\t {void gui_set_screen(BITMAP *bmp);}}}{349}
+\entry {\code {\t {void hline(BITMAP *bmp, int x1, int y, int x2, int color);}}}{163}
+\entry {\code {\t {void hook_config_section(const char *section, int (*intgetter)(const char *name, int def), const char *(*stringgetter)(const char *name, const char *def), void (*stringsetter)(const char *name, const char *value));}}}{55}
+\entry {\code {\t {void hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b);}}}{235}
+\entry {\code {\t {void install_keyboard_hooks(int (*keypressed)(), int (*readkey)());}}}{89}
+\entry {\code {\t {void line(BITMAP *bmp, int x1, int y1, int x2, int y2, int color);}}}{164}
+\entry {\code {\t {void lock_bitmap(BITMAP *bitmap);}}}{128}
+\entry {\code {\t {void lock_midi(MIDI *midi);}}}{264}
+\entry {\code {\t {void lock_sample(SAMPLE *spl);}}}{254}
+\entry {\code {\t {void make_trans_font(FONT *f);}}}{191}
+\entry {\code {\t {void masked_blit(BITMAP *source, BITMAP *dest, int source_x, int source_y, int dest_x, int dest_y, int width, int height);}}}{174}
+\entry {\code {\t {void masked_stretch_blit(BITMAP *source, BITMAP *dest, int source_x, source_y, source_w, source_h, int dest_x, dest_y, dest_w, dest_h);}}}{175}
+\entry {\code {\t {void matrix_mul(const MATRIX *m1, const MATRIX *m2, MATRIX *out);}}}{332}
+\entry {\code {\t {void matrix_mul_f(const MATRIX_f *m1, const MATRIX_f *m2, MATRIX_f *out);}}}{332}
+\entry {\code {\t {void matrix_to_quat(const MATRIX_f *m, QUAT *q);}}}{337}
+\entry {\code {\t {void midi_out(unsigned char *data, int length);}}}{267}
+\entry {\code {\t {void midi_pause();}}}{265}
+\entry {\code {\t {void midi_resume();}}}{266}
+\entry {\code {\t {void normalize_vector(fixed *x, fixed *y, fixed *z);}}}{332}
+\entry {\code {\t {void normalize_vector_f(float *x, float *y, float *z);}}}{332}
+\entry {\code {\t {void override_config_data(const char *data, int length);}}}{53}
+\entry {\code {\t {void override_config_file(const char *filename);}}}{52}
+\entry {\code {\t {void packfile_password(const char *password);}}}{288}
+\entry {\code {\t {void persp_project(fixed x, fixed y, fixed z, fixed *xout, fixed *yout);}}}{335}
+\entry {\code {\t {void persp_project_f(float x, float y, float z, float *xout, float *yout);}}}{335}
+\entry {\code {\t {void pivot_scaled_sprite(BITMAP *bmp, BITMAP *sprite, int x, int y, int cx, int cy, fixed angle, fixed scale);}}}{183}
+\entry {\code {\t {void pivot_scaled_sprite_v_flip(BITMAP *bmp, BITMAP *sprite, int x, int y, int cx, int cy, fixed angle, fixed scale);}}}{184}
+\entry {\code {\t {void pivot_sprite(BITMAP *bmp, BITMAP *sprite, int x, int y, int cx, int cy, fixed angle);}}}{183}
+\entry {\code {\t {void pivot_sprite_v_flip(BITMAP *bmp, BITMAP *sprite, int x, int y, int cx, int cy, fixed angle);}}}{183}
+\entry {\code {\t {void polygon(BITMAP *bmp, int vertices, const int *points, int color);}}}{165}
+\entry {\code {\t {void polygon3d(BITMAP *bmp, int type, BITMAP *texture, int vc, V3D *vtx[]);}}}{210}
+\entry {\code {\t {void polygon3d_f(BITMAP *bmp, int type, BITMAP *texture, int vc, V3D_f *vtx[]);}}}{210}
+\entry {\code {\t {void pop_config_state();}}}{54}
+\entry {\code {\t {void position_dialog(DIALOG *dialog, int x, int y);}}}{349}
+\entry {\code {\t {void position_mouse(int x, int y);}}}{78}
+\entry {\code {\t {void position_mouse_w(int w);}}}{78}
+\entry {\code {\t {void position_mouse_z(int z);}}}{78}
+\entry {\code {\t {void push_config_state();}}}{53}
+\entry {\code {\t {void put_backslash(char *filename);}}}{283}
+\entry {\code {\t {void putpixel(BITMAP *bmp, int x, int y, int color);}}}{161}
+\entry {\code {\t {void qscale_matrix(MATRIX *m, fixed scale);}}}{331}
+\entry {\code {\t {void qscale_matrix_f(MATRIX_f *m, float scale);}}}{331}
+\entry {\code {\t {void qtranslate_matrix(MATRIX *m, fixed x, fixed y, fixed z);}}}{331}
+\entry {\code {\t {void qtranslate_matrix_f(MATRIX_f *m, float x, float y, float z);}}}{331}
+\entry {\code {\t {void quad3d(BITMAP *bmp, int type, BITMAP *tex, V3D *v1, *v2, *v3, *v4);}}}{213}
+\entry {\code {\t {void quad3d_f(BITMAP *bmp, int type, BITMAP *tex, V3D_f *v1, *v2, *v3, *v4);}}}{213}
+\entry {\code {\t {void quat_interpolate(const QUAT *from, const QUAT *to, float t, QUAT *out);}}}{337}
+\entry {\code {\t {void quat_mul(const QUAT *p, const QUAT *q, QUAT *out);}}}{337}
+\entry {\code {\t {void quat_slerp(const QUAT *from, const QUAT *to, float t, QUAT *out, int how);}}}{338}
+\entry {\code {\t {void quat_to_matrix(const QUAT *q, MATRIX_f *m);}}}{336}
+\entry {\code {\t {void reallocate_voice(int voice, const SAMPLE *spl);}}}{257}
+\entry {\code {\t {void rect(BITMAP *bmp, int x1, int y1, int x2, int y2, int color);}}}{165}
+\entry {\code {\t {void rectfill(BITMAP *bmp, int x1, int y1, int x2, int y2, int color);}}}{166}
+\entry {\code {\t {void register_assert_handler(int (*handler)(const char *msg));}}}{394}
+\entry {\code {\t {void register_bitmap_file_type(const char *ext, BITMAP *(*load)(const char *filename, RGB *pal), int (*save)(const char *filename, BITMAP *bmp, const RGB *pal));}}}{143}
+\entry {\code {\t {void register_datafile_object(int id, void *(*load)(PACKFILE *f, long size), void (*destroy)(void *data));}}}{306}
+\entry {\code {\t {void register_font_file_type(const char *ext, FONT *(*load)(const char *filename, RGB *pal, void *param));}}}{189}
+\entry {\code {\t {void register_sample_file_type(const char *ext, SAMPLE *(*load)(const char *filename), int (*save)(const char *filename, SAMPLE *spl));}}}{254}
+\entry {\code {\t {void register_trace_handler(int (*handler)(const char *msg));}}}{394}
+\entry {\code {\t {void register_uformat(int type, int (*u_getc)(const char *s), int (*u_getx)(char **s), int (*u_setc)(char *s, int c), int (*u_width)(const char *s), int (*u_cwidth)(int c), int (*u_isok)(int c));}}}{28}
+\entry {\code {\t {void release_bitmap(BITMAP *bmp);}}}{133}
+\entry {\code {\t {void release_screen();}}}{133}
+\entry {\code {\t {void release_voice(int voice);}}}{258}
+\entry {\code {\t {void reload_config_texts(const char *new_language);}}}{54}
+\entry {\code {\t {void remove_display_switch_callback(void (*cb)());}}}{114}
+\entry {\code {\t {void remove_int(void (*proc)());}}}{85}
+\entry {\code {\t {void remove_joystick();}}}{101}
+\entry {\code {\t {void remove_keyboard();}}}{88}
+\entry {\code {\t {void remove_mouse();}}}{70}
+\entry {\code {\t {void remove_param_int(void (*proc)(void *), void *param);}}}{85}
+\entry {\code {\t {void remove_sound();}}}{248}
+\entry {\code {\t {void remove_sound_input();}}}{273}
+\entry {\code {\t {void remove_timer();}}}{81}
+\entry {\code {\t {void render_scene();}}}{220}
+\entry {\code {\t {void request_refresh_rate(int rate);}}}{109}
+\entry {\code {\t {void reserve_voices(int digi_voices, int midi_voices);}}}{245}
+\entry {\code {\t {void reset_fli_variables();}}}{243}
+\entry {\code {\t {void rest(unsigned int time);}}}{86}
+\entry {\code {\t {void rest_callback(long time, void (*callback)())}}}{87}
+\entry {\code {\t {void rgb_to_hsv(int r, int g, int b, float *h, float *s, float *v);}}}{235}
+\entry {\code {\t {void rotate_scaled_sprite(BITMAP *bmp, BITMAP *sprite, int x, int y, fixed angle, fixed scale);}}}{182}
+\entry {\code {\t {void rotate_scaled_sprite_v_flip(BITMAP *bmp, BITMAP *sprite, int x, int y, fixed angle, fixed scale);}}}{182}
+\entry {\code {\t {void rotate_sprite(BITMAP *bmp, BITMAP *sprite, int x, int y, fixed angle);}}}{181}
+\entry {\code {\t {void rotate_sprite_v_flip(BITMAP *bmp, BITMAP *sprite, int x, int y, fixed angle);}}}{182}
+\entry {\code {\t {void scare_mouse();}}}{76}
+\entry {\code {\t {void scare_mouse_area(int x, int y, int w, int h);}}}{76}
+\entry {\code {\t {void select_mouse_cursor(int cursor);}}}{72}
+\entry {\code {\t {void select_palette(const PALETTE p);}}}{151}
+\entry {\code {\t {void set_add_blender(int r, int g, int b, int a);}}}{229}
+\entry {\code {\t {void set_alpha_blender();}}}{228}
+\entry {\code {\t {void set_blender_mode(BLENDER_FUNC b15, b16, b24, int r, g, b, a);}}}{232}
+\entry {\code {\t {void set_blender_mode_ex(BLENDER_FUNC b15, b16, b24, b32, b15x, b16x, b24x, int r, g, b, a);}}}{232}
+\entry {\code {\t {void set_burn_blender(int r, int g, int b, int a);}}}{229}
+\entry {\code {\t {void set_clip_rect(BITMAP *bitmap, int x1, int y1, int x2, int y2);}}}{134}
+\entry {\code {\t {void set_clip_state(BITMAP *bitmap, int state)}}}{135}
+\entry {\code {\t {void set_color(int index, const RGB *p);}}}{146}
+\entry {\code {\t {void set_color_blender(int r, int g, int b, int a);}}}{229}
+\entry {\code {\t {void set_color_conversion(int mode);}}}{143}
+\entry {\code {\t {void set_color_depth(int depth);}}}{108}
+\entry {\code {\t {void set_config_data(const char *data, int length);}}}{52}
+\entry {\code {\t {void set_config_file(const char *filename);}}}{51}
+\entry {\code {\t {void set_config_float(const char *section, const char *name, float val);}}}{60}
+\entry {\code {\t {void set_config_hex(const char *section, const char *name, int val);}}}{60}
+\entry {\code {\t {void set_config_id(const char *section, const char *name, int val);}}}{60}
+\entry {\code {\t {void set_config_int(const char *section, const char *name, int val);}}}{59}
+\entry {\code {\t {void set_config_string(const char *section, const char *name, const char *val);}}}{59}
+\entry {\code {\t {void set_dialog_color(DIALOG *dialog, int fg, int bg);}}}{350}
+\entry {\code {\t {void set_difference_blender(int r, int g, int b, int a);}}}{230}
+\entry {\code {\t {void set_dissolve_blender(int r, int g, int b, int a);}}}{230}
+\entry {\code {\t {void set_dodge_blender(int r, int g, int b, int a);}}}{230}
+\entry {\code {\t {void set_gdi_color_format(void);}}}{373}
+\entry {\code {\t {void set_hardware_volume(int digi_volume, int midi_volume);}}}{248}
+\entry {\code {\t {void set_hue_blender(int r, int g, int b, int a);}}}{230}
+\entry {\code {\t {void set_invert_blender(int r, int g, int b, int a);}}}{231}
+\entry {\code {\t {void set_keyboard_rate(int delay, int repeat);}}}{99}
+\entry {\code {\t {void set_leds(int leds);}}}{98}
+\entry {\code {\t {void set_luminance_blender(int r, int g, int b, int a);}}}{231}
+\entry {\code {\t {void set_mixer_quality(int quality);}}}{249}
+\entry {\code {\t {void set_mouse_cursor_bitmap(int cursor, BITMAP *bmp);}}}{73}
+\entry {\code {\t {void set_mouse_range(int x1, int y1, int x2, int y2);}}}{79}
+\entry {\code {\t {void set_mouse_speed(int xspeed, int yspeed);}}}{79}
+\entry {\code {\t {void set_mouse_sprite(BITMAP *sprite);}}}{79}
+\entry {\code {\t {void set_mouse_sprite_focus(int x, int y);}}}{79}
+\entry {\code {\t {void set_multiply_blender(int r, int g, int b, int a);}}}{231}
+\entry {\code {\t {void set_palette(const PALETTE p);}}}{147}
+\entry {\code {\t {void set_palette_range(const PALETTE p, int from, int to, int vsync);}}}{147}
+\entry {\code {\t {void set_palette_to_hdc(HDC dc, PALETTE pal);}}}{373}
+\entry {\code {\t {void set_projection_viewport(int x, int y, int w, int h);}}}{334}
+\entry {\code {\t {void set_saturation_blender(int r, int g, int b, int a);}}}{231}
+\entry {\code {\t {void set_screen_blender(int r, int g, int b, int a);}}}{232}
+\entry {\code {\t {void set_trans_blender(int r, int g, int b, int a);}}}{227}
+\entry {\code {\t {void set_ucodepage(const unsigned short *table, const unsigned short *extras);}}}{28}
+\entry {\code {\t {void set_uformat(int type);}}}{26}
+\entry {\code {\t {void set_volume(int digi_volume, int midi_volume);}}}{248}
+\entry {\code {\t {void set_volume_per_voice(int scale);}}}{246}
+\entry {\code {\t {void set_window_title(const char *name);}}}{7}
+\entry {\code {\t {void set_write_alpha_blender();}}}{228}
+\entry {\code {\t {void set_zbuffer(ZBUFFER *zbuf);}}}{216}
+\entry {\code {\t {void show_mouse(BITMAP *bmp);}}}{75}
+\entry {\code {\t {void simulate_keypress(int key);}}}{95}
+\entry {\code {\t {void simulate_ukeypress(int key, int scancode);}}}{95}
+\entry {\code {\t {void solid_mode();}}}{222}
+\entry {\code {\t {void spline(BITMAP *bmp, const int points[8], int color);}}}{171}
+\entry {\code {\t {void stop_audio_stream(AUDIOSTREAM *stream);}}}{270}
+\entry {\code {\t {void stop_midi();}}}{265}
+\entry {\code {\t {void stop_sample(const SAMPLE *spl);}}}{256}
+\entry {\code {\t {void stop_sound_input();}}}{275}
+\entry {\code {\t {void stretch_blit(BITMAP *source, BITMAP *dest, int source_x, source_y, source_width, source_height, int dest_x, dest_y, dest_width, dest_height);}}}{174}
+\entry {\code {\t {void stretch_blit_from_hdc(HDC hcd, BITMAP *bitmap, int sx, sy, sw, sh, int dx, dy, dw, dh);}}}{375}
+\entry {\code {\t {void stretch_blit_to_hdc(BITMAP *bitmap, HDC dc, int sx, sy, sw, sh, int dx, dy, dw, dh);}}}{375}
+\entry {\code {\t {void stretch_sprite(BITMAP *bmp, BITMAP *sprite, int x, int y, int w, int h);}}}{177}
+\entry {\code {\t {void textout_centre_ex(BITMAP *bmp, const FONT *f, const char *s, int x, y, int color, int bg);}}}{203}
+\entry {\code {\t {void textout_ex(BITMAP *bmp, const FONT *f, const char *s, int x, int y, int color, int bg);}}}{203}
+\entry {\code {\t {void textout_justify_ex(BITMAP *bmp, const FONT *f, const char *s, int x1, int x2, int y, int diff, int color, int bg);}}}{204}
+\entry {\code {\t {void textout_right_ex(BITMAP *bmp, const FONT *f, const char *s, int x, int y, int color, int bg);}}}{204}
+\entry {\code {\t {void textprintf_centre_ex(BITMAP *bmp, const FONT *f, int x, int y, int color, int bg, const char *fmt, ...);}}}{205}
+\entry {\code {\t {void textprintf_ex(BITMAP *bmp, const FONT *f, int x, int y, int color, int bg, const char *fmt, ...);}}}{205}
+\entry {\code {\t {void textprintf_justify_ex(BITMAP *bmp, const FONT *f, int x1, x2, y, diff, color, bg, const char *fmt, ...);}}}{206}
+\entry {\code {\t {void textprintf_right_ex(BITMAP *bmp, const FONT *f, int x, y, color, bg, const char *fmt, ...);}}}{206}
+\entry {\code {\t {void TRACE(char *msg, ...);}}}{393}
+\entry {\code {\t {void triangle(BITMAP *bmp, int x1, y1, x2, y2, x3, y3, int color);}}}{165}
+\entry {\code {\t {void triangle3d(BITMAP *bmp, int type, BITMAP *tex, V3D *v1, *v2, *v3);}}}{212}
+\entry {\code {\t {void triangle3d_f(BITMAP *bmp, int type, BITMAP *tex, V3D_f *v1, *v2, *v3);}}}{212}
+\entry {\code {\t {void unload_datafile(DATAFILE *dat);}}}{302}
+\entry {\code {\t {void unload_datafile_object(DATAFILE *dat);}}}{303}
+\entry {\code {\t {void unscare_mouse();}}}{77}
+\entry {\code {\t {void unselect_palette();}}}{151}
+\entry {\code {\t {void vline(BITMAP *bmp, int x, int y1, int y2, int color);}}}{163}
+\entry {\code {\t {void voice_ramp_volume(int voice, int time, int endvol);}}}{260}
+\entry {\code {\t {void voice_set_echo(int voice, int strength, int delay);}}}{262}
+\entry {\code {\t {void voice_set_frequency(int voice, int frequency);}}}{261}
+\entry {\code {\t {void voice_set_pan(int voice, int pan);}}}{262}
+\entry {\code {\t {void voice_set_playmode(int voice, int playmode);}}}{259}
+\entry {\code {\t {void voice_set_position(int voice, int position);}}}{259}
+\entry {\code {\t {void voice_set_priority(int voice, int priority);}}}{258}
+\entry {\code {\t {void voice_set_tremolo(int voice, int rate, int depth);}}}{263}
+\entry {\code {\t {void voice_set_vibrato(int voice, int rate, int depth);}}}{263}
+\entry {\code {\t {void voice_set_volume(int voice, int volume);}}}{260}
+\entry {\code {\t {void voice_start(int voice);}}}{258}
+\entry {\code {\t {void voice_stop(int voice);}}}{258}
+\entry {\code {\t {void voice_stop_frequency_sweep(int voice);}}}{261}
+\entry {\code {\t {void voice_stop_pan_sweep(int voice);}}}{262}
+\entry {\code {\t {void voice_stop_volumeramp(int voice);}}}{261}
+\entry {\code {\t {void voice_sweep_frequency(int voice, int time, int endfreq);}}}{261}
+\entry {\code {\t {void voice_sweep_pan(int voice, int time, int endpan);}}}{262}
+\entry {\code {\t {void vsync();}}}{121}
+\entry {\code {\t {void win_release_dc(BITMAP *bmp, HDC dc);}}}{372}
+\entry {\code {\t {void win_set_window(HWND wnd);}}}{371}
+\entry {\code {\t {void win_set_wnd_create_proc(HWND (*proc)(WNDPROC));}}}{372}
+\entry {\code {\t {void xor_mode(int on);}}}{222}
+\entry {\code {\t {void xwin_set_window_name(const char *name, const char *group);}}}{380}
+\initial {Z}
+\entry {\code {\t {ZBUFFER *create_sub_zbuffer(ZBUFFER *parent, int x, int y, int width, int height);}}}{215}
+\entry {\code {\t {ZBUFFER *create_zbuffer(BITMAP *bmp);}}}{215}

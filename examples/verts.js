@@ -41,6 +41,7 @@ function draw() {
 	for (var i = 1; i < vert.length; i++) {
 		colorMode(HSB);
 		stroke(i % 255, 255, 255);
+		strokeWeight(3);
 		line(vert[i][0], vert[i][1], vert[i - 1][0], vert[i - 1][1]);
 	}
 

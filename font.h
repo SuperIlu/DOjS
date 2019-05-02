@@ -29,8 +29,7 @@ SOFTWARE.
 /************
 ** defines **
 ************/
-#define JSINC_FONT BOOT_DIR "font.js"  //!< boot script for font subsystem
-#define TAG_FONT "Font"                //!< class name for Font()
+#define TAG_FONT "Font"  //!< class name for Font()
 
 /***********************
 ** exported functions **

@@ -1,36 +1,4 @@
 /********
- * Color
- */
-/**
- * Create a RGB color with optional mask (see 'jsboot/color.js').
- * @class
- * @param {number} r the red value.
- * @param {number} g the green value.
- * @param {number} b the blue value.
- * @param {number} [mask] the Color mask.
- */
-function Color(r, g, b, mask) { }
-/**
- * @property {number} value 24bit value with the actual color.
- */
-Color.value = 0;
-/**
- * get the red part of a color.
- * @returns the red part of a color.
- */
-Color.prototype.GetRed = function () { };
-/**
- * get the green part of a color.
- * @returns the green part of a color.
- */
-Color.prototype.GetGreen = function () { };
-/**
- * get the blue part of a color.
- * @returns the blue part of a color.
- */
-Color.prototype.GetBlue = function () { };
-
-/********
  * File
  */
 /**
@@ -73,7 +41,7 @@ File.prototype.Close = function () { };
  * Bitmap
  */
 /**
- * Load a BMP or PNG image.
+ * Load a BMP, TGA or PCX image.
  * @class
  * @param {string} filename name of the BMP or PNG file.
  */
@@ -102,7 +70,7 @@ Bitmap.prototype.Draw = function (x, y) { };
  * Get the color of a pixel of this image.
  * @param {number} x position.
  * @param {number} y position.
- * @returns {Color} the color of the pixel.
+ * @returns {number} the color of the pixel.
  */
 Bitmap.prototype.GetPixel = function (x, y) { };
 
@@ -120,24 +88,33 @@ function Font(filename) { }
  */
 Font.filename = null;
 /**
- * Width of smallest character
+ * Font height
  */
-Font.minwidth = null;
+Font.height = null;
 /**
- * Width of widest character
- */
-Font.maxwidth = null;
-/**
- * Draw a string to the canvas.
+ * Draw a left aligned string to the canvas.
  * @param {number} x x position
  * @param {number} y y position.
  * @param {Color} foreground foreground color.
  * @param {Color} background background color.
- * @param {number} direction direction from {@link FONT}
- * @param {number} alignX alignment from {@link FONT}
- * @param {number} alignY alignment from {@link FONT}
  */
-Font.prototype.DrawString = function (x, y, text, foreground, background, direction, alignX, alignY) { };
+Font.prototype.DrawStringLeft = function (x, y, text, foreground, background) { };
+/**
+ * Draw a center aligned string to the canvas.
+ * @param {number} x x position
+ * @param {number} y y position.
+ * @param {Color} foreground foreground color.
+ * @param {Color} background background color.
+ */
+Font.prototype.DrawStringCenter = function (x, y, text, foreground, background) { };
+/**
+ * Draw a right aligned string to the canvas.
+ * @param {number} x x position
+ * @param {number} y y position.
+ * @param {Color} foreground foreground color.
+ * @param {Color} background background color.
+ */
+Font.prototype.DrawStringRight = function (x, y, text, foreground, background) { };
 /**
  * Calculate string width for this font.
  * @param {string} the string to check.
@@ -150,12 +127,6 @@ Font.prototype.StringWidth = function (text) { };
  * @returns {number} the height in pixels.
  */
 Font.prototype.StringHeight = function (text) { };
-/**
- * Resize font to new width / height.
- * @param {number} w the new width.
- * @param {number} h the new height.
- */
-Font.prototype.Resize = function (w, h) { };
 
 
 /********
@@ -176,44 +147,20 @@ Sample.filename = null;
  */
 Sample.length = null;
 /**
- * Sound speed.
+ * Sound frequency.
  */
-Sample.speed = null;
+Sample.frequency = null;
 /**
- * Play the WAV once.
+ * Play the WAV.
+ * @param {number} volume between 0-255.
+ * @param {number} panning between (left) 0-255 (right).
+ * @param {boolean} loop true := sample will loop, false := sample will only be played once.
  */
-Sample.prototype.Play = function () { };
+Sample.prototype.Play = function (volume, panning, loop) { };
 /**
  * Stop playing.
  */
 Sample.prototype.Stop = function () { };
-
-/**
- * Load a MOD/S3M/XM/etc-file.
- * @class
- * @param {string} filename 
- */
-function Module(filename) { }
-/**
- * Name of the MOD-file.
- */
-Module.filename = null;
-/**
- * internal name of the song.
- */
-Module.songname = null;
-/**
- * file format of the song.
- */
-Module.modtype = null;
-/**
- * mod file comment (if any).
- */
-Module.comment = null;
-/**
- * Play the MOD-file once.
- */
-Module.prototype.Play = function () { };
 
 /********
  * MIDI

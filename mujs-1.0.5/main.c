@@ -199,6 +199,11 @@ static void jsB_quit(js_State *J)
 	exit(js_tonumber(J, 1));
 }
 
+static void jsB_repr(js_State *J)
+{
+	js_repr(J, 1);
+}
+
 static const char *require_js =
 	"function require(name) {\n"
 	"var cache = require.cache;\n"
@@ -220,7 +225,7 @@ static const char *stacktrace_js =
 
 static int eval_print(js_State *J, const char *source)
 {
-	if (js_ploadstring(J, "[string]", source)) {
+	if (js_ploadstring(J, "[stdin]", source)) {
 		fprintf(stderr, "%s\n", js_trystring(J, -1, "Error"));
 		js_pop(J, 1);
 		return 1;
@@ -231,8 +236,9 @@ static int eval_print(js_State *J, const char *source)
 		js_pop(J, 1);
 		return 1;
 	}
-	if (js_isdefined(J, -1))
-		printf("%s\n", js_trystring(J, -1, "can't convert to string"));
+	if (js_isdefined(J, -1)) {
+		printf("%s\n", js_tryrepr(J, -1, "can't convert to string"));
+	}
 	js_pop(J, 1);
 	return 0;
 }
@@ -315,6 +321,9 @@ main(int argc, char **argv)
 
 	js_newcfunction(J, jsB_readline, "readline", 0);
 	js_setglobal(J, "readline");
+
+	js_newcfunction(J, jsB_repr, "repr", 0);
+	js_setglobal(J, "repr");
 
 	js_newcfunction(J, jsB_quit, "quit", 1);
 	js_setglobal(J, "quit");

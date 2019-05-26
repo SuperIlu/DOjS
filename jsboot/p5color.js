@@ -2022,7 +2022,7 @@ exports.colorMode = function (mode, max1, max2, max3, maxA) {
  */
 exports.fill = function () {
 	if (arguments[0] instanceof p5Color) {
-		_currentEnv._fill = arguments[0].toAllegro()
+		_currentEnv._fill = arguments[0].toAllegro();
 	} else {
 		_currentEnv._fill = new p5Color(arguments).toAllegro();
 	}

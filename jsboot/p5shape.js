@@ -65,13 +65,12 @@ exports._shape = [];
  * arc(50, 50, 80, 80, 0, PI + QUARTER_PI, PIE);
  */
 exports.arc = function (x, y, w, h, start, end, style) {
-	//TODO: style = style || ARC.OPEN;
-
-	if (_currentEnv._fill != NO_COLOR) {
-		FilledEllipseArc(x, y, w, h, start * 10 * RAD_TO_DEG, end * 10 * RAD_TO_DEG, _currentEnv._fill);
-	}
 	if (_currentEnv._stroke != NO_COLOR) {
-		EllipseArc(x, y, w, h, start * 10 * RAD_TO_DEG, end * 10 * RAD_TO_DEG, _currentEnv._stroke);
+		if (_currentEnv._strokeWeight == 1) {
+			CircleArc(x, y, w, h, start * 10 * RAD_TO_DEG, end * 10 * RAD_TO_DEG, _currentEnv._stroke);
+		} else {
+			CustomCircleArc(x, y, w, h, start * 10 * RAD_TO_DEG, end * 10 * RAD_TO_DEG, _currentEnv._strokeWeight, _currentEnv._stroke);
+		}
 	}
 };
 
@@ -738,8 +737,8 @@ exports.loadImage = function (path) {
 exports.image = function (img, x, y) {
 	var x1 = x;
 	var y1 = y;
-	var w = img.width;
-	var h = img.height;
+	var w = img.bm.width;
+	var h = img.bm.height;
 
 	if (_currentEnv._imageMode === CORNER) {
 	} else if (_currentEnv._imageMode === CORNERS) {

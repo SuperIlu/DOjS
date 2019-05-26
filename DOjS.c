@@ -244,9 +244,9 @@ static void run_script(char *script, int width, int bpp, bool no_sound, bool no_
     // ut_dumpVideoModes();
 #endif
 
-    if (bpp < 32) {
+    if (bpp < 24) {
         no_alpha = true;
-        LOG("BPP < 32, disabling alpha\n");
+        LOG("BPP < 24, disabling alpha\n");
     }
 
     // detect hardware and initialize subsystems

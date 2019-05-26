@@ -143,6 +143,11 @@ static void ps(const char *s)
 	fputs(s, stdout);
 }
 
+static void pn(int n)
+{
+	printf("%d", n);
+}
+
 static void in(int d)
 {
 	if (minify < 1)
@@ -702,6 +707,8 @@ static void snode(int d, js_Ast *node)
 
 	pc('(');
 	ps(astname[node->type]);
+	pc(':');
+	pn(node->line);
 	switch (node->type) {
 	default: break;
 	case AST_IDENTIFIER: pc(' '); ps(node->string); break;
@@ -784,12 +791,16 @@ void jsC_dumpfunction(js_State *J, js_Function *F)
 
 	printf("{\n");
 	while (p < end) {
+		int ln = *p++;
 		int c = *p++;
 
-		printf("% 5d: ", (int)(p - F->code) - 1);
+		printf("%5d(%3d): ", (int)(p - F->code) - 2, ln);
 		ps(opname[c]);
 
 		switch (c) {
+		case OP_INTEGER:
+			printf(" %d", (*p++) - 32768);
+			break;
 		case OP_NUMBER:
 			printf(" %.9g", F->numtab[*p++]);
 			break;
@@ -803,8 +814,6 @@ void jsC_dumpfunction(js_State *J, js_Function *F)
 			p += 2;
 			break;
 
-		case OP_INITVAR:
-		case OP_DEFVAR:
 		case OP_GETVAR:
 		case OP_HASVAR:
 		case OP_SETVAR:
@@ -817,14 +826,13 @@ void jsC_dumpfunction(js_State *J, js_Function *F)
 			ps(F->strtab[*p++]);
 			break;
 
-		case OP_LINE:
-		case OP_CLOSURE:
-		case OP_INITLOCAL:
 		case OP_GETLOCAL:
 		case OP_SETLOCAL:
 		case OP_DELLOCAL:
-		case OP_NUMBER_POS:
-		case OP_NUMBER_NEG:
+			printf(" %s", F->vartab[*p++ - 1]);
+			break;
+
+		case OP_CLOSURE:
 		case OP_CALL:
 		case OP_NEW:
 		case OP_JUMP:
@@ -882,6 +890,7 @@ void js_dumpvalue(js_State *J, js_Value v)
 		case JS_CNUMBER: printf("[Number %g]", v.u.object->u.number); break;
 		case JS_CSTRING: printf("[String'%s']", v.u.object->u.s.string); break;
 		case JS_CERROR: printf("[Error]"); break;
+		case JS_CARGUMENTS: printf("[Arguments %p]", (void*)v.u.object); break;
 		case JS_CITERATOR: printf("[Iterator %p]", (void*)v.u.object); break;
 		case JS_CUSERDATA:
 			printf("[Userdata %s %p]", v.u.object->u.user.tag, v.u.object->u.user.data);

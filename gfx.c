@@ -643,7 +643,7 @@ static void f_SaveTgaImage(js_State *J) {
 static void f_GetPixel(js_State *J) {
     int x = js_toint16(J, 1);
     int y = js_toint16(J, 2);
-    js_pushnumber(J, getpixel(cur, x, y));
+    js_pushnumber(J, getpixel(cur, x, y) | 0xFE000000);
 }
 
 /**

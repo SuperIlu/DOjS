@@ -40,7 +40,9 @@ SOFTWARE.
  */
 static void Font_Finalize(js_State *J, void *data) {
     FONT *f = (FONT *)data;
-    destroy_font(f);
+    if (f != font) {
+        destroy_font(f);
+    }
 }
 
 /**
@@ -73,7 +75,7 @@ static void new_Font(js_State *J) {
     js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
     js_pushnumber(J, text_height(f));
-    js_defproperty(J, -2, "height", 0);
+    js_defproperty(J, -2, "height", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 }
 
 /**

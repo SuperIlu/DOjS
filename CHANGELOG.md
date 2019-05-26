@@ -1,3 +1,13 @@
+**Version 0.9.6 (the crashing creation)**
+* Fixed massive crash when using the builtin font in p5 compatibility layer
+* Some API improvements
+* Even more examples and a DOjS presentation done with DOjS
+* Small fixes for `image()`, `arc()` and `text()` in p5 compatibility layer
+* Enabled transparency for 24bpp and 32bpp mode (was only 32bpp before).
+* Added useable alpha value to the return value of `GetPixel()`
+* As always: more examples
+* updated MuJS to latest version from http://git.ghostscript.com/?p=mujs.git;a=summary
+
 **Version 0.9.5 (the changed creation)**
 * Replaced libmikmod, GRX and all sound code by Allegro 4.2.2.
 * Transparency/RGBA now works.

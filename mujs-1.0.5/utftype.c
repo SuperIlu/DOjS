@@ -7,8 +7,7 @@
  * alpha ranges -
  *	only covers ranges not in lower||upper
  */
-static
-Rune	__alpha2[] =
+static const Rune __alpha2[] =
 {
 	0x00d8,	0x00f6,	/* Ø - ö */
 	0x00f8,	0x01f5,	/* ø - ǵ */
@@ -168,8 +167,7 @@ Rune	__alpha2[] =
  * alpha singlets -
  *	only covers ranges not in lower||upper
  */
-static
-Rune	__alpha1[] =
+static const Rune __alpha1[] =
 {
 	0x00aa,	/* ª */
 	0x00b5,	/* µ */
@@ -208,8 +206,7 @@ Rune	__alpha1[] =
 /*
  * space ranges
  */
-static
-Rune	__space2[] =
+static const Rune __space2[] =
 {
 	0x0009,	0x000a,	/* tab and newline */
 	0x0020,	0x0020,	/* space */
@@ -224,8 +221,7 @@ Rune	__space2[] =
  * lower case ranges
  *	3rd col is conversion excess 500
  */
-static
-Rune	__toupper2[] =
+static const Rune __toupper2[] =
 {
 	0x0061,	0x007a, 468,	/* a-z A-Z */
 	0x00e0,	0x00f6, 468,	/* à-ö À-Ö */
@@ -268,8 +264,7 @@ Rune	__toupper2[] =
  * lower case singlets
  *	2nd col is conversion excess 500
  */
-static
-Rune	__toupper1[] =
+static const Rune __toupper1[] =
 {
 	0x00ff, 621,	/* ÿ Ÿ */
 	0x0101, 499,	/* ā Ā */
@@ -617,8 +612,7 @@ Rune	__toupper1[] =
  * upper case ranges
  *	3rd col is conversion excess 500
  */
-static
-Rune	__tolower2[] =
+static const Rune __tolower2[] =
 {
 	0x0041,	0x005a, 532,	/* A-Z a-z */
 	0x00c0,	0x00d6, 532,	/* À-Ö à-ö */
@@ -662,8 +656,7 @@ Rune	__tolower2[] =
  * upper case singlets
  *	2nd col is conversion excess 500
  */
-static
-Rune	__tolower1[] =
+static const Rune __tolower1[] =
 {
 	0x0100, 501,	/* Ā ā */
 	0x0102, 501,	/* Ă ă */
@@ -1004,8 +997,7 @@ Rune	__tolower1[] =
  * title characters are those between
  * upper and lower case. ie DZ Dz dz
  */
-static
-Rune	__totitle1[] =
+static const Rune __totitle1[] =
 {
 	0x01c4, 501,	/* Ǆ ǅ */
 	0x01c6, 499,	/* ǆ ǅ */
@@ -1017,10 +1009,10 @@ Rune	__totitle1[] =
 	0x01f3, 499,	/* ǳ ǲ */
 };
 
-static Rune*
-bsearch(Rune c, Rune *t, int n, int ne)
+static const Rune *
+bsearch(Rune c, const Rune *t, int n, int ne)
 {
-	Rune *p;
+	const Rune *p;
 	int m;
 
 	while(n > 1) {
@@ -1040,7 +1032,7 @@ bsearch(Rune c, Rune *t, int n, int ne)
 Rune
 tolowerrune(Rune c)
 {
-	Rune *p;
+	const Rune *p;
 
 	p = bsearch(c, __tolower2, nelem(__tolower2)/3, 3);
 	if(p && c >= p[0] && c <= p[1])
@@ -1054,7 +1046,7 @@ tolowerrune(Rune c)
 Rune
 toupperrune(Rune c)
 {
-	Rune *p;
+	const Rune *p;
 
 	p = bsearch(c, __toupper2, nelem(__toupper2)/3, 3);
 	if(p && c >= p[0] && c <= p[1])
@@ -1068,7 +1060,7 @@ toupperrune(Rune c)
 Rune
 totitlerune(Rune c)
 {
-	Rune *p;
+	const Rune *p;
 
 	p = bsearch(c, __totitle1, nelem(__totitle1)/2, 2);
 	if(p && c == p[0])
@@ -1079,7 +1071,7 @@ totitlerune(Rune c)
 int
 islowerrune(Rune c)
 {
-	Rune *p;
+	const Rune *p;
 
 	p = bsearch(c, __toupper2, nelem(__toupper2)/3, 3);
 	if(p && c >= p[0] && c <= p[1])
@@ -1093,7 +1085,7 @@ islowerrune(Rune c)
 int
 isupperrune(Rune c)
 {
-	Rune *p;
+	const Rune *p;
 
 	p = bsearch(c, __tolower2, nelem(__tolower2)/3, 3);
 	if(p && c >= p[0] && c <= p[1])
@@ -1107,7 +1099,7 @@ isupperrune(Rune c)
 int
 isalpharune(Rune c)
 {
-	Rune *p;
+	const Rune *p;
 
 	if(isupperrune(c) || islowerrune(c))
 		return 1;
@@ -1129,7 +1121,7 @@ istitlerune(Rune c)
 int
 isspacerune(Rune c)
 {
-	Rune *p;
+	const Rune *p;
 
 	p = bsearch(c, __space2, nelem(__space2)/2, 2);
 	if(p && c >= p[0] && c <= p[1])

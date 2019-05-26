@@ -43,9 +43,9 @@ function draw() {
 	var cCol = color(c, 255, 255);
 	var lCol = color(c, 128, 255);
 
-	var ai = CircleArc(centerX, centerY, r, start, start + size, cCol);
+	var ai = CircleArc(centerX, centerY, r, start, start + size, cCol.toAllegro());
 	if (lastAI) {
-		Line(lastAI.endX, lastAI.endY, ai.startX, ai.startY, lCol);
+		Line(lastAI.endX, lastAI.endY, ai.startX, ai.startY, lCol.toAllegro());
 	}
 
 	start += size;

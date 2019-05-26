@@ -193,7 +193,6 @@ short js_toint16(js_State *J, int idx);
 unsigned short js_touint16(js_State *J, int idx);
 
 int js_gettop(js_State *J);
-void js_settop(js_State *J, int idx);
 void js_pop(js_State *J, int n);
 void js_rot(js_State *J, int n);
 void js_copy(js_State *J, int idx);
@@ -214,6 +213,11 @@ int js_compare(js_State *J, int *okay);
 int js_equal(js_State *J);
 int js_strictequal(js_State *J);
 int js_instanceof(js_State *J);
+const char *js_typeof(js_State *J, int idx);
+
+void js_repr(js_State *J, int idx);
+const char *js_torepr(js_State *J, int idx);
+const char *js_tryrepr(js_State *J, int idx, const char *error);
 
 #ifdef __cplusplus
 }

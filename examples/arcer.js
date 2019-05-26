@@ -25,23 +25,23 @@ Include('p5');
 ** This function is called once when the script is started.
 */
 function setup() {
-	centerX = width / 2;
-	centerY = height / 2;
-	colorMode(HSB);
-	frameRate(10);
+    centerX = width / 2;
+    centerY = height / 2;
+    colorMode(HSB);
+    frameRate(10);
 }
 
 /*
 ** This function is repeatedly until ESC is pressed or Stop() is called.
 */
 function draw() {
-	var r = random(0, min(width, height) / 2);
-	var start = random(0, 255);
-	var end = random(0, 255);
-	var c = random(0, 255);
-	var cCol = color(c, 255, 255);
-	var lCol = color(c, 128, 255);
+    var r = random(0, min(width, height) / 2);
+    var start = random(0, 3600);
+    var end = random(0, 3600);
+    var c = random(0, 255);
+    var cCol = color(c, 255, 255);
+    var lCol = color(c, 128, 255);
 
-	var ai = CircleArc(centerX, centerY, r, start, end, cCol);
-	Line(centerX, centerY, ai.startX, ai.startY, lCol);
+    var ai = CircleArc(centerX, centerY, r, start, end, cCol.toAllegro());
+    Line(centerX, centerY, ai.startX, ai.startY, lCol.toAllegro());
 }

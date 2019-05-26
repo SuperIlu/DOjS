@@ -117,9 +117,15 @@ int jsY_isnewline(int c)
 	return c == 0xA || c == 0xD || c == 0x2028 || c == 0x2029;
 }
 
+#ifndef isalpha
 #define isalpha(c) ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+#endif
+#ifndef isdigit
 #define isdigit(c) (c >= '0' && c <= '9')
+#endif
+#ifndef ishex
 #define ishex(c) ((c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))
+#endif
 
 static int jsY_isidentifierstart(int c)
 {
@@ -739,8 +745,8 @@ static int lexjsonnumber(js_State *J)
 			jsY_next(J);
 	else
 		jsY_error(J, "unexpected non-digit");
-	if (jsY_accept(J, '.'))
-	{
+
+	if (jsY_accept(J, '.')) {
 		if (isdigit(J->lexchar))
 			while (isdigit(J->lexchar))
 				jsY_next(J);
@@ -780,6 +786,7 @@ static int lexjsonescape(js_State *J)
 		break;
 	case '"': textpush(J, '"'); jsY_next(J); break;
 	case '\\': textpush(J, '\\'); jsY_next(J); break;
+	case '/': textpush(J, '/'); jsY_next(J); break;
 	case 'b': textpush(J, '\b'); jsY_next(J); break;
 	case 'f': textpush(J, '\f'); jsY_next(J); break;
 	case 'n': textpush(J, '\n'); jsY_next(J); break;

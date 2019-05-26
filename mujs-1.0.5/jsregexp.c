@@ -29,6 +29,7 @@ void js_newregexp(js_State *J, const char *pattern, int flags)
 
 void js_RegExp_prototype_exec(js_State *J, js_Regexp *re, const char *text)
 {
+	int result;
 	int i;
 	int opts;
 	Resub m;
@@ -46,7 +47,10 @@ void js_RegExp_prototype_exec(js_State *J, js_Regexp *re, const char *text)
 		}
 	}
 
-	if (!js_regexec(re->prog, text, &m, opts)) {
+	result = js_regexec(re->prog, text, &m, opts);
+	if (result < 0)
+		js_error(J, "regexec failed");
+	if (result == 0) {
 		js_newarray(J);
 		js_pushstring(J, text);
 		js_setproperty(J, -2, "input");
@@ -71,6 +75,7 @@ static void Rp_test(js_State *J)
 {
 	js_Regexp *re;
 	const char *text;
+	int result;
 	int opts;
 	Resub m;
 
@@ -90,7 +95,10 @@ static void Rp_test(js_State *J)
 		}
 	}
 
-	if (!js_regexec(re->prog, text, &m, opts)) {
+	result = js_regexec(re->prog, text, &m, opts);
+	if (result < 0)
+		js_error(J, "regexec failed");
+	if (result == 0) {
 		if (re->flags & JS_REGEXP_G)
 			re->last = re->last + (m.sub[0].ep - text);
 		js_pushboolean(J, 1);

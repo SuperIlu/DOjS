@@ -230,7 +230,7 @@ int js_iserror(js_State *J, int idx)
 	return v->type == JS_TOBJECT && v->u.object->type == JS_CERROR;
 }
 
-static const char *js_typeof(js_State *J, int idx)
+const char *js_typeof(js_State *J, int idx)
 {
 	js_Value *v = stackidx(J, idx);
 	switch (v->type) {
@@ -857,11 +857,6 @@ static void js_initvar(js_State *J, const char *name, int idx)
 	jsR_defproperty(J, J->E->variables, name, JS_DONTENUM | JS_DONTCONF, stackidx(J, idx), NULL, NULL);
 }
 
-static void js_defvar(js_State *J, const char *name)
-{
-	jsR_defproperty(J, J->E->variables, name, JS_DONTENUM | JS_DONTCONF, NULL, NULL, NULL);
-}
-
 static int js_hasvar(js_State *J, const char *name)
 {
 	js_Environment *E = J->E;
@@ -954,6 +949,7 @@ static void jsR_calllwfunction(js_State *J, int n, js_Function *F, js_Environmen
 		js_pop(J, n - F->numparams);
 		n = F->numparams;
 	}
+
 	for (i = n; i < F->varlen; ++i)
 		js_pushundefined(J);
 
@@ -975,7 +971,7 @@ static void jsR_callfunction(js_State *J, int n, js_Function *F, js_Environment 
 	jsR_savescope(J, scope);
 
 	if (F->arguments) {
-		js_newobject(J);
+		js_newarguments(J);
 		if (!J->strict) {
 			js_currentfunction(J);
 			js_defproperty(J, -2, "callee", JS_DONTENUM);
@@ -990,16 +986,15 @@ static void jsR_callfunction(js_State *J, int n, js_Function *F, js_Environment 
 		js_pop(J, 1);
 	}
 
-	for (i = 0; i < F->numparams; ++i) {
-		if (i < n)
-			js_initvar(J, F->vartab[i], i + 1);
-		else {
-			js_pushundefined(J);
-			js_initvar(J, F->vartab[i], -1);
-			js_pop(J, 1);
-		}
-	}
+	for (i = 0; i < n && i < F->numparams; ++i)
+		js_initvar(J, F->vartab[i], i + 1);
 	js_pop(J, n);
+
+	for (; i < F->varlen; ++i) {
+		js_pushundefined(J);
+		js_initvar(J, F->vartab[i], -1);
+		js_pop(J, 1);
+	}
 
 	jsR_run(J, F);
 	v = *stackidx(J, -1);
@@ -1012,11 +1007,20 @@ static void jsR_callfunction(js_State *J, int n, js_Function *F, js_Environment 
 static void jsR_callscript(js_State *J, int n, js_Function *F, js_Environment *scope)
 {
 	js_Value v;
+	int i;
 
 	if (scope)
 		jsR_savescope(J, scope);
 
+	/* scripts take no arguments */
 	js_pop(J, n);
+
+	for (i = 0; i < F->varlen; ++i) {
+		js_pushundefined(J);
+		js_initvar(J, F->vartab[i], -1);
+		js_pop(J, 1);
+	}
+
 	jsR_run(J, F);
 	v = *stackidx(J, -1);
 	TOP = --BOT; /* clear stack */
@@ -1056,7 +1060,7 @@ void js_call(js_State *J, int n)
 	int savebot;
 
 	if (!js_iscallable(J, -n-2))
-		js_typeerror(J, "called object is not a function");
+		js_typeerror(J, "%s is not callable", js_typeof(J, -n-2));
 
 	obj = js_toobject(J, -n-2);
 
@@ -1090,7 +1094,7 @@ void js_construct(js_State *J, int n)
 	js_Object *newobj;
 
 	if (!js_iscallable(J, -n-1))
-		js_typeerror(J, "called object is not a function");
+		js_typeerror(J, "%s is not callable", js_typeof(J, -n-1));
 
 	obj = js_toobject(J, -n-1);
 
@@ -1236,7 +1240,7 @@ static void jsR_dumpstack(js_State *J)
 	printf("stack {\n");
 	for (i = 0; i < TOP; ++i) {
 		putchar(i == BOT ? '>' : ' ');
-		printf("% 4d: ", i);
+		printf("%4d: ", i);
 		js_dumpvalue(J, STACK[i]);
 		putchar('\n');
 	}
@@ -1286,6 +1290,8 @@ static void jsR_run(js_State *J, js_Function *F)
 	js_Function **FT = F->funtab;
 	double *NT = F->numtab;
 	const char **ST = F->strtab;
+	const char **VT = F->vartab-1;
+	int lightweight = F->lightweight;
 	js_Instruction *pcstart = F->code;
 	js_Instruction *pc = F->code;
 	enum js_OpCode opcode;
@@ -1306,7 +1312,10 @@ static void jsR_run(js_State *J, js_Function *F)
 		if (J->gccounter > JS_GCLIMIT)
 			js_gc(J, 0);
 
+		J->trace[J->tracetop].line = *pc++;
+
 		opcode = *pc++;
+
 		switch (opcode) {
 		case OP_POP: js_pop(J, 1); break;
 		case OP_DUP: js_dup(J); break;
@@ -1315,10 +1324,7 @@ static void jsR_run(js_State *J, js_Function *F)
 		case OP_ROT3: js_rot3(J); break;
 		case OP_ROT4: js_rot4(J); break;
 
-		case OP_NUMBER_0: js_pushnumber(J, 0); break;
-		case OP_NUMBER_1: js_pushnumber(J, 1); break;
-		case OP_NUMBER_POS: js_pushnumber(J, *pc++); break;
-		case OP_NUMBER_NEG: js_pushnumber(J, -(*pc++)); break;
+		case OP_INTEGER: js_pushnumber(J, *pc++ - 32768); break;
 		case OP_NUMBER: js_pushnumber(J, NT[*pc++]); break;
 		case OP_STRING: js_pushliteral(J, ST[*pc++]); break;
 
@@ -1347,31 +1353,33 @@ static void jsR_run(js_State *J, js_Function *F)
 			js_currentfunction(J);
 			break;
 
-		case OP_INITLOCAL:
-			STACK[BOT + *pc++] = STACK[--TOP];
-			break;
-
 		case OP_GETLOCAL:
-			CHECKSTACK(1);
-			STACK[TOP++] = STACK[BOT + *pc++];
+			if (lightweight) {
+				CHECKSTACK(1);
+				STACK[TOP++] = STACK[BOT + *pc++];
+			} else {
+				str = VT[*pc++];
+				if (!js_hasvar(J, str))
+					js_referenceerror(J, "'%s' is not defined", str);
+			}
 			break;
 
 		case OP_SETLOCAL:
-			STACK[BOT + *pc++] = STACK[TOP-1];
+			if (lightweight) {
+				STACK[BOT + *pc++] = STACK[TOP-1];
+			} else {
+				js_setvar(J, VT[*pc++]);
+			}
 			break;
 
 		case OP_DELLOCAL:
-			++pc;
-			js_pushboolean(J, 0);
-			break;
-
-		case OP_INITVAR:
-			js_initvar(J, ST[*pc++], -1);
-			js_pop(J, 1);
-			break;
-
-		case OP_DEFVAR:
-			js_defvar(J, ST[*pc++]);
+			if (lightweight) {
+				++pc;
+				js_pushboolean(J, 0);
+			} else {
+				b = js_delvar(J, VT[*pc++]);
+				js_pushboolean(J, b);
+			}
 			break;
 
 		case OP_GETVAR:
@@ -1469,7 +1477,7 @@ static void jsR_run(js_State *J, js_Function *F)
 			break;
 
 		case OP_ITERATOR:
-			if (!js_isundefined(J, -1) && !js_isnull(J, -1)) {
+			if (js_iscoercible(J, -1)) {
 				obj = jsV_newiterator(J, js_toobject(J, -1), 0);
 				js_pop(J, 1);
 				js_pushobject(J, obj);
@@ -1477,11 +1485,16 @@ static void jsR_run(js_State *J, js_Function *F)
 			break;
 
 		case OP_NEXTITER:
-			obj = js_toobject(J, -1);
-			str = jsV_nextiterator(J, obj);
-			if (str) {
-				js_pushliteral(J, str);
-				js_pushboolean(J, 1);
+			if (js_isobject(J, -1)) {
+				obj = js_toobject(J, -1);
+				str = jsV_nextiterator(J, obj);
+				if (str) {
+					js_pushliteral(J, str);
+					js_pushboolean(J, 1);
+				} else {
+					js_pop(J, 1);
+					js_pushboolean(J, 0);
+				}
 			} else {
 				js_pop(J, 1);
 				js_pushboolean(J, 0);
@@ -1746,10 +1759,6 @@ static void jsR_run(js_State *J, js_Function *F)
 		case OP_RETURN:
 			J->strict = savestrict;
 			return;
-
-		case OP_LINE:
-			J->trace[J->tracetop].line = *pc++;
-			break;
 		}
 	}
 }

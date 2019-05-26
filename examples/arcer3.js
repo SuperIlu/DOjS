@@ -39,7 +39,7 @@ function setup() {
 		arcs.push({
 			start: random(0, 3600),
 			length: random(0, 3600),
-			col: color(random(0, 255), 255, 255),
+			col: color(random(0, 255), 255, 255).toAllegro(),
 			r: i
 		});
 	}

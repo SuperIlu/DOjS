@@ -100,13 +100,13 @@ exports.text = function (str, x, y) {
 
 	switch (_currentEnv._txtAlignX) {
 		case LEFT:
-			_currentEnv._font.DrawStringLeft(x, y, str, _currentEnv._fill);
+			_currentEnv._font.DrawStringLeft(x, y, str, _currentEnv._fill, NO_COLOR);
 			break;
 		case CENTER:
-			_currentEnv._font.DrawStringCenter(x, y, str, _currentEnv._fill);
+			_currentEnv._font.DrawStringCenter(x, y, str, _currentEnv._fill, NO_COLOR);
 			break;
 		case RIGHT:
-			_currentEnv._font.DrawStringRight(x, y, str, _currentEnv._fill);
+			_currentEnv._font.DrawStringRight(x, y, str, _currentEnv._fill, NO_COLOR);
 			break;
 	}
 };

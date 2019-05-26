@@ -2,6 +2,34 @@
 #include "jsvalue.h"
 #include "jsbuiltin.h"
 
+#include <time.h>
+
+#define JS_RAND_MAX (0x7fffffff)
+
+static unsigned int jsM_rand_temper(unsigned int x)
+{
+	x ^= x>>11;
+	x ^= x<<7 & 0x9D2C5680;
+	x ^= x<<15 & 0xEFC60000;
+	x ^= x>>18;
+	return x;
+}
+
+static int jsM_rand_r(unsigned int *seed)
+{
+	return jsM_rand_temper(*seed = *seed * 1103515245 + 12345)/2;
+}
+
+static double jsM_round(double x)
+{
+	if (isnan(x)) return x;
+	if (isinf(x)) return x;
+	if (x == 0) return x;
+	if (x > 0 && x < 0.5) return 0;
+	if (x < 0 && x >= -0.5) return -0;
+	return floor(x + 0.5);
+}
+
 static void Math_abs(js_State *J)
 {
 	js_pushnumber(J, fabs(js_tonumber(J, 1)));
@@ -66,23 +94,13 @@ static void Math_pow(js_State *J)
 
 static void Math_random(js_State *J)
 {
-	js_pushnumber(J, rand() / (RAND_MAX + 1.0));
-}
-
-static double do_round(double x)
-{
-	if (isnan(x)) return x;
-	if (isinf(x)) return x;
-	if (x == 0) return x;
-	if (x > 0 && x < 0.5) return 0;
-	if (x < 0 && x >= -0.5) return -0;
-	return floor(x + 0.5);
+	js_pushnumber(J, jsM_rand_r(&J->seed) / (JS_RAND_MAX + 1.0));
 }
 
 static void Math_round(js_State *J)
 {
 	double x = js_tonumber(J, 1);
-	js_pushnumber(J, do_round(x));
+	js_pushnumber(J, jsM_round(x));
 }
 
 static void Math_sin(js_State *J)
@@ -138,6 +156,8 @@ static void Math_min(js_State *J)
 
 void jsB_initmath(js_State *J)
 {
+	J->seed = time(NULL);
+
 	js_pushobject(J, jsV_newobject(J, JS_CMATH, J->Object_prototype));
 	{
 		jsB_propn(J, "E", 2.7182818284590452354);

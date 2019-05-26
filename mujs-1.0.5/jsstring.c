@@ -4,6 +4,14 @@
 #include "utf.h"
 #include "regexp.h"
 
+static int js_doregexec(js_State *J, Reprog *prog, const char *string, Resub *sub, int eflags)
+{
+	int result = js_regexec(prog, string, sub, eflags);
+	if (result < 0)
+		js_error(J, "regexec failed");
+	return result;
+}
+
 static const char *checkstring(js_State *J, int idx)
 {
 	if (!js_iscoercible(J, idx))
@@ -343,7 +351,7 @@ static void Sp_match(js_State *J)
 	a = text;
 	e = text + strlen(text);
 	while (a <= e) {
-		if (js_regexec(re->prog, a, &m, a > text ? REG_NOTBOL : 0))
+		if (js_doregexec(J, re->prog, a, &m, a > text ? REG_NOTBOL : 0))
 			break;
 
 		b = m.sub[0].sp;
@@ -380,7 +388,7 @@ static void Sp_search(js_State *J)
 
 	re = js_toregexp(J, -1);
 
-	if (!js_regexec(re->prog, text, &m, 0))
+	if (!js_doregexec(J, re->prog, text, &m, 0))
 		js_pushnumber(J, js_utfptrtoidx(text, m.sub[0].sp));
 	else
 		js_pushnumber(J, -1);
@@ -397,7 +405,7 @@ static void Sp_replace_regexp(js_State *J)
 	source = checkstring(J, 0);
 	re = js_toregexp(J, 1);
 
-	if (js_regexec(re->prog, source, &m, 0)) {
+	if (js_doregexec(J, re->prog, source, &m, 0)) {
 		js_copy(J, 0);
 		return;
 	}
@@ -471,7 +479,7 @@ loop:
 			else
 				goto end;
 		}
-		if (!js_regexec(re->prog, source, &m, REG_NOTBOL))
+		if (!js_doregexec(J, re->prog, source, &m, REG_NOTBOL))
 			goto loop;
 	}
 
@@ -576,7 +584,7 @@ static void Sp_split_regexp(js_State *J)
 
 	/* splitting the empty string */
 	if (e == text) {
-		if (js_regexec(re->prog, text, &m, 0)) {
+		if (js_doregexec(J, re->prog, text, &m, 0)) {
 			if (len == limit) return;
 			js_pushliteral(J, "");
 			js_setindex(J, -2, 0);
@@ -586,7 +594,7 @@ static void Sp_split_regexp(js_State *J)
 
 	p = a = text;
 	while (a < e) {
-		if (js_regexec(re->prog, a, &m, a > text ? REG_NOTBOL : 0))
+		if (js_doregexec(J, re->prog, a, &m, a > text ? REG_NOTBOL : 0))
 			break; /* no match */
 
 		b = m.sub[0].sp;

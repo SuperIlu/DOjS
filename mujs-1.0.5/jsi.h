@@ -93,6 +93,7 @@ double js_strtod(const char *as, char **aas);
 
 /* Private stack functions */
 
+void js_newarguments(js_State *J);
 void js_newfunction(js_State *J, js_Function *function, js_Environment *scope);
 void js_newscript(js_State *J, js_Function *function, js_Environment *scope);
 void js_loadeval(js_State *J, const char *filename, const char *source);
@@ -179,7 +180,6 @@ struct js_State
 
 	/* parser state */
 	int astdepth;
-	int astline;
 	int lookahead;
 	const char *text;
 	double number;
@@ -202,6 +202,8 @@ struct js_State
 	js_Object *SyntaxError_prototype;
 	js_Object *TypeError_prototype;
 	js_Object *URIError_prototype;
+
+	unsigned int seed; /* Math.random seed */
 
 	int nextref; /* for js_ref use */
 	js_Object *R; /* registry of hidden values */

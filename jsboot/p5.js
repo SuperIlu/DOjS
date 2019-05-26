@@ -218,11 +218,6 @@ exports.settings = function () { };
 /**
  * ignored
  */
-exports.imageMode = function () { };
-
-/**
- * ignored
- */
 exports.tint = function () { };
 
 /**

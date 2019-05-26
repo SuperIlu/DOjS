@@ -31,7 +31,7 @@ else ifeq "$(build)" "sanitize"
   CFLAGS += -pipe -g -fsanitize=address -fno-omit-frame-pointer
   LDFLAGS += -fsanitize=address
 else
-  CFLAGS += -O2 -march=i386 -mtune=i586 -ffast-math 
+  CFLAGS += -O2 -march=i386 -mtune=i586 -ffast-math
   LDFLAGS += -Wl,-s
 endif
 
@@ -49,9 +49,10 @@ OUT := build/$(build)
 SRCS := $(wildcard js*.c utf*.c regexp.c)
 HDRS := $(wildcard js*.h mujs.h utf.h regexp.h)
 
-default: static
-static: $(OUT)/mujs-pp $(OUT)/mujs $(OUT)/libmujs.a $(OUT)/mujs.pc
-shared: static $(OUT)/libmujs.so
+default: shell
+shell: $(OUT)/mujs $(OUT)/mujs-pp
+static: $(OUT)/libmujs.a
+shared: $(OUT)/libmujs.so
 
 astnames.h: jsparse.h
 	grep -E '(AST|EXP|STM)_' jsparse.h | sed 's/^[^A-Z]*\(AST_\)*/"/;s/,.*/",/' | tr A-Z a-z > $@
@@ -88,6 +89,7 @@ $(OUT)/mujs-pp: $(OUT)/libmujs.o $(OUT)/pp.o
 	@ mkdir -p $(dir $@)
 	$(CC) $(LDFLAGS) -o $@ $^ -lm
 
+.PHONY: $(OUT)/mujs.pc
 $(OUT)/mujs.pc:
 	@ echo Creating $@
 	@ echo > $@ Name: mujs
@@ -100,20 +102,20 @@ $(OUT)/mujs.pc:
 watch:
 	@ while ! inotifywait -q -e modify $(SRCS) $(HDRS) ; do time -p $(MAKE) ; done
 
-install-common: release
+install-common: shell $(OUT)/mujs.pc
 	install -d $(DESTDIR)$(incdir)
 	install -d $(DESTDIR)$(libdir)
 	install -d $(DESTDIR)$(libdir)/pkgconfig
 	install -d $(DESTDIR)$(bindir)
 	install -m 644 mujs.h $(DESTDIR)$(incdir)
-	install -m 644 build/release/mujs.pc $(DESTDIR)$(libdir)/pkgconfig
-	install -m 755 build/release/mujs $(DESTDIR)$(bindir)
+	install -m 644 $(OUT)/mujs.pc $(DESTDIR)$(libdir)/pkgconfig
+	install -m 755 $(OUT)/mujs $(DESTDIR)$(bindir)
 
-install-static: install-common
-	install -m 644 build/release/libmujs.a $(DESTDIR)$(libdir)
+install-static: install-common static
+	install -m 644 $(OUT)/libmujs.a $(DESTDIR)$(libdir)
 
-install-shared: install-common
-	install -m 755 build/release/libmujs.so $(DESTDIR)$(libdir)
+install-shared: install-common shared
+	install -m 755 $(OUT)/libmujs.so $(DESTDIR)$(libdir)
 
 install: install-static
 
@@ -138,8 +140,8 @@ sanitize:
 	$(MAKE) build=sanitize
 
 release:
-	$(MAKE) build=release shared
+	$(MAKE) build=release
 
-.PHONY: default static shared clean nuke
+.PHONY: default static shared shell clean nuke
 .PHONY: install install-common install-shared install-static
 .PHONY: debug sanitize release

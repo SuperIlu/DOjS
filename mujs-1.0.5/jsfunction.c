@@ -71,7 +71,7 @@ static void Fp_toString(js_State *J)
 			if (i > 0) js_putc(J, &sb, ',');
 			js_puts(J, &sb, F->vartab[i]);
 		}
-		js_puts(J, &sb, ") { ... }");
+		js_puts(J, &sb, ") { [byte code] }");
 		js_putc(J, &sb, 0);
 
 		js_pushstring(J, sb->s);
@@ -85,14 +85,14 @@ static void Fp_toString(js_State *J)
 
 		js_puts(J, &sb, "function ");
 		js_puts(J, &sb, self->u.c.name);
-		js_puts(J, &sb, "() { ... }");
+		js_puts(J, &sb, "() { [native code] }");
 		js_putc(J, &sb, 0);
 
 		js_pushstring(J, sb->s);
 		js_endtry(J);
 		js_free(J, sb);
 	} else {
-		js_pushliteral(J, "function () { ... }");
+		js_pushliteral(J, "function () { }");
 	}
 }
 

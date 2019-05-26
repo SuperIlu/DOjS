@@ -40,14 +40,15 @@ static void Op_toString(js_State *J)
 		case JS_CDATE: js_pushliteral(J, "[object Date]"); break;
 		case JS_CMATH: js_pushliteral(J, "[object Math]"); break;
 		case JS_CJSON: js_pushliteral(J, "[object JSON]"); break;
+		case JS_CARGUMENTS: js_pushliteral(J, "[object Arguments]"); break;
 		case JS_CITERATOR: js_pushliteral(J, "[Iterator]"); break;
 		case JS_CUSERDATA:
-				   js_pushliteral(J, "[object ");
-				   js_pushliteral(J, self->u.user.tag);
-				   js_concat(J);
-				   js_pushliteral(J, "]");
-				   js_concat(J);
-				   break;
+			js_pushliteral(J, "[object ");
+			js_pushliteral(J, self->u.user.tag);
+			js_concat(J);
+			js_pushliteral(J, "]");
+			js_concat(J);
+			break;
 		}
 	}
 }

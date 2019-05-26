@@ -27,7 +27,7 @@ static void Np_valueOf(js_State *J)
 
 static void Np_toString(js_State *J)
 {
-	char buf[32];
+	char buf[100];
 	js_Object *self = js_toobject(J, 0);
 	int radix = js_isundefined(J, 1) ? 10 : js_tointeger(J, 1);
 	if (self->type != JS_CNUMBER)
@@ -42,7 +42,6 @@ static void Np_toString(js_State *J)
 	/* lame number to string conversion for any radix from 2 to 36 */
 	{
 		static const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
-		char buf[100];
 		double number = self->u.number;
 		int sign = self->u.number < 0;
 		js_Buffer *sb = NULL;
@@ -115,45 +114,63 @@ static void Np_toString(js_State *J)
 /* Customized ToString() on a number */
 static void numtostr(js_State *J, const char *fmt, int w, double n)
 {
-	char buf[32], *e;
-	if (isnan(n)) js_pushliteral(J, "NaN");
-	else if (isinf(n)) js_pushliteral(J, n < 0 ? "-Infinity" : "Infinity");
-	else if (n == 0) js_pushliteral(J, "0");
-	else {
-		if (w < 1) w = 1;
-		if (w > 17) w = 17;
-		sprintf(buf, fmt, w, n);
-		e = strchr(buf, 'e');
-		if (e) {
-			int exp = atoi(e+1);
-			sprintf(e, "e%+d", exp);
-		}
-		js_pushstring(J, buf);
+	/* buf needs to fit printf("%.20f", 1e20) */
+	char buf[50], *e;
+	sprintf(buf, fmt, w, n);
+	e = strchr(buf, 'e');
+	if (e) {
+		int exp = atoi(e+1);
+		sprintf(e, "e%+d", exp);
 	}
+	js_pushstring(J, buf);
 }
 
 static void Np_toFixed(js_State *J)
 {
 	js_Object *self = js_toobject(J, 0);
 	int width = js_tointeger(J, 1);
+	char buf[32];
+	double x;
 	if (self->type != JS_CNUMBER) js_typeerror(J, "not a number");
-	numtostr(J, "%.*f", width, self->u.number);
+	if (width < 0) js_rangeerror(J, "precision %d out of range", width);
+	if (width > 20) js_rangeerror(J, "precision %d out of range", width);
+	x = self->u.number;
+	if (isnan(x) || isinf(x) || x <= -1e21 || x >= 1e21)
+		js_pushstring(J, jsV_numbertostring(J, buf, x));
+	else
+		numtostr(J, "%.*f", width, x);
 }
 
 static void Np_toExponential(js_State *J)
 {
 	js_Object *self = js_toobject(J, 0);
 	int width = js_tointeger(J, 1);
+	char buf[32];
+	double x;
 	if (self->type != JS_CNUMBER) js_typeerror(J, "not a number");
-	numtostr(J, "%.*e", width, self->u.number);
+	if (width < 0) js_rangeerror(J, "precision %d out of range", width);
+	if (width > 20) js_rangeerror(J, "precision %d out of range", width);
+	x = self->u.number;
+	if (isnan(x) || isinf(x))
+		js_pushstring(J, jsV_numbertostring(J, buf, x));
+	else
+		numtostr(J, "%.*e", width, self->u.number);
 }
 
 static void Np_toPrecision(js_State *J)
 {
 	js_Object *self = js_toobject(J, 0);
 	int width = js_tointeger(J, 1);
+	char buf[32];
+	double x;
 	if (self->type != JS_CNUMBER) js_typeerror(J, "not a number");
-	numtostr(J, "%.*g", width, self->u.number);
+	if (width < 1) js_rangeerror(J, "precision %d out of range", width);
+	if (width > 21) js_rangeerror(J, "precision %d out of range", width);
+	x = self->u.number;
+	if (isnan(x) || isinf(x))
+		js_pushstring(J, jsV_numbertostring(J, buf, x));
+	else
+		numtostr(J, "%.*g", width, self->u.number);
 }
 
 void jsB_initnumber(js_State *J)

@@ -16,6 +16,7 @@
 #define REPINF 255
 #define MAXSUB REG_MAXSUB
 #define MAXPROG (32 << 10)
+#define MAXREC 1024
 
 typedef struct Reclass Reclass;
 typedef struct Renode Renode;
@@ -156,9 +157,9 @@ static int lexcount(struct cstate *g)
 	while (g->yychar != ',' && g->yychar != '}') {
 		g->yymin = g->yymin * 10 + dec(g, g->yychar);
 		g->yychar = *g->source++;
+		if (g->yymin >= REPINF)
+			die(g, "numeric overflow");
 	}
-	if (g->yymin < 0 || g->yymin >= REPINF)
-		die(g, "numeric overflow");
 
 	if (g->yychar == ',') {
 		g->yychar = *g->source++;
@@ -170,9 +171,9 @@ static int lexcount(struct cstate *g)
 			while (g->yychar != '}') {
 				g->yymax = g->yymax * 10 + dec(g, g->yychar);
 				g->yychar = *g->source++;
+				if (g->yymax >= REPINF)
+					die(g, "numeric overflow");
 			}
-			if (g->yymax < 0 || g->yymax >= REPINF)
-				die(g, "numeric overflow");
 		}
 	} else {
 		g->yymax = g->yymin;
@@ -836,6 +837,8 @@ Reprog *regcompx(void *(*alloc)(void *ctx, void *p, int n), void *ctx,
 	if (!g.prog)
 		die(&g, "cannot allocate regular expression");
 	n = strlen(pattern) * 2;
+	if (n > MAXPROG)
+		die(&g, "program too large");
 	if (n > 0) {
 		g.pstart = g.pend = alloc(ctx, NULL, sizeof (Renode) * n);
 		if (!g.pstart)
@@ -965,87 +968,101 @@ static int strncmpcanon(const char *a, const char *b, int n)
 	return 0;
 }
 
-static int match(Reinst *pc, const char *sp, const char *bol, int flags, Resub *out)
+static int match(Reinst *pc, const char *sp, const char *bol, int flags, Resub *out, int depth)
 {
 	Resub scratch;
+	int result;
 	int i;
 	Rune c;
+
+	/* stack overflow */
+	if (depth > MAXREC)
+		return -1;
 
 	for (;;) {
 		switch (pc->opcode) {
 		case I_END:
-			return 1;
+			return 0;
 		case I_JUMP:
 			pc = pc->x;
 			break;
 		case I_SPLIT:
 			scratch = *out;
-			if (match(pc->x, sp, bol, flags, &scratch)) {
+			result = match(pc->x, sp, bol, flags, &scratch, depth+1);
+			if (result == -1)
+				return -1;
+			if (result == 0) {
 				*out = scratch;
-				return 1;
+				return 0;
 			}
 			pc = pc->y;
 			break;
 
 		case I_PLA:
-			if (!match(pc->x, sp, bol, flags, out))
-				return 0;
+			result = match(pc->x, sp, bol, flags, out, depth+1);
+			if (result == -1)
+				return -1;
+			if (result == 1)
+				return 1;
 			pc = pc->y;
 			break;
 		case I_NLA:
 			scratch = *out;
-			if (match(pc->x, sp, bol, flags, &scratch))
-				return 0;
+			result = match(pc->x, sp, bol, flags, &scratch, depth+1);
+			if (result == -1)
+				return -1;
+			if (result == 0)
+				return 1;
 			pc = pc->y;
 			break;
 
 		case I_ANYNL:
 			sp += chartorune(&c, sp);
 			if (c == 0)
-				return 0;
+				return 1;
 			pc = pc + 1;
 			break;
 		case I_ANY:
 			sp += chartorune(&c, sp);
 			if (c == 0)
-				return 0;
+				return 1;
 			if (isnewline(c))
-				return 0;
+				return 1;
 			pc = pc + 1;
 			break;
 		case I_CHAR:
 			sp += chartorune(&c, sp);
 			if (c == 0)
-				return 0;
+				return 1;
 			if (flags & REG_ICASE)
 				c = canon(c);
 			if (c != pc->c)
-				return 0;
+				return 1;
 			pc = pc + 1;
 			break;
 		case I_CCLASS:
 			sp += chartorune(&c, sp);
 			if (c == 0)
-				return 0;
+				return 1;
 			if (flags & REG_ICASE) {
 				if (!incclasscanon(pc->cc, canon(c)))
-					return 0;
+					return 1;
 			} else {
 				if (!incclass(pc->cc, c))
-					return 0;
+					return 1;
 			}
 			pc = pc + 1;
 			break;
 		case I_NCCLASS:
 			sp += chartorune(&c, sp);
 			if (c == 0)
-				return 0;
+				return 1;
 			if (flags & REG_ICASE) {
 				if (incclasscanon(pc->cc, canon(c)))
-					return 0;
+					return 1;
 			} else {
 				if (incclass(pc->cc, c))
-					return 0;
+					return 1;
 			}
 			pc = pc + 1;
 			break;
@@ -1053,10 +1070,10 @@ static int match(Reinst *pc, const char *sp, const char *bol, int flags, Resub *
 			i = out->sub[pc->n].ep - out->sub[pc->n].sp;
 			if (flags & REG_ICASE) {
 				if (strncmpcanon(sp, out->sub[pc->n].sp, i))
-					return 0;
+					return 1;
 			} else {
 				if (strncmp(sp, out->sub[pc->n].sp, i))
-					return 0;
+					return 1;
 			}
 			if (i > 0)
 				sp += i;
@@ -1074,7 +1091,7 @@ static int match(Reinst *pc, const char *sp, const char *bol, int flags, Resub *
 					break;
 				}
 			}
-			return 0;
+			return 1;
 		case I_EOL:
 			if (*sp == 0) {
 				pc = pc + 1;
@@ -1086,19 +1103,19 @@ static int match(Reinst *pc, const char *sp, const char *bol, int flags, Resub *
 					break;
 				}
 			}
-			return 0;
+			return 1;
 		case I_WORD:
 			i = sp > bol && iswordchar(sp[-1]);
 			i ^= iswordchar(sp[0]);
 			if (!i)
-				return 0;
+				return 1;
 			pc = pc + 1;
 			break;
 		case I_NWORD:
 			i = sp > bol && iswordchar(sp[-1]);
 			i ^= iswordchar(sp[0]);
 			if (i)
-				return 0;
+				return 1;
 			pc = pc + 1;
 			break;
 
@@ -1111,7 +1128,7 @@ static int match(Reinst *pc, const char *sp, const char *bol, int flags, Resub *
 			pc = pc + 1;
 			break;
 		default:
-			return 0;
+			return 1;
 		}
 	}
 }
@@ -1128,7 +1145,7 @@ int regexec(Reprog *prog, const char *sp, Resub *sub, int eflags)
 	for (i = 0; i < MAXSUB; ++i)
 		sub->sub[i].sp = sub->sub[i].ep = NULL;
 
-	return !match(prog->start, sp, sp, prog->flags | eflags, sub);
+	return match(prog->start, sp, sp, prog->flags | eflags, sub, 0);
 }
 
 #ifdef TEST

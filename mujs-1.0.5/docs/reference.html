@@ -365,13 +365,12 @@ Wrapper to push a new error object on the stack using a printf formatting string
 
 <pre>
 int js_gettop(js_State *J);
-void js_settop(js_State *J, int idx); -- not implemented yet
 void js_pop(js_State *J, int n);
 void js_rot(js_State *J, int n);
 void js_copy(js_State *J, int idx);
 void js_remove(js_State *J, int idx);
-void js_insert(js_State *J, int idx); -- not implemented yet
-void js_replace(js_State* J, int idx); -- not implemented yet
+void js_insert(js_State *J, int idx);
+void js_replace(js_State* J, int idx);
 </pre>
 
 <h3>Comparisons and arithmetic</h3>

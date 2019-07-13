@@ -11,8 +11,6 @@ You can type in a script with the builtin or your favorite text editor and then 
 
 DOjS is pronounces like [doge](https://en.wikipedia.org/wiki/Doge_(meme)), but ending with an "s".
 
-![DOjS logo](/examples/DOjS.png)
-
 DOjS was only possible due to the work of these people/projects:
 * [MuJS](https://mujs.com/) JavaScript interpreter
 * The [Allegro library](https://liballeg.org/)
@@ -22,7 +20,7 @@ DOjS was only possible due to the work of these people/projects:
 You can find me on [Twitter](https://twitter.com/dec_hl) if you want...
 
 # Download and quick start
-You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases). Just extract the contents of the archive and run DOjS.
+**You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases).** Just extract the contents of the archive and run DOjS.
 
 DOjS runs in [Dosbox](https://www.dosbox.com/) and on real hardware or a virtual machine with MS-DOS, [FreeDOS](https://www.freedos.org/) or any DOS based Windows like Windows 95/98/ME.
 

@@ -320,7 +320,7 @@ static void f_MouseSetLimits(js_State *J) {
 }
 
 /**
- * @brief mose mouse cursor
+ * @brief mouse mouse cursor
  * MouseWarp(x:number, y:number)
  *
  * @param J the JS context.

@@ -16,17 +16,23 @@ Usage: DOjS.EXE [-r] [-s <p>:<i>:<d>] <script>
     F9  : Show/Close logfile
     F10 : Quit
 
-    Shift-F4   : Truncate logfile and run script
-    Shift-F7   : Find again
-    CTRL-D     : Delete current line
-    CTRL-LEFT  : Previous word
-    CTRL-RIGHT : Next word
-    PAGE-UP    : One page up.
-    PAGE-DOWN  : One page down.
-    HOME       : Go to start of line
-    END        : Go to end of line
-    CTRL-HOME  : Go to start of line
-    CTRL-END   : Go to end of line
+    Shift-F4       : Truncate logfile and run script
+    Shift-F7       : Find again
+    CTRL-D         : Delete current line
+    SHIFT+Movement : Select text, releasing SHIFT deselects
+    CTRL-C         : Copy selection
+    CTRL-X         : Cut selection
+    CTRL-V         : Paste
+    CTRL-LEFT      : Previous word
+    CTRL-RIGHT     : Next word
+    PAGE-UP        : One page up.
+    PAGE-DOWN      : One page down.
+    HOME           : Go to start of line
+    END            : Go to end of line
+    CTRL-HOME      : Go to start of line
+    CTRL-END       : Go to end of line
+    TAB            : Insert spaces until next TAB-stop at cursor
+    SHIFT-TAB      : Reduce indentation of line.
 
     TAB size is 4.
     The help viewer will remember the current position.
@@ -91,6 +97,9 @@ Height in pixels
 
 ### bm.Draw(x:number, y:number)
 Draw the image to the canvas at given coordinates.
+
+### bm.DrawTrans(x:number, y:number)
+Draw the image to the canvas at given coordinates using RGBA transparency.
 
 ### bm.GetPixel(x:number, y:number):Color
 get the color of an image pixel.

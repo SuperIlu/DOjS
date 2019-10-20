@@ -88,6 +88,19 @@ static void Bitmap_Draw(js_State *J) {
 }
 
 /**
+ * @brief draw the image to the canvas.
+ * img.DrawTrans(x, y)
+ *
+ * @param J VM state.
+ */
+static void Bitmap_DrawTrans(js_State *J) {
+    BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
+    int x = js_toint16(J, 1);
+    int y = js_toint16(J, 2);
+    draw_trans_sprite(cur, bm, x, y);
+}
+
+/**
  * @brief get the color of an image pixel.
  * img.GetPixel(x, y):Color
  *
@@ -115,6 +128,7 @@ void init_bitmap(js_State *J) {
     js_newobject(J);
     {
         PROTDEF(J, Bitmap_Draw, TAG_BITMAP, "Draw", 2);
+        PROTDEF(J, Bitmap_DrawTrans, TAG_BITMAP, "DrawTrans", 2);
         PROTDEF(J, Bitmap_GetPixel, TAG_BITMAP, "GetPixel", 2);
     }
     js_newcconstructor(J, new_Bitmap, new_Bitmap, TAG_BITMAP, 1);

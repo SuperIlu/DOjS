@@ -1,3 +1,10 @@
+**Version 0.9.7 (the late lament)**
+* fixed rect().
+* added Bitmap.DrawTrans() for 32bit TGA images w/ alpha.
+* Added Cut, Copy & Paste to the editor.
+* Added auto indent and backtab handling.
+* Started working on allegro 3D fuctions (unfinished, untested)!
+
 **Version 0.9.6 (the crashing creation)**
 * Fixed massive crash when using the builtin font in p5 compatibility layer
 * Some API improvements

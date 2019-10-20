@@ -23,7 +23,7 @@ function Input(event) { }
  */
 global = null;
 
-/********
+/**
  * Other properties
  * 
  * @module other
@@ -420,6 +420,7 @@ function MsecTime() { }
  * Load the contents of a file into a string. Throws exception if loading fails.
  * @param {string} filename name of file to read.
  * @returns {string} the contents of the file.
+ * @throws Throws an error if reading fails.
  */
 function Read(filename) { }
 
@@ -427,6 +428,7 @@ function Read(filename) { }
  * Get directory listing.
  * @param {string} dname name of directory to list.
  * @returns {string[]} array of entry names.
+ * @throws Throws an error if listing fails.
  */
 function List(dname) { }
 
@@ -434,6 +436,7 @@ function List(dname) { }
  * Get information about a file / directory.
  * @param {string} name name of the file to get info for.
  * @returns {StatInfo} an info object.
+ * @throws Throws an error if stat fails.
  */
 function Stat(name) { }
 

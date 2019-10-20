@@ -31,7 +31,7 @@ SOFTWARE.
 *********************/
 extern edi_t* lin_init(char* name);
 extern void lin_shutdown(edi_t* edi);
-extern line_t* lin_newline();
+extern line_t* lin_newline(void);
 extern void lin_freeline(line_t* l);
 extern void lin_insertline(edi_t* edi, line_t* pred, line_t* l);
 extern void lin_removeline(edi_t* edi, line_t* l);

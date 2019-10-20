@@ -59,6 +59,23 @@ SOFTWARE.
 #define EDIF(str, ...)
 #endif  // DEBUG_ENABLED
 
+#define EDI_SHIFT_DOWN(s) (s & 0x03)
+#define EDI_CTRL_DOWN(s) (s & 0x04)
+#define EDI_ALT_DOWN(s) (s & 0x08)
+
+#define EDI_IS_SEL(e) (edi->sel_line != -1)
+
+//! add a keyord to array
+#define EDI_SYNTAX(c, w) \
+    { c, sizeof(w) - 1, w }
+
+#define EDI_SYNTAX_EOL(c, w) \
+    { c, -1, w }
+
+//! end array
+#define EDI_SYNTAX_END \
+    { 0, 0, NULL }
+
 /*************
 ** typedefs **
 *************/
@@ -88,7 +105,7 @@ typedef struct _edi {
     line_t *top;           //!< first line on screen
     int width;             //!< width of editor window
     int height;            //!< height of editor window
-    int x;                 //!< cursor x pos on screen (starting with 0)
+    int x;                 //!< cursor x pos on line (starting with 0)
     int y;                 //!< cursor y pos on screen (starting with 0)
     int num;               //!< current line number
     char *name;            //!< name of the file
@@ -97,6 +114,12 @@ typedef struct _edi {
     char *msg;             //!< message to display in next loop
     line_t *last_top;      //!< last y drawing position
     int last_offset;       //!< last x drawing position
+
+    int sel_line;  //!< start of selection (line)
+    int sel_char;  //!< start of selection (char)
+    char *cnp;     //!< current copy buffer
+    int cnp_pos;   //!< current usage of buffer
+    int cnp_size;  //!< max size of buffer
 } edi_t;
 
 //! syntax highlight entry
@@ -106,20 +129,19 @@ typedef struct _syntax {
     char *word;  //!< keyword
 } syntax_t;
 
-//! add a keyord to array
-#define EDI_SYNTAX(c, w) \
-    { c, sizeof(w) - 1, w }
-
-#define EDI_SYNTAX_EOL(c, w) \
-    { c, -1, w }
-
-//! end array
-#define EDI_SYNTAX_END \
-    { 0, 0, NULL }
+//! copy and paste helper struct where start and end of the selection is ordered from top to bottom
+typedef struct _cnp {
+    int startX;          //!< x-start of selection
+    int startY;          //!< y-start of selection
+    int endX;            //!< x-end of selection
+    int endY;            //!< y-start of selection
+    bool cursor_at_end;  //!< indicates if the cursor is at the end of the selection or the start
+} cnp_t;
 
 /***********************
 ** exported functions **
 ***********************/
 extern edi_exit_t edi_edit(char *fname);
+extern void edi_clear_selection(edi_t *edi);
 
 #endif  // __EDI_H__

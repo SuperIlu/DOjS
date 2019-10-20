@@ -67,6 +67,13 @@ Bitmap.height = null;
 Bitmap.prototype.Draw = function (x, y) { };
 
 /**
+ * Draw the image to the canvas at given coordinates using the alpha channel transparency. Only works for 32bit TGA with alpha channel information.
+ * @param {number} x position to draw to.
+ * @param {number} y position to draw to.
+ */
+Bitmap.prototype.DrawTrans = function (x, y) { };
+
+/**
  * Get the color of a pixel of this image.
  * @param {number} x position.
  * @param {number} y position.

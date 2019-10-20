@@ -34,6 +34,7 @@ SOFTWARE.
 #include "DOjS.h"
 #include "color.h"
 #include "funcs.h"
+#include "gfx.h"
 #include "util.h"
 
 /************

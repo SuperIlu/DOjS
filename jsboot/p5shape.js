@@ -259,7 +259,7 @@ exports.quad = function (x1, y1, x2, y2, x3, y3, x4, y4) {
  * rect(30, 20, 55, 55);
  */
 exports.rect = function (x, y, w, h) {
-	if (_currentEnv._matrix) {
+	if (_currentEnv._matrix || _currentEnv._strokeWeight > 1) {
 		beginShape();
 		if (_currentEnv._rectMode === CORNER) {
 			vertex(x, y);
@@ -321,8 +321,6 @@ exports.rect = function (x, y, w, h) {
 		if (_currentEnv._stroke != NO_COLOR) {
 			if (_currentEnv._strokeWeight == 1) {
 				Box(x1, y1, x2, y2, _currentEnv._stroke);
-			} else {
-				CustomBox(x1, y1, x2, y2, _currentEnv._strokeWeight, _currentEnv._stroke);
 			}
 		}
 	}
@@ -695,6 +693,8 @@ exports.ellipseMode = function (m) {
 exports.loadImage = function (path) {
 	var ret = function (p) {
 		this.bm = new Bitmap(p);
+		this.width = this.bm.width;
+		this.height = this.bm.height;
 	};
 	ret.prototype.loadPixels = function () { };
 	ret.prototype.get = function (x, y) {	// TODO: check!

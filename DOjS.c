@@ -30,6 +30,7 @@ SOFTWARE.
 #include <unistd.h>
 
 #include "DOjS.h"
+#include "a3d.h"
 #include "bitmap.h"
 #include "color.h"
 #include "edit.h"
@@ -70,6 +71,12 @@ int exit_key = KEY_ESC;  //!< the exit key that will stop the script
 BITMAP *cur;
 
 volatile unsigned long sys_ticks;
+
+/************************
+** function prototypes **
+************************/
+static void tick_handler(void);
+static void tick_handler_end(void);
 
 /*********************
 ** static functions **
@@ -279,6 +286,7 @@ static void run_script(char *script, int width, int bpp, bool no_sound, bool no_
     init_bitmap(J);
     init_font(J);
     init_file(J);
+    init_a3d(J);
 
     // create canvas
     set_color_depth(bpp);
@@ -303,6 +311,7 @@ static void run_script(char *script, int width, int bpp, bool no_sound, bool no_
     js_dofile(J, JSINC_COLOR);
     js_dofile(J, JSINC_FILE);
     js_dofile(J, JSINC_IPX);
+    js_dofile(J, JSINC_A3D);
 
     // load main file
     lastError = NULL;

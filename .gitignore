@@ -48,6 +48,7 @@ miktest.c
 upx/
 cylindrix/
 build/
+capture/
 p5.js-master/
 tests/p5.js/
 .vscode/ipch

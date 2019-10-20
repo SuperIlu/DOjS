@@ -62,6 +62,11 @@ edi_t* lin_init(char* name) {
         edi->last_top = NULL;
         edi->last_offset = -1;
 
+        edi->cnp = NULL;
+        edi->cnp_pos = 0;
+        edi->cnp_size = 0;
+        edi_clear_selection(edi);
+
         return edi;
     } else {
         return NULL;

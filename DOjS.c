@@ -42,6 +42,7 @@ SOFTWARE.
 #include "midiplay.h"
 #include "sound.h"
 #include "util.h"
+#include "zbuffer.h"
 
 #define TICK_DELAY 10
 
@@ -53,6 +54,7 @@ FILE *logfile;  //!< logfile for LOGF(), LOG(), DEBUG() DEBUGF() and Print()
 #endif
 
 bool sound_available;         //!< indicates if WAV sound is available
+bool sndin_available;         //!< indicates if sound recording is available
 bool mouse_available;         //!< indicates if the mouse is available
 bool midi_available;          //!< indicates if midi is available
 bool ipx_available;           //!< indicates if ipx is available
@@ -68,7 +70,8 @@ const char *lastError;
 
 int exit_key = KEY_ESC;  //!< the exit key that will stop the script
 
-BITMAP *cur;
+BITMAP *current_bm;  //!< current bitmap that is rendered on
+BITMAP *render_bm;   //!< default render bitmap created at start
 
 volatile unsigned long sys_ticks;
 
@@ -275,6 +278,7 @@ static void run_script(char *script, int width, int bpp, bool no_sound, bool no_
         mouse_available = false;
     }
     bool sound_ok = install_sound(no_sound ? DIGI_NONE : DIGI_AUTODETECT, no_fm ? MIDI_NONE : MIDI_AUTODETECT, NULL) == 0;
+    sndin_available = install_sound_input(no_sound ? DIGI_NONE : DIGI_AUTODETECT, no_fm ? MIDI_NONE : MIDI_AUTODETECT) == 0;
     midi_available = sound_ok && !no_fm;
     sound_available = sound_ok && !no_sound;
     init_midi(J);
@@ -287,6 +291,7 @@ static void run_script(char *script, int width, int bpp, bool no_sound, bool no_
     init_font(J);
     init_file(J);
     init_a3d(J);
+    init_zbuffer(J);
 
     // create canvas
     set_color_depth(bpp);
@@ -301,8 +306,8 @@ static void run_script(char *script, int width, int bpp, bool no_sound, bool no_
             return;  // TODO: clean up
         }
     }
-    cur = create_bitmap(SCREEN_W, SCREEN_H);
-    clear_bitmap(cur);
+    render_bm = current_bm = create_bitmap(SCREEN_W, SCREEN_H);
+    clear_bitmap(render_bm);
     transparency_available = !no_alpha;
     update_transparency();
 
@@ -332,7 +337,7 @@ static void run_script(char *script, int width, int bpp, bool no_sound, bool no_
                 if (callInput(J)) {
                     keep_running = false;
                 }
-                blit(cur, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+                blit(render_bm, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
                 if (mouse_visible) {
                     show_mouse(screen);
                 }
@@ -376,9 +381,9 @@ static void run_script(char *script, int width, int bpp, bool no_sound, bool no_
 void update_transparency() {
     if (transparency_available) {
         set_blender_mode(my_blender, my_blender, my_blender, 0, 0, 0, 0);
-        drawing_mode(DRAW_MODE_TRANS, cur, 0, 0);
+        drawing_mode(DRAW_MODE_TRANS, render_bm, 0, 0);
     } else {
-        drawing_mode(DRAW_MODE_SOLID, cur, 0, 0);
+        drawing_mode(DRAW_MODE_SOLID, render_bm, 0, 0);
     }
 }
 

@@ -21,7 +21,7 @@ class Event { }
 class ArcInfo { }
 
 /**
- * Node addresses are arrays of 6 numbers between 0-255.
+ * Node addresses are arrays of 6 numbers between 0-255 (e.g. [1, 2, 3, 4, 5, 6]).
  * @type IpcAddress
  */
 class IpxAddress { }
@@ -56,3 +56,16 @@ class StatInfo { }
  * @property {number} remaining number of available bytes.
  */
 class MemInfo { }
+
+/**
+ * @type Matrix
+ * @property {number[][]} v the 3x3 matrix data.
+ * @property {number[]} t the translation data.
+ */
+class Matrix { }
+
+/**
+ * A vertex with x, y, z, u, v and c represented as an array of six numbers (e.g. [1, 1, 1, 0, 0, EGA.BLACK])
+ * @type V3D
+ */
+class V3D { }

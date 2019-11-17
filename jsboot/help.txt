@@ -1,6 +1,6 @@
 # Usage
 ## Command line
-Usage: DOjS.EXE [-r] [-s <p>:<i>:<d>] <script>
+Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script>
     -r             : Do not invoke the editor, just run the script.
     -w <width>     : Screen width: 320 or 640, Default: 640.
     -b <bpp>       : Bit per pixel:8, 16, 24, 32. Default: 32.
@@ -73,7 +73,7 @@ Close the file.
 ## Color
 See `jsboot/color.js` for predefined EGA colors. Use `NO_COLOR` for the transparent color.
 
-### Color(red:number, green:number, blue:number, alpha:number):number
+### Color(red:number, green:number, blue:number[, alpha:number]):number
 Create a RGBA color.
 
 ### GetRed(c:number):number
@@ -85,6 +85,9 @@ get the R/G/B/A part of a color.
 ## Bitmap
 ### bm = new Bitmap(filename:string)
 Load a BMP or PNG image.
+
+### bm = new Bitmap(width:number, height:number)
+Create Bitmap of given size.
 
 ### bm.filename
 Name of the file.
@@ -174,6 +177,9 @@ Play the WAV.
 Stop the sound.
 
 ## Drawing functions
+
+### SetRenderBitmap(bm:Bitmap)
+Set the current render destination. Empty or null for screen bitmap.
 
 ### SizeX():number
 get the width of the drawing area.
@@ -344,3 +350,55 @@ Get packet from receive buffer (or NULL).
 
 ### IpxGetLocalAddress():array[6:number]
 Get the local address.
+
+## 3D rendering
+Please see the HTML help for details.
+
+### CreateScene(nedge:number, npoly:number)
+Allocates memory for a scene.
+
+### ScenePolygon3D(type:POLYTYPE, texture:Bitmap, v:V3D[])
+Puts a polygon in the rendering list.
+
+### RenderScene()
+Renders all the specified ScenePolygon3D()'s on the current bitmap.
+
+### ClearScene()
+Initializes a scene.
+
+### DestroyScene()
+Deallocate memory previously allocated by CreateScene.
+
+### SetSceneGap(gap:number)
+Set scene gap.
+
+### Polygon3D(type:POLYTYPE, texture:Bitmap, v:V3D[])
+Draw 3d polygons using the specified rendering mode.
+
+### Triangle3D(type:POLYTYPE, texture:Bitmap, v1:V3D, v2:V3D, v3:V3D)
+Draw 3d triangles, using vertices.
+
+### Quad3D(type:POLYTYPE, texture:Bitmap, v1:V3D, v2:V3D, v3:V3D, v4:V3D)
+Draw 3d quads using vertex.
+
+### Clip3D(type:POLYTYPE, min_z:number, max_z:number, v:V3D[])
+Clips the polygon given in `v'.
+
+## ZBuffer
+### zbuf = new ZBuffer()
+Create ZBuffer for the current rendering Bitmap.
+
+### zbuf = new ZBuffer(bm:Bitmap)
+Create ZBuffer for the given Bitmap.
+
+### zb.width
+Width of ZBuffer
+
+### zb.height
+Height of ZBuffer
+
+### zb.Set()
+Set this ZBuffer as current rendering ZBuffer.
+
+### zb.Clear(z)
+Clear ZBuffer with given z value.

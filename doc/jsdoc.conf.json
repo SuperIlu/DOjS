@@ -8,6 +8,7 @@
 			"../jsboot/color.js",
 			"../jsboot/file.js",
 			"../jsboot/ipx.js",
+			"../jsboot/a3d.js",
 			"../jsboot/p5.js",
 			"../jsboot/p5color.js",
 			"../jsboot/p5const.js",

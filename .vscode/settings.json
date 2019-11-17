@@ -12,9 +12,11 @@
         "string_view": "c",
         "conio.h": "c",
         "stddef.h": "c",
-        "allegro.h": "c"
+        "allegro.h": "c",
+        "keys.h": "c"
     },
     "editor.formatOnSave": true,
     "editor.insertSpaces": false,
     "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, ColumnLimit: 180, IndentWidth: 4 }",
+    "javascript.suggest.autoImports": false
 }

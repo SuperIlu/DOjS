@@ -32,14 +32,17 @@ SOFTWARE.
 ** static functions **
 *********************/
 static void f_Color(js_State *J) {
-    if (js_isundefined(J, 1) || js_isundefined(J, 2) || js_isundefined(J, 3) || js_isundefined(J, 4)) {
-        js_error(J, "Color needs four integer arguments");
+    if (js_isundefined(J, 1) || js_isundefined(J, 2) || js_isundefined(J, 3)) {
+        js_error(J, "Color needs at least three integer arguments");
         return;
     } else {
         int r = js_toint16(J, 1);
         int g = js_toint16(J, 2);
         int b = js_toint16(J, 3);
-        int a = js_toint16(J, 4);
+        int a = 255;
+        if (js_isdefined(J, 4)) {
+            a = js_toint16(J, 4);
+        }
         uint32_t rgba = makeacol(r, g, b, a);
         js_pushnumber(J, rgba);
     }

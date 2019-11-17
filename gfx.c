@@ -32,6 +32,7 @@ SOFTWARE.
 #include <time.h>
 
 #include "DOjS.h"
+#include "bitmap.h"
 #include "color.h"
 #include "funcs.h"
 #include "gfx.h"
@@ -209,7 +210,7 @@ static void f_arcReturn(js_State *J, arc_return_t *art) {
 static void f_ClearScreen(js_State *J) {
     int color = js_toint32(J, 1);
 
-    clear_to_color(cur, color);
+    clear_to_color(current_bm, color);
 }
 
 /**
@@ -225,7 +226,7 @@ static void f_Plot(js_State *J) {
 
     int color = js_toint32(J, 3);
 
-    putpixel(cur, x, y, color);
+    putpixel(current_bm, x, y, color);
 }
 
 /**
@@ -243,7 +244,7 @@ static void f_Line(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    line(cur, x1, y1, x2, y2, color);
+    line(current_bm, x1, y1, x2, y2, color);
 }
 
 /**
@@ -277,7 +278,7 @@ static void f_CustomLine(js_State *J) {
     } else {
         customRadius = w / 2;
     }
-    do_line(cur, x1, y1, x2, y2, color, f_customPixel);
+    do_line(current_bm, x1, y1, x2, y2, color, f_customPixel);
 }
 
 /**
@@ -295,7 +296,7 @@ static void f_Box(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    rect(cur, x1, y1, x2, y2, color);
+    rect(current_bm, x1, y1, x2, y2, color);
 }
 
 /**
@@ -312,7 +313,7 @@ static void f_Circle(js_State *J) {
 
     int color = js_toint32(J, 4);
 
-    circle(cur, x, y, r, color);
+    circle(current_bm, x, y, r, color);
 }
 
 /**
@@ -335,7 +336,7 @@ static void f_CustomCircle(js_State *J) {
     } else {
         customRadius = w / 2;
     }
-    do_circle(cur, x, y, r, color, f_customPixel);
+    do_circle(current_bm, x, y, r, color, f_customPixel);
 }
 
 /**
@@ -353,7 +354,7 @@ static void f_Ellipse(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    ellipse(cur, xc, yc, xa, ya, color);
+    ellipse(current_bm, xc, yc, xa, ya, color);
 }
 
 /**
@@ -377,7 +378,7 @@ static void f_CustomEllipse(js_State *J) {
     } else {
         customRadius = w / 2;
     }
-    do_ellipse(cur, xc, yc, xa, ya, color, f_customPixel);
+    do_ellipse(current_bm, xc, yc, xa, ya, color, f_customPixel);
 }
 
 /**
@@ -441,7 +442,7 @@ static void f_CircleArc(js_State *J) {
     arcReturn.startX = arcReturn.startY = -1;
     arcReturn.centerX = x;
     arcReturn.centerY = y;
-    do_arc(cur, x, y, ftofix(start), ftofix(end), r, color, f_recordingPixel);
+    do_arc(current_bm, x, y, ftofix(start), ftofix(end), r, color, f_recordingPixel);
 
     f_arcReturn(J, &arcReturn);
 }
@@ -478,7 +479,7 @@ static void f_CustomCircleArc(js_State *J) {
     arcReturn.startX = arcReturn.startY = -1;
     arcReturn.centerX = x;
     arcReturn.centerY = y;
-    do_arc(cur, x, y, ftofix(start), ftofix(end), r, color, f_recordingCustomPixel);
+    do_arc(current_bm, x, y, ftofix(start), ftofix(end), r, color, f_recordingCustomPixel);
 
     f_arcReturn(J, &arcReturn);
 }
@@ -498,7 +499,7 @@ static void f_FilledBox(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    rectfill(cur, x1, y1, x2, y2, color);
+    rectfill(current_bm, x1, y1, x2, y2, color);
 }
 
 /**
@@ -515,7 +516,7 @@ static void f_FilledCircle(js_State *J) {
 
     int color = js_toint32(J, 4);
 
-    circlefill(cur, x, y, r, color);
+    circlefill(current_bm, x, y, r, color);
 }
 
 /**
@@ -533,7 +534,7 @@ static void f_FilledEllipse(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    ellipsefill(cur, xc, yc, xa, ya, color);
+    ellipsefill(current_bm, xc, yc, xa, ya, color);
 }
 
 /**
@@ -548,7 +549,7 @@ static void f_FloodFill(js_State *J) {
 
     int color = js_toint32(J, 3);
 
-    floodfill(cur, x, y, color);
+    floodfill(current_bm, x, y, color);
 }
 
 /**
@@ -561,7 +562,7 @@ static void f_FilledPolygon(js_State *J) {
     poly_array_t *array = f_convertArray(J, 1);
     int color = js_toint32(J, 2);
 
-    polygon(cur, array->len, array->data, color);
+    polygon(current_bm, array->len, array->data, color);
 
     f_freeArray(array);
 }
@@ -581,7 +582,7 @@ static void f_TextXY(js_State *J) {
     int fg = js_toint32(J, 4);
     int bg = js_toint32(J, 5);
 
-    textout_ex(cur, font, (char *)str, x, y, fg, bg);
+    textout_ex(current_bm, font, (char *)str, x, y, fg, bg);
 }
 
 /**
@@ -596,7 +597,7 @@ static void f_SaveBmpImage(js_State *J) {
     PALETTE pal;
     get_palette(pal);
 
-    if (save_bmp(fname, cur, (const struct RGB *)&pal) != 0) {
+    if (save_bmp(fname, current_bm, (const struct RGB *)&pal) != 0) {
         js_error(J, "Can't save screen to BMP file '%s': %s", fname, allegro_error);
     }
 }
@@ -613,7 +614,7 @@ static void f_SavePcxImage(js_State *J) {
     PALETTE pal;
     get_palette(pal);
 
-    if (save_pcx(fname, cur, (const struct RGB *)&pal) != 0) {
+    if (save_pcx(fname, current_bm, (const struct RGB *)&pal) != 0) {
         js_error(J, "Can't save screen to PCX file '%s': %s", fname, allegro_error);
     }
 }
@@ -630,7 +631,7 @@ static void f_SaveTgaImage(js_State *J) {
     PALETTE pal;
     get_palette(pal);
 
-    if (save_tga(fname, cur, (const struct RGB *)&pal) != 0) {
+    if (save_tga(fname, current_bm, (const struct RGB *)&pal) != 0) {
         js_error(J, "Can't save screen to TGA file '%s': %s", fname, allegro_error);
     }
 }
@@ -644,7 +645,7 @@ static void f_SaveTgaImage(js_State *J) {
 static void f_GetPixel(js_State *J) {
     int x = js_toint16(J, 1);
     int y = js_toint16(J, 2);
-    js_pushnumber(J, getpixel(cur, x, y) | 0xFE000000);
+    js_pushnumber(J, getpixel(current_bm, x, y) | 0xFE000000);
 }
 
 /**
@@ -656,6 +657,21 @@ static void f_GetPixel(js_State *J) {
 static void f_TransparencyEnabled(js_State *J) {
     transparency_available = js_toboolean(J, 1);
     update_transparency();
+}
+
+/**
+ * @brief set the current rendering destination.
+ * SetRenderBitmap(bm:Bitmap)
+ *
+ * @param J the JS context.
+ */
+static void f_SetRenderBitmap(js_State *J) {
+    if (js_isundefined(J, 1) || js_isnull(J, 1)) {
+        current_bm = render_bm;
+    } else {
+        BITMAP *bm = js_touserdata(J, 1, TAG_BITMAP);
+        current_bm = bm;
+    }
 }
 
 /***********************
@@ -672,6 +688,7 @@ void init_gfx(js_State *J) {
     js_setglobal(J, "global");
 
     // define global functions
+    FUNCDEF(J, f_SetRenderBitmap, "SetRenderBitmap", 0);
     FUNCDEF(J, f_GetScreenMode, "GetScreenMode", 0);
     FUNCDEF(J, f_SizeX, "SizeX", 0);
     FUNCDEF(J, f_SizeY, "SizeY", 0);

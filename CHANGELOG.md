@@ -1,4 +1,12 @@
-**Version 0.9.7 (the late lament)**
+**Version 0.9.8 (the expanded dimension)**
+* updated help.txt and README.md
+* added sound input functions.
+* finished 3D drawing functions, zbuffer functions and 3D math functions.
+* You can now render to Bitmaps created by `new Bitmap(width, height`)`
+* `Color()` now also works with three arguments (alpha is 255 for missing value).
+* Fixed missing documentation.
+
+**Version 0.9.7 (the latest lament)**
 * fixed rect().
 * added Bitmap.DrawTrans() for 32bit TGA images w/ alpha.
 * Added Cut, Copy & Paste to the editor.

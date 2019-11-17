@@ -95,7 +95,7 @@ I used the following command lines to update/install my dependencies:
 ```bash
 sudo apt-get update
 sudo apt-get dist-upgrade
-sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev g++ unzip htop screen git bash-completion build-essential npm
+sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev g++ unzip htop screen git bash-completion build-essential npm zip
 sudo npm install -g jsdoc
 sudo npm install -g tui-jsdoc-template
 ```
@@ -128,6 +128,7 @@ See the [changelog](/CHANGELOG.md) for the projects history.
 * Fix bugs!
 * Improve help viewer.
 * Anything fun...
+* 3dfx driver
 
 # Licenses
 ## DOjS
@@ -172,7 +173,7 @@ The examples are licensed under a [Creative Commons Attribution-NonCommercial-Sh
 # Usage
 ## Command line
 ```
-Usage: DOjS.EXE [-r] [-s <p>:<i>:<d>] <script>
+Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script>
     -r             : Do not invoke the editor, just run the script.
     -w <width>     : Screen width: 320 or 640, Default: 640.
     -b <bpp>       : Bit per pixel:8, 16, 24, 32. Default: 32.
@@ -190,17 +191,23 @@ Usage: DOjS.EXE [-r] [-s <p>:<i>:<d>] <script>
     F9  : Show/Close logfile
     F10 : Quit
 
-    Shift-F4   : Truncate logfile and run script
-    Shift-F7   : Find again
-    CTRL-D     : Delete current line
-    CTRL-LEFT  : Previous word
-    CTRL-RIGHT : Next word
-    PAGE-UP    : One page up.
-    PAGE-DOWN  : One page down.
-    HOME       : Go to start of line
-    END        : Go to end of line
-    CTRL-HOME  : Go to start of line
-    CTRL-END   : Go to end of line
+    Shift-F4       : Truncate logfile and run script
+    Shift-F7       : Find again
+    CTRL-D         : Delete current line
+    SHIFT+Movement : Select text, releasing SHIFT deselects
+    CTRL-C         : Copy selection
+    CTRL-X         : Cut selection
+    CTRL-V         : Paste
+    CTRL-LEFT      : Previous word
+    CTRL-RIGHT     : Next word
+    PAGE-UP        : One page up.
+    PAGE-DOWN      : One page down.
+    HOME           : Go to start of line
+    END            : Go to end of line
+    CTRL-HOME      : Go to start of line
+    CTRL-END       : Go to end of line
+    TAB            : Insert spaces until next TAB-stop at cursor
+    SHIFT-TAB      : Reduce indentation of line.
 
     TAB size is 4.
     The help viewer will remember the current position.

@@ -12,7 +12,7 @@ ALLEGRO=allegro-4.2.2-xc-master
 INCLUDES=-I$(MUJS) -I$(ALLEGRO)/include
 LIBS=-lalleg -lmujs -lm -lemu
 
-CFLAGS=-MMD -Wall -Wmissing-prototypes -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -DPLATFORM_MSDOS -fgnu89-inline #-DDEBUG_ENABLED
+CFLAGS=-MMD -Wall -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -DPLATFORM_MSDOS -fgnu89-inline # -DDEBUG_ENABLED #-Wmissing-prototypes 
 LDFLAGS=-L$(MUJS)/build/release -L$(ALLEGRO)/lib/djgpp
 
 EXE=DOJS.EXE
@@ -48,7 +48,8 @@ PARTS= \
 	$(BUILDDIR)/gfx.o \
 	$(BUILDDIR)/sound.o \
 	$(BUILDDIR)/util.o \
-	$(BUILDDIR)/a3d.o
+	$(BUILDDIR)/a3d.o \
+	$(BUILDDIR)/zbuffer.o
 
 all: init libmujs liballegro $(EXE)
 
@@ -65,6 +66,9 @@ $(ALLEGRO)/lib/djgpp/liballeg.a:
 $(EXE): $(PARTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 	$(STRIP) $@
+
+exscn3d.exe: exscn3d.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 $(BUILDDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

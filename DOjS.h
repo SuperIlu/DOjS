@@ -38,8 +38,8 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 0.97         //!< version number
-#define DOSJS_VERSION_STR "V0.97"  //!< version number as string
+#define DOSJS_VERSION 0.98         //!< version number
+#define DOSJS_VERSION_STR "V0.98"  //!< version number as string
 
 #define BOOT_DIR "JSBOOT/"  //!< directory with boot files.
 
@@ -131,6 +131,7 @@ extern FILE *logfile;  //!< file for log output.
 #endif
 
 extern bool sound_available;  //!< indicates if WAV sound is available
+extern bool sndin_available;  //!< indicates if sound recording is available
 extern bool mouse_available;  //!< indicates if the mouse is available
 extern bool ipx_available;    //!< indicates if ipx is available
 extern bool mouse_visible;    //!< indicates if the cursor should be visible.
@@ -142,7 +143,9 @@ extern float wanted_frame_rate;   //!< wanted frame rate
 extern bool keep_running;  //!< indicates that the script should keep on running
 extern int exit_key;       //!< the exit key that will stop the script
 
-extern BITMAP *cur;                       //!< current drawing bitmap
+extern BITMAP *current_bm;  //!< current bitmap that is rendered on
+extern BITMAP *render_bm;   //!< default render bitmap created at start
+
 extern volatile unsigned long sys_ticks;  //!< tick counter
 
 /***********************

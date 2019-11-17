@@ -91,6 +91,60 @@ function IpxGetPacket() { }
 function IpxGetLocalAddress() { }
 
 /**
+ * sound recording functions.
+ * 
+ * @module sndin
+ */
+
+/**
+* @property {boolean} SNDIN_AVAILABLE true if sound recording is available.
+*/
+SNDIN_AVAILABLE = true;
+
+/**
+ * @property {boolean} SNDIN_8BIT true if 8bit input is available.
+ */
+SNDIN_8BIT = true;
+
+/**
+ * @property {boolean} SNDIN_16BIT true if 16bit input is available.
+ */
+SNDIN_16BIT = true;
+
+/**
+ * @property {boolean} SNDIN_STEREO true if stereo input is available.
+ */
+SNDIN_STEREO = true;
+
+/**
+ * select sound input source.
+ * 
+ * @param {*} src a value from {@link SOUND}.
+ */
+function SoundInputSource(src) { }
+
+/**
+ * start sound recording with given parameters.
+ * 
+ * @param {number} rate sample rate.
+ * @param {number} bits 8 or 16 bits.
+ * @param {bool} stereo true for stereo recording.
+ */
+function SoundStartInput(rate, bits, stereo) { }
+
+/**
+ * stop sound recording.
+ */
+function SoundStopInput() { }
+
+/**
+ * get the actuall sound data.
+ * 
+ * @returns {number[]} returns one or two arrays with sound data or null if no data available.
+ */
+function ReadSoundInput() { }
+
+/**
  * MIDI music functions. See {@link Midi} on how to load MIDI files.
  * 
  * @module midi
@@ -133,6 +187,12 @@ function MidiOut(data) { }
  * 
  * @module gfx
  */
+/**
+ * set the current render destination.
+ * @param {Bitmap} bm A Bitmap to render on or null to use the screen as rendering destination.
+ */
+function SetRenderBitmap(bm) { }
+
 /**
  * get the width of the drawing area.
  * @returns {number} the width of the drawing area.
@@ -478,7 +538,7 @@ function SetExitKey(key) { }
  * @param {number} r red (0-255)
  * @param {number} g green (0-255)
  * @param {number} b blue (0-255)
- * @param {number} a alpha (0-255)
+ * @param {number} a alpha (0-255) (optional)
  * @returns {number} a color.
  */
 function Color(r, g, b, a) { }
@@ -511,3 +571,66 @@ function GetBlue(c) { }
  */
 function GetAlpha(c) { }
 
+/**
+ * @module 3d
+ */
+/**
+ * This number (default value = 100.0) controls the behaviour of the z-sorting algorithm. When an edge is very close to another's polygon plane, there is an interval of uncertainty in which you cannot tell which object is visible (which z is smaller). This is due to cumulative numerical errors for edges that have undergone a lot of transformations and interpolations.<br/>
+ * The default value means that if the 1/z values (in projected space) differ by only 1/100 (one percent), they are considered to be equal and the x-slopes of the planes are used to find out which plane is getting closer when we move to the right.<br/>
+ * Larger values means narrower margins, and increasing the chance of missing true adjacent edges/planes. Smaller values means larger margins, and increasing the chance of mistaking close polygons for adjacent ones. The value of 100 is close to the optimum. However, the optimum shifts slightly with resolution, and may be application-dependent. It is here for you to fine-tune. <br/>
+ * @param {number} gap gap value.
+ */
+function SetSceneGap(gap) { }
+
+/**
+ * Draw 3d polygons using the specified rendering mode. Unlike the regular polygon() function, these routines don't support concave or self-intersecting shapes. The width and height of the texture bitmap must be powers of two, but can be different, eg. a 64x16 texture is fine
+ * How the vertex data is used depends on the rendering mode:
+ * <br/><br/>
+ * The `x' and `y' values specify the position of the vertex in 2d screen coordinates.
+ * <br/><br/>
+ * The `z' value is only required when doing perspective correct texture mapping, and specifies the depth of the point in 3d world coordinates.
+ * <br/><br/>
+ * The `u' and `v' coordinates are only required when doing texture mapping, and specify a point on the texture plane to be mapped on to this vertex. The texture plane is an infinite plane with the texture bitmap tiled across it. Each vertex in the polygon has a corresponding vertex on the texture plane, and the image of the resulting polygon in the texture plane will be mapped on to the polygon on the screen.
+ * <br/><br/>
+ * We refer to pixels in the texture plane as texels. Each texel is a block, not just a point, and whole numbers for u and v refer to the top-left corner of a texel. This has a few implications. If you want to draw a rectangular polygon and map a texture sized 32x32 on to it, you would use the texture coordinates (0,0), (0,32), (32,32) and (32,0), assuming the vertices are specified in anticlockwise order. The texture will then be mapped perfectly on to the polygon. However, note that when we set u=32, the last column of texels seen on the screen is the one at u=31, and the same goes for v. This is because the coordinates refer to the top-left corner of the texels. In effect, texture coordinates at the right and bottom on the texture plane are exclusive.
+ * <br/><br/>
+ * There is another interesting point here. If you have two polygons side by side sharing two vertices (like the two parts of folded piece of cardboard), and you want to map a texture across them seamlessly, the values of u and v on the vertices at the join will be the same for both polygons. For example, if they are both rectangular, one polygon may use (0,0), (0,32), (32,32) and (32,0), and the other may use (32,0), (32,32), (64,32), (64,0). This would create a seamless join.
+ * Of course you can specify fractional numbers for u and v to indicate a point part-way across a texel. In addition, since the texture plane is infinite, you can specify larger values than the size of the texture. This can be used to tile the texture several times across the polygon. 
+ * 
+ * @param {POLYTYPE} type one of POLYTYPE.
+ * @param {Bitmap} texture texture Bitmap.
+ * @param {V3D[]} v an array of vertices.
+ */
+function Polygon3D(type, texture, v) { }
+/**
+ * Draw 3d triangles, using vertices.
+ * 
+ * @param {POLYTYPE} type one of POLYTYPE.
+ * @param {Bitmap} texture texture Bitmap.
+ * @param {V3D} v1 a vertex.
+ * @param {V3D} v2 a vertex.
+ * @param {V3D} v3 a vertex.
+ */
+function Triangle3D(type, texture, v1, v2, v3) { }
+/**
+ * Draw 3d quads using vertex.
+ * 
+ * @param {POLYTYPE} type one of POLYTYPE.
+ * @param {Bitmap} texture texture Bitmap.
+ * @param {V3D} v1 a vertex.
+ * @param {V3D} v2 a vertex.
+ * @param {V3D} v3 a vertex.
+ * @param {V3D} v4 a vertex.
+ */
+function Quad3D(type, texture, v1, v2, v3, v4) { }
+/**
+ * Clips the polygon given in `v'. The frustum (viewing volume) is defined by -z&lt;x&lt;z, -z&lt;y&lt;z, 0&lt;min_z&lt;z&lt;max_z. If max_z&lt;=min_z, the z&lt;max_z clipping is not done. As you can see, clipping is done in the camera space, with perspective in mind, so this routine should be called after you apply the camera matrix, but before the perspective projection. The routine will correctly interpolate u, v, and c in the vertex structure. However, no provision is made for high/truecolor GCOL. 
+ * 
+ * @param {POLYTYPE} type one of POLYTYPE.
+ * @param {number} min_z minimum z value.
+ * @param {number} max_z maximum z value.
+ * @param {V3D[]} v an array of vertices.
+ * 
+ * @returns {V3D[]} an array of vertices.
+ */
+function Clip3D(type, min_z, max_z, v) { }

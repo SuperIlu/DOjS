@@ -45,18 +45,25 @@ static void Bitmap_Finalize(js_State *J, void *data) {
 }
 
 /**
- * @brief load an image and store it as userdata in JS object.
+ * @brief load an image or create an empty bitmap.
  * new Bitmap(filename:string)
+ * new Bitmap(width:number, height:number)
  *
  * @param J VM state.
  */
 static void new_Bitmap(js_State *J) {
-    const char *fname = js_tostring(J, 1);
+    const char *fname = "<<buffer>>";
+    BITMAP *bm = NULL;
+    if (js_isnumber(J, 1) && js_isnumber(J, 2)) {
+        bm = create_bitmap(js_tonumber(J, 1), js_tonumber(J, 2));
+    } else {
+        fname = js_tostring(J, 1);
 
-    BITMAP *bm = load_bitmap(fname, NULL);
-    if (!bm) {
-        js_error(J, "Can't load image '%s'", fname);
-        return;
+        bm = load_bitmap(fname, NULL);
+        if (!bm) {
+            js_error(J, "Can't load image '%s'", fname);
+            return;
+        }
     }
 
     js_currentfunction(J);
@@ -84,7 +91,18 @@ static void Bitmap_Draw(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
     int x = js_toint16(J, 1);
     int y = js_toint16(J, 2);
-    blit(bm, cur, 0, 0, x, y, bm->w, bm->h);
+    blit(bm, current_bm, 0, 0, x, y, bm->w, bm->h);
+}
+
+/**
+ * @brief clear the bitmap.
+ * img.Clear()
+ *
+ * @param J VM state.
+ */
+static void Bitmap_Clear(js_State *J) {
+    BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
+    clear_bitmap(bm);
 }
 
 /**
@@ -97,7 +115,7 @@ static void Bitmap_DrawTrans(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
     int x = js_toint16(J, 1);
     int y = js_toint16(J, 2);
-    draw_trans_sprite(cur, bm, x, y);
+    draw_trans_sprite(current_bm, bm, x, y);
 }
 
 /**
@@ -128,6 +146,7 @@ void init_bitmap(js_State *J) {
     js_newobject(J);
     {
         PROTDEF(J, Bitmap_Draw, TAG_BITMAP, "Draw", 2);
+        PROTDEF(J, Bitmap_Clear, TAG_BITMAP, "Clear", 0);
         PROTDEF(J, Bitmap_DrawTrans, TAG_BITMAP, "DrawTrans", 2);
         PROTDEF(J, Bitmap_GetPixel, TAG_BITMAP, "GetPixel", 2);
     }

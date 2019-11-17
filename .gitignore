@@ -36,6 +36,7 @@ NEW.JS
 DOJS.ZIP
 JSLOG.TXT
 EDILOG.TXT
+COUT.TXT
 TEST.TXT
 TEST.JS
 TEST2.JS
@@ -45,6 +46,7 @@ stdout.txt
 miktest.c
 
 # other dirs
+tmp/
 upx/
 cylindrix/
 build/

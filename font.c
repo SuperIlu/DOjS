@@ -94,7 +94,7 @@ static void Font_DrawStringLeft(js_State *J) {
     int fg = js_toint32(J, 4);
     int bg = js_toint32(J, 5);
 
-    textout_ex(cur, f, str, x, y, fg, bg);
+    textout_ex(current_bm, f, str, x, y, fg, bg);
 }
 
 /**
@@ -113,7 +113,7 @@ static void Font_DrawStringCenter(js_State *J) {
     int fg = js_toint32(J, 4);
     int bg = js_toint32(J, 5);
 
-    textout_centre_ex(cur, f, str, x, y, fg, bg);
+    textout_centre_ex(current_bm, f, str, x, y, fg, bg);
 }
 
 /**
@@ -132,7 +132,7 @@ static void Font_DrawStringRight(js_State *J) {
     int fg = js_toint32(J, 4);
     int bg = js_toint32(J, 5);
 
-    textout_right_ex(cur, f, str, x, y, fg, bg);
+    textout_right_ex(current_bm, f, str, x, y, fg, bg);
 }
 
 /**

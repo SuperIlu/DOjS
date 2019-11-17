@@ -168,6 +168,26 @@ function CompareKey(k, s) {
 }
 
 /**
+ * sound input selection.
+ * @property {*} Input.MIC use microphone input
+ * @property {*} Input.LINE use line input
+ * @property {*} Input.CD use CD input
+ * @property {*} Bits.BITS8 use 8 bits
+ * @property {*} Bits.BITS16 use 16 bits
+ */
+SOUND = {
+	Input: {
+		MIC: 1,
+		LINE: 2,
+		CD: 3
+	},
+	Bits: {
+		BITS8: 8,
+		BITS16: 16
+	}
+};
+
+/**
  * event interface.
  * @property {*} Mode.NONE no cursor
  * @property {*} Mode.ARROW arrow cursor

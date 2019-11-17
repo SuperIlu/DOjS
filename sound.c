@@ -25,6 +25,15 @@ SOFTWARE.
 #include <mujs.h>
 #include "DOjS.h"
 
+/**************
+** Variables **
+**************/
+static char *snd_sample_data = NULL;     //!< pointer to recorded sample data
+static int snd_buffer_size = 0;          //!< size of sample buffer in samples
+static bool snd_stereo = false;          //!< stereo selected?
+static bool snd_16bit = false;           //!< 16 bit selected
+static bool snd_data_available = false;  //!< is data available to be pulled?
+
 /*********************
 ** static functions **
 *********************/
@@ -99,6 +108,136 @@ static void Sample_stop(js_State *J) {
     }
 }
 
+/**
+ * @brief recoding callback for new data available.
+ */
+static void snd_recorder() { snd_data_available = true; }
+
+/**
+ * @brief select sound input source.
+ * SoundInputSource(source:number)
+ *
+ * @param J VM state.
+ */
+static void snd_input_source(js_State *J) {
+    if (sndin_available) {
+        int src = js_toint16(J, 1);
+        if (set_sound_input_source(src) < 0) {
+            js_error(J, "Cannot select sound source: hardware does not provide an input select register");
+            return;
+        }
+    }
+}
+
+/**
+ * @brief start recording sound data.
+ * SoundStartInput(rate:number, bits:number, stereo:bool)
+ *
+ * @param J VM state.
+ */
+static void snd_start_input(js_State *J) {
+    if (sndin_available) {
+        int freq = js_toint16(J, 1);
+        int bits = js_toint16(J, 2);
+        switch (bits) {
+            case 8:
+                snd_16bit = false;
+                break;
+            case 16:
+                snd_16bit = true;
+                break;
+            default:
+                js_error(J, "wrong bit size");
+                break;
+        }
+        snd_stereo = js_toboolean(J, 3);
+
+        digi_recorder = &snd_recorder;
+
+        snd_buffer_size = start_sound_input(freq, bits, snd_stereo);
+        if (snd_buffer_size <= 0) {
+            js_error(J, "Cannot record sound: wrong parameters?");
+            return;
+        }
+        int bytes_per_sample = ((bits == 8) ? 1 : sizeof(short)) * ((snd_stereo) ? 2 : 1);
+        DEBUGF("snd_buffer_size=%d, bytes/sample=%d\n", snd_buffer_size, bytes_per_sample);
+        snd_sample_data = malloc(snd_buffer_size * bytes_per_sample);
+        if (!snd_sample_data) {
+            js_error(J, "out of memory");
+        }
+        snd_data_available = true;
+    }
+}
+
+/**
+ * @brief end recording.
+ * SoundStopInput()
+ *
+ * @param J VM state.
+ */
+static void snd_stop_input(js_State *J) {
+    if (sndin_available) {
+        stop_sound_input();
+
+        free(snd_sample_data);
+
+        snd_sample_data = NULL;
+    }
+}
+
+/**
+ * @brief get current sample buffer.
+ * ReadSoundInput(): array[number] or array[array[number], array[number]]
+ *
+ * @param J VM state.
+ */
+static void snd_read_input(js_State *J) {
+    if (sndin_available && snd_sample_data && snd_data_available) {
+        read_sound_input(snd_sample_data);
+        snd_data_available = false;
+        if (snd_stereo) {
+            js_newarray(J);
+
+            // left
+            js_newarray(J);
+            for (int i = 0; i < snd_buffer_size; i++) {
+                if (snd_16bit) {
+                    js_pushnumber(J, ((unsigned short *)snd_sample_data)[i * 2]);
+                } else {
+                    js_pushnumber(J, ((unsigned char *)snd_sample_data)[i * 2]);
+                }
+                js_setindex(J, -2, i);
+            }
+            js_setindex(J, -2, 0);
+
+            // right
+            js_newarray(J);
+            for (int i = 0; i < snd_buffer_size; i++) {
+                if (snd_16bit) {
+                    js_pushnumber(J, ((unsigned short *)snd_sample_data)[i * 2 + 1]);
+                } else {
+                    js_pushnumber(J, ((unsigned char *)snd_sample_data)[i * 2 + 1]);
+                }
+                js_setindex(J, -2, i);
+            }
+            js_setindex(J, -2, 1);
+
+        } else {
+            js_newarray(J);
+            for (int i = 0; i < snd_buffer_size; i++) {
+                if (snd_16bit) {
+                    js_pushnumber(J, ((unsigned short *)snd_sample_data)[i]);
+                } else {
+                    js_pushnumber(J, ((unsigned char *)snd_sample_data)[i]);
+                }
+                js_setindex(J, -2, i);
+            }
+        }
+    } else {
+        js_pushnull(J);
+    }
+}
+
 /***********************
 ** exported functions **
 ***********************/
@@ -108,6 +247,19 @@ static void Sample_stop(js_State *J) {
  * @param J VM state.
  */
 void init_sound(js_State *J) {
+    int cap = get_sound_input_cap_bits();
+
+    // report capabilities
+    PROPDEF_B(J, sndin_available, "SNDIN_AVAILABLE");            // do we have sound input?
+    PROPDEF_B(J, ((cap & 8) != 0), "SNDIN_8BIT");                // do we have 8bit input?
+    PROPDEF_B(J, ((cap & 16) != 0), "SNDIN_16BIT");              // do we have 16bit input?
+    PROPDEF_B(J, get_sound_input_cap_stereo(), "SNDIN_STEREO");  // do we have stereo input?
+
+    FUNCDEF(J, snd_input_source, "SoundInputSource", 1);
+    FUNCDEF(J, snd_start_input, "SoundStartInput", 3);
+    FUNCDEF(J, snd_stop_input, "SoundStopInput", 0);
+    FUNCDEF(J, snd_read_input, "ReadSoundInput", 0);
+
     js_newobject(J);
     { PROTDEF(J, Sample_play, TAG_SAMPLE, "Play", 0); }
     { PROTDEF(J, Sample_stop, TAG_SAMPLE, "Stop", 1); }

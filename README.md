@@ -16,15 +16,29 @@ DOjS was only possible due to the work of these people/projects:
 * The [Allegro library](https://liballeg.org/)
 * [DJGPP](http://www.delorie.com/djgpp/) from DJ Delorie and the [Linux compile scripts](https://github.com/andrewwutw/build-djgpp) by Andrew Wu.
 * The people that contributed to [p5js](https://p5js.org/).
+* The Glide source cleanup of [Ozkan Sezer](https://github.com/sezero/glide).
 
 You can find me on [Twitter](https://twitter.com/dec_hl) if you want...
 
 # Download and quick start
 **You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases).** Just extract the contents of the archive and run DOjS.
 
-DOjS runs in [Dosbox](https://www.dosbox.com/) and on real hardware or a virtual machine with MS-DOS, [FreeDOS](https://www.freedos.org/) or any DOS based Windows like Windows 95/98/ME.
+DOjS runs in [Dosbox](https://www.dosbox.com/) and on real hardware or a virtual machine with MS-DOS, [FreeDOS](https://www.freedos.org/) or any DOS based Windows like Windows 95/98/ME. To use 3Dfx/Glide support you need a Voodoo card or [DOSBox-X](https://github.com/joncampbell123/dosbox-x/releases) (see below).
 
 If you run it on real hardware you need at least a **80386 with 4MB**. I recommend a **Pentium class machine (>= 100MHz) with at least 32MB RAM**. The example files run fine on an Athlon 1GHz and with 256MB RAM.
+
+The following hardware/functions are available:
+* 8/16/24 and 32 bit 2D graphics. On 32bit display modes alpha channel transparency is available.
+* Keyboard input
+* Mouse input
+* Joystick/Joyport input
+* File IO
+* MIDI output
+* WAV output
+* Audio input/sampling
+* Allegro 3D rendering (software)
+* 3dfx/Glide3 3D rendering output (hardware)
+* p5js compatibility
 
 ## A minimal script
 You can find the following example in `examples/exampl.js`:
@@ -75,7 +89,7 @@ function draw() {
     background(EGA.BLACK);
     stroke(pink);
     fill(pink);
-    text("Hello World!", width / 2, height / 2);
+    text("Hello p5js World!", width / 2, height / 2);
 
     stroke(EGA.LIGHT_BLUE);
     fill(EGA.LIGHT_BLUE);
@@ -84,6 +98,22 @@ function draw() {
 ```
 
 More info can be found at the end of this README in the section **Usage** and in the API documentation. Take a look at the `examples/` as well.
+
+## 3dfx/Glide support
+DOjS supports most of the Glide3 API that was used with [3dfx](https://en.wikipedia.org/wiki/3dfx_Interactive) accelerator cards. The following hardware is supported:
+* Voodoo 1 [tested]
+* Voodoo 2 [tested]
+* Voodoo 3 [tested]
+* Voodoo 4 [untested, I don't own one]
+* Voodoo 5 [untested, I don't own one]
+* Voodoo Rush (all versions) [tested]
+* Voodoo Banshee (PCI and AGP) [tested]
+
+Additionally you can use [DOSBox-X](https://github.com/joncampbell123/dosbox-x/releases) which emulates a Voodoo 1 card. Glide functions can be found in the 3dfx-module in the documentation, Javascript support functions have a "FX" prefix, all native functions are prefixed with "fx". Detailed Glide3-API documentation can be found on the internet, e.g. on [FalconFly Central](http://falconfly.3dfx.pl/reference.htm). Make sure you grab the Glide3 SDK and not Glide2!
+You can use the included DOS version of `TEXUS.EXE` to convert bitmaps to `3df` texture files that can be loaded as textures.
+**!!! Attention !!!**
+3dfx/Glide3 support ONLY works in plain DOS, NOT in the DOS/command window of Windows 9x! Be sure to always boot into a pure DOS prompt before trying to use any of the fx-functions!
+Before using 3dfx/Glide3 support you need to copy the appropriate `GLIDE3X.DXE` into the same directory as `DOJS.EXE`. You can do so by using the `V_XXX.BAT` scripts in the distribution ZIP archive.
 
 # Compilation
 You can compile DOjS on any modern Linux (the instructions below are for Debian based distributions) or on Windows 10 using Windows Subsystem for Linux (WSL).
@@ -121,14 +151,19 @@ Open the Makefile in a text editor and change the path to DJGPP according to you
 Now you are ready to compile DOjS with `make clean all`. This might take some time as the dependencies are quite a large.
 `make distclean` will clean dependencies as well. `make zip` will create the distribution ZIP and `make doc` will re-create the HTML help.
 
+## 3dfx/Glide3
+In order to compile DOjS you need Glide3 includes and binaries. The ones included with the DOjS sources were created using my [glide repository](https://github.com/SuperIlu/glide) on GitHub. 
+
 # History
 See the [changelog](/CHANGELOG.md) for the projects history.
 
 # Planed work
 * Fix bugs!
-* Improve help viewer.
+* Improve help viewer (context help?).
 * Anything fun...
-* 3dfx driver
+* Switch to Duktape JS runtime
+* Add COM port access
+* Enable runtime creation of 3dfx/glide textures
 
 # Licenses
 ## DOjS
@@ -150,6 +185,10 @@ It was [released](https://sourceforge.net/projects/cylindrix/) under **GPLv2**.
 ## CWSDPMI.EXE
 [CWSDPMI](http://sandmann.dotster.com/cwsdpmi/) DPMI host is licensed under **GPL**. The documentation states:
 > The files in this binary distribution may be redistributed under the GPL (with source) or without the source code provided.
+
+## 3dfx/Glide3
+The code is licensed under "3DFX GLIDE Source Code General Public License".
+Source code is available at https://github.com/SuperIlu/glide
 
 ## Logo
 The DOjS logo dog was downloaded from [Pexels](https://www.pexels.com/photo/animal-cachorro-doge-pug-1753686/) and kindly provided by Iago Garcia Garcia.
@@ -173,7 +212,7 @@ The examples are licensed under a [Creative Commons Attribution-NonCommercial-Sh
 # Usage
 ## Command line
 ```
-Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script>
+Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script> [script parameters]
     -r             : Do not invoke the editor, just run the script.
     -w <width>     : Screen width: 320 or 640, Default: 640.
     -b <bpp>       : Bit per pixel:8, 16, 24, 32. Default: 32.

@@ -1,14 +1,30 @@
+**Version 0.9.9 (the voodoo vision)**
+* Fixed typo in the `GetXRotateMatrix()` functions.
+* Sped up several 3D math function by implementing them in C (native JS functions still available by prefixing 'N').
+* Added `Bitmap.DrawAdvanced()` for scaled bitmap drawing.
+* Fixed CTRL-C handling on FreeDOS, now copy & paste works there as well.
+* You can now pass command line parameters to your scripts.
+* Added `String.startsWith()` and `String.endsWith()` from MDN.
+* Added `HSBColor()` to native API.
+* Fixed `SizeX()` and `SizeY()` after using `SetRenderBitmap()`
+* Added joystick functions.
+* Fixed "new sketch" template.
+* Added 3Dfx/Glide support for Voodoo1/2/3/4/5/Banshee/Rush
+* Improved error reporting from Allegro
+* Added automatic fallback to 24bbp when 32bbp are not available
+* Fixed the remote logviewer and some examples
+
 **Version 0.9.8 (the expanded dimension)**
 * updated help.txt and README.md
 * added sound input functions.
 * finished 3D drawing functions, zbuffer functions and 3D math functions.
-* You can now render to Bitmaps created by `new Bitmap(width, height`)`
+* You can now render to Bitmaps created by `new Bitmap(width, height)`
 * `Color()` now also works with three arguments (alpha is 255 for missing value).
 * Fixed missing documentation.
 
 **Version 0.9.7 (the latest lament)**
-* fixed rect().
-* added Bitmap.DrawTrans() for 32bit TGA images w/ alpha.
+* fixed `rect()`.
+* added `Bitmap.DrawTrans()` for 32bit TGA images w/ alpha.
 * Added Cut, Copy & Paste to the editor.
 * Added auto indent and backtab handling.
 * Started working on allegro 3D fuctions (unfinished, untested)!

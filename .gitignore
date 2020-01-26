@@ -34,6 +34,7 @@ edi.js
 req.js
 NEW.JS
 DOJS.ZIP
+dojs.zip
 JSLOG.TXT
 EDILOG.TXT
 COUT.TXT
@@ -60,3 +61,7 @@ tests/SCR.BMP
 allegro-4.2.2-xc-master/obj/djgpp/asmcapa.h
 allegro-4.2.2-xc-master/obj/djgpp/asmdef.inc
 allegro-4.2.2-xc-master/obj/djgpp/asmdef.s
+mujs-1.0.5/one.c
+mujs-1.0.5/opnames.h
+GLIDE3X.DXE
+glide3x.dxe

@@ -84,7 +84,7 @@ static void new_Sample(js_State *J) {
  * @param J VM state.
  */
 static void Sample_play(js_State *J) {
-    if (sound_available) {
+    if (DOjS.sound_available) {
         SAMPLE *snd = js_touserdata(J, 0, TAG_SAMPLE);
 
         int vol = js_toint16(J, 1);
@@ -102,7 +102,7 @@ static void Sample_play(js_State *J) {
  * @param J VM state.
  */
 static void Sample_stop(js_State *J) {
-    if (sound_available) {
+    if (DOjS.sound_available) {
         SAMPLE *snd = js_touserdata(J, 0, TAG_SAMPLE);
         stop_sample(snd);
     }
@@ -120,7 +120,7 @@ static void snd_recorder() { snd_data_available = true; }
  * @param J VM state.
  */
 static void snd_input_source(js_State *J) {
-    if (sndin_available) {
+    if (DOjS.sndin_available) {
         int src = js_toint16(J, 1);
         if (set_sound_input_source(src) < 0) {
             js_error(J, "Cannot select sound source: hardware does not provide an input select register");
@@ -136,7 +136,7 @@ static void snd_input_source(js_State *J) {
  * @param J VM state.
  */
 static void snd_start_input(js_State *J) {
-    if (sndin_available) {
+    if (DOjS.sndin_available) {
         int freq = js_toint16(J, 1);
         int bits = js_toint16(J, 2);
         switch (bits) {
@@ -163,7 +163,7 @@ static void snd_start_input(js_State *J) {
         DEBUGF("snd_buffer_size=%d, bytes/sample=%d\n", snd_buffer_size, bytes_per_sample);
         snd_sample_data = malloc(snd_buffer_size * bytes_per_sample);
         if (!snd_sample_data) {
-            js_error(J, "out of memory");
+            JS_ENOMEM(J);
         }
         snd_data_available = true;
     }
@@ -176,7 +176,7 @@ static void snd_start_input(js_State *J) {
  * @param J VM state.
  */
 static void snd_stop_input(js_State *J) {
-    if (sndin_available) {
+    if (DOjS.sndin_available) {
         stop_sound_input();
 
         free(snd_sample_data);
@@ -192,7 +192,7 @@ static void snd_stop_input(js_State *J) {
  * @param J VM state.
  */
 static void snd_read_input(js_State *J) {
-    if (sndin_available && snd_sample_data && snd_data_available) {
+    if (DOjS.sndin_available && snd_sample_data && snd_data_available) {
         read_sound_input(snd_sample_data);
         snd_data_available = false;
         if (snd_stereo) {
@@ -245,12 +245,20 @@ static void snd_read_input(js_State *J) {
  * @brief initialize module/sample subsystem.
  *
  * @param J VM state.
+ * @param no_sound skip sound init.
+ * @param no_fm skip fm sound init.
  */
-void init_sound(js_State *J) {
+void init_sound(js_State *J, bool no_sound, bool no_fm) {
+    // sound input
+    DOjS.sndin_available = install_sound_input(no_sound ? DIGI_NONE : DIGI_AUTODETECT, no_fm ? MIDI_NONE : MIDI_AUTODETECT) == 0;
+    if (!DOjS.sndin_available) {
+        LOGF("Sound input: %s\n", allegro_error);
+    }
+
     int cap = get_sound_input_cap_bits();
 
     // report capabilities
-    PROPDEF_B(J, sndin_available, "SNDIN_AVAILABLE");            // do we have sound input?
+    PROPDEF_B(J, DOjS.sndin_available, "SNDIN_AVAILABLE");       // do we have sound input?
     PROPDEF_B(J, ((cap & 8) != 0), "SNDIN_8BIT");                // do we have 8bit input?
     PROPDEF_B(J, ((cap & 16) != 0), "SNDIN_16BIT");              // do we have 16bit input?
     PROPDEF_B(J, get_sound_input_cap_stereo(), "SNDIN_STEREO");  // do we have stereo input?
@@ -259,6 +267,15 @@ void init_sound(js_State *J) {
     FUNCDEF(J, snd_start_input, "SoundStartInput", 3);
     FUNCDEF(J, snd_stop_input, "SoundStopInput", 0);
     FUNCDEF(J, snd_read_input, "ReadSoundInput", 0);
+
+    // sound output
+    bool sound_ok = install_sound(no_sound ? DIGI_NONE : DIGI_AUTODETECT, no_fm ? MIDI_NONE : MIDI_AUTODETECT, NULL) == 0;
+    if (!sound_ok) {
+        LOGF("Sound init: %s\n", allegro_error);
+    }
+    DOjS.midi_available = sound_ok && !no_fm;
+    DOjS.sound_available = sound_ok && !no_sound;
+    PROPDEF_B(J, DOjS.sound_available, "SOUND_AVAILABLE");
 
     js_newobject(J);
     { PROTDEF(J, Sample_play, TAG_SAMPLE, "Play", 0); }
@@ -271,6 +288,7 @@ void init_sound(js_State *J) {
  * @brief shutdown module/sample subsystem.
  */
 void shutdown_sound() {
-    if (sound_available) {
+    if (DOjS.sound_available) {
+        snd_stop_input(NULL);
     }
 }

@@ -24,7 +24,6 @@ SOFTWARE.
 #include <mujs.h>
 #include "DOjS.h"
 
-#ifndef PLATFORM_UNIX
 #include <allegro.h>
 
 /*********************
@@ -74,7 +73,7 @@ static void new_Midi(js_State *J) {
  * @param J VM state.
  */
 static void mid_Play(js_State *J) {
-    if (sound_available) {
+    if (DOjS.midi_available) {
         MIDI *midi = js_touserdata(J, 0, TAG_MIDI);
         bool loop = js_toboolean(J, 1);
 
@@ -89,7 +88,7 @@ static void mid_Play(js_State *J) {
  * @param J VM state.
  */
 static void mid_IsPlaying(js_State *J) {
-    if (sound_available) {
+    if (DOjS.midi_available) {
         js_pushboolean(J, midi_pos >= 0);
     } else {
         js_pushboolean(J, false);
@@ -97,25 +96,25 @@ static void mid_IsPlaying(js_State *J) {
 }
 
 static void mid_Stop(js_State *J) {
-    if (sound_available) {
+    if (DOjS.midi_available) {
         stop_midi();
     }
 }
 
 static void mid_Pause(js_State *J) {
-    if (sound_available) {
+    if (DOjS.midi_available) {
         midi_pause();
     }
 }
 
 static void mid_Resume(js_State *J) {
-    if (sound_available) {
+    if (DOjS.midi_available) {
         midi_resume();
     }
 }
 
 static void mid_GetTime(js_State *J) {
-    if (sound_available) {
+    if (DOjS.midi_available) {
         js_pushnumber(J, midi_time);
     } else {
         js_pushnumber(J, -1);
@@ -123,15 +122,15 @@ static void mid_GetTime(js_State *J) {
 }
 
 static void mid_Out(js_State *J) {
-    if (sound_available) {
+    if (DOjS.midi_available) {
         if (!js_isarray(J, 1)) {
-            js_error(J, "Array expected");
+            JS_ENOARR(J);
         } else {
             int len = js_getlength(J, 1);
 
             unsigned char *data = malloc(len);
             if (!data) {
-                js_error(J, "No memory for array");
+                JS_ENOMEM(J);
             }
 
             for (int i = 0; i < len; i++) {
@@ -154,6 +153,8 @@ static void mid_Out(js_State *J) {
  * @param J VM state.
  */
 void init_midi(js_State *J) {
+    PROPDEF_B(J, DOjS.midi_available, "MIDI_AVAILABLE");
+
     FUNCDEF(J, mid_IsPlaying, "MidiIsPlaying", 0);
     FUNCDEF(J, mid_Stop, "MidiStop", 0);
     FUNCDEF(J, mid_Pause, "MidiPause", 0);
@@ -171,12 +172,7 @@ void init_midi(js_State *J) {
  * @brief shutdown MIDI subsystem.
  */
 void shutdown_midi() {
-    if (sound_available) {
+    if (DOjS.midi_available) {
         stop_midi();
     }
 }
-
-#else
-void init_midi(js_State *J) { return false; }
-void shutdown_midi() {}
-#endif  // PLATFORM_UNIX

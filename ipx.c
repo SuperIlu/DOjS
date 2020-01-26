@@ -21,8 +21,6 @@
 #include "ipx.h"
 #include "DOjS.h"
 
-#ifndef PLATFORM_UNIX
-
 #include <dos.h>
 #include <dpmi.h>
 #include <go32.h>
@@ -514,7 +512,7 @@ static bool Jonipx_Pop_Packet(game_packet_t *packet) {
 
 static bool ipx_convertAddress(js_State *J, int idx, node_address_t addr) {
     if (!js_isarray(J, idx)) {
-        js_error(J, "Array expected");
+        JS_ENOARR(J);
         return false;
     } else {
         int len = js_getlength(J, idx);
@@ -543,7 +541,7 @@ static bool ipx_convertAddress(js_State *J, int idx, node_address_t addr) {
  * @param J the JS context.
  */
 static void ipx_IpxSocketOpen(js_State *J) {
-    if (ipx_available) {
+    if (DOjS.ipx_available) {
         if (!socket) {
             socket = js_toint16(J, 1);
 
@@ -564,7 +562,7 @@ static void ipx_IpxSocketOpen(js_State *J) {
  * @param J the JS context.
  */
 static void ipx_IpxSocketClose(js_State *J) {
-    if (socket && ipx_available) {
+    if (socket && DOjS.ipx_available) {
         Jonipx_Close();
     }
 }
@@ -673,7 +671,7 @@ static void ipx_IpxGetLocalAddress(js_State *J) {
  *
  * @param J VM state.
  */
-bool init_ipx(js_State *J) {
+void init_ipx(js_State *J) {
     FUNCDEF(J, ipx_IpxSocketOpen, "IpxSocketOpen", 1);
     FUNCDEF(J, ipx_IpxSocketClose, "IpxSocketClose", 0);
     FUNCDEF(J, ipx_IpxSend, "IpxSend", 2);
@@ -684,20 +682,16 @@ bool init_ipx(js_State *J) {
     // Check to see if IPX is present
     if (Allocate_Dos_Buffers() && Init_IPX()) {
         LOG("IPX available.\n");
-        return true;
+        DOjS.ipx_available = true;
     } else {
         // If not, end the programme
         LOG("IPX not found.\n");
-        return false;
+        DOjS.ipx_available = false;
     }
+    PROPDEF_B(J, DOjS.ipx_available, "IPX_AVAILABLE");
 }
 
 /**
  * @brief shutdown fm music subsystem.
  */
 void shutdown_ipx() { Jonipx_Close(); }
-
-#else
-bool init_ipx(js_State *J) { return false; }
-void shutdown_ipx() {}
-#endif  // PLATFORM_UNIX

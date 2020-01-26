@@ -117,7 +117,7 @@ static poly_array_t *f_allocArray(int len) {
  */
 static poly_array_t *f_convertArray(js_State *J, int idx) {
     if (!js_isarray(J, idx)) {
-        js_error(J, "Array expected");
+        JS_ENOARR(J);
         return NULL;
     } else {
         int len = js_getlength(J, idx);
@@ -166,7 +166,7 @@ static void f_GetScreenMode(js_State *J) { js_pushnumber(J, get_color_depth()); 
  *
  * @param J the JS context.
  */
-static void f_SizeX(js_State *J) { js_pushnumber(J, SCREEN_W); }
+static void f_SizeX(js_State *J) { js_pushnumber(J, DOjS.current_bm->w); }
 
 /**
  * @brief get the height of the drawing area.
@@ -174,7 +174,7 @@ static void f_SizeX(js_State *J) { js_pushnumber(J, SCREEN_W); }
  *
  * @param J the JS context.
  */
-static void f_SizeY(js_State *J) { js_pushnumber(J, SCREEN_H); }
+static void f_SizeY(js_State *J) { js_pushnumber(J, DOjS.current_bm->h); }
 
 /**
  * @brief create object with the coordinates of the last arc drawn.
@@ -210,7 +210,7 @@ static void f_arcReturn(js_State *J, arc_return_t *art) {
 static void f_ClearScreen(js_State *J) {
     int color = js_toint32(J, 1);
 
-    clear_to_color(current_bm, color);
+    clear_to_color(DOjS.current_bm, color);
 }
 
 /**
@@ -226,7 +226,7 @@ static void f_Plot(js_State *J) {
 
     int color = js_toint32(J, 3);
 
-    putpixel(current_bm, x, y, color);
+    putpixel(DOjS.current_bm, x, y, color);
 }
 
 /**
@@ -244,7 +244,7 @@ static void f_Line(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    line(current_bm, x1, y1, x2, y2, color);
+    line(DOjS.current_bm, x1, y1, x2, y2, color);
 }
 
 /**
@@ -278,7 +278,7 @@ static void f_CustomLine(js_State *J) {
     } else {
         customRadius = w / 2;
     }
-    do_line(current_bm, x1, y1, x2, y2, color, f_customPixel);
+    do_line(DOjS.current_bm, x1, y1, x2, y2, color, f_customPixel);
 }
 
 /**
@@ -296,7 +296,7 @@ static void f_Box(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    rect(current_bm, x1, y1, x2, y2, color);
+    rect(DOjS.current_bm, x1, y1, x2, y2, color);
 }
 
 /**
@@ -313,7 +313,7 @@ static void f_Circle(js_State *J) {
 
     int color = js_toint32(J, 4);
 
-    circle(current_bm, x, y, r, color);
+    circle(DOjS.current_bm, x, y, r, color);
 }
 
 /**
@@ -336,7 +336,7 @@ static void f_CustomCircle(js_State *J) {
     } else {
         customRadius = w / 2;
     }
-    do_circle(current_bm, x, y, r, color, f_customPixel);
+    do_circle(DOjS.current_bm, x, y, r, color, f_customPixel);
 }
 
 /**
@@ -354,7 +354,7 @@ static void f_Ellipse(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    ellipse(current_bm, xc, yc, xa, ya, color);
+    ellipse(DOjS.current_bm, xc, yc, xa, ya, color);
 }
 
 /**
@@ -378,7 +378,7 @@ static void f_CustomEllipse(js_State *J) {
     } else {
         customRadius = w / 2;
     }
-    do_ellipse(current_bm, xc, yc, xa, ya, color, f_customPixel);
+    do_ellipse(DOjS.current_bm, xc, yc, xa, ya, color, f_customPixel);
 }
 
 /**
@@ -442,7 +442,7 @@ static void f_CircleArc(js_State *J) {
     arcReturn.startX = arcReturn.startY = -1;
     arcReturn.centerX = x;
     arcReturn.centerY = y;
-    do_arc(current_bm, x, y, ftofix(start), ftofix(end), r, color, f_recordingPixel);
+    do_arc(DOjS.current_bm, x, y, ftofix(start), ftofix(end), r, color, f_recordingPixel);
 
     f_arcReturn(J, &arcReturn);
 }
@@ -479,7 +479,7 @@ static void f_CustomCircleArc(js_State *J) {
     arcReturn.startX = arcReturn.startY = -1;
     arcReturn.centerX = x;
     arcReturn.centerY = y;
-    do_arc(current_bm, x, y, ftofix(start), ftofix(end), r, color, f_recordingCustomPixel);
+    do_arc(DOjS.current_bm, x, y, ftofix(start), ftofix(end), r, color, f_recordingCustomPixel);
 
     f_arcReturn(J, &arcReturn);
 }
@@ -499,7 +499,7 @@ static void f_FilledBox(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    rectfill(current_bm, x1, y1, x2, y2, color);
+    rectfill(DOjS.current_bm, x1, y1, x2, y2, color);
 }
 
 /**
@@ -516,7 +516,7 @@ static void f_FilledCircle(js_State *J) {
 
     int color = js_toint32(J, 4);
 
-    circlefill(current_bm, x, y, r, color);
+    circlefill(DOjS.current_bm, x, y, r, color);
 }
 
 /**
@@ -534,7 +534,7 @@ static void f_FilledEllipse(js_State *J) {
 
     int color = js_toint32(J, 5);
 
-    ellipsefill(current_bm, xc, yc, xa, ya, color);
+    ellipsefill(DOjS.current_bm, xc, yc, xa, ya, color);
 }
 
 /**
@@ -549,7 +549,7 @@ static void f_FloodFill(js_State *J) {
 
     int color = js_toint32(J, 3);
 
-    floodfill(current_bm, x, y, color);
+    floodfill(DOjS.current_bm, x, y, color);
 }
 
 /**
@@ -562,7 +562,7 @@ static void f_FilledPolygon(js_State *J) {
     poly_array_t *array = f_convertArray(J, 1);
     int color = js_toint32(J, 2);
 
-    polygon(current_bm, array->len, array->data, color);
+    polygon(DOjS.current_bm, array->len, array->data, color);
 
     f_freeArray(array);
 }
@@ -582,7 +582,7 @@ static void f_TextXY(js_State *J) {
     int fg = js_toint32(J, 4);
     int bg = js_toint32(J, 5);
 
-    textout_ex(current_bm, font, (char *)str, x, y, fg, bg);
+    textout_ex(DOjS.current_bm, font, (char *)str, x, y, fg, bg);
 }
 
 /**
@@ -597,7 +597,7 @@ static void f_SaveBmpImage(js_State *J) {
     PALETTE pal;
     get_palette(pal);
 
-    if (save_bmp(fname, current_bm, (const struct RGB *)&pal) != 0) {
+    if (save_bmp(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
         js_error(J, "Can't save screen to BMP file '%s': %s", fname, allegro_error);
     }
 }
@@ -614,7 +614,7 @@ static void f_SavePcxImage(js_State *J) {
     PALETTE pal;
     get_palette(pal);
 
-    if (save_pcx(fname, current_bm, (const struct RGB *)&pal) != 0) {
+    if (save_pcx(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
         js_error(J, "Can't save screen to PCX file '%s': %s", fname, allegro_error);
     }
 }
@@ -631,7 +631,7 @@ static void f_SaveTgaImage(js_State *J) {
     PALETTE pal;
     get_palette(pal);
 
-    if (save_tga(fname, current_bm, (const struct RGB *)&pal) != 0) {
+    if (save_tga(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
         js_error(J, "Can't save screen to TGA file '%s': %s", fname, allegro_error);
     }
 }
@@ -645,7 +645,7 @@ static void f_SaveTgaImage(js_State *J) {
 static void f_GetPixel(js_State *J) {
     int x = js_toint16(J, 1);
     int y = js_toint16(J, 2);
-    js_pushnumber(J, getpixel(current_bm, x, y) | 0xFE000000);
+    js_pushnumber(J, getpixel(DOjS.current_bm, x, y) | 0xFE000000);
 }
 
 /**
@@ -655,7 +655,7 @@ static void f_GetPixel(js_State *J) {
  * @param J the JS context.
  */
 static void f_TransparencyEnabled(js_State *J) {
-    transparency_available = js_toboolean(J, 1);
+    DOjS.transparency_available = js_toboolean(J, 1);
     update_transparency();
 }
 
@@ -667,10 +667,10 @@ static void f_TransparencyEnabled(js_State *J) {
  */
 static void f_SetRenderBitmap(js_State *J) {
     if (js_isundefined(J, 1) || js_isnull(J, 1)) {
-        current_bm = render_bm;
+        DOjS.current_bm = DOjS.render_bm;
     } else {
         BITMAP *bm = js_touserdata(J, 1, TAG_BITMAP);
-        current_bm = bm;
+        DOjS.current_bm = bm;
     }
 }
 

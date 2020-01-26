@@ -4,6 +4,7 @@
 			"internal.js",
 			"objects.js",
 			"classes.js",
+			"../jsboot/3dfx.js",
 			"../jsboot/func.js",
 			"../jsboot/color.js",
 			"../jsboot/file.js",

@@ -79,7 +79,7 @@ static void f_Read(js_State *J) {
     s = malloc(n + 1);
     if (!s) {
         fclose(f);
-        js_error(J, "out of memory");
+        JS_ENOMEM(J);
         return;
     }
 
@@ -226,7 +226,7 @@ static void f_Print(js_State *J) {
  *
  * @param J the JS context.
  */
-static void f_Stop(js_State *J) { keep_running = false; }
+static void f_Stop(js_State *J) { DOjS.keep_running = false; }
 
 /**
  * @brief do garbage collection.
@@ -273,7 +273,7 @@ static void f_Sleep(js_State *J) { rest(js_toint32(J, 1)); }
  *
  * @param J the JS context.
  */
-static void f_MsecTime(js_State *J) { js_pushnumber(J, sys_ticks); }
+static void f_MsecTime(js_State *J) { js_pushnumber(J, DOjS.sys_ticks); }
 
 /**
  * @brief get current framerate.
@@ -281,7 +281,7 @@ static void f_MsecTime(js_State *J) { js_pushnumber(J, sys_ticks); }
  *
  * @param J the JS context.
  */
-static void f_GetFramerate(js_State *J) { js_pushnumber(J, current_frame_rate); }
+static void f_GetFramerate(js_State *J) { js_pushnumber(J, DOjS.current_frame_rate); }
 
 /**
  * @brief set wanted framerate.
@@ -289,7 +289,7 @@ static void f_GetFramerate(js_State *J) { js_pushnumber(J, current_frame_rate); 
  *
  * @param J the JS context.
  */
-static void f_SetFramerate(js_State *J) { wanted_frame_rate = (float)js_tonumber(J, 1); }
+static void f_SetFramerate(js_State *J) { DOjS.wanted_frame_rate = (float)js_tonumber(J, 1); }
 
 /**
  * @brief set mouse acceleration
@@ -338,7 +338,7 @@ static void f_MouseWarp(js_State *J) {
  *
  * @param J the JS context.
  */
-static void f_MouseShowCursor(js_State *J) { mouse_visible = js_toboolean(J, 1); }
+static void f_MouseShowCursor(js_State *J) { DOjS.mouse_visible = js_toboolean(J, 1); }
 
 /**
  * @brief change mode of the cursor.
@@ -361,7 +361,7 @@ static void f_MouseSetCursorMode(js_State *J) {
  *
  * @param J the JS context.
  */
-static void f_SetExitKey(js_State *J) { exit_key = js_toint32(J, 1); }
+static void f_SetExitKey(js_State *J) { DOjS.exit_key = js_toint32(J, 1); }
 
 /***********************
 ** exported functions **
@@ -370,16 +370,26 @@ static void f_SetExitKey(js_State *J) { exit_key = js_toint32(J, 1); }
  * @brief initialize grx subsystem.
  *
  * @param J VM state.
+ * @param argc number of parameters.
+ * @param argv command line parameters.
+ * @param args first script parameter.
  */
-void init_funcs(js_State *J) {
+void init_funcs(js_State *J, int argc, char **argv, int args) {
     // define some global properties
     js_pushglobal(J);
     js_setglobal(J, "global");
 
-    PROPDEF_B(J, sound_available, "SOUND_AVAILABLE");
-    PROPDEF_B(J, mouse_available, "MOUSE_AVAILABLE");
-    PROPDEF_B(J, ipx_available, "IPX_AVAILABLE");
     PROPDEF_N(J, DOSJS_VERSION, "DOJS_VERSION");
+
+    //
+    js_newarray(J);
+    int idx = 0;
+    for (int i = args; i < argc; i++) {
+        js_pushstring(J, argv[i]);
+        js_setindex(J, -2, idx);
+        idx++;
+    }
+    js_setglobal(J, "ARGS");
 
     // define global functions
     FUNCDEF(J, f_Read, "Read", 1);

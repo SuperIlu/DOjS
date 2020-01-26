@@ -56,11 +56,11 @@ static void new_ZBuffer(js_State *J) {
     if (js_isuserdata(J, 1, TAG_BITMAP)) {
         bm = js_touserdata(J, 1, TAG_BITMAP);
     } else {
-        bm = current_bm;
+        bm = DOjS.current_bm;
     }
     ZBUFFER *zb = create_zbuffer(bm);
     if (!zb) {
-        js_error(J, "Out of memory");
+        JS_ENOMEM(J);
         return;
     }
 

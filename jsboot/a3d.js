@@ -157,7 +157,7 @@ function GetScalingMatrix(x, y, z) {
  * 
  * @returns a {@link Matrix}.
  */
-function GetXRotatateMatrix(r) {
+function NGetXRotateMatrix(r) {
 	var c = Math.cos(r);
 	var s = Math.sin(r);
 
@@ -179,7 +179,7 @@ function GetXRotatateMatrix(r) {
  * 
  * @returns a {@link Matrix}.
  */
-function GetYRotatateMatrix(r) {
+function NGetYRotateMatrix(r) {
 	var c = Math.cos(r);
 	var s = Math.sin(r);
 
@@ -201,7 +201,7 @@ function GetYRotatateMatrix(r) {
  * 
  * @returns a {@link Matrix}.
  */
-function GetZRotatateMatrix(r) {
+function NGetZRotateMatrix(r) {
 	var c = Math.cos(r);
 	var s = Math.sin(r);
 
@@ -227,7 +227,7 @@ function GetZRotatateMatrix(r) {
  * 
  * @returns a {@link Matrix}.
  */
-function GetRotationMatrix(x, y, z) {
+function NGetRotationMatrix(x, y, z) {
 	if (x instanceof Array) {
 		z = x[2] || 0;
 		y = x[1] || 0;
@@ -367,7 +367,7 @@ function GetVectorRotationMatrix(x, y, z, a) {
  * 
  * @returns a {@link Matrix}.
  */
-function GetTransformationMatrix(scale, xrot, yrot, zrot, x, y, z) {
+function NGetTransformationMatrix(scale, xrot, yrot, zrot, x, y, z) {
 	var sin_x = Math.sin(xrot);
 	var cos_x = Math.cos(xrot);
 
@@ -513,7 +513,7 @@ function QScaleMatrix(m, scale) {
  * 
  * @returns a new {@link Matrix}.
  */
-function MatrixMul(m1, m2) {
+function NMatrixMul(m1, m2) {
 	var out = GetEmptyMatrix();
 
 	for (var i = 0; i < 3; i++) {
@@ -540,7 +540,7 @@ function MatrixMul(m1, m2) {
  * 
  * @returns {number} vector length.
  */
-function VectorLength_f(x, y, z) {
+function VectorLength(x, y, z) {
 	if (x instanceof Array) {
 		z = x[2] || 0;
 		y = x[1] || 0;
@@ -653,7 +653,7 @@ function CrossProduct(x1, y1, z1, x2, y2, z2) {
  * 
  * @returns {number} z component.
  */
-function PolygonZNormal(v1, v2, v3) {
+function NPolygonZNormal(v1, v2, v3) {
 	return ((v2[0] - v1[0]) * (v3[1] - v2[1])) - ((v3[0] - v2[0]) * (v2[1] - v1[1]));
 }
 
@@ -667,7 +667,7 @@ function PolygonZNormal(v1, v2, v3) {
  * 
  * @returns {number[]} a new vector.
  */
-function ApplyMatrix(m, x, y, z) {
+function NApplyMatrix(m, x, y, z) {
 	var u = 0;
 	var v = 0;
 	var c = 0;
@@ -710,9 +710,10 @@ function SetProjectionViewport(x, y, w, h) {
 	_persp_yscale_f = h / 2;
 	_persp_xoffset_f = x + w / 2;
 	_persp_yoffset_f = y + h / 2;
+	_SetProjectionViewport(x, y, w, h);
 }
 
-/**
+/*
  * Projects the 3d point (x, y, z) into 2d screen space and using the scaling parameters previously set by calling SetProjectionViewport(). 
  * This function projects from the normalized viewing pyramid, which has a camera at the origin and facing along the positive z axis. 
  * The x axis runs left/right, y runs up/down, and z increases with depth into the screen. 
@@ -723,7 +724,7 @@ function SetProjectionViewport(x, y, w, h) {
  * @param {number} y y value.
  * @param {number} z y value.
  */
-function PerspProject(x, y, z) {
+function NPerspProject(x, y, z) {
 	var u = 0;
 	var v = 0;
 	var c = 0;

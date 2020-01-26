@@ -1,6 +1,6 @@
 # Usage
 ## Command line
-Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script>
+Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script> [script parameters]
     -r             : Do not invoke the editor, just run the script.
     -w <width>     : Screen width: 320 or 640, Default: 640.
     -b <bpp>       : Bit per pixel:8, 16, 24, 32. Default: 32.
@@ -100,6 +100,9 @@ Height in pixels
 
 ### bm.Draw(x:number, y:number)
 Draw the image to the canvas at given coordinates.
+
+### bm.DrawAdvanced(srcX:number, srcY:number, srcW:number, srcH:number, destX:number, destY:number, destW:number, destH:number)
+Draw scaled image.
 
 ### bm.DrawTrans(x:number, y:number)
 Draw the image to the canvas at given coordinates using RGBA transparency.
@@ -282,6 +285,9 @@ move mouse cursor
 ### global: object
 The global context.
 
+### ARGS: string[]
+The command line parameters including script name.
+
 ### Print(a, ...)
 Write data to `JSLOG.TXT` logfile.
 
@@ -402,3 +408,6 @@ Set this ZBuffer as current rendering ZBuffer.
 
 ### zb.Clear(z)
 Clear ZBuffer with given z value.
+
+## 3dfx/Glide
+The API is only documented in the HTML API-doc.

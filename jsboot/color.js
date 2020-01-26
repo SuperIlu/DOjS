@@ -18,6 +18,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+--------
+
+HSBColor() was derived from the p5.js source code at
+https://github.com/processing/p5.js
+
+Copyright (c) the p5.js contributors and Andre Seidelt <superilu@yahoo.com>
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+
 */
 
 /** 
@@ -70,3 +92,64 @@ EGA = {
 * @property {Color} NO_COLOR the transparent Color.
 */
 NO_COLOR = -1;
+
+/**
+ * Create Color() from HSB[A].
+ * 
+ * @param {number} h the hue [0..255].
+ * @param {number} s the saturation [0..255].
+ * @param {number} b the brightness [0..255].
+ * @param {number} a the alpha value [0..255].
+ */
+function HSBColor(h, s, b, a) {
+	var hue = h * 6 / 255; // We will split hue into 6 sectors.
+	var sat = s / 255;
+	var val = b / 255;
+	a = a || 255;
+
+	var RGBA = [0, 0, 0, 255];
+
+	if (sat === 0) {
+		RGBA = [val, val, val, a]; // Return early if grayscale.
+	} else {
+		var sector = Math.floor(hue);
+		var tint1 = val * (1 - sat);
+		var tint2 = val * (1 - sat * (hue - sector));
+		var tint3 = val * (1 - sat * (1 + sector - hue));
+		var red, green, blue;
+		if (sector === 1) {
+			// Yellow to green.
+			red = tint2;
+			green = val;
+			blue = tint1;
+		} else if (sector === 2) {
+			// Green to cyan.
+			red = tint1;
+			green = val;
+			blue = tint3;
+		} else if (sector === 3) {
+			// Cyan to blue.
+			red = tint1;
+			green = tint2;
+			blue = val;
+		} else if (sector === 4) {
+			// Blue to magenta.
+			red = tint3;
+			green = tint1;
+			blue = val;
+		} else if (sector === 5) {
+			// Magenta to red.
+			red = val;
+			green = tint1;
+			blue = tint2;
+		} else {
+			// Red to yellow (sector could be 0 or 6).
+			red = val;
+			green = tint3;
+			blue = tint1;
+		}
+		RGBA = [red, green, blue, a];
+	}
+
+	return Color(RGBA[0] * 255, RGBA[1] * 255, RGBA[2] * 255, RGBA[3]);
+};

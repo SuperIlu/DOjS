@@ -24,6 +24,7 @@ SOFTWARE.
 #include <dirent.h>
 #include <dpmi.h>
 #include <errno.h>
+#include <math.h>
 #include <mujs.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,6 +35,9 @@ SOFTWARE.
 #include "DOjS.h"
 #include "a3d.h"
 #include "bitmap.h"
+
+//! convert angle in radians to allegro 0..256 representation
+#define RADTOALLEG(x) (x / (2 * M_PI) * 256)
 
 /*********************
 ** static functions **
@@ -57,19 +61,13 @@ static void free_v3d(V3D_f **v, int vc) {
 }
 
 /**
- * @brief expects an array w/ 6 elements on the stack and returns a V3D_f.
+ * @brief expects an array w/ 6 elements on the stack and returns a V3D_f. TODO: error handling?
  *
  * @param J VM state.
  * @param idx stack index where to find the array.
- *
- * @return returns a V3D_f.
+ * @param v space to store the V3D_f.
  */
-static V3D_f *array_to_v3d(js_State *J, int idx) {
-    V3D_f *v = malloc(sizeof(V3D_f));
-    if (!v) {
-        return NULL;
-    }
-
+static void array_to_v3d(js_State *J, int idx, V3D_f *v) {
     js_getindex(J, idx, 0);
     v->x = (float)js_tonumber(J, -1);
     js_pop(J, 1);
@@ -89,8 +87,6 @@ static V3D_f *array_to_v3d(js_State *J, int idx) {
     js_getindex(J, idx, 5);
     v->c = js_toint32(J, -1);
     js_pop(J, 1);
-
-    return v;
 }
 
 /**
@@ -105,7 +101,7 @@ static V3D_f *array_to_v3d(js_State *J, int idx) {
 static V3D_f **v3d_array(js_State *J, int idx, int *vc) {
     if (!js_isarray(J, idx)) {
         *vc = 0;
-        js_error(J, "Array expected");
+        JS_ENOARR(J);
         return NULL;
     } else {
         int len = js_getlength(J, idx);
@@ -124,13 +120,14 @@ static V3D_f **v3d_array(js_State *J, int idx, int *vc) {
                     return NULL;
                 }
 
-                array[i] = array_to_v3d(J, -1);
+                array[i] = malloc(sizeof(V3D_f));
                 if (!array[i]) {
-                    js_error(J, "Out of memory");
+                    JS_ENOMEM(J);
                     free_v3d(array, len);
                     *vc = 0;
                     return NULL;
                 }
+                array_to_v3d(J, -1, array[i]);
             }
             js_pop(J, 1);
         }
@@ -157,7 +154,7 @@ static V3D_f **tmp_v3d(js_State *J, int len) {
         V3D_f *v = malloc(sizeof(V3D_f));
         array[i] = v;
         if (!array[i]) {
-            js_error(J, "Out of memory");
+            JS_ENOMEM(J);
             free_v3d(array, len);
             return NULL;
         }
@@ -188,28 +185,16 @@ static BITMAP *bitmap_or_null(js_State *J, int idx) {
  * @param J VM state.
  */
 static void f_Triangle3D(js_State *J) {
+    V3D_f v1, v2, v3;
+
     int type = js_toint16(J, 1);
     BITMAP *texture = bitmap_or_null(J, 2);
 
-    V3D_f *v1 = array_to_v3d(J, 3);
-    V3D_f *v2 = array_to_v3d(J, 4);
-    V3D_f *v3 = array_to_v3d(J, 5);
+    array_to_v3d(J, 3, &v1);
+    array_to_v3d(J, 4, &v2);
+    array_to_v3d(J, 5, &v3);
 
-    if (v1 && v2 && v3) {
-        triangle3d_f(current_bm, type, texture, v1, v2, v3);
-    } else {
-        js_error(J, "Cannot convert vertex");
-    }
-
-    if (v1) {
-        free(v1);
-    }
-    if (v2) {
-        free(v2);
-    }
-    if (v3) {
-        free(v3);
-    }
+    triangle3d_f(DOjS.current_bm, type, texture, &v1, &v2, &v3);
 }
 
 /**
@@ -219,32 +204,16 @@ static void f_Triangle3D(js_State *J) {
  * @param J VM state.
  */
 static void f_Quad3D(js_State *J) {
+    V3D_f v1, v2, v3, v4;
     int type = js_toint16(J, 1);
     BITMAP *texture = bitmap_or_null(J, 2);
 
-    V3D_f *v1 = array_to_v3d(J, 3);
-    V3D_f *v2 = array_to_v3d(J, 4);
-    V3D_f *v3 = array_to_v3d(J, 5);
-    V3D_f *v4 = array_to_v3d(J, 6);
+    array_to_v3d(J, 3, &v1);
+    array_to_v3d(J, 4, &v2);
+    array_to_v3d(J, 5, &v3);
+    array_to_v3d(J, 6, &v4);
 
-    if (v1 && v2 && v3 && v4) {
-        quad3d_f(current_bm, type, texture, v1, v2, v3, v4);
-    } else {
-        js_error(J, "Cannot convert vertex");
-    }
-
-    if (v1) {
-        free(v1);
-    }
-    if (v2) {
-        free(v2);
-    }
-    if (v3) {
-        free(v3);
-    }
-    if (v4) {
-        free(v4);
-    }
+    quad3d_f(DOjS.current_bm, type, texture, &v1, &v2, &v3, &v4);
 }
 
 /**
@@ -260,7 +229,7 @@ static void f_Polygon3D(js_State *J) {
     int vc = 0;
     V3D_f **vtx = v3d_array(J, 3, &vc);
     if (vtx) {
-        polygon3d_f(current_bm, type, texture, vc, vtx);
+        polygon3d_f(DOjS.current_bm, type, texture, vc, vtx);
     } else {
         js_error(J, "Cannot convert vertices");
     }
@@ -330,7 +299,7 @@ static void f_Clip3D(js_State *J) {
 
     // check if error and set it
     if (error) {
-        js_error(J, "No memory left");
+        JS_ENOMEM(J);
     }
 }
 
@@ -354,7 +323,7 @@ static void f_DestroyScene(js_State *J) { destroy_scene(); }
  *
  * @param J VM state.
  */
-static void f_ClearScene(js_State *J) { clear_scene(current_bm); }
+static void f_ClearScene(js_State *J) { clear_scene(DOjS.current_bm); }
 
 /**
  * @brief Allocates memory for a scene, `nedge' and `npoly' are your estimates of how many edges and how many polygons you will render (you cannot get over the limit specified
@@ -428,7 +397,331 @@ static void f_VDebug(js_State *J) {
 
     free_v3d(vtx, vc);
 }
+
+static void print_matrix(MATRIX_f *m) {
+    fprintf(LOGSTREAM, "%s={\n", "matrix");
+    for (int r = 0; r < 3; r++) {
+        fprintf(LOGSTREAM, "  |%3.4f, %3.4f, %3.4f|\n", m->v[r][0], m->v[r][1], m->v[r][2]);
+    }
+    fprintf(LOGSTREAM, "  {%3.4f, %3.4f, %3.4f}\n}\n", m->t[0], m->t[1], m->t[2]);
+    fflush(LOGSTREAM);
+}
+
 #endif
+
+/**
+ * @brief return a matrix
+ *
+ * @param J VM state.
+ * @param m the matrix.
+ */
+static void return_matrix(js_State *J, MATRIX_f *m) {
+    js_newobject(J);
+    {
+        js_newarray(J);
+        for (int j = 0; j < 3; j++) {
+            js_newarray(J);
+            for (int i = 0; i < 3; i++) {
+                js_pushnumber(J, m->v[j][i]);
+                js_setindex(J, -2, i);
+            }
+            js_setindex(J, -2, j);
+        }
+        js_setproperty(J, -2, "v");
+
+        // push the 't'
+        js_newarray(J);
+        for (int i = 0; i < 3; i++) {
+            js_pushnumber(J, m->t[i]);
+            js_setindex(J, -2, i);
+        }
+        js_setproperty(J, -2, "t");
+    }
+}
+
+/**
+ * @brief helper: Get a matrix parameter.
+ *
+ * @param J VM state.
+ * @param m where to store the matrix.
+ * @param idx stack index.
+ */
+static void get_matrix(js_State *J, MATRIX_f *m, int idx) {
+    js_getproperty(J, idx, "v");
+    for (int j = 0; j < 3; j++) {
+        js_getindex(J, -1, j);
+        for (int i = 0; i < 3; i++) {
+            js_getindex(J, -1, i);
+            m->v[j][i] = js_tonumber(J, -1);
+            js_pop(J, 1);
+        }
+        js_pop(J, 1);
+    }
+    js_pop(J, 1);
+
+    js_getproperty(J, idx, "t");
+    for (int i = 0; i < 3; i++) {
+        js_getindex(J, -1, i);
+        m->t[i] = js_tonumber(J, -1);
+        js_pop(J, 1);
+    }
+    js_pop(J, 1);
+}
+
+/**
+ * @brief helper: return a V3D_f as array.
+ *
+ * @param J VM state.
+ * @param x x value.
+ * @param y y value.
+ * @param z z value.
+ * @param u u value.
+ * @param v v value.
+ * @param c c value.
+ */
+static void return_array(js_State *J, float x, float y, float z, float u, float v, int c) {
+    js_newarray(J);
+    js_pushnumber(J, x);
+    js_setindex(J, -2, 0);
+    js_pushnumber(J, y);
+    js_setindex(J, -2, 1);
+    js_pushnumber(J, z);
+    js_setindex(J, -2, 2);
+    js_pushnumber(J, u);
+    js_setindex(J, -2, 3);
+    js_pushnumber(J, v);
+    js_setindex(J, -2, 4);
+    js_pushnumber(J, c);
+    js_setindex(J, -2, 5);
+}
+
+/**
+ * @brief create rotation matrix, C version.
+ *
+ * @param J VM state.
+ */
+static void f_GetRotationMatrix(js_State *J) {
+    MATRIX_f m;
+
+    float x = js_tonumber(J, 1);
+    float y = js_tonumber(J, 2);
+    float z = js_tonumber(J, 3);
+
+    get_rotation_matrix_f(&m, RADTOALLEG(x), RADTOALLEG(y), RADTOALLEG(z));
+
+    return_matrix(J, &m);
+}
+
+/**
+ * @brief create rotation matrix, X, C version.
+ *
+ * @param J VM state.
+ */
+static void f_GetXRotateMatrix(js_State *J) {
+    MATRIX_f m;
+
+    float r = js_tonumber(J, 1);
+
+    get_x_rotate_matrix_f(&m, RADTOALLEG(r));
+
+    return_matrix(J, &m);
+}
+
+/**
+ * @brief create rotation matrix, Y, C version.
+ *
+ * @param J VM state.
+ */
+static void f_GetYRotateMatrix(js_State *J) {
+    MATRIX_f m;
+
+    float r = js_tonumber(J, 1);
+
+    get_y_rotate_matrix_f(&m, RADTOALLEG(r));
+
+    return_matrix(J, &m);
+}
+
+/**
+ * @brief create rotation matrix, Z, C version.
+ *
+ * @param J VM state.
+ */
+static void f_GetZRotateMatrix(js_State *J) {
+    MATRIX_f m;
+
+    float r = js_tonumber(J, 1);
+
+    get_z_rotate_matrix_f(&m, RADTOALLEG(r));
+
+    return_matrix(J, &m);
+}
+
+/**
+ * @brief creater transformation matrix, C version.
+ *
+ * @param J VM state.
+ */
+static void f_GetTransformationMatrix(js_State *J) {
+    MATRIX_f m;
+    float scale = js_tonumber(J, 1);
+    float xr = js_tonumber(J, 2);
+    float yr = js_tonumber(J, 3);
+    float zr = js_tonumber(J, 4);
+
+    float x = js_tonumber(J, 5);
+    float y = js_tonumber(J, 6);
+    float z = js_tonumber(J, 7);
+
+    get_transformation_matrix_f(&m, scale, RADTOALLEG(xr), RADTOALLEG(yr), RADTOALLEG(zr), x, y, z);
+
+    return_matrix(J, &m);
+}
+
+/**
+ * @brief multiply two matrices, C version.
+ *
+ * @param J VM state.
+ */
+static void f_MatrixMul(js_State *J) {
+    MATRIX_f m1, m2, mo;
+
+    get_matrix(J, &m1, 1);
+    get_matrix(J, &m2, 2);
+    matrix_mul_f(&m1, &m2, &mo);
+    return_matrix(J, &mo);
+}
+
+/**
+ * @brief apply matrix, C version.
+ *
+ * @param J VM state.
+ */
+static void f_ApplyMatrix(js_State *J) {
+    MATRIX_f m;
+    float x, y, z, u, v, xo, yo, zo;
+    int c;
+
+    get_matrix(J, &m, 1);
+    if (js_isarray(J, 2)) {
+        js_getindex(J, 2, 0);
+        x = js_tonumber(J, -1);
+        js_pop(J, 1);
+        js_getindex(J, 2, 1);
+        y = js_tonumber(J, -1);
+        js_pop(J, 1);
+        js_getindex(J, 2, 2);
+        z = js_tonumber(J, -1);
+        js_pop(J, 1);
+
+        js_getindex(J, 2, 3);
+        u = js_tonumber(J, -1);
+        js_pop(J, 1);
+        js_getindex(J, 2, 4);
+        v = js_tonumber(J, -1);
+        js_pop(J, 1);
+
+        js_getindex(J, 2, 5);
+        c = js_toint32(J, -1);
+        js_pop(J, 1);
+
+    } else {
+        x = js_tonumber(J, 2);
+        y = js_tonumber(J, 3);
+        z = js_tonumber(J, 4);
+        u = v = c = 0;
+    }
+    apply_matrix_f(&m, x, y, z, &xo, &yo, &zo);
+    return_array(J, xo, yo, zo, u, v, c);
+}
+
+/**
+ * @brief project to viewport, C version.
+ *
+ * @param J VM state.
+ */
+static void f_PerspProject(js_State *J) {
+    float x, y, z, u, v, xo, yo;
+    int c;
+
+    if (js_isarray(J, 1)) {
+        js_getindex(J, 1, 0);
+        x = js_tonumber(J, -1);
+        js_pop(J, 1);
+        js_getindex(J, 1, 1);
+        y = js_tonumber(J, -1);
+        js_pop(J, 1);
+        js_getindex(J, 1, 2);
+        z = js_tonumber(J, -1);
+        js_pop(J, 1);
+
+        js_getindex(J, 1, 3);
+        u = js_tonumber(J, -1);
+        js_pop(J, 1);
+        js_getindex(J, 1, 4);
+        v = js_tonumber(J, -1);
+        js_pop(J, 1);
+
+        js_getindex(J, 1, 5);
+        c = js_toint32(J, -1);
+        js_pop(J, 1);
+
+    } else {
+        x = js_tonumber(J, 1);
+        y = js_tonumber(J, 2);
+        z = js_tonumber(J, 3);
+        u = v = c = 0;
+    }
+    persp_project_f(x, y, z, &xo, &yo);
+    return_array(J, xo, yo, z, u, v, c);
+}
+
+/**
+ * @brief set viewport, C version.
+ *
+ * @param J VM state.
+ */
+static void f_SetProjectionViewport(js_State *J) {
+    int x = js_toint32(J, 1);
+    int y = js_toint32(J, 2);
+    int w = js_toint32(J, 3);
+    int h = js_toint32(J, 4);
+
+    set_projection_viewport(x, y, w, h);
+}
+
+/**
+ * @brief calculate y-normal for polygon, C version.
+ *
+ * @param J VM state.
+ */
+static void f_PolygonZNormal(js_State *J) {
+    js_getindex(J, 1, 0);
+    float v1_x = js_tonumber(J, -1);
+    js_pop(J, 1);
+
+    js_getindex(J, 2, 0);
+    float v2_x = js_tonumber(J, -1);
+    js_pop(J, 1);
+
+    js_getindex(J, 3, 0);
+    float v3_x = js_tonumber(J, -1);
+    js_pop(J, 1);
+
+    js_getindex(J, 1, 1);
+    float v1_y = js_tonumber(J, -1);
+    js_pop(J, 1);
+
+    js_getindex(J, 2, 1);
+    float v2_y = js_tonumber(J, -1);
+    js_pop(J, 1);
+
+    js_getindex(J, 3, 1);
+    float v3_y = js_tonumber(J, -1);
+    js_pop(J, 1);
+
+    js_pushnumber(J, ((v2_x - v1_x) * (v3_y - v2_y)) - ((v3_x - v2_x) * (v2_y - v1_y)));
+}
 
 /***********************
 ** exported functions **
@@ -456,6 +749,18 @@ void init_a3d(js_State *J) {
 #ifdef DEBUG_ENABLED
     FUNCDEF(J, f_VDebug, "VDebug", 1);
 #endif
+
+    // non JS 3D-math
+    FUNCDEF(J, f_GetRotationMatrix, "GetRotationMatrix", 3);
+    FUNCDEF(J, f_GetTransformationMatrix, "GetTransformationMatrix", 7);
+    FUNCDEF(J, f_GetXRotateMatrix, "GetXRotateMatrix", 1);
+    FUNCDEF(J, f_GetYRotateMatrix, "GetYRotateMatrix", 1);
+    FUNCDEF(J, f_GetZRotateMatrix, "GetZRotateMatrix", 1);
+    FUNCDEF(J, f_MatrixMul, "MatrixMul", 2);
+    FUNCDEF(J, f_ApplyMatrix, "ApplyMatrix", 2);
+    FUNCDEF(J, f_PerspProject, "PerspProject", 2);
+    FUNCDEF(J, f_SetProjectionViewport, "_SetProjectionViewport", 4);
+    FUNCDEF(J, f_PolygonZNormal, "PolygonZNormal", 3);
 }
 
 /**
@@ -482,6 +787,6 @@ C    create_scene — Allocates memory for a 3d scene.
 C    clear_scene — Initializes a scene.
 C    destroy_scene — Deallocates the memory used by a scene.
 C    render_scene — Renders all the queued scene polygons.
-    scene_polygon3d_f — Puts a polygon in the scene rendering list.
+JC   scene_polygon3d_f — Puts a polygon in the scene rendering list.
 C    scene_gap — Number controlling the scene z-sorting algorithm behaviour.
  */

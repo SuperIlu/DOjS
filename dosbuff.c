@@ -21,7 +21,6 @@
 #include "dosbuff.h"
 #include "DOjS.h"
 
-#ifndef PLATFORM_UNIX
 #include <dpmi.h>
 #include <go32.h>
 
@@ -244,4 +243,3 @@ unsigned long Make_Far_Pointer(unsigned short segment, unsigned short offset) {
 
     return (temp);
 } /* End of Make_Far_Pointer() */
-#endif  // PLATFORM_UNIX

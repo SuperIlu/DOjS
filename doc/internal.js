@@ -49,6 +49,11 @@ IPX_AVAILABLE = true;
 DOJS_VERSION = 0.0;
 
 /**
+ * @property {string[]} ARGS the command line arguments including the script name.
+ */
+ARGS = [];
+
+/**
  * IPX network functions.
  * 
  * @module ipx
@@ -634,3 +639,587 @@ function Quad3D(type, texture, v1, v2, v3, v4) { }
  * @returns {V3D[]} an array of vertices.
  */
 function Clip3D(type, min_z, max_z, v) { }
+
+/**
+ * Construct X axis rotation matrices. When applied to a point, these matrices will rotate it about the X axis by the specified angle (given in radians).
+ * 
+ * @param {number} r rotation in radians.
+ * 
+ * @returns a {@link Matrix}.
+ */
+function GetXRotateMatrix(r) { }
+
+/**
+ * Construct Y axis rotation matrices. When applied to a point, these matrices will rotate it about the Y axis by the specified angle (given in radians).
+ * 
+ * @param {number} r rotation in radians.
+ * 
+ * @returns a {@link Matrix}.
+ */
+function GetYRotateMatrix(r) { }
+
+/**
+ * Construct Z axis rotation matrices. When applied to a point, these matrices will rotate it about the Z axis by the specified angle (given in radians).
+ * 
+ * @param {number} r rotation in radians.
+ * 
+ * @returns a {@link Matrix}.
+ */
+function GetZRotateMatrix(r) { }
+
+/**
+ * Constructs a transformation matrix which will rotate points around all three axes by the specified amounts (given in radians). 
+ * The direction of rotation can simply be found out with the right-hand rule: Point the dumb of your right hand towards the origin along the axis of rotation, and the fingers will curl in the positive direction of rotation. 
+ * E.g. if you rotate around the y axis, and look at the scene from above, a positive angle will rotate in clockwise direction. 
+ * 
+ * @param {*} x x value or a vector as array.
+ * @param {number} y y value.
+ * @param {number} z y value.
+ * 
+ * @returns a {@link Matrix}.
+ */
+function GetRotationMatrix(x, y, z) { }
+
+/**
+ * Constructs a transformation matrix which will rotate points around all three axes by the specified amounts (given in radians), scale the result by the specified amount (pass 1 for no change of scale), and then translate to the requested x, y, z position.
+ * 
+ * @param {number} scale scaling value.
+ * @param {number} xrot x-rotation value.
+ * @param {number} yrot y-rotation value.
+ * @param {number} zrot z-rotation value.
+ * @param {number} x x value.
+ * @param {number} y y value.
+ * @param {number} z y value.
+ * 
+ * @returns a {@link Matrix}.
+ */
+function GetTransformationMatrix(scale, xrot, yrot, zrot, x, y, z) { }
+
+/**
+ * Multiplies two matrices. 
+ * The resulting matrix will have the same effect as the combination of m1 and m2, ie. when applied to a point p, (p * out) = ((p * m1) * m2). 
+ * Any number of transformations can be concatenated in this way. 
+ * Note that matrix multiplication is not commutative, ie. matrix_mul(m1, m2) != matrix_mul(m2, m1). 
+ * 
+ * @param {Matrix} m1 first {@link Matrix}.
+ * @param {Matrix} m2 second {@link Matrix}.
+ * 
+ * @returns a new {@link Matrix}.
+ */
+function MatrixMul(m1, m2) { }
+
+/**
+ * Finds the Z component of the normal vector to the specified three vertices (which must be part of a convex polygon). 
+ * This is used mainly in back-face culling. The back-faces of closed polyhedra are never visible to the viewer, therefore they never need to be drawn. 
+ * This can cull on average half the polygons from a scene. 
+ * If the normal is negative the polygon can safely be culled. If it is zero, the polygon is perpendicular to the screen.
+ * However, this method of culling back-faces must only be used once the X and Y coordinates have been projected into screen space using PerspProject() (or if an orthographic (isometric) projection is being used). 
+ * Note that this function will fail if the three vertices are co-linear (they lie on the same line) in 3D space. 
+ * 
+ * @param {number[]} v1 first vector.
+ * @param {number[]} v2 second vector.
+ * @param {number[]} v3 third vector.
+ * 
+ * @returns {number} z component.
+ */
+function PolygonZNormal(v1, v2, v3) { }
+
+/**
+ * Multiplies the point (x, y, z) by the transformation matrix m.
+ * 
+ * @param {Matrix} m the matrix
+ * @param {*} x x value or vector as array.
+ * @param {number} y y value.
+ * @param {number} z y value.
+ * 
+ * @returns {number[]} a new vector.
+ */
+function ApplyMatrix(m, x, y, z) { }
+
+/**
+ * Projects the 3d point (x, y, z) into 2d screen space and using the scaling parameters previously set by calling SetProjectionViewport(). 
+ * This function projects from the normalized viewing pyramid, which has a camera at the origin and facing along the positive z axis. 
+ * The x axis runs left/right, y runs up/down, and z increases with depth into the screen. 
+ * The camera has a 90 degree field of view, ie. points on the planes x=z and -x=z will map onto the left and right edges of the screen, and the planes y=z and -y=z map to the top and bottom of the screen. 
+ * If you want a different field of view or camera location, you should transform all your objects with an appropriate viewing matrix, eg. to get the effect of panning the camera 10 degrees to the left, rotate all your objects 10 degrees to the right. 
+ * 
+ * @param {*} x x value or vector as array.
+ * @param {number} y y value.
+ * @param {number} z y value.
+ */
+function PerspProject(x, y, z) { }
+
+/**
+ * @module 3dfx
+ */
+
+/**
+ * @property {number} voodoo graphics width
+ */
+FX_WIDTH = 640;
+/**
+ * @property {number} voodoo graphics height
+ */
+FX_HEIGHT = 480;
+
+/**
+ * init 3dfx glide.
+ * the following parameters are used:
+ * GR_RESOLUTION_640x480,
+ * GR_REFRESH_60Hz,
+ * GR_COLORFORMAT_ARGB,
+ * GR_ORIGIN_UPPER_LEFT,
+ * GR_WINDOW_COORDS
+ */
+function fxInit() { }
+
+/**
+ * shut down the Glide library
+ */
+function fxShutdown() { }
+
+/**
+ * flush the graphics FIFO
+ */
+function fxFlush() { }
+
+/**
+ * Reset grVertexLayout parameter offset to zero, and all parameter modes to GR_PARAM_DISABLE.
+ */
+function fxResetVertexLayout() { }
+
+/**
+ * specify the format of by-vertex arrays
+ * @param {GR_PARAM[]} layout list of layout parameters.
+ */
+function fxVertexLayout(layout) { }
+
+/**
+ * @returns {number} the size of the currently active vertex layout in 'number of entries'.
+ */
+function fxGetVertexSize() { }
+
+/**
+ * force completion of all outstanding graphics commands.
+ */
+function fxFinish() { }
+
+/**
+ * exchange front and back buffers
+ * @param {number} interval The number of vertical retraces to wait before swapping the front and back buffers.
+ */
+function fxBufferSwap(interval) { }
+
+/**
+ * clear the buffers to the specified values
+ * @param {number} color The color value used for clearing the draw buffer.
+ * @param {number} alpha The alpha value used for clearing the alpha buffer
+ * @param {number} depth An unsigned value used for clearing the depth buffer
+ */
+function fxBufferClear(color, alpha, depth) { }
+
+/**
+ * set the size and location of the hardware clipping window
+ * @param {number} minx The lower x screen coordinate of the clipping window.
+ * @param {number} miny The lower y screen coordinate of the clipping window.
+ * @param {number} maxx The upper x screen coordinate of the clipping window.
+ * @param {number} maxy The upper y screen coordinate of the clipping window.
+ */
+function fxClipWindow(minx, miny, maxx, maxy) { }
+
+/**
+ * draw a point
+ * @param {number[]} v1 a vertex.
+ */
+function fxDrawPoint(v1) { }
+
+/**
+ * draw a one-pixel-wide arbitrarily oriented line
+ * @param {number[]} v1 a vertex.
+ * @param {number[]} v2 a vertex.
+ */
+function fxDrawLine(v1, v2) { }
+
+/**
+ * draw a triangle
+ * @param {number[]} v1 a vertex.
+ * @param {number[]} v2 a vertex.
+ * @param {number[]} v3 a vertex.
+ */
+function fxDrawTriangle(v1, v2, v3) { }
+
+/**
+ * set the global constant color
+ * @param {number} color The new constant color.
+ */
+function fxConstantColorValue(color) { }
+
+/**
+ * set the cull mode.
+ * @param {GR_CULL} mode the noew mode.
+ */
+function fxCullMode(mode) { }
+
+/**
+ * specify the alpha blending function
+ * @param {GR_BLEND} rgb_sf rgb source blending factor
+ * @param {GR_BLEND} rgb_df rgb destination blending factor
+ * @param {GR_BLEND} alpha_sf alpha source blending factor
+ * @param {GR_BLEND} alpha_df alpha destination blending factor
+ */
+function fxAlphaBlendFunction(rgb_sf, rgb_df, alpha_sf, alpha_df) { }
+
+/**
+ * configure the alpha combine unit.
+ * @param {GR_COMBINE_FUNCTION} func function
+ * @param {GR_COMBINE_FACTOR} factor scaling factor
+ * @param {GR_COMBINE_LOCAL} local local alpha
+ * @param {GR_COMBINE_OTHER} other other alpha
+ * @param {boolean} invert invert generated alpha.
+ */
+function fxAlphaCombine(func, factor, local, other, invert) { }
+
+/**
+ * configure the color combine unit.
+ * @param {GR_COMBINE_FUNCTION} func function
+ * @param {GR_COMBINE_FACTOR} factor scaling factor
+ * @param {GR_COMBINE_LOCAL} local local alpha
+ * @param {GR_COMBINE_OTHER} other other alpha
+ * @param {boolean} invert invert generated alpha.
+ */
+function fxColorCombine(func, factor, local, other, invert) { }
+
+/**
+ * enable/disable writing into the color and alpha buffers
+ * @param {number} rgb color mask
+ * @param {number} alpha alpha mask
+ */
+function fxColorMask(rgb, alpha) { }
+
+/**
+ * enable/disable writing into the depth buffer
+ * @param {boolean} enable enable/disable
+ */
+function fxDepthMask(enable) { }
+
+/**
+ * draw a list of by-vertex vertices
+ * @param {GR_VERTEX} mode vertex type
+ * @param {number[][]} vertices array of vertices.
+ */
+function fxDrawVertexArray(mode, vertices) { }
+
+/**
+ * enable Glide operating modes
+ * @param {GR_ENABLE} val one of GR_ENABLE.
+ */
+function fxEnable(val) { }
+
+/**
+ * enable Glide operating modes
+ * @param {GR_ENABLE} val one of GR_ENABLE.
+ */
+function fxDisable(val) { }
+
+/**
+ * disable all special effects in the graphics subsystem
+ */
+function fxDisableAllEffects() { }
+
+/**
+ * draw an anti-aliased triangle
+ * @param {number[]} a a vertex
+ * @param {number[]} b a vertex
+ * @param {number[]} c a vertex
+ * @param {boolean} b1 anti alias AB edge
+ * @param {boolean} b2 anti alias BC edge
+ * @param {boolean} b3 anti alias CA edge
+ */
+function fxAADrawTriangle(a, b, c, b1, b2, b3) { }
+
+/**
+ * set dither mode.
+ * @param {GR_DITHER} mode the new dither mode.
+ */
+function fxDitherMode(mode) { }
+
+/**
+ * enables/disables alpha controlled lighting
+ * @param {boolean} enable enable/disable
+ */
+function fxAlphaControlsITRGBLighting(enable) { }
+
+/**
+ * set up gamma correction tables
+ * @param {number} r 
+ * @param {*} g 
+ * @param {*} b 
+ */
+function fxGammaCorrectionRGB(r, g, b) { };
+
+/**
+ * establishes a y origin
+ * @param {GR_ORIGIN} origin set y origin.
+ */
+function fxOrigin(origin) { }
+
+/**
+ * set the depth buffering mode
+ * @param {GR_DEPTHBUFFER} mode the mode 
+ */
+function fxDepthBufferMode(mode) { }
+
+/**
+ * specify the depth buffer comparison function
+ * @param {GR_CMP} func the new function
+ */
+function fxDepthBufferFunction(func) { }
+
+/**
+ * set the depth bias level
+ * @param {number} level th new level.
+ */
+function fxDepthBiasLevel(level) { }
+
+/**
+ * specify viewport depth range
+ * @param {number} near min range
+ * @param {number} far max range
+ */
+function fxDepthRange(near, far) { }
+
+/**
+ * define a viewport
+ * @param {number} x The origin of the viewport, relative to the screen origin
+ * @param {number} y The origin of the viewport, relative to the screen origin
+ * @param {number} width The width and height of the viewport.
+ * @param {number} height The width and height of the viewport.
+ */
+function fxViewport(x, y, width, height) { }
+
+/**
+ * enable/disable per-pixel fog blending operations
+ * @param {GR_FOG} mode the new fog mode.
+ */
+function fxFogMode(mode) { }
+
+/**
+ * set the global fog color
+ * @param {number} color the new fog color
+ */
+function fxFogColorValue(color) { }
+
+/**
+ * convert a fog table index to a floating point eye-space w value
+ * @param {number} i The fog table index, between 0 and GR_FOG_TABLE_SIZE. 
+ */
+function fxFogTableIndexToW(table) { }
+
+/**
+ * download a fog table
+ * @param {number[]} table a new table with at least fxGetFogTableEntries() entries
+ */
+function fxFogTable(table) { }
+
+/**
+ * generate an exponential fog table
+ * @param {number} density The fog density, typically between 0.0 and 1.0.
+ * @returns {number[]} a fog table.
+ */
+function fxFogGenerateExp(density) { }
+
+/**
+ * generate an exponential squared fog table
+ * @param {*} density The fog density, typically between 0.0 and 1.0.
+ * @returns {number[]} a fog table.
+ */
+function fxFogGenerateExp2(density) { }
+
+/**
+ * generate a linear fog table
+ * @param {number} near The eye-space w coordinate where minimum fog exists.
+ * @param {number} far The eye-space w coordinate where maximum fog exists.
+ * @returns {number[]} a fog table.
+ */
+function fxFogGenerateLinear(near, far) { }
+
+/**
+ * enable/disable hardware chroma-keying
+ * @param {boolean} mode enable/disable
+ */
+function fxChromakeyMode(mode) { }
+
+/**
+ * set the global chroma-key reference value
+ * @param {number} val The new chroma-key reference value.
+ */
+function fxChromakeyValue(val) { }
+
+/**
+ * specify the alpha test function
+ * @param {GR_CMP} func the function
+ */
+function fxAlphaTestFunction(func) { }
+
+/**
+ * specify the alpha test reference value
+ * @param {number} value The new alpha test reference value.
+ */
+function fxAlphaTestReferenceValue(value) { }
+
+/**
+ * specify the texture minification and magnification filters
+ * @param {GR_TMU} tmu the TMU.
+ * @param {GR_TEXTUREFILTER} minFilter The minification filter
+ * @param {GR_TEXTUREFILTER} magFilter The magnification filter
+ */
+function fxTexFilterMode(tmu, minFilter, magFilter) { }
+
+/**
+ * set the texture map clamping/wrapping mode
+ * @param {GR_TMU} tmu the TMU.
+ * @param {GR_TEXTURECLAMP} sMode The new mode for the s direction
+ * @param {GR_TEXTURECLAMP} tMode The new mode for the t direction
+ */
+function fxTexClampMode(tmu, sMode, tMode) { }
+
+/**
+ * set the mipmapping mode
+ * @param {GR_TMU} tmu the TMU.
+ * @param {GR_MIPMAP} mode The new mipmapping mode
+ * @param {boolean} lodBlend enables/disables LOD blending
+ */
+function fxTexMipMapMode(tmu, mode, lodBlend) { }
+
+/**
+ * set the LOD bias value
+ * @param {GR_TMU} tmu the TMU.
+ * @param {number} bias The new LOD bias value, a signed floating point value in the range [-8..7.75].
+ */
+function fxTexLodBiasValue(tmu, bias) { }
+
+/**
+ * configure a texture combine unit
+ * @param {GR_TMU} tmu the TMU.
+ * @param {GR_COMBINE_FUNCTION} rgb_func Specifies the function used in texture color generation
+ * @param {GR_COMBINE_FACTOR} rgb_factor Specifies the scaling factor f used in texture color generation
+ * @param {GR_COMBINE_FUNCTION} alpha_func Specifies the function used in texture alpha generation
+ * @param {GR_COMBINE_FACTOR} alpha_factor Specifies the scaling factor f used in texture alpha generation
+ * @param {boolean} rgb_invert Specifies whether the generated texture color should be bitwise inverted as a final step.
+ * @param {boolean} alpha_invert Specifies whether the generated texture alpha should be bitwise inverted as a final step.
+ */
+function fxTexCombine(tmu, rgb_func, rgb_factor, alpha_func, alpha_factor, rgb_invert, alpha_invert) { }
+
+/**
+ * set the detail texturing controls
+ * @param {GR_TMU} tmu the TMU.
+ * @param {number} lodBias Controls where the blending between the two textures begins. This value is an LOD bias value in the range [–32.. +31].
+ * @param {number} detailScale Controls the steepness of the blend. Values are in the range [0..7] are valid. The scale is computed as 2^detailScale.
+ * @param {number} detailMax Controls the maximum blending that occurs. Values in the range [0.0..1.0] are valid.
+ */
+function fxTexDetailControl(tmu, lodBias, detailScale, detailMax) { }
+
+/**
+ * return the texture memory consumed by a texture.
+ * @param {GR_LOD} smallLod smallest level of detail
+ * @param {GR_LOD} largeLod larges level of detail
+ * @param {GR_ASPECT} aspect texture aspect ratio
+ * @param {GR_TEXFMT} format texture format
+ * 
+ * @returns {number} number of bytes required
+ */
+function fxTexCalcMemRequired(smallLod, largeLod, aspect, format) { }
+
+/**
+ * selects the current color buffer for drawing and clearing
+ * @param {GR_BUFFER} buffer Selects the current color buffer. Valid values are GR_BUFFER_FRONTBUFFER and GR_BUFFER_BACKBUFFER.
+ */
+function fxRenderBuffer(buffer) { }
+
+/**
+ * return the lowest start address for texture downloads
+ * @param {GR_TMU} tmu the TMU.
+ */
+function fxTexMinAddress(tmu) { }
+
+/**
+ * return the highest start address for texture downloads
+ * @param {GR_TMU} tmu the TMU.
+ */
+function fxTexMaxAddress(tmu) { }
+
+/**
+ * select an NCC table
+ * @param {GR_TEXTABLE} table NCC table to use for decompressing compressed textures. Valid values are GR_TEXTABLE_NCC0 and GR_TEXTABLE_NCC1.
+ */
+function fxTexNCCTable(table) { }
+
+// GrGet() values
+/**
+ * @returns {number[]} The minimum and maximum allowable z buffer values.
+ */
+function fxGetZDepthMinMax() { }
+/**
+ * @returns {number[]} The minimum and maximum allowable w buffer values.
+ */
+function fxGetWDepthMinMax() { }
+/**
+ * @returns {number} The number of bits of depth (z or w) in the frame buffer.
+ */
+function fxGetBitsDepth() { }
+/**
+ * @returns {number} The number of entries in the hardware fog table.
+ */
+function fxGetFogTableEntries() { }
+/**
+ * @returns {number} The number of entries in the hardware gamma table. Returns FXFALSE if it is not possible to manipulate gamma (e.g. on a Macronix card, or in windowed mode).
+ */
+function fxGetGammaTableEntries() { }
+/**
+ * @returns {number} Returns FXFALSE if idle, FXTRUE if busy.
+ */
+function fxIsBusy() { }
+/**
+ * @returns {number} The total number of bytes per Pixelfx chip if a non-UMA configuration is used, else 0. In non-UMA configurations, the total FB memory is GR_MEMORY_FB * GR_NUM_FB.
+ */
+function fxGetMemoryFb() { }
+/**
+ * @returns {number} The total number of bytes per Texelfx chip if a non-UMA configuration is used, else FXFALSE. In non-UMA configurations, the total usable texture memory is GR_MEMORY_TMU * GR_NUM_TMU.
+ */
+function fxGetMemoryTMU() { }
+/**
+ * @returns {number} The total number of bytes if a UMA configuration, else 0.
+ */
+function fxGetMemoryUma() { }
+/**
+ * @returns {number} The width of the largest texture supported on this configuration (e.g. Voodoo Graphics returns 256).
+ */
+function fxGetMaxTextureSize() { }
+/**
+ * @returns {number} The logarithm base 2 of the maximum aspect ratio supported for power-of-two, mipmap-able textures (e.g. Voodoo Graphics returns 3).
+ */
+function fxGetMaxTextureAspectRatio() { }
+/**
+ * @returns {number} The number of installed boards supported by Glide.
+ */
+function fxGetNumBoards() { }
+/**
+ * @returns {number} The number of Pixelfx chips present. This number will always be 1 except for SLI configurations.
+ */
+function fxGetNumFb() { }
+/**
+ * @returns {number} The number of Texelfx chips per Pixelfx chip. For integrated chips, the number of TMUs will be returned.
+ */
+function fxGetNumTmu() { }
+/**
+ * @returns {number} The number of buffer swaps pending.
+ */
+function fxGetNumPendingBufferSwaps() { }
+/**
+ * @returns {number} The revision of the Pixelfx chip(s).
+ */
+function fxGetRevisionFb() { }
+/**
+ * @returns {number} The revision of the Texelfx chip(s).
+ */
+function fxGetRevisionTmu() { }

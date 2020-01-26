@@ -34,6 +34,6 @@ SOFTWARE.
 /***********************
 ** exported functions **
 ***********************/
-extern void init_funcs(js_State *J);
+extern void init_funcs(js_State *J, int argc, char **argv, int args);
 
 #endif  // __FUNCS_H__

@@ -71,7 +71,7 @@ static void new_File(js_State *J) {
 
     file_t *f = malloc(sizeof(file_t));
     if (!f) {
-        js_error(J, "No memory for file '%s'", fname);
+        JS_ENOMEM(J);
         return;
     }
 

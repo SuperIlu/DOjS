@@ -100,7 +100,7 @@ typedef struct {
 /***********************
 ** exported functions **
 ***********************/
-extern bool init_ipx(js_State *J);
+extern void init_ipx(js_State *J);
 extern void shutdown_ipx(void);
 
 #endif  // __IPX_H__

@@ -10,7 +10,7 @@ function Setup() {
 */
 function Loop() {
     ClearScreen(EGA.BLACK);
-    TextXY(SizeX() / 2, SizeY() / 2, "Hello World!", EGA.WHITE, NO_COLOR);
+    TextXY(SizeX() / 2, SizeY() / 2, "Hello World!", EGA.WHITE);
 }
 
 /*

@@ -35,7 +35,7 @@ function draw() {
     background(EGA.BLACK);
     stroke(pink);
     fill(pink);
-    text("Hello World!", width / 2, height / 2);
+    text("Hello p5js World!", width / 2, height / 2);
 
     stroke(EGA.LIGHT_BLUE);
     fill(EGA.LIGHT_BLUE);

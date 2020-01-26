@@ -91,7 +91,27 @@ static void Bitmap_Draw(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
     int x = js_toint16(J, 1);
     int y = js_toint16(J, 2);
-    blit(bm, current_bm, 0, 0, x, y, bm->w, bm->h);
+    blit(bm, DOjS.current_bm, 0, 0, x, y, bm->w, bm->h);
+}
+
+/**
+ * @brief draw the image to the canvas.
+ * img.DrawAdvanced(source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height)
+ *
+ * @param J VM state.
+ */
+static void Bitmap_DrawAdvanced(js_State *J) {
+    BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
+    int srcX = js_toint16(J, 1);
+    int srcY = js_toint16(J, 2);
+    int srcW = js_toint16(J, 3);
+    int srcH = js_toint16(J, 4);
+
+    int destX = js_toint16(J, 5);
+    int destY = js_toint16(J, 6);
+    int destW = js_toint16(J, 7);
+    int destH = js_toint16(J, 8);
+    stretch_blit(bm, DOjS.current_bm, srcX, srcY, srcW, srcH, destX, destY, destW, destH);
 }
 
 /**
@@ -115,7 +135,7 @@ static void Bitmap_DrawTrans(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
     int x = js_toint16(J, 1);
     int y = js_toint16(J, 2);
-    draw_trans_sprite(current_bm, bm, x, y);
+    draw_trans_sprite(DOjS.current_bm, bm, x, y);
 }
 
 /**
@@ -146,10 +166,11 @@ void init_bitmap(js_State *J) {
     js_newobject(J);
     {
         PROTDEF(J, Bitmap_Draw, TAG_BITMAP, "Draw", 2);
+        PROTDEF(J, Bitmap_DrawAdvanced, TAG_BITMAP, "DrawAdvanced", 8);
         PROTDEF(J, Bitmap_Clear, TAG_BITMAP, "Clear", 0);
         PROTDEF(J, Bitmap_DrawTrans, TAG_BITMAP, "DrawTrans", 2);
         PROTDEF(J, Bitmap_GetPixel, TAG_BITMAP, "GetPixel", 2);
     }
-    js_newcconstructor(J, new_Bitmap, new_Bitmap, TAG_BITMAP, 1);
+    js_newcconstructor(J, new_Bitmap, new_Bitmap, TAG_BITMAP, 2);
     js_defglobal(J, TAG_BITMAP, JS_DONTENUM);
 }

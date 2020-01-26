@@ -67,6 +67,20 @@ Bitmap.height = null;
 Bitmap.prototype.Draw = function (x, y) { };
 
 /**
+ * Draw the image to the canvas at given coordinates.
+ * 
+ * @param {number} srcX source position to draw from.
+ * @param {number} srcY source position to draw from.
+ * @param {number} srcW source size to draw from.
+ * @param {number} srcH source size to draw from.
+ * @param {number} destX position to draw to.
+ * @param {number} destY position to draw to.
+ * @param {number} destW size to draw.
+ * @param {number} destH size to draw.
+ */
+Bitmap.prototype.DrawAdvanced = function (srcX, srcY, srcW, srcH, destX, destY, destW, destH) { };
+
+/**
  * Draw the image to the canvas at given coordinates using the alpha channel transparency. Only works for 32bit TGA with alpha channel information.
  * @param {number} x position to draw to.
  * @param {number} y position to draw to.
@@ -202,3 +216,89 @@ ZBuffer.prototype.Clear = function (z) { };
  * Set this ZBuffer as current.
  */
 ZBuffer.prototype.Set = function () { };
+
+/********
+ * TexInfo
+ */
+/**
+ * create new texture from 3df file.
+ * @class
+ * @param {string} filename 3df file to load as texture.
+ */
+function TexInfo(filename) { }
+
+/**
+ * filename
+ */
+TexInfo.filename = null;
+/**
+ * large LOD
+ */
+TexInfo.largeLod = null;
+/**
+ * small LOD
+ */
+TexInfo.smallLod = null;
+/**
+ * aspect ratio
+ */
+TexInfo.aspectRatio = null;
+/**
+ * texture format
+ */
+TexInfo.format = null;
+/**
+ * table type
+ */
+TexInfo.tableType = null;
+/**
+ * size of texture
+ */
+TexInfo.textureSize = null;
+/**
+ * texture mem address (if downloaded)
+ */
+TexInfo.address = null;
+/**
+ * TMU (if downloaded)
+ */
+TexInfo.tmu = null;
+
+/**
+ * download the MIP map to texture memory.
+ * @param {GR_TMU} tmu the TMU unit to download to.
+ * @param {number} address destination memory address in texture memory.
+ * @param {GR_MIPMAPLEVELMASK} evenOdd one of GR_MIPMAPLEVELMASK.
+ */
+TexInfo.prototype.DownloadMipMap = function (tmu, address, evenOdd) { };
+
+/**
+ * mark the texture as 'not downloaded' again.
+ */
+TexInfo.prototype.MarkUnused = function () { };
+
+/**
+ * specify this TexInfo as the current texture source for rendering.
+ * @param {GR_MIPMAPLEVELMASK} evenOdd one of GR_MIPMAPLEVELMASK.
+ */
+TexInfo.prototype.Source = function (evenOdd) { };
+
+/**
+ * return the texture memory consumed by a texture
+ * @param {GR_MIPMAPLEVELMASK} evenOdd one of GR_MIPMAPLEVELMASK.
+ * @returns {number} size of texture in bytes.
+ */
+TexInfo.prototype.MemRequired = function (evenOdd) { };
+
+/********
+ * FxState
+ */
+/**
+ * save current glide state into this object.
+ */
+function FxState() { }
+
+/**
+ * restore glide state from this object.
+ */
+FxState.prototype.Set = function () { }

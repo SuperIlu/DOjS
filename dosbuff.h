@@ -18,7 +18,6 @@
     Modified for DOjS 2019 by Andre Seidelt <superilu@yahoo.com>
 */
 
-#ifndef PLATFORM_UNIX
 #ifndef DOSBUFF_H
 #define DOSBUFF_H
 
@@ -68,4 +67,3 @@ void Copy_From_Ecb_Receive_Buffer(void *block, short length);
 unsigned long Make_Far_Pointer(unsigned short segment, unsigned short offset);
 
 #endif
-#endif  // PLATFORM_UNIX

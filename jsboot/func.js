@@ -18,6 +18,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+--------
+/**
+Additional code taken from MDN:
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
+
+Code samples added on or after August 20, 2010 are in the public domain (CC0). 
+No licensing notice is necessary, but if you need one, you can use: 
+"Any copyright is dedicated to the Public Domain. http://creativecommons.org/publicdomain/zero/1.0/".
 */
 
 /** @module other */
@@ -123,6 +131,7 @@ function StartupInfo() {
 	if (DEBUG) {
 		_Debug("Screen size=" + width + "x" + height + "x" + mode);
 		_Debug("Memory=" + JSON.stringify(MemoryInfo()));
+		_Debug("Command line args=" + JSON.stringify(ARGS));
 
 		var funcs = [];
 		var other = [];
@@ -165,6 +174,23 @@ function CharCode(s) {
  */
 function CompareKey(k, s) {
 	return (k & 0xFF) == CharCode(s);
+}
+
+if (!String.prototype.startsWith) {
+	Object.defineProperty(String.prototype, 'startsWith', {
+		value: function (search, rawPos) {
+			var pos = rawPos > 0 ? rawPos | 0 : 0;
+			return this.substring(pos, pos + search.length) === search;
+		}
+	});
+}
+if (!String.prototype.endsWith) {
+	String.prototype.endsWith = function (search, this_len) {
+		if (this_len === undefined || this_len > this.length) {
+			this_len = this.length;
+		}
+		return this.substring(this_len - search.length, this_len) === search;
+	};
 }
 
 /**

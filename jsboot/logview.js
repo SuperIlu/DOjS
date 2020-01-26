@@ -20,29 +20,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-nodes = [];
-lines = [""];
-max_lines = 2;
+var nodes = [];
+var lines = [""];
+var max_lines;
 
 function Setup() {
 	SetFramerate(30);
 	IpxSocketOpen(IPX.DEBUG_SOCKET);
 	MouseShowCursor(false);
 
-	max_lines = (MaxY() / 10) - 1;
+	max_lines = (SizeY() / 10) - 1;
 }
 
 function Loop() {
 	ClearScreen(EGA.BLACK);
 	if (nodes.length > 0) {
-		TextXY(MaxX() - 120, 5, 'CONNECTED', EGA.CYAN, NO_COLOR);
+		TextXY(SizeX() - 120, 5, 'CONNECTED', EGA.CYAN);
 	} else {
-		TextXY(MaxX() - 120, 5, 'NOT CONNECTED', EGA.RED, NO_COLOR);
+		TextXY(SizeX() - 120, 5, 'NOT CONNECTED', EGA.RED);
 	}
 
 
 	for (var l = 0; l < lines.length; l++) {
-		TextXY(2, 10 * (l + 1), lines[l], EGA.LIGHT_GREEN, NO_COLOR);
+		TextXY(2, 10 * (l + 1), lines[l], EGA.LIGHT_GREEN);
 	}
 
 	var success = IpxFindNodes(2, nodes);

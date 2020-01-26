@@ -35,7 +35,7 @@ SOFTWARE.
 ** exported functions **
 ***********************/
 extern void sound_mod_stop(void);
-extern void init_sound(js_State *J);
+extern void init_sound(js_State *J, bool no_sound, bool no_fm);
 extern void shutdown_sound(void);
 
 #endif  // __SOUND_H__

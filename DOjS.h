@@ -38,18 +38,16 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 0.98         //!< version number
-#define DOSJS_VERSION_STR "V0.98"  //!< version number as string
+#define DOSJS_VERSION 0.99         //!< version number
+#define DOSJS_VERSION_STR "V0.99"  //!< version number as string
 
 #define BOOT_DIR "JSBOOT/"  //!< directory with boot files.
 
-#ifndef PLATFORM_UNIX
-#define LOGFILE "JSLOG.TXT"  //!< filename for logfile
+#define LOGFILE "JSLOG.TXT"     //!< filename for logfile
+#define LOGSTREAM DOjS.logfile  //!< output stream for logging on DOS
 
-#define LOGSTREAM logfile  //!< output stream for logging on DOS
-#else
-#define LOGSTREAM stdout  //!< output stream for logging on Unix
-#endif
+#define JS_ENOMEM(j) js_error(j, "Out of memory")   //!< use always the same message when memory runs out
+#define JS_ENOARR(j) js_error(j, "Array expected")  //!< use always the same message when array expected
 
 /***********
 ** macros **
@@ -123,30 +121,33 @@ SOFTWARE.
 #define DEBUG(str)
 #endif
 
+/************
+** structs **
+************/
+typedef struct {
+    bool joystick_available;           //!< indicates if a joystick is available
+    bool sound_available;              //!< indicates if WAV sound is available
+    bool midi_available;               //!< indicates if MIDI sound is available
+    bool sndin_available;              //!< indicates if sound recording is available
+    bool mouse_available;              //!< indicates if the mouse is available
+    bool ipx_available;                //!< indicates if ipx is available
+    bool mouse_visible;                //!< indicates if the cursor should be visible.
+    bool transparency_available;       //!< indicates if transparency is enabled.
+    bool glide_enabled;                //!< indicates if glide is active
+    float current_frame_rate;          //!< current frame rate
+    float wanted_frame_rate;           //!< wanted frame rate
+    bool keep_running;                 //!< indicates that the script should keep on running
+    int exit_key;                      //!< the exit key that will stop the script
+    BITMAP *current_bm;                //!< current bitmap that is rendered on
+    BITMAP *render_bm;                 //!< default render bitmap created at start
+    volatile unsigned long sys_ticks;  //!< tick counter
+    FILE *logfile;                     //!< file for log output.
+} dojs_t;
+
 /*********************
 ** global variables **
 *********************/
-#ifndef PLATFORM_UNIX
-extern FILE *logfile;  //!< file for log output.
-#endif
-
-extern bool sound_available;  //!< indicates if WAV sound is available
-extern bool sndin_available;  //!< indicates if sound recording is available
-extern bool mouse_available;  //!< indicates if the mouse is available
-extern bool ipx_available;    //!< indicates if ipx is available
-extern bool mouse_visible;    //!< indicates if the cursor should be visible.
-bool transparency_available;  //!< indicates if transparency is enabled.
-
-extern float current_frame_rate;  //!< current frame rate
-extern float wanted_frame_rate;   //!< wanted frame rate
-
-extern bool keep_running;  //!< indicates that the script should keep on running
-extern int exit_key;       //!< the exit key that will stop the script
-
-extern BITMAP *current_bm;  //!< current bitmap that is rendered on
-extern BITMAP *render_bm;   //!< default render bitmap created at start
-
-extern volatile unsigned long sys_ticks;  //!< tick counter
+extern dojs_t DOjS;
 
 /***********************
 ** exported functions **

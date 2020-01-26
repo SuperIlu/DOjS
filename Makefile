@@ -3,20 +3,22 @@
 # All compilation was done with DJGPP 7.2.0 built from https://github.com/andrewwutw/build-djgpp
 ###
 # enter the path to x-djgpp here
-#DJGPP=/Users/iluvatar/tmp/djgpp/bin
 DJGPP=/home/ilu/djgpp/bin
+#DJGPP=/home/ilu/djgpp473/bin
 
 MUJS=mujs-1.0.5
 ALLEGRO=allegro-4.2.2-xc-master
+GLIDE=glide3x
+TEXUS=$(GLIDE)/texus
 
-INCLUDES=-I$(MUJS) -I$(ALLEGRO)/include
-LIBS=-lalleg -lmujs -lm -lemu
+INCLUDES=-I$(MUJS) -I$(ALLEGRO)/include -I$(GLIDE)/v1/include
+LIBS=-lalleg -lmujs -lm -lemu -lglide3i
 
-CFLAGS=-MMD -Wall -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -DPLATFORM_MSDOS -fgnu89-inline # -DDEBUG_ENABLED #-Wmissing-prototypes 
-LDFLAGS=-L$(MUJS)/build/release -L$(ALLEGRO)/lib/djgpp
+CFLAGS=-MMD -Wall -std=gnu99 -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -DPLATFORM_MSDOS -fgnu89-inline -Wmissing-prototypes # -DDEBUG_ENABLED 
+LDFLAGS=-L$(MUJS)/build/release -L$(ALLEGRO)/lib/djgpp -L$(GLIDE)/v1/lib
 
 EXE=DOJS.EXE
-ZIP=DOJS.ZIP
+ZIP=dojs.zip
 
 BUILDDIR=build
 
@@ -49,9 +51,14 @@ PARTS= \
 	$(BUILDDIR)/sound.o \
 	$(BUILDDIR)/util.o \
 	$(BUILDDIR)/a3d.o \
-	$(BUILDDIR)/zbuffer.o
+	$(BUILDDIR)/zbuffer.o \
+	$(BUILDDIR)/joystick.o \
+	$(BUILDDIR)/dxe.o \
+	$(BUILDDIR)/3dfx-texinfo.o \
+	$(BUILDDIR)/3dfx-state.o \
+	$(BUILDDIR)/3dfx-glide.o
 
-all: init libmujs liballegro $(EXE)
+all: init libmujs liballegro TEXUS.EXE $(EXE)
 
 libmujs: $(MUJS)/build/release/libmujs.a
 
@@ -67,15 +74,25 @@ $(EXE): $(PARTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 	$(STRIP) $@
 
-exscn3d.exe: exscn3d.o
-	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
-
 $(BUILDDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+TEXUS.EXE:
+	$(MAKE) -C $(TEXUS) clean all
+	cp $(TEXUS)/TEXUS.EXE .
+
 zip: all doc
 	rm -f $(ZIP)
-	zip -9 -v -r $(ZIP) $(EXE) CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR)
+	cp $(GLIDE)/v1/lib/glide3x.dxe .
+	zip -9 -v -r $(ZIP) $(EXE) GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE
+
+devzip: all doc
+	rm -f $(ZIP)
+	cp $(GLIDE)/v1/lib/glide3x.dxe .
+	zip -9 -v -r $(ZIP) $(EXE) GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR) $(GLIDE) V_*.BAT TEXUS.EXE glide3x/tests/*.3df glide3x/tests/*.exe tests/ 
+	#zip -9 -v -r $(ZIP) $(EXE) $(VOODOO) V_*.BAT TEXUS.EXE tests/ jsboot/*.js glide3x/tests/*.3df glide3x/tests/*.exe
+	#zip -9 -v -r $(ZIP) $(EXE) $(VOODOO) V_*.BAT TEXUS.EXE tests/ jsboot/*.js
+	scp $(ZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:
 	rm -rf $(DOCDIR)
@@ -87,12 +104,28 @@ init:
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) DOjS.exe $(ZIP) JSLOG.TXT
+	rm -f $(EXE) DOjS.exe $(ZIP) JSLOG.TXT TEXUS.EXE
 
 distclean: clean
 	cd $(ALLEGRO) && ./xmake.sh clean
 	$(MAKE) -C $(MUJS) clean
-	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT
+	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT GLIDE3X.DXE
+
+glideclean:
+	rm -rf dxe.c
+
+dxe.c:
+	dxe3res -o dxetmp_v1.c $(GLIDE)/v1/lib/glide3x.dxe
+	dxe3res -o dxetmp_v2.c $(GLIDE)/v2/lib/glide3x.dxe
+	dxe3res -o dxetmp_v3.c $(GLIDE)/v3/lib/glide3x.dxe
+	dxe3res -o dxetmp_v4.c $(GLIDE)/v4/lib/glide3x.dxe
+	dxe3res -o dxetmp_vr.c $(GLIDE)/vr/lib/glide3x.dxe
+	echo "#include <sys/dxe.h>" >dxe.c
+	cat dxetmp_*.c | grep "extern_asm" | sort | uniq >>dxe.c
+	echo "DXE_EXPORT_TABLE_AUTO (___dxe_eta___glide3x)" >>dxe.c
+	cat dxetmp_*.c | grep "DXE_EXPORT_ASM" | sort | uniq >>dxe.c
+	echo "DXE_EXPORT_END" >>dxe.c
+	rm dxetmp_*.c
 
 .PHONY: clean distclean init doc
 

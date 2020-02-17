@@ -104,8 +104,8 @@ DOjS supports most of the Glide3 API that was used with [3dfx](https://en.wikipe
 * Voodoo 1 [tested]
 * Voodoo 2 [tested]
 * Voodoo 3 [tested]
-* Voodoo 4 [untested, I don't own one]
-* Voodoo 5 [untested, I don't own one]
+* Voodoo 4 [tested by [tunguska](https://twitter.com/tunguska82)]
+* Voodoo 5 [tested by [tunguska](https://twitter.com/tunguska82)]
 * Voodoo Rush (all versions) [tested]
 * Voodoo Banshee (PCI and AGP) [tested]
 

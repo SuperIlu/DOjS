@@ -25,6 +25,7 @@ SOFTWARE.
 #include <dpmi.h>
 #include <errno.h>
 #include <mujs.h>
+#include <pc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -237,6 +238,7 @@ static void f_Stop(js_State *J) { DOjS.keep_running = false; }
 static void f_Gc(js_State *J) {
     bool report = js_toboolean(J, 1);
     js_gc(J, report);
+    DOjS.lastError = NULL;
 }
 
 /**
@@ -363,6 +365,71 @@ static void f_MouseSetCursorMode(js_State *J) {
  */
 static void f_SetExitKey(js_State *J) { DOjS.exit_key = js_toint32(J, 1); }
 
+/**
+ * @brief call external program.
+ * System(cmd:string):number
+ *
+ * @param J the JS context.
+ */
+static void f_System(js_State *J) {
+    const char *cmd = js_tostring(J, 1);
+    int flags = js_touint16(J, 2);
+
+    if (flags & SYS_FLAG_MOUSE) {
+        remove_mouse();
+    }
+
+    if (flags & SYS_FLAG_SOUND) {
+        remove_sound_input();
+        remove_sound();
+    }
+
+    if (flags & SYS_FLAG_JOYSTICK) {
+        install_joystick(JOY_TYPE_AUTODETECT);
+    }
+
+    if (flags & SYS_FLAG_KEYBOARD) {
+        remove_keyboard();
+    }
+
+    if (flags & SYS_FLAG_TIMER) {
+        remove_timer();
+    }
+
+    int ret = system(cmd);
+
+    if (flags & SYS_FLAG_TIMER) {
+        install_timer();
+    }
+
+    if (flags & SYS_FLAG_KEYBOARD) {
+        install_keyboard();
+    }
+
+    if (flags & SYS_FLAG_JOYSTICK) {
+        install_joystick(JOY_TYPE_AUTODETECT);
+    }
+
+    if (flags & SYS_FLAG_SOUND) {
+        install_sound(DOjS.params.no_sound ? DIGI_NONE : DIGI_AUTODETECT, DOjS.params.no_fm ? MIDI_NONE : MIDI_AUTODETECT, NULL);
+        install_sound_input(DOjS.params.no_sound ? DIGI_NONE : DIGI_AUTODETECT, DOjS.params.no_fm ? MIDI_NONE : MIDI_AUTODETECT);
+    }
+
+    if (flags & SYS_FLAG_MOUSE) {
+        install_mouse();
+    }
+
+    js_pushnumber(J, ret);
+}
+
+static void f_OutPortByte(js_State *J) { outportb(js_toint16(J, 1), js_toint16(J, 2) & 0xFF); }
+static void f_OutPortWord(js_State *J) { outportw(js_toint16(J, 1), js_toint16(J, 2)); }
+static void f_OutPortLong(js_State *J) { outportl(js_toint16(J, 1), js_toint32(J, 2)); }
+
+static void f_InPortByte(js_State *J) { js_pushnumber(J, inportb(js_toint16(J, 1)) & 0xFF); }
+static void f_InPortWord(js_State *J) { js_pushnumber(J, inportw(js_toint16(J, 1)) & 0xFFFF); }
+static void f_InPortLong(js_State *J) { js_pushnumber(J, inportl(js_toint16(J, 1))); }
+
 /***********************
 ** exported functions **
 ***********************/
@@ -375,6 +442,8 @@ static void f_SetExitKey(js_State *J) { DOjS.exit_key = js_toint32(J, 1); }
  * @param args first script parameter.
  */
 void init_funcs(js_State *J, int argc, char **argv, int args) {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     // define some global properties
     js_pushglobal(J);
     js_setglobal(J, "global");
@@ -412,4 +481,14 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     FUNCDEF(J, f_MouseSetCursorMode, "MouseSetCursorMode", 1);
 
     FUNCDEF(J, f_SetExitKey, "SetExitKey", 1);
+
+    FUNCDEF(J, f_System, "System", 2);
+    FUNCDEF(J, f_OutPortByte, "OutPortByte", 2);
+    FUNCDEF(J, f_OutPortWord, "OutPortWord", 2);
+    FUNCDEF(J, f_OutPortLong, "OutPortLong", 2);
+    FUNCDEF(J, f_InPortByte, "InPortByte", 1);
+    FUNCDEF(J, f_InPortWord, "InPortWord", 1);
+    FUNCDEF(J, f_InPortLong, "InPortLong", 1);
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

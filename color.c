@@ -43,7 +43,7 @@ static void f_Color(js_State *J) {
         if (js_isdefined(J, 4)) {
             a = js_toint16(J, 4);
         }
-        uint32_t rgba = makeacol(r, g, b, a);
+        uint32_t rgba = makeacol32(r, g, b, a);
         js_pushnumber(J, rgba);
     }
 }
@@ -89,9 +89,13 @@ static void f_getAlpha(js_State *J) { js_pushnumber(J, geta(js_toint32(J, 1))); 
  * @param J VM state.
  */
 void init_color(js_State *J) {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     FUNCDEF(J, f_Color, "Color", 4);
     FUNCDEF(J, f_getRed, "GetRed", 1);
     FUNCDEF(J, f_getGreen, "GetGreen", 1);
     FUNCDEF(J, f_getBlue, "GetBlue", 1);
     FUNCDEF(J, f_getAlpha, "GetAlpha", 1);
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

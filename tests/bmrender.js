@@ -20,22 +20,46 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef __SOUND_H__
-#define __SOUND_H__
+var it = 0;
+var circSize = 32;
+var circDir = 1;
 
-#include <mujs.h>
-#include <stdbool.h>
+/*
+** This function is called once when the script is started.
+*/
+function Setup() {
+    SetFramerate(3);
+}
 
-/************
-** defines **
-************/
-#define TAG_SAMPLE "Sample"  //!< class name for Sample()
+/*
+** This function is repeatedly until ESC is pressed or Stop() is called.
+*/
+function Loop() {
+    // dynamically generate bitmap
+    circSize += circDir;
+    if (circSize > 64) {
+        circDir = -1;
+    } else if (circSize < 16) {
+        circDir = 1;
+    }
+    var bm = new Bitmap(256, 256);
+    Debug(it + ": " + bm.width + "x" + bm.height);
+    SetRenderBitmap(bm);
+    ClearScreen(EGA.BLACK);
+    CustomLine(0, 0, SizeX() - 1, SizeY() - 1, 5, EGA.RED);
+    CustomLine(0, SizeY() - 1, SizeX() - 1, 0, 5, EGA.GREEN);
+    Circle(SizeX() / 2, SizeY() / 2, circSize, EGA.YELLOW);
+    SetRenderBitmap(null);
 
-/***********************
-** exported functions **
-***********************/
-extern void sound_mod_stop(void);
-extern void init_sound(js_State *J);
-extern void shutdown_sound(void);
+    ClearScreen(EGA.BLACK);
 
-#endif  // __SOUND_H__
+    bm.Draw(0, 0);
+
+    it++;
+}
+
+/*
+** This function is called on any input.
+*/
+function Input(e) {
+}

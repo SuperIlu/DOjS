@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include "3dfx-texinfo.h"
 #include "DOjS.h"
+#include "bitmap.h"
 #include "util.h"
 
 /************
@@ -91,6 +92,7 @@ static GrTexTable_t texTableType(GrTextureFormat_t format) {
  */
 static void Texinfo_Finalize(js_State *J, void *data) {
     TlTexture *ti = (TlTexture *)data;
+    free(ti->info.data);
     free(ti);
 }
 
@@ -100,6 +102,7 @@ static void Texinfo_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_Texinfo(js_State *J) {
+    NEW_OBJECT_PREP(J);
     Gu3dfInfo tdfInfo;
 
     TlTexture *ti = calloc(1, sizeof(TlTexture));
@@ -108,39 +111,97 @@ static void new_Texinfo(js_State *J) {
         return;
     }
 
-    const char *fname = js_tostring(J, 1);
+    const char *fname = "<<bitmap>>";
+    if (js_isuserdata(J, 1, TAG_BITMAP)) {
+        BITMAP *bm = js_touserdata(J, 1, TAG_BITMAP);
 
-    if (gu3dfGetInfo(fname, &tdfInfo)) {
-        ti->textureSize = tdfInfo.mem_required;
-        tdfInfo.data = malloc(tdfInfo.mem_required);
-        if (!tdfInfo.data) {
-            JS_ENOMEM(J);
+        // check source bitmap for sanity
+        char *err = NULL;
+        if (bm->w > 256 || bm->h > 256) {
+            err = "Bitmap size exceeds 256x256.";
+        }
+        if (bm->w != bm->h) {
+            err = "Bitmap is not rectangular.";
+        }
+        if (bm->w % 2) {
+            err = "Bitmap size no multiple of 2.";
+        }
+        if (err) {
+            js_error(J, err);
+            free(ti);
             return;
         }
-        if (gu3dfLoad(fname, &tdfInfo)) {
-            ti->info.smallLodLog2 = tdfInfo.header.small_lod;
-            ti->info.largeLodLog2 = tdfInfo.header.large_lod;
-            ti->info.aspectRatioLog2 = tdfInfo.header.aspect_ratio;
-            ti->info.format = tdfInfo.header.format;
-            ti->info.data = tdfInfo.data;
-            ti->tableType = texTableType(ti->info.format);
-            switch (ti->tableType) {
-                case GR_TEXTABLE_NCC0:
-                case GR_TEXTABLE_NCC1:
-                case GR_TEXTABLE_PALETTE:
-                    memcpy(&ti->tableData, &(tdfInfo.table), sizeof(TlTextureTable));
-                    break;
-                default:
-                    break;
+
+        // set texture format
+        ti->tableType = FX_NONE;
+        ti->info.format = GR_TEXFMT_RGB_565;
+        ti->info.aspectRatioLog2 = GR_ASPECT_LOG2_1x1;
+
+        // determine lodt
+        ti->info.largeLodLog2 = ti->info.smallLodLog2 = 0;
+        for (int i = GR_LOD_LOG2_1; i <= GR_LOD_LOG2_256; i++) {
+            if (bm->w == (1 << i)) {
+                ti->info.largeLodLog2 = ti->info.smallLodLog2 = i;
+                break;
             }
-        } else {
-            free(tdfInfo.data);
-            js_error(J, "Can't load '%s'!", fname);
+        }
+
+        // allocate memory
+        ti->textureSize = bm->w * bm->h * sizeof(uint16_t);
+        ti->info.data = malloc(ti->textureSize);
+        if (!ti->info.data) {
+            JS_ENOMEM(J);
+            free(ti);
             return;
+        }
+
+        // convert bitmap into new memory
+        uint16_t *dst = ti->info.data;
+        for (int y = 0; y < bm->h; y++) {
+            for (int x = 0; x < bm->w; x++) {
+                uint32_t argb = getpixel(bm, x, y);
+                *dst = (((argb >> 8) & 0xF800) | ((argb >> 5) & 0x07E0) | ((argb >> 3) & 0x001F));
+                dst++;
+            }
         }
     } else {
-        js_error(J, "Can't load '%s'!", fname);
-        return;
+        fname = js_tostring(J, 1);
+
+        if (gu3dfGetInfo(fname, &tdfInfo)) {
+            ti->textureSize = tdfInfo.mem_required;
+            tdfInfo.data = malloc(tdfInfo.mem_required);
+            if (!tdfInfo.data) {
+                JS_ENOMEM(J);
+                free(ti);
+                return;
+            }
+            if (gu3dfLoad(fname, &tdfInfo)) {
+                ti->info.smallLodLog2 = tdfInfo.header.small_lod;
+                ti->info.largeLodLog2 = tdfInfo.header.large_lod;
+                ti->info.aspectRatioLog2 = tdfInfo.header.aspect_ratio;
+                ti->info.format = tdfInfo.header.format;
+                ti->info.data = tdfInfo.data;
+                ti->tableType = texTableType(ti->info.format);
+                switch (ti->tableType) {
+                    case GR_TEXTABLE_NCC0:
+                    case GR_TEXTABLE_NCC1:
+                    case GR_TEXTABLE_PALETTE:
+                        memcpy(&ti->tableData, &(tdfInfo.table), sizeof(TlTextureTable));
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                free(tdfInfo.data);
+                js_error(J, "Can't load '%s'!", fname);
+                free(ti);
+                return;
+            }
+        } else {
+            js_error(J, "Can't load '%s'!", fname);
+            free(ti);
+            return;
+        }
     }
     ti->startAddress = FX_NONE;
     ti->tmu = FX_NONE;
@@ -257,7 +318,8 @@ static void Texinfo_TexSource(js_State *J) {
  * @param J VM state.
  */
 void init_texinfo(js_State *J) {
-    // define the Image() object
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     js_newobject(J);
     {
         PROTDEF(J, Texinfo_DownloadMipMap, TAG_TEXINFO, "DownloadMipMap", 3);
@@ -267,4 +329,6 @@ void init_texinfo(js_State *J) {
     }
     js_newcconstructor(J, new_Texinfo, new_Texinfo, TAG_TEXINFO, 1);
     js_defglobal(J, TAG_TEXINFO, JS_DONTENUM);
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

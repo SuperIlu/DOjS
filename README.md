@@ -39,6 +39,7 @@ The following hardware/functions are available:
 * Allegro 3D rendering (software)
 * 3dfx/Glide3 3D rendering output (hardware)
 * p5js compatibility
+* direct io-port access
 
 ## A minimal script
 You can find the following example in `examples/exampl.js`:
@@ -163,7 +164,7 @@ See the [changelog](/CHANGELOG.md) for the projects history.
 * Anything fun...
 * Switch to Duktape JS runtime
 * Add COM port access
-* Enable runtime creation of 3dfx/glide textures
+* add [watt32] support (http://www.watt-32.net/)
 
 # Licenses
 ## DOjS
@@ -223,12 +224,13 @@ Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script> [script parameters]
 
 ## Editor keys
 ```
-    F1  : Open/Close help
-    F3  : Save script
-    F4  : Run script
-    F7  : Find text
-    F9  : Show/Close logfile
-    F10 : Quit
+    F1        : Open/Close help
+    SHIFT-F1  : Function context help
+    F3        : Save script
+    F4        : Run script
+    F7        : Find text
+    F9        : Show/Close logfile
+    F10       : Quit
 
     Shift-F4       : Truncate logfile and run script
     Shift-F7       : Find again
@@ -239,14 +241,14 @@ Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script> [script parameters]
     CTRL-V         : Paste
     CTRL-LEFT      : Previous word
     CTRL-RIGHT     : Next word
-    PAGE-UP        : One page up.
-    PAGE-DOWN      : One page down.
+    CTRL/PAGE-UP   : One page up
+    CTRL/PAGE-DOWN : One page down
     HOME           : Go to start of line
     END            : Go to end of line
     CTRL-HOME      : Go to start of line
     CTRL-END       : Go to end of line
     TAB            : Insert spaces until next TAB-stop at cursor
-    SHIFT-TAB      : Reduce indentation of line.
+    SHIFT-TAB      : Reduce indentation of line
 
     TAB size is 4.
     The help viewer will remember the current position.

@@ -732,6 +732,8 @@ static void f_PolygonZNormal(js_State *J) {
  * @param J VM state.
  */
 void init_a3d(js_State *J) {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     // scene based rendering
     FUNCDEF(J, f_ScenePolygon3D, "_ScenePolygon3D", 3);
     FUNCDEF(J, f_RenderScene, "_RenderScene", 0);
@@ -761,6 +763,8 @@ void init_a3d(js_State *J) {
     FUNCDEF(J, f_PerspProject, "PerspProject", 2);
     FUNCDEF(J, f_SetProjectionViewport, "_SetProjectionViewport", 4);
     FUNCDEF(J, f_PolygonZNormal, "PolygonZNormal", 3);
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
 
 /**

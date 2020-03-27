@@ -52,6 +52,7 @@ static void Font_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_Font(js_State *J) {
+    NEW_OBJECT_PREP(J);
     FONT *f;
     const char *fname;
     if (js_isdefined(J, 1)) {
@@ -170,6 +171,8 @@ static void Font_StringHeight(js_State *J) {
  * @param J VM state.
  */
 void init_font(js_State *J) {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     js_newobject(J);
     {
         PROTDEF(J, Font_DrawStringLeft, TAG_FONT, "DrawStringLeft", 5);
@@ -180,4 +183,6 @@ void init_font(js_State *J) {
     }
     js_newcconstructor(J, new_Font, new_Font, TAG_FONT, 1);
     js_defglobal(J, TAG_FONT, JS_DONTENUM);
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

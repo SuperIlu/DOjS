@@ -25,12 +25,23 @@ SOFTWARE.
 */
 function Setup() {
 	SetFramerate(30);
+	MouseShowCursor(false);
 
 	i1 = new Bitmap("examples/dojs.bmp");
 	i2 = new Bitmap("examples/3dfx.tga");
 	i3 = new Bitmap("examples/glow.pcx");
 
+	var dat = [];
+	for (var x = 0; x < 255; x++) {
+		for (var y = 0; y < 255; y++) {
+			dat.push(0xFF000000 | (x << 8) | y);
+		}
+	}
+
+	i4 = new Bitmap(dat, 255, 255);
+
 	img = null;
+	cnt = 0;
 }
 
 /*
@@ -42,19 +53,41 @@ function Loop() {
 	if (img != null) {
 		img.Draw(0, 0);
 	}
+
+	var dat = [];
+	for (var x = 0; x < 32; x++) {
+		for (var y = 0; y < 32; y++) {
+			dat.push(0xFF000000 | ((cnt % 32) * 7 << 16) | (x * 7 << 8) | y * 7);
+		}
+	}
+	DrawArray(dat, SizeX() / 2, SizeY() / 2, 32, 32);
+	cnt++;
 }
 
 /*
 ** This function is called on any input.
 */
 function Input(e) {
+	Println(JSON.stringify(e));
 	if (CompareKey(e.key, '1')) {
 		img = i1;
+		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '2')) {
 		img = i2;
+		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '3')) {
 		img = i3;
+		Println(img.constructor.toString());
+	}
+	if (CompareKey(e.key, '4')) {
+		img = i4;
+		Println(img.constructor.toString());
+	}
+	if (CompareKey(e.key, '5')) {
+		img = new Bitmap(100, 100, 255, 255);
+		Println(img.constructor.toString());
+		img.SaveBmpImage("5.bmp");
 	}
 }

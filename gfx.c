@@ -668,9 +668,31 @@ static void f_TransparencyEnabled(js_State *J) {
 static void f_SetRenderBitmap(js_State *J) {
     if (js_isundefined(J, 1) || js_isnull(J, 1)) {
         DOjS.current_bm = DOjS.render_bm;
+        DEBUG("Restoring render_bm\n");
     } else {
         BITMAP *bm = js_touserdata(J, 1, TAG_BITMAP);
         DOjS.current_bm = bm;
+        DEBUGF("Setting 0x%p\n", bm);
+    }
+}
+
+/**
+ * @brief draw 32bit ARGB array to screen.
+ * DrawArray(dat:number[], x:number, y:number, width:number, height:number)
+ *
+ * @param J the JS context.
+ */
+static void f_DrawArray(js_State *J) {
+    int x = js_tonumber(J, 2);
+    int y = js_tonumber(J, 3);
+    int w = js_tonumber(J, 4);
+    int h = js_tonumber(J, 5);
+    int arr_len = js_getlength(J, 1);
+    int len = arr_len < w * h ? arr_len : w * h;
+    for (int i = 0; i < len; i++) {
+        js_getindex(J, 1, i);
+        putpixel(DOjS.current_bm, x + (i % w), y + (i / h), js_toint32(J, -1));
+        js_pop(J, 1);
     }
 }
 
@@ -683,12 +705,14 @@ static void f_SetRenderBitmap(js_State *J) {
  * @param J VM state.
  */
 void init_gfx(js_State *J) {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     // define some global properties
     js_pushglobal(J);
     js_setglobal(J, "global");
 
     // define global functions
-    FUNCDEF(J, f_SetRenderBitmap, "SetRenderBitmap", 0);
+    FUNCDEF(J, f_SetRenderBitmap, "SetRenderBitmap", 1);
     FUNCDEF(J, f_GetScreenMode, "GetScreenMode", 0);
     FUNCDEF(J, f_SizeX, "SizeX", 0);
     FUNCDEF(J, f_SizeY, "SizeY", 0);
@@ -719,6 +743,9 @@ void init_gfx(js_State *J) {
     FUNCDEF(J, f_SaveTgaImage, "SaveTgaImage", 1);
 
     FUNCDEF(J, f_GetPixel, "GetPixel", 2);
+    FUNCDEF(J, f_DrawArray, "DrawArray", 5);
 
     FUNCDEF(J, f_TransparencyEnabled, "TransparencyEnabled", 2);
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

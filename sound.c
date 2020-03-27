@@ -54,6 +54,7 @@ static void Sample_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_Sample(js_State *J) {
+    NEW_OBJECT_PREP(J);
     const char *fname = js_tostring(J, 1);
 
     SAMPLE *snd = load_sample(fname);
@@ -75,6 +76,12 @@ static void new_Sample(js_State *J) {
 
     js_pushnumber(J, snd->freq);
     js_defproperty(J, -2, "frequency", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+
+    js_pushnumber(J, snd->bits);
+    js_defproperty(J, -2, "bits", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+
+    js_pushboolean(J, snd->stereo);
+    js_defproperty(J, -2, "stereo", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 }
 
 /**
@@ -91,7 +98,14 @@ static void Sample_play(js_State *J) {
         int pan = js_toint16(J, 2);
         bool loop = js_toboolean(J, 3);
 
-        play_sample(snd, vol, pan, 1000, loop);
+        int voc = play_sample(snd, vol, pan, 1000, loop);
+        if (voc >= 0) {
+            js_pushnumber(J, voc);
+        } else {
+            js_pushnull(J);
+        }
+    } else {
+        js_pushnull(J);
     }
 }
 
@@ -106,6 +120,64 @@ static void Sample_stop(js_State *J) {
         SAMPLE *snd = js_touserdata(J, 0, TAG_SAMPLE);
         stop_sample(snd);
     }
+}
+
+/**
+ * @brief get sample data.
+ * snd.Get(idx)
+ *
+ * @param J VM state.
+ */
+static void Sample_get(js_State *J) {
+    SAMPLE *snd = js_touserdata(J, 0, TAG_SAMPLE);
+    unsigned int idx = js_touint32(J, 1);
+
+    if (idx >= snd->len) {
+        js_error(J, "Sample index %d out of range, %ld max.", idx, snd->len);
+    }
+
+    if (snd->bits == 8) {
+        uint8_t *buf = snd->data;
+        if (snd->stereo) {
+            js_newarray(J);
+            js_pushnumber(J, buf[idx * 2]);
+            js_setindex(J, -2, 0);
+            js_pushnumber(J, buf[idx * 2 + 1]);
+            js_setindex(J, -2, 1);
+        } else {
+            js_newarray(J);
+            js_pushnumber(J, buf[idx]);
+            js_setindex(J, -2, 0);
+            js_pushnumber(J, buf[idx]);
+            js_setindex(J, -2, 1);
+        }
+    } else {
+        uint16_t *buf = snd->data;
+        if (snd->stereo) {
+            js_newarray(J);
+            js_pushnumber(J, buf[idx * 2]);
+            js_setindex(J, -2, 0);
+            js_pushnumber(J, buf[idx * 2 + 1]);
+            js_setindex(J, -2, 1);
+        } else {
+            js_newarray(J);
+            js_pushnumber(J, buf[idx]);
+            js_setindex(J, -2, 0);
+            js_pushnumber(J, buf[idx]);
+            js_setindex(J, -2, 1);
+        }
+    }
+}
+
+/**
+ * @brief got current play position of given voice.
+ * VoiceGetPosition(voc:number):number
+ *
+ * @param J VM state.
+ */
+static void snd_get_pos(js_State *J) {
+    int voc = js_touint32(J, 1);
+    js_pushnumber(J, voice_get_position(voc));
 }
 
 /**
@@ -245,12 +317,30 @@ static void snd_read_input(js_State *J) {
  * @brief initialize module/sample subsystem.
  *
  * @param J VM state.
- * @param no_sound skip sound init.
- * @param no_fm skip fm sound init.
  */
-void init_sound(js_State *J, bool no_sound, bool no_fm) {
+void init_sound(js_State *J) {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
+    // sound output
+    bool sound_ok = install_sound(DOjS.params.no_sound ? DIGI_NONE : DIGI_AUTODETECT, DOjS.params.no_fm ? MIDI_NONE : MIDI_AUTODETECT, NULL) == 0;
+    if (!sound_ok) {
+        LOGF("Sound init: %s\n", allegro_error);
+    }
+    DOjS.midi_available = sound_ok && !DOjS.params.no_fm;
+    DOjS.sound_available = sound_ok && !DOjS.params.no_sound;
+    PROPDEF_B(J, DOjS.sound_available, "SOUND_AVAILABLE");
+
+    js_newobject(J);
+    {
+        PROTDEF(J, Sample_play, TAG_SAMPLE, "Play", 0);
+        PROTDEF(J, Sample_stop, TAG_SAMPLE, "Stop", 1);
+        PROTDEF(J, Sample_get, TAG_SAMPLE, "Get", 1);
+    }
+    js_newcconstructor(J, new_Sample, new_Sample, TAG_SAMPLE, 1);
+    js_defglobal(J, TAG_SAMPLE, JS_DONTENUM);
+
     // sound input
-    DOjS.sndin_available = install_sound_input(no_sound ? DIGI_NONE : DIGI_AUTODETECT, no_fm ? MIDI_NONE : MIDI_AUTODETECT) == 0;
+    DOjS.sndin_available = install_sound_input(DOjS.params.no_sound ? DIGI_NONE : DIGI_AUTODETECT, DOjS.params.no_fm ? MIDI_NONE : MIDI_AUTODETECT) == 0;
     if (!DOjS.sndin_available) {
         LOGF("Sound input: %s\n", allegro_error);
     }
@@ -263,25 +353,14 @@ void init_sound(js_State *J, bool no_sound, bool no_fm) {
     PROPDEF_B(J, ((cap & 16) != 0), "SNDIN_16BIT");              // do we have 16bit input?
     PROPDEF_B(J, get_sound_input_cap_stereo(), "SNDIN_STEREO");  // do we have stereo input?
 
+    FUNCDEF(J, snd_get_pos, "VoiceGetPosition", 1);
+
     FUNCDEF(J, snd_input_source, "SoundInputSource", 1);
     FUNCDEF(J, snd_start_input, "SoundStartInput", 3);
     FUNCDEF(J, snd_stop_input, "SoundStopInput", 0);
     FUNCDEF(J, snd_read_input, "ReadSoundInput", 0);
 
-    // sound output
-    bool sound_ok = install_sound(no_sound ? DIGI_NONE : DIGI_AUTODETECT, no_fm ? MIDI_NONE : MIDI_AUTODETECT, NULL) == 0;
-    if (!sound_ok) {
-        LOGF("Sound init: %s\n", allegro_error);
-    }
-    DOjS.midi_available = sound_ok && !no_fm;
-    DOjS.sound_available = sound_ok && !no_sound;
-    PROPDEF_B(J, DOjS.sound_available, "SOUND_AVAILABLE");
-
-    js_newobject(J);
-    { PROTDEF(J, Sample_play, TAG_SAMPLE, "Play", 0); }
-    { PROTDEF(J, Sample_stop, TAG_SAMPLE, "Stop", 1); }
-    js_newcconstructor(J, new_Sample, new_Sample, TAG_SAMPLE, 1);
-    js_defglobal(J, TAG_SAMPLE, JS_DONTENUM);
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
 
 /**

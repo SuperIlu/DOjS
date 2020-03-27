@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include "DOjS.h"
 #include "dialog.h"
+#include "edi_render.h"
 #include "edit.h"
 
 /************
@@ -101,54 +102,55 @@ bool dia_ask_text(edi_t* edi, char buffer[DIA_ASK_SIZE], char* allowed, char* ms
         int endpos = 0;
 
         // upper border
-        textbackground(BLUE);
-        textcolor(WHITE);
-        gotoxy(startX, startY);
-        putch(EDI_UL_LINE);
+        edi_textbackground(BLUE);
+        edi_textcolor(WHITE);
+        edi_gotoxy(edi, startX, startY);
+        edi_putch(edi, EDI_UL_LINE);
         for (int x = 1; x < w + 1; x++) {
-            putch(EDI_H_LINE);
+            edi_putch(edi, EDI_H_LINE);
         }
-        putch(EDI_UR_LINE);
+        edi_putch(edi, EDI_UR_LINE);
 
-        gotoxy(startX, startY + 1);
-        putch(EDI_V_LINE);
-        putch(' ');
+        edi_gotoxy(edi, startX, startY + 1);
+        edi_putch(edi, EDI_V_LINE);
+        edi_putch(edi, ' ');
 
-        textbackground(BLACK);
-        textcolor(WHITE);
+        edi_textbackground(BLACK);
+        edi_textcolor(WHITE);
         int pos = 0;
         while (pos < w - 2) {
             if (buffer[endpos]) {
-                putch(buffer[endpos]);
+                edi_putch(edi, buffer[endpos]);
                 endpos++;
             } else {
-                putch(' ');
+                edi_putch(edi, ' ');
             }
             pos++;
         }
 
-        textbackground(BLUE);
-        textcolor(WHITE);
-        putch(' ');
-        putch(EDI_V_LINE);
+        edi_textbackground(BLUE);
+        edi_textcolor(WHITE);
+        edi_putch(edi, ' ');
+        edi_putch(edi, EDI_V_LINE);
 
         // lower border
-        gotoxy(startX, startY + 2);
-        putch(EDI_LL_LINE);
+        edi_gotoxy(edi, startX, startY + 2);
+        edi_putch(edi, EDI_LL_LINE);
         int x = 1;
         while (x < (w - strlen(msg)) / 2) {
-            putch(EDI_H_LINE);
+            edi_putch(edi, EDI_H_LINE);
             x++;
         }
-        cputs(msg);
+        edi_cputs(edi, msg);
         x += strlen(msg);
         while (x < w + 1) {
-            putch(EDI_H_LINE);
+            edi_putch(edi, EDI_H_LINE);
             x++;
         }
-        putch(EDI_LR_LINE);
+        edi_putch(edi, EDI_LR_LINE);
 
         gotoxy(strlen(buffer) + startX + 2, startY + 1);
+        edi_refresh_screen(edi);
         int ch = getxkey();
         if (ch == K_BackSpace) {
             if (endpos) {
@@ -202,37 +204,38 @@ void dia_show_message(edi_t* edi, char* txt) {
     int startY = (edi->scr.screenheight - h) / 2;
 
     // upper border
-    textbackground(YELLOW);
-    textcolor(BLUE);
-    gotoxy(startX, startY);
-    putch(EDI_UL_LINE);
+    edi_textbackground(RED);
+    edi_textcolor(YELLOW);
+    edi_gotoxy(edi, startX, startY);
+    edi_putch(edi, EDI_UL_LINE);
     for (int x = 1; x < w - 1; x++) {
-        putch(EDI_H_LINE);
+        edi_putch(edi, EDI_H_LINE);
     }
-    putch(EDI_UR_LINE);
+    edi_putch(edi, EDI_UR_LINE);
 
-    gotoxy(startX, startY + 1);
-    putch(EDI_V_LINE);
-    putch(' ');
-    cputs(txt);
-    putch(' ');
-    putch(EDI_V_LINE);
+    edi_gotoxy(edi, startX, startY + 1);
+    edi_putch(edi, EDI_V_LINE);
+    edi_putch(edi, ' ');
+    edi_cputs(edi, txt);
+    edi_putch(edi, ' ');
+    edi_putch(edi, EDI_V_LINE);
 
     // lower border
-    gotoxy(startX, startY + 2);
-    putch(EDI_LL_LINE);
+    edi_gotoxy(edi, startX, startY + 2);
+    edi_putch(edi, EDI_LL_LINE);
     int x = 1;
     while (x < (w - strlen(DIA_MESSAGE)) / 2) {
-        putch(EDI_H_LINE);
+        edi_putch(edi, EDI_H_LINE);
         x++;
     }
-    cputs(DIA_MESSAGE);
+    edi_cputs(edi, DIA_MESSAGE);
     x += strlen(DIA_MESSAGE);
     while (x < w - 1) {
-        putch(EDI_H_LINE);
+        edi_putch(edi, EDI_H_LINE);
         x++;
     }
-    putch(EDI_LR_LINE);
+    edi_putch(edi, EDI_LR_LINE);
+    edi_refresh_screen(edi);
     getxkey();
 }
 
@@ -252,37 +255,38 @@ bool dia_show_confirm(edi_t* edi, char* txt) {
     int startY = (edi->scr.screenheight - h) / 2;
 
     // upper border
-    textbackground(BLUE);
-    textcolor(WHITE);
-    gotoxy(startX, startY);
-    putch(EDI_UL_LINE);
+    edi_textbackground(BLUE);
+    edi_textcolor(WHITE);
+    edi_gotoxy(edi, startX, startY);
+    edi_putch(edi, EDI_UL_LINE);
     for (int x = 1; x < w - 1; x++) {
-        putch(EDI_H_LINE);
+        edi_putch(edi, EDI_H_LINE);
     }
-    putch(EDI_UR_LINE);
+    edi_putch(edi, EDI_UR_LINE);
 
-    gotoxy(startX, startY + 1);
-    putch(EDI_V_LINE);
-    putch(' ');
-    cputs(txt);
-    putch(' ');
-    putch(EDI_V_LINE);
+    edi_gotoxy(edi, startX, startY + 1);
+    edi_putch(edi, EDI_V_LINE);
+    edi_putch(edi, ' ');
+    edi_cputs(edi, txt);
+    edi_putch(edi, ' ');
+    edi_putch(edi, EDI_V_LINE);
 
     // lower border
-    gotoxy(startX, startY + 2);
-    putch(EDI_LL_LINE);
+    edi_gotoxy(edi, startX, startY + 2);
+    edi_putch(edi, EDI_LL_LINE);
     int x = 1;
     while (x < (w - strlen(DIA_CONFIRM)) / 2) {
-        putch(EDI_H_LINE);
+        edi_putch(edi, EDI_H_LINE);
         x++;
     }
-    cputs(DIA_CONFIRM);
+    edi_cputs(edi, DIA_CONFIRM);
     x += strlen(DIA_CONFIRM);
     while (x < w - 1) {
-        putch(EDI_H_LINE);
+        edi_putch(edi, EDI_H_LINE);
         x++;
     }
-    putch(EDI_LR_LINE);
+    edi_putch(edi, EDI_LR_LINE);
+    edi_refresh_screen(edi);
     while (true) {
         int ch = getxkey();
         if (ch == 'y' || ch == 'Y') {
@@ -300,73 +304,90 @@ bool dia_show_confirm(edi_t* edi, char* txt) {
  * @param fname name of the file.
  * @param pos (last) shown position.
  * @param deletable TRUE if the DEL-key shall delete the file after displaying.
+ * @param ctx help context or NULL if none.
  */
-void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable) {
+void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable, char* ctx) {
     edi->last_top = NULL;
 
     char buff[1024];
-    FILE* f;
-    char* s;
-    int n, t;
+    FILE* file;
+    char* file_data;
+    int tell_size, read_size;
 
-    f = fopen(fname, "rb");
-    if (!f) {
+    file = fopen(fname, "rb");
+    if (!file) {
         snprintf(buff, sizeof(buff), "cannot open file '%s': %s", fname, strerror(errno));
         dia_show_message(edi, buff);
         return;
     }
 
-    if (fseek(f, 0, SEEK_END) < 0) {
-        fclose(f);
+    if (fseek(file, 0, SEEK_END) < 0) {
+        fclose(file);
         snprintf(buff, sizeof(buff), "cannot seek in file '%s': %s", fname, strerror(errno));
         dia_show_message(edi, buff);
         return;
     }
 
-    n = ftell(f);
-    if (n < 0) {
-        fclose(f);
+    tell_size = ftell(file);
+    if (tell_size < 0) {
+        fclose(file);
         snprintf(buff, sizeof(buff), "cannot tell in file '%s': %s", fname, strerror(errno));
         dia_show_message(edi, buff);
         return;
     }
 
-    if (fseek(f, 0, SEEK_SET) < 0) {
-        fclose(f);
+    if (fseek(file, 0, SEEK_SET) < 0) {
+        fclose(file);
         snprintf(buff, sizeof(buff), "cannot seek in file '%s': %s", fname, strerror(errno));
         dia_show_message(edi, buff);
         return;
     }
 
-    s = malloc(n + 1);
-    if (!s) {
-        fclose(f);
+    file_data = malloc(tell_size + 1);
+    if (!file_data) {
+        fclose(file);
         dia_show_message(edi, "out of memory");
         return;
     }
 
-    t = fread(s, 1, n, f);
-    if (t != n) {
-        free(s);
-        fclose(f);
+    read_size = fread(file_data, 1, tell_size, file);
+    if (read_size != tell_size) {
+        free(file_data);
+        fclose(file);
         snprintf(buff, sizeof(buff), "cannot read data from file '%s': %s", fname, strerror(errno));
         dia_show_message(edi, buff);
         return;
     }
-    s[n] = 0;
-    fclose(f);
+    file_data[tell_size] = 0;
+    fclose(file);
 
     // check if pos is in range for file
-    if (pos && *pos > n) {
-        *pos = 0;
+    if (pos) {
+        // first try context search, if that fails try last position
+        if (ctx) {
+            int ctx_len = strlen(ctx);
+            int find_pos = 0;
+            while (find_pos + 5 + ctx_len < tell_size) {
+                if (file_data[find_pos + 0] == '\n' && file_data[find_pos + 1] == '#' && file_data[find_pos + 2] == '#' && file_data[find_pos + 3] == '#' &&
+                    file_data[find_pos + 4] == ' ' && memcmp(ctx, &file_data[find_pos + 5], ctx_len) == 0) {
+                    *pos = find_pos;
+                    break;
+                }
+                find_pos++;
+            }
+        }
+
+        if (*pos > tell_size) {
+            *pos = 0;
+        }
     }
 
-    bool del = dia_show_text(edi, s, pos);
-    free(s);
+    bool del = dia_show_text(edi, file_data, pos);
+    free(file_data);
     if (deletable && del) {
-        f = fopen(fname, "w");
-        fflush(f);
-        fclose(f);
+        file = fopen(fname, "w");
+        fflush(file);
+        fclose(file);
     }
 }
 
@@ -400,19 +421,19 @@ bool dia_show_text(edi_t* edi, char* txt, int* pos) {
             int startY = 2;
 
             // upper border
-            textbackground(CYAN);
-            textcolor(WHITE);
-            gotoxy(startX, startY);
-            putch(EDI_UL_LINE);
+            edi_textbackground(CYAN);
+            edi_textcolor(WHITE);
+            edi_gotoxy(edi, startX, startY);
+            edi_putch(edi, EDI_UL_LINE);
             for (int x = 1; x < w - 2; x++) {
-                putch(EDI_H_LINE);
+                edi_putch(edi, EDI_H_LINE);
             }
             if (start == 0) {
-                putch(EDI_H_LINE);
+                edi_putch(edi, EDI_H_LINE);
             } else {
-                putch('^');
+                edi_putch(edi, '^');
             }
-            putch(EDI_UR_LINE);
+            edi_putch(edi, EDI_UR_LINE);
 
             int idx = start;
             int y = startY + 1;
@@ -422,11 +443,11 @@ bool dia_show_text(edi_t* edi, char* txt, int* pos) {
                 color = YELLOW;
             }
             while (y < h) {
-                textcolor(WHITE);
-                gotoxy(startX, y);
-                putch(EDI_V_LINE);
-                putch(' ');
-                textcolor(color);
+                edi_textcolor(WHITE);
+                edi_gotoxy(edi, startX, y);
+                edi_putch(edi, EDI_V_LINE);
+                edi_putch(edi, ' ');
+                edi_textcolor(color);
                 while (true) {  // line loop
                     if (!txt[idx]) {
                         end = true;
@@ -450,47 +471,48 @@ bool dia_show_text(edi_t* edi, char* txt, int* pos) {
                     } else if (!iscntrl(txt[idx])) {
                         // print char
                         end = false;
-                        putch(txt[idx]);
+                        edi_putch(edi, txt[idx]);
                         idx++;
                     } else {
                         idx++;
                     }
-                    if (wherex() > w - 2) {  // line wrap
+                    if (edi_wherex(edi) > w - 2) {  // line wrap
                         break;
                     }
                 }
 
-                while (wherex() <= w) {  // fill line with spaces and append |
-                    putch(' ');
+                while (edi_wherex(edi) <= w) {  // fill line with spaces and append |
+                    edi_putch(edi, ' ');
                 }
-                textcolor(WHITE);
-                putch(EDI_V_LINE);
+                edi_textcolor(WHITE);
+                edi_putch(edi, EDI_V_LINE);
                 y++;
             }
 
             // lower border
-            gotoxy(startX, y);
-            putch(EDI_LL_LINE);
+            edi_gotoxy(edi, startX, y);
+            edi_putch(edi, EDI_LL_LINE);
             int x = 1;
             while (x < (w - strlen(DIA_TEXT)) / 2) {
-                putch(EDI_H_LINE);
+                edi_putch(edi, EDI_H_LINE);
                 x++;
             }
-            cputs(DIA_TEXT);
+            edi_cputs(edi, DIA_TEXT);
             x += strlen(DIA_TEXT);
             while (x < w - 2) {
-                putch(EDI_H_LINE);
+                edi_putch(edi, EDI_H_LINE);
                 x++;
             }
             if (end) {
-                putch(EDI_H_LINE);
+                edi_putch(edi, EDI_H_LINE);
             } else {
-                putch('v');
+                edi_putch(edi, 'v');
             }
-            putch(EDI_LR_LINE);
-            gotoxy(1, 1);
+            edi_putch(edi, EDI_LR_LINE);
+            edi_gotoxy(edi, 1, 1);
 
             lastStart = start;
+            edi_refresh_screen(edi);
         }
 
         int ch = getxkey();

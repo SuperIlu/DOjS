@@ -31,6 +31,9 @@ SOFTWARE.
 ************/
 #define JSINC_3DFX BOOT_DIR "3dfx.js"  //!< boot script for 3dfx subsystem
 
+#define WIDTH_3DFX 640   //!< screen width
+#define HEIGHT_3DFX 480  //!< screen height
+
 /***********************
 ** exported functions **
 ***********************/

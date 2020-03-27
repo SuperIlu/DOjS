@@ -65,3 +65,7 @@ mujs-1.0.5/one.c
 mujs-1.0.5/opnames.h
 GLIDE3X.DXE
 glide3x.dxe
+examples/aoc2019/
+syn.txt
+synC.txt
+synJ.txt

@@ -23,6 +23,30 @@ var vtx = [
 	[0, 0, 0, 0, 0, 0, 0, 128, 0, 0]
 ];
 
+
+var a2, a3, b;								// textures
+var arcer2Bitmap, arcer3Bitmap, bBitmap;	// bitmaps
+
+// TMU memory destination for textures
+var a2TextDest = 0;
+var a3TextDest = 0;
+var bTextDest = 0;
+
+var TEXSIZE = 256;	// texture size
+
+// arcer2 runtime data
+var a2dat = {
+	start: 0,
+	r: TEXSIZE / 2,
+	lastAI: null
+};
+
+// arcer2 runtime data
+var a3dat = {
+	center: 0,
+	arcs: null
+};
+
 function Setup() {
 	fxInit();
 	fxVertexLayout([GR_PARAM.XY, GR_PARAM.Z, GR_PARAM.Q, GR_PARAM.RGB, GR_PARAM.A, GR_PARAM.ST0]);
@@ -78,15 +102,125 @@ function Setup() {
 
 	//Load the textures
 	FxTexMemInit(GR_TMU.TMU0);
-	t1 = new TexInfo("examples/v1text.3df");
-	t2 = new TexInfo("examples/6x86text.3df");
-	/* Download texture data to TMU */
-	t1.DownloadMipMap(GR_TMU.TMU0, FxTexMemGetStartAddress(GR_TMU.TMU0, t1), GR_MIPMAPLEVELMASK.BOTH);
-	t2.DownloadMipMap(GR_TMU.TMU0, FxTexMemGetStartAddress(GR_TMU.TMU0, t2), GR_MIPMAPLEVELMASK.BOTH);
 
+	arcer2Bitmap = new Bitmap(TEXSIZE, TEXSIZE);
+	arcer3Bitmap = new Bitmap(TEXSIZE, TEXSIZE);
+	bBitmap = new Bitmap(TEXSIZE, TEXSIZE);
+	arcerInit();
+}
+
+function arcerInit() {
+	// arcer 3
+	a3dat.center = TEXSIZE / 2;
+	a3dat.arcs = [];
+	var steps = TEXSIZE / 20;
+	var maxSize = Math.sqrt(TEXSIZE * TEXSIZE + TEXSIZE * TEXSIZE) / 2;
+	for (var i = 0; i < maxSize; i += steps) {
+		a3dat.arcs.push({
+			start: RandomInt(0, 3600),
+			length: RandomInt(0, 3600),
+			col: HSBColor(RandomInt(0, 255), 255, 255),
+			r: i
+		});
+	}
+
+	// arcer 2
+	a2dat.center = TEXSIZE / 2;
+	a2dat.start = 0;
+	a2dat.r = TEXSIZE / 2;
+	a2dat.lastAI = null;
+	SetRenderBitmap(arcer2Bitmap);
+	ClearScreen(EGA.BLACK);
+	SetRenderBitmap(null);
+}
+
+function arcer3Update() {
+	SetRenderBitmap(arcer3Bitmap);
+	ClearScreen(EGA.BLACK);
+	for (var i = 0; i < a3dat.arcs.length; i++) {
+		var ca = a3dat.arcs[i];
+		var ai = CircleArc(a3dat.center, a3dat.center, ca.r, ca.start, ca.start + ca.length, ca.col);
+		if (i % 2) {
+			ca.start++;
+			if (ca.start > 3600) {
+				ca.start = 0;
+			}
+		} else {
+			ca.start--;
+			if (ca.start < 0) {
+				ca.start = 3600;
+			}
+		}
+	}
+	a3 = new TexInfo(arcer3Bitmap);
+	// allocate texture memory only once
+	if (a3TextDest == 0) {
+		a3TextDest = FxTexMemGetStartAddress(GR_TMU.TMU0, a3);
+	}
+	a3.DownloadMipMap(GR_TMU.TMU0, a3TextDest, GR_MIPMAPLEVELMASK.BOTH);
+	SetRenderBitmap(null);
+}
+
+function arcer2Update() {
+	SetRenderBitmap(arcer2Bitmap);
+	var size = RandomInt(0, 255);
+	var c = RandomInt(0, 255);
+	var cCol = HSBColor(c, 255, 255);
+	var lCol = HSBColor(c, 128, 255);
+
+	var ai = CircleArc(a2dat.center, a2dat.center, a2dat.r, a2dat.start, a2dat.start + size, cCol);
+	if (a2dat.lastAI) {
+		Line(a2dat.lastAI.endX, a2dat.lastAI.endY, ai.startX, ai.startY, lCol);
+	}
+
+	a2dat.start += size;
+	if (a2dat.start > 255) {
+		a2dat.start -= 255;
+	}
+	a2dat.lastAI = ai;
+	a2dat.r -= 5;
+	if (a2dat.r <= 0) {
+		ClearScreen(EGA.BLACK);
+		a2dat.r = TEXSIZE / 2;
+		a2dat.lastAI = null;
+	}
+	a2 = new TexInfo(arcer2Bitmap);
+	// allocate texture memory only once
+	if (a2TextDest == 0) {
+		a2TextDest = FxTexMemGetStartAddress(GR_TMU.TMU0, a2);
+	}
+	a2.DownloadMipMap(GR_TMU.TMU0, a2TextDest, GR_MIPMAPLEVELMASK.BOTH);
+	SetRenderBitmap(null);
+}
+
+function boxlineUpdate() {
+	var m = TEXSIZE / 2;
+	SetRenderBitmap(bBitmap);
+	FilledBox(0, 0, TEXSIZE, TEXSIZE, Color(0, 0, 0, 8));
+
+	//fill(random(32, 224));
+
+	var h = RandomInt(5, 40);
+	var w = RandomInt(5, 110);
+	var p = RandomInt(0, TEXSIZE - h / 2);
+
+	Box(m - w, p, m + w, p + h, EGA.WHITE);
+	Line(m, 0, m, TEXSIZE, EGA.WHITE);
+
+	b = new TexInfo(bBitmap);
+	// allocate texture memory only once
+	if (bTextDest == 0) {
+		bTextDest = FxTexMemGetStartAddress(GR_TMU.TMU0, b);
+	}
+	b.DownloadMipMap(GR_TMU.TMU0, bTextDest, GR_MIPMAPLEVELMASK.BOTH);
+	SetRenderBitmap(null);
 }
 
 function Loop() {
+	arcer2Update();
+	arcer3Update();
+	boxlineUpdate();
+
 	//Clear buffers
 	fxBufferClear(0xFF101020, 0, 0);
 
@@ -110,13 +244,14 @@ function Loop() {
 	}
 
 	//Draw the cube, the sides use the brick texture
-	t1.Source(GR_MIPMAPLEVELMASK.BOTH)
+	a2.Source(GR_MIPMAPLEVELMASK.BOTH)
 	//Left
 	DrawPoly(x[0], y[0], z[0], x[3], y[3], z[3],
 		x[7], y[7], z[7], x[4], y[4], z[4]);
 	//Right
 	DrawPoly(x[2], y[2], z[2], x[1], y[1], z[1],
 		x[5], y[5], z[5], x[6], y[6], z[6]);
+	a3.Source(GR_MIPMAPLEVELMASK.BOTH)
 	//Back
 	DrawPoly(x[1], y[1], z[1], x[0], y[0], z[0],
 		x[4], y[4], z[4], x[5], y[5], z[5]);
@@ -125,7 +260,7 @@ function Loop() {
 		x[6], y[6], z[6], x[7], y[7], z[7]);
 	//The top and bottom using another texture
 
-	t2.Source(GR_MIPMAPLEVELMASK.BOTH)
+	b.Source(GR_MIPMAPLEVELMASK.BOTH)
 	//Top
 	DrawPoly(x[0], y[0], z[0], x[1], y[1], z[1],
 		x[2], y[2], z[2], x[3], y[3], z[3]);
@@ -137,8 +272,15 @@ function Loop() {
 	xAngle += 0.01; yAngle += 0.02; zAngle += 0.03;
 }
 
+var idx = 0;
 
-function Input(e) { }
+function Input(e) {
+	if (CompareKey(e.key, 's')) {
+		var img = new Bitmap(0, 0, 640, 480, GR_BUFFER.FRONTBUFFER);
+		img.SaveBmpImage("3dcube" + idx + ".bmp");
+		idx++;
+	}
+}
 
 /*
   This rotates point x,y,z around angles xa,ya,za

@@ -707,6 +707,78 @@ exports.loadImage = function (path) {
 
 
 /**
+ * Creates a new <a href="#/p5.Image">p5.Image</a> (the datatype for storing images). This provides a
+ * fresh buffer of pixels to play with. Set the size of the buffer with the
+ * width and height parameters.
+ * <br><br>
+ * .<a href="#/p5.Image/pixels">pixels</a> gives access to an array containing the values for all the pixels
+ * in the display window.
+ * These values are numbers. This array is the size (including an appropriate
+ * factor for the <a href="#/p5/pixelDensity">pixelDensity</a>) of the display window x4,
+ * representing the R, G, B, A values in order for each pixel, moving from
+ * left to right across each row, then down each column. See .<a href="#/p5.Image/pixels">pixels</a> for
+ * more info. It may also be simpler to use <a href="#/p5.Image/set">set()</a> or <a href="#/p5.Image/get">get()</a>.
+ * <br><br>
+ * Before accessing the pixels of an image, the data must loaded with the
+ * <a href="#/p5.Image/loadPixels">loadPixels()</a> function. After the array data has been modified, the
+ * <a href="#/p5.Image/updatePixels">updatePixels()</a> function must be run to update the changes.
+ *
+ * @method createImage
+ * @param  {Number} width  width in pixels
+ * @param  {Number} height height in pixels
+ * @return {Bitmap}       the Image object
+ * @example
+ * let img = createImage(66, 66);
+ * img.loadPixels();
+ * for (let i = 0; i < img.width; i++) {
+ *   for (let j = 0; j < img.height; j++) {
+ *     img.set(i, j, color(0, 90, 102));
+ *   }
+ * }
+ * img.updatePixels();
+ * image(img, 17, 17);
+ *
+ * let img = createImage(66, 66);
+ * img.loadPixels();
+ * for (let i = 0; i < img.width; i++) {
+ *   for (let j = 0; j < img.height; j++) {
+ *     img.set(i, j, color(0, 90, 102, (i % img.width) * 2));
+ *   }
+ * }
+ * img.updatePixels();
+ * image(img, 17, 17);
+ * image(img, 34, 34);
+ *
+ * let pink = color(255, 102, 204);
+ * let img = createImage(66, 66);
+ * img.loadPixels();
+ * let d = pixelDensity();
+ * let halfImage = 4 * (img.width * d) * (img.height / 2 * d);
+ * for (let i = 0; i < halfImage; i += 4) {
+ *   img.pixels[i] = red(pink);
+ *   img.pixels[i + 1] = green(pink);
+ *   img.pixels[i + 2] = blue(pink);
+ *   img.pixels[i + 3] = alpha(pink);
+ * }
+ * img.updatePixels();
+ * image(img, 17, 17);
+ */
+exports.createImage = function (width, height) {
+	var ret = function (p) {
+		this.bm = new Bitmap(width, height);
+		this.width = this.bm.width;
+		this.height = this.bm.height;
+	};
+	ret.prototype.loadPixels = function () { };
+	ret.prototype.get = function (x, y) {	// TODO: check!
+		var px = this.bm.GetPixel(x, y);
+		return color(GetRed(px), GetGreen(px), GetBlue(px), 255);
+	};
+
+	return new ret(path);
+};
+
+/**
  * Draw an image to the p5.js canvas.
  *
  * This function can be used with different numbers of parameters. The

@@ -49,6 +49,10 @@ function draw() {
 	}
 
 	start += size;
+	if (start > 255) {
+		start -= 255;
+	}
+
 	lastAI = ai;
 	r -= 5;
 	if (r <= 0) {

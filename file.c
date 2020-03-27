@@ -67,6 +67,7 @@ static void File_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_File(js_State *J) {
+    NEW_OBJECT_PREP(J);
     const char *fname = js_tostring(J, 1);
 
     file_t *f = malloc(sizeof(file_t));
@@ -245,8 +246,8 @@ static void File_WriteString(js_State *J) {
  * @param J VM state.
  */
 void init_file(js_State *J) {
-    // js_getglobal(J, "Object");
-    // js_getproperty(J, -1, "prototype");
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     js_newobject(J);
     {
         PROTDEF(J, File_ReadByte, TAG_FILE, "ReadByte", 0);
@@ -258,4 +259,6 @@ void init_file(js_State *J) {
     }
     js_newcconstructor(J, new_File, new_File, TAG_FILE, 2);
     js_defglobal(J, TAG_FILE, JS_DONTENUM);
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

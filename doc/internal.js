@@ -98,6 +98,18 @@ function IpxGetLocalAddress() { }
 /**
  * sound recording functions.
  * 
+ * @module sndout
+ */
+/**
+ * Get current play position for given voice.
+ * @param {number} voc the voice number.
+ * @returns {number} the position or -1 if not playing.
+ */
+function VoiceGetPosition(voc) { }
+
+/**
+ * sound recording functions.
+ * 
  * @module sndin
  */
 
@@ -535,6 +547,57 @@ function GetFramerate() { }
  */
 function SetExitKey(key) { }
 
+/**
+ * Run a DOS command.
+ * @param {string} cmd the command to execute with its parameters.
+ * @param {SYSTEM} flags flags indicating which subsystems to shutdown (if any) during execution of cmd.
+ * @returns {number} the return code of the command.
+ */
+function System(cmd, flags) { }
+
+/**
+ * write a byte value to a hardware io-port.
+ * @param {number} port port address to write to.
+ * @param {number} value 8-bit value to write to port.
+ */
+function OutPortByte(port, value) { }
+
+/**
+ * write a word value to a hardware io-port.
+ * @param {number} port port address to write to.
+ * @param {number} value 16-bit value to write to port.
+ */
+function OutPortWord(port, value) { }
+
+/**
+ * write a long value to a hardware io-port.
+ * @param {number} port port address to write to.
+ * @param {number} value 32-bit value to write to port.
+ */
+function OutPortLong(port, value) { }
+
+/**
+ * read a byte value from a hardware io-port.
+ * @param {number} port port address to read from.
+ * @returns {number} 8-bit value read from port.
+ */
+function InPortByte(port) { }
+
+/**
+ * read a word value from a hardware io-port.
+ * @param {number} port port address to read from.
+ * @returns {number} 16-bit value read from port.
+ */
+function InPortWord(port) { }
+
+/**
+ * read a long value from a hardware io-port.
+ * @param {number} port port address to read from.
+ * @returns {number} 32-bit value read from port.
+ */
+function InPortLong(port) { }
+
+
 /** @module color */
 
 /**
@@ -748,6 +811,59 @@ function ApplyMatrix(m, x, y, z) { }
  * @param {number} z y value.
  */
 function PerspProject(x, y, z) { }
+
+/**
+ * @module joystick
+ */
+
+/**
+ * @property {boolean} JOYSTICK_AVAILABLE true if joystick support is available.
+ */
+JOYSTICK_AVAILABLE = false;
+
+/**
+ * @property {number} NUM_JOYSTICKS number of available joysticks.
+ */
+NUM_JOYSTICKS = 0;
+
+/**
+ * save joystick calibration info to file.
+ * 
+ * @param {string} file the file to save to.
+ */
+function JoystickSaveData(file) { }
+
+/**
+ * load joystick calibration info from file.
+ * 
+ * @param {string} file the file to load from.
+ */
+function JoystickLoadData(file) { }
+
+/**
+ * Pass the number of the joystick you want to calibrate as the parameter. 
+ * 
+ * @param {number} num joystick index (starting with 0).
+ * 
+ * @returns {string} Returns a text description for the next type of calibration that will be done on the specified joystick, or null if no more calibration is required. 
+ */
+function JoystickCalibrateName(num) { }
+
+/**
+ * Most joysticks need to be calibrated before they can provide full analogue input. This function performs the next operation in the calibration series for the specified stick, assuming that the joystick has been positioned in the manner described by a previous call to calibrate_joystick_name().
+ * 
+ * @param {number} num joystick index (starting with 0).
+ */
+function JoystickCalibrate(num) { }
+
+/**
+ * The joystick handler is not interrupt driven, so you need to call this function every now and again to update the global position values.
+ * 
+ * @param {number} num joystick index (starting with 0).
+ * 
+ * @returns {JoyInfo} Information about the joystick state.
+ */
+function JoystickPoll(num) { }
 
 /**
  * @module 3dfx
@@ -1223,3 +1339,17 @@ function fxGetRevisionFb() { }
  * @returns {number} The revision of the Texelfx chip(s).
  */
 function fxGetRevisionTmu() { }
+
+/**
+ * Alpha value to use for direct framebuffer access.
+ * 
+ * @param {number} val the constant alpha value.
+ */
+function fxLfbConstantAlpha(val) { }
+
+/**
+ * Depth value to use for direct framebuffer access.
+ * 
+ * @param {number} val the constant depth value.
+ */
+function fxLfbConstantDepth(val) { }

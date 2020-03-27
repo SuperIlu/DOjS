@@ -26,5 +26,9 @@
 	},
 	"opts": {
 		"template": "/usr/local/lib/node_modules/tui-jsdoc-template"
+	},
+	"templates": {
+		"name": "DOjS V1.0",
+		"footerText": "https://github.com/SuperIlu/DOjS -- https://twitter.com/dec_hl"
 	}
 }

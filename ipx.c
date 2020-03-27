@@ -672,6 +672,8 @@ static void ipx_IpxGetLocalAddress(js_State *J) {
  * @param J VM state.
  */
 void init_ipx(js_State *J) {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     FUNCDEF(J, ipx_IpxSocketOpen, "IpxSocketOpen", 1);
     FUNCDEF(J, ipx_IpxSocketClose, "IpxSocketClose", 0);
     FUNCDEF(J, ipx_IpxSend, "IpxSend", 2);
@@ -689,6 +691,8 @@ void init_ipx(js_State *J) {
         DOjS.ipx_available = false;
     }
     PROPDEF_B(J, DOjS.ipx_available, "IPX_AVAILABLE");
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
 
 /**

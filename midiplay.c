@@ -46,6 +46,7 @@ static void Midi_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_Midi(js_State *J) {
+    NEW_OBJECT_PREP(J);
     const char *fname = js_tostring(J, 1);
 
     MIDI *midi = load_midi(fname);
@@ -153,6 +154,8 @@ static void mid_Out(js_State *J) {
  * @param J VM state.
  */
 void init_midi(js_State *J) {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     PROPDEF_B(J, DOjS.midi_available, "MIDI_AVAILABLE");
 
     FUNCDEF(J, mid_IsPlaying, "MidiIsPlaying", 0);
@@ -166,6 +169,8 @@ void init_midi(js_State *J) {
     { PROTDEF(J, mid_Play, TAG_MIDI, "Play", 1); }
     js_newcconstructor(J, new_Midi, new_Midi, TAG_MIDI, 1);
     js_defglobal(J, TAG_MIDI, JS_DONTENUM);
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
 
 /**

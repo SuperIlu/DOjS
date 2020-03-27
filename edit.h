@@ -120,6 +120,12 @@ typedef struct _edi {
     char *cnp;     //!< current copy buffer
     int cnp_pos;   //!< current usage of buffer
     int cnp_size;  //!< max size of buffer
+
+#ifdef EDI_FAST
+    unsigned short *screen;
+    int scr_idx;
+    int scr_x;
+#endif
 } edi_t;
 
 //! syntax highlight entry

@@ -52,6 +52,7 @@ static void ZBuffer_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_ZBuffer(js_State *J) {
+    NEW_OBJECT_PREP(J);
     BITMAP *bm;
     if (js_isuserdata(J, 1, TAG_BITMAP)) {
         bm = js_touserdata(J, 1, TAG_BITMAP);
@@ -112,7 +113,8 @@ static void ZBuffer_Clear(js_State *J) {
  * @param J VM state.
  */
 void init_zbuffer(js_State *J) {
-    // define the Image() object
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     js_newobject(J);
     {
         PROTDEF(J, ZBuffer_Set, TAG_ZBUFFER, "Set", 0);
@@ -120,4 +122,6 @@ void init_zbuffer(js_State *J) {
     }
     js_newcconstructor(J, new_ZBuffer, new_ZBuffer, TAG_ZBUFFER, 2);
     js_defglobal(J, TAG_ZBUFFER, JS_DONTENUM);
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

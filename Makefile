@@ -14,7 +14,8 @@ TEXUS=$(GLIDE)/texus
 INCLUDES=-I$(MUJS) -I$(ALLEGRO)/include -I$(GLIDE)/v1/include
 LIBS=-lalleg -lmujs -lm -lemu -lglide3i
 
-CFLAGS=-MMD -Wall -std=gnu99 -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -DPLATFORM_MSDOS -fgnu89-inline -Wmissing-prototypes # -DDEBUG_ENABLED 
+CDEF=-DPLATFORM_MSDOS -DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED 
+CFLAGS=-MMD -Wall -std=gnu99 -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -fgnu89-inline -Wmissing-prototypes $(CDEF)
 LDFLAGS=-L$(MUJS)/build/release -L$(ALLEGRO)/lib/djgpp -L$(GLIDE)/v1/lib
 
 EXE=DOJS.EXE
@@ -37,6 +38,7 @@ PARTS= \
 	$(BUILDDIR)/dosbuff.o \
 	$(BUILDDIR)/ipx.o \
 	$(BUILDDIR)/edit.o \
+	$(BUILDDIR)/edi_render.o \
 	$(BUILDDIR)/dialog.o \
 	$(BUILDDIR)/lines.o \
 	$(BUILDDIR)/syntax.o \
@@ -74,7 +76,7 @@ $(EXE): $(PARTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 	$(STRIP) $@
 
-$(BUILDDIR)/%.o: %.c
+$(BUILDDIR)/%.o: %.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
 TEXUS.EXE:
@@ -89,9 +91,7 @@ zip: all doc
 devzip: all doc
 	rm -f $(ZIP)
 	cp $(GLIDE)/v1/lib/glide3x.dxe .
-	zip -9 -v -r $(ZIP) $(EXE) GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR) $(GLIDE) V_*.BAT TEXUS.EXE glide3x/tests/*.3df glide3x/tests/*.exe tests/ 
-	#zip -9 -v -r $(ZIP) $(EXE) $(VOODOO) V_*.BAT TEXUS.EXE tests/ jsboot/*.js glide3x/tests/*.3df glide3x/tests/*.exe
-	#zip -9 -v -r $(ZIP) $(EXE) $(VOODOO) V_*.BAT TEXUS.EXE tests/ jsboot/*.js
+	zip -9 -v -r $(ZIP) $(EXE) GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE tests/
 	scp $(ZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:
@@ -101,6 +101,8 @@ doc:
 
 init:
 	mkdir -p $(BUILDDIR)
+	# make sure compile time is always updated
+	rm -f $(BUILDDIR)/DOjS.o
 
 clean:
 	rm -rf $(BUILDDIR)/
@@ -126,6 +128,12 @@ dxe.c:
 	cat dxetmp_*.c | grep "DXE_EXPORT_ASM" | sort | uniq >>dxe.c
 	echo "DXE_EXPORT_END" >>dxe.c
 	rm dxetmp_*.c
+
+syntax:
+	rm -f synC.txt synJ.txt syn.txt
+	grep FUNCDEF  *.c | cut -d "," -f 3 | tr -d "_" >synC.txt
+	egrep "^function " jsboot/3dfx.js  jsboot/a3d.js  jsboot/color.js  jsboot/file.js  jsboot/func.js  jsboot/ipx.js | cut -d " " -f 2 | cut -d "(" -f 1 | tr -d "_ " | awk '{ print "\"" $$0 "\"" }' > synJ.txt
+	cat synC.txt synJ.txt | awk '{ print length, "EDI_SYNTAX(LIGHTRED,", $$0, "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
 
 .PHONY: clean distclean init doc
 

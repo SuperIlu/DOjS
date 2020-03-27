@@ -20,27 +20,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+var mono, stereo, xPos, lastY, playing, voice;
+
 /*
 ** This function is called once when the script is started.
 */
 function Setup() {
-	Println("available=" + SNDIN_AVAILABLE);
-	SoundInputSource(SOUND.Input.LINE);
-	SoundStartInput(2000, 8, true);
+	mono = new Sample("tests/mono.wav");
+	stereo = new Sample("tests/stereo.wav");
+
+	info(mono);
+	info(stereo);
+
+	xPos = 0;
+	voice = -1;
+	playing = null;
+	lastY = [0, 0];
+}
+
+function info(s) {
+	Println(s.filename);
+	Println("  length=" + s.length);
+	Println("  frequency=" + s.frequency);
+	Println("  bits=" + s.bits);
+	Println("  stereo=" + s.stereo);
+	Println("  time [s]=" + s.length / s.frequency);
 }
 
 /*
 ** This function is repeatedly until ESC is pressed or Stop() is called.
 */
 function Loop() {
-	var snd = ReadSoundInput();
-	if (snd) {
-		var lastX = 0;
-		var lastY = 0;
-		for (var i = 0; i < SizeX(); i++) {
-			Line(lastX, lastY, i, snd[i], EGA.RED);
-			lastX = i;
-			lastY = snd[i];
+	if (voice != -1) {
+		var pos = VoiceGetPosition(voice);
+		if (pos != -1) {
+			var data = playing.Get(pos);
+			var left = data[0] >> 8;
+			var right = data[1] >> 8;
+			Line(xPos, lastY[0], xPos + 1, left, EGA.RED);
+			Line(xPos, 240 + lastY[1], xPos + 1, 240 + right, EGA.GREEN);
+			lastY[0] = left;
+			lastY[1] = right;
+		}
+		xPos++;
+		if (xPos >= SizeX()) {
+			xPos = 0;
 		}
 	}
 }
@@ -48,5 +72,15 @@ function Loop() {
 /*
 ** This function is called on any input.
 */
-function Input(event) {
+function Input(e) {
+	mono.Stop();
+	stereo.Stop();
+	if (CompareKey(e.key, '1')) {
+		playing = mono;
+	}
+	if (CompareKey(e.key, '2')) {
+		playing = stereo;
+	}
+	voice = playing.Play(255, 128, true);
+	Println("voice=" + voice);
 }

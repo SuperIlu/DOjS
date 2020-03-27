@@ -20,22 +20,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef __SOUND_H__
-#define __SOUND_H__
+#ifndef __SYNTAX_H__
+#define __SYNTAX_H__
 
-#include <mujs.h>
-#include <stdbool.h>
-
-/************
-** defines **
-************/
-#define TAG_SAMPLE "Sample"  //!< class name for Sample()
+#include "edit.h"
 
 /***********************
 ** exported functions **
 ***********************/
-extern void sound_mod_stop(void);
-extern void init_sound(js_State *J);
-extern void shutdown_sound(void);
+extern const syntax_t edi_wordlist[];
 
-#endif  // __SOUND_H__
+#endif  // __SYNTAX_H__

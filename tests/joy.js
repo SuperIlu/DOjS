@@ -18,6 +18,8 @@ function Loop() {
         if (next) {
             JoystickCalibrate(0);
         }
+    } else {
+        Println(JSON.stringify(joy));
     }
 }
 

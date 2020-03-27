@@ -123,10 +123,10 @@ static void fx_init(js_State *J) {
 
     grCoordinateSpace(GR_WINDOW_COORDS);  // we use window coordinates by default
 
-    LOGF("GR_VENDOR: %s\n", grGetString(GR_VENDOR));
-    LOGF("GR_RENDERER: %s\n", grGetString(GR_RENDERER));
-    LOGF("GR_VERSION: %s\n", grGetString(GR_VERSION));
-    LOGF("GR_HARDWARE: %s\n", grGetString(GR_HARDWARE));
+    LOGF("GR_VENDOR: %s, ", grGetString(GR_VENDOR));
+    LOGF("GR_RENDERER: %s, ", grGetString(GR_RENDERER));
+    LOGF("GR_VERSION: %s, ", grGetString(GR_VERSION));
+    LOGF("GR_HARDWARE: %s, ", grGetString(GR_HARDWARE));
     LOGF("GR_EXTENSION: %s\n", grGetString(GR_EXTENSION));
 }
 
@@ -785,6 +785,21 @@ static void fx_get_zdepth_min_max(js_State *J) { fx_get_multiple(J, GR_ZDEPTH_MI
  */
 static void fx_get_wdepth_min_max(js_State *J) { fx_get_multiple(J, GR_WDEPTH_MIN_MAX, 2); }
 
+#ifdef LFB_3DFX
+/**
+ * @brief wrapper
+ *
+ * @param J VM state.
+ */
+static void fx_lfb_constant_alpha(js_State *J) { grLfbConstantAlpha(js_toint32(J, 1)); }
+/**
+ * @brief wrapper
+ *
+ * @param J VM state.
+ */
+static void fx_lfb_constant_depth(js_State *J) { grLfbConstantDepth(js_toint32(J, 1)); }
+#endif
+
 /***********************
 ** exported functions **
 ***********************/
@@ -794,8 +809,10 @@ static void fx_get_wdepth_min_max(js_State *J) { fx_get_multiple(J, GR_WDEPTH_MI
  * @param J VM state.
  */
 void init_3dfx(js_State *J) {
-    PROPDEF_N(J, 640, "FX_WIDTH");
-    PROPDEF_N(J, 480, "FX_HEIGHT");
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
+    PROPDEF_N(J, WIDTH_3DFX, "FX_WIDTH");
+    PROPDEF_N(J, HEIGHT_3DFX, "FX_HEIGHT");
 
     FUNCDEF(J, fx_init, "fxInit", 0);
     FUNCDEF(J, fx_shutdown, "fxShutdown", 0);
@@ -880,64 +897,16 @@ void init_3dfx(js_State *J) {
     FUNCDEF(J, fx_get_num_pending_buffer_swaps, "fxGetNumPendingBufferSwaps", 0);
     FUNCDEF(J, fx_get_revision_fb, "fxGetRevisionFb", 0);
     FUNCDEF(J, fx_get_revision_tmu, "fxGetRevisionTmu", 0);
+
+#ifdef LFB_3DFX
+    FUNCDEF(J, fx_lfb_constant_alpha, "fxLfbConstantAlpha", 1);
+    FUNCDEF(J, fx_lfb_constant_depth, "fxLfbConstantDepth", 1);
+#endif
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
 
 /**
  * @brief shutdown glide if needed.
  */
 void shutdown_3dfx() { fx_shutdown(); }
-
-/*
-TODO
-void grLoadGammaTable( FxU32 nEntries, const FxU32 *red, const FxU32 *green, const FxU32 *blue )
-grCoordinateSpace()
-grRenderBuffer()
-
-Not implemented
-= -= -= -= -= -= -= -=
-    grTexMultibase()
-    grTexMultibaseAddress()
-    grDrawVertexArrayContiguous()
-    grGlideGetState()
-    grGlideSetState()
-    grGetString()
-    grGetProcAddress()
-    grGlideGetVertexLayout()
-    grChromaRangeExt()
-    grChromaRangeModeExt()
-    grLoadGammaTable()
-    grQueryResolutions()
-    grLfbConstantAlpha()
-    grLfbConstantDepth()
-    grLfbLock()
-    grLfbReadRegion()
-    grLfbUnlock()
-    grLfbWriteRegion()
-    grSelectContext()
-
-    GR_BITS_RGBA
-    GR_FIFO_FULLNESS
-    GR_GLIDE_STATE_SIZE
-    GR_GLIDE_VERTEXLAYOUT_SIZE
-    GR_LFB_PIXEL_PIPE
-    GR_NON_POWER_OF_TWO_TEXTURES
-    GR_NUM_SWAP_HISTORY_BUFFER
-    GR_STATS_LINES
-    GR_STATS_PIXELS_AFUNC_FAIL
-    GR_STATS_PIXELS_CHROMA_FAIL
-    GR_STATS_PIXELS_DEPTHFUNC_FAIL
-    GR_STATS_PIXELS_IN
-    GR_STATS_PIXELS_OUT
-    GR_STATS_PIXELS
-    GR_STATS_POINTS
-    GR_STATS_TRIANGLES_IN
-    GR_STATS_TRIANGLES_OUT
-    GR_STATS_TRIANGLES
-    GR_SWAP_HISTORY
-    GR_SUPPORTS_PASSTHRU
-    GR_TEXTURE_ALIGN
-    GR_VIDEO_POSITION
-    GR_VIEWPORT
-    GR_VERTEX_PARAMETER
-    GR_BITS_GAMMA
-*/

@@ -31,6 +31,12 @@ SOFTWARE.
 ************/
 #define JSINC_FUNC BOOT_DIR "func.js"  //!< boot script for grx subsystem
 
+#define SYS_FLAG_MOUSE 0x01
+#define SYS_FLAG_SOUND 0x02
+#define SYS_FLAG_JOYSTICK 0x04
+#define SYS_FLAG_KEYBOARD 0x08
+#define SYS_FLAG_TIMER 0x10
+
 /***********************
 ** exported functions **
 ***********************/

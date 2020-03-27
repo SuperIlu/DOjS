@@ -20,22 +20,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef __SOUND_H__
-#define __SOUND_H__
+/*
+** This function is called once when the script is started.
+*/
+function Setup() {
+	ClearScreen(EGA.BLACK);
+}
 
-#include <mujs.h>
-#include <stdbool.h>
+/*
+** This function is repeatedly until ESC is pressed or Stop() is called.
+*/
+function Loop() {
+	var col = Color(0x11, 0x22, 0x33, 128);
+	Println("col=" + col.toString(16).toUpperCase());
+	Plot(10, 10, col);
+	Stop();
+}
 
-/************
-** defines **
-************/
-#define TAG_SAMPLE "Sample"  //!< class name for Sample()
-
-/***********************
-** exported functions **
-***********************/
-extern void sound_mod_stop(void);
-extern void init_sound(js_State *J);
-extern void shutdown_sound(void);
-
-#endif  // __SOUND_H__
+/*
+** This function is called on any input.
+*/
+function Input(event) {
+}

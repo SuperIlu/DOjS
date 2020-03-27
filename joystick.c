@@ -29,6 +29,12 @@ SOFTWARE.
 /*********************
 ** static functions **
 *********************/
+/**
+ * @brief save calibration data.
+ * JoystickSaveData(file:string)
+ *
+ * @param J VM state.
+ */
 static void joy_save_data(js_State *J) {
     if (DOjS.joystick_available) {
         const char *fname = js_tostring(J, 1);
@@ -38,6 +44,12 @@ static void joy_save_data(js_State *J) {
     }
 }
 
+/**
+ * @brief load calibration data.
+ * JoystickLoadData(file:string)
+ *
+ * @param J VM state.
+ */
 static void joy_load_data(js_State *J) {
     if (DOjS.joystick_available) {
         const char *fname = js_tostring(J, 1);
@@ -47,6 +59,12 @@ static void joy_load_data(js_State *J) {
     }
 }
 
+/**
+ * @brief push joystick flags as properties into current object.
+ *
+ * @param J VM state.
+ * @param flags the flags
+ */
 static void joy_push_flags(js_State *J, int flags) {
     js_pushboolean(J, flags & JOYFLAG_DIGITAL);
     js_setproperty(J, -2, "digital");
@@ -127,6 +145,13 @@ static void joy_poll(js_State *J) {
     }
 }
 
+/**
+ * @brief Pass the number of the joystick you want to calibrate as the parameter.
+ * Return value: Returns a text description for the next type of calibration that will be done on the specified joystick, or NULL if no more calibration is required.
+ * JoystickCalibrateName(i:number):string
+ *
+ * @param J VM state.
+ */
 static void joy_calibrate_name(js_State *J) {
     if (DOjS.joystick_available) {
         int num = js_touint32(J, 1);
@@ -143,6 +168,12 @@ static void joy_calibrate_name(js_State *J) {
     }
 }
 
+/**
+ * @brief This function performs the next operation in the calibration series for the specified stick, assuming that the joystick has been positioned in the manner described by a
+ * previous call to calibrate_joystick_name().
+ *
+ * @param J VM state.
+ */
 static void joy_calibrate(js_State *J) {
     if (DOjS.joystick_available) {
         int num = js_touint32(J, 1);
@@ -165,6 +196,8 @@ static void joy_calibrate(js_State *J) {
  * @param J VM state.
  */
 void init_joystick(js_State *J) {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
     FUNCDEF(J, joy_save_data, "JoystickSaveData", 1);
     FUNCDEF(J, joy_load_data, "JoystickLoadData", 1);
     FUNCDEF(J, joy_poll, "JoystickPoll", 1);
@@ -177,6 +210,8 @@ void init_joystick(js_State *J) {
     }
     PROPDEF_B(J, DOjS.joystick_available, "JOYSTICK_AVAILABLE");
     PROPDEF_N(J, num_joysticks, "NUM_JOYSTICKS");
+
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
 
 /**

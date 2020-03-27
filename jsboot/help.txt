@@ -9,12 +9,13 @@ Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script> [script parameters]
     -a             : Disable alpha (speeds up rendering).
 
 ## Editor keys
-    F1  : Open/Close help
-    F3  : Save script
-    F4  : Run script
-    F7  : Find text
-    F9  : Show/Close logfile
-    F10 : Quit
+    F1        : Open/Close help
+    SHIFT-F1  : Function context help
+    F3        : Save script
+    F4        : Run script
+    F7        : Find text
+    F9        : Show/Close logfile
+    F10       : Quit
 
     Shift-F4       : Truncate logfile and run script
     Shift-F7       : Find again
@@ -25,14 +26,14 @@ Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script> [script parameters]
     CTRL-V         : Paste
     CTRL-LEFT      : Previous word
     CTRL-RIGHT     : Next word
-    PAGE-UP        : One page up.
-    PAGE-DOWN      : One page down.
+    CTRL/PAGE-UP   : One page up
+    CTRL/PAGE-DOWN : One page down
     HOME           : Go to start of line
     END            : Go to end of line
     CTRL-HOME      : Go to start of line
     CTRL-END       : Go to end of line
     TAB            : Insert spaces until next TAB-stop at cursor
-    SHIFT-TAB      : Reduce indentation of line.
+    SHIFT-TAB      : Reduce indentation of line
 
     TAB size is 4.
     The help viewer will remember the current position.
@@ -76,6 +77,9 @@ See `jsboot/color.js` for predefined EGA colors. Use `NO_COLOR` for the transpar
 ### Color(red:number, green:number, blue:number[, alpha:number]):number
 Create a RGBA color.
 
+### HSBColor(hue:number, bright:number, sat:number[, alpha:number]):number
+Create a HSBA color.
+
 ### GetRed(c:number):number
 ### GetGreen(c:number):number
 ### GetBlue(c:number):number
@@ -87,7 +91,16 @@ get the R/G/B/A part of a color.
 Load a BMP or PNG image.
 
 ### bm = new Bitmap(width:number, height:number)
-Create Bitmap of given size.
+Create empty Bitmap of given size.
+
+### bm = new Bitmap(x:number, y:number, width:number, height:number)
+Create Bitmap from current screen.
+
+### bm = new Bitmap(x:number, y:number, width:number, height:number, buffer:number)
+Create Bitmap from 3dfx buffer.
+
+### bm = new Bitmap(data:number[], width:number, height:number)
+Create Bitmap of given size from 32bit (ARGB) integer arrays.
 
 ### bm.filename
 Name of the file.
@@ -109,6 +122,15 @@ Draw the image to the canvas at given coordinates using RGBA transparency.
 
 ### bm.GetPixel(x:number, y:number):Color
 get the color of an image pixel.
+
+### bm.SaveBmpImage(fname:string)
+Save Bitmap to file.
+
+### bm.SavePcxImage(fname:string)
+Save Bitmap to file.
+
+### bm.SaveTgaImage(fname:string)
+Save Bitmap to file.
 
 ## Font
 See `jsboot/font.js` for direction and alignment values.
@@ -179,6 +201,24 @@ Play the WAV.
 ### snd.Stop()
 Stop the sound.
 
+### snd.Get(idx:number):number
+Get sample value at index.
+
+### VoiceGetPosition(voc:number):number
+Get current play position for given voice.
+
+### SoundInputSource(src:number)
+Select sound input source.
+
+### SoundStartInput(rate, bits, stereo)
+Start sound recording with given parameters.
+
+### SoundStopInput()
+Stop sound recording.
+
+### ReadSoundInput():number[]
+Get the actuall sound data.
+
 ## Drawing functions
 
 ### SetRenderBitmap(bm:Bitmap)
@@ -240,6 +280,9 @@ do a flood fill.
 
 ### GetPixel(x:number, y:number):Color
 get color of on-screen pixel.
+
+### DrawArray(dat:number[], x:number, y:number, width:number, height:number)
+draw 32bit ARGB array to screen.
 
 ### TextXY(x:number, y:number, text:string, fg:Color, bg:Color)
 Draw a text with the default font.
@@ -335,6 +378,25 @@ Used to load a module. The functions exported from this module can be accessed u
 
 ### Include(filename:string)
 Used to load a module. The functions exported from this module will be put into the global context.
+
+### RandomInt(min:number, max:number):number
+Get random integer between min and max.
+
+### POST(n:number)
+Write n to IO-port 0x80 to be displayed by a POST-card.
+
+### System(cmd:string):number
+Execute DOS command 'cmd'.
+
+### OutPortByte(port:number, val:number)
+### OutPortWord(port:number, val:number)
+### OutPortLong(port:number, val:number)
+Write byte/word/long to given IO-port.
+
+### InPortByte(port:number):number
+### InPortWord(port:number):number
+### InPortLong(port:number):number
+Read byte/word/long from given IO-port.
 
 ## IPX networking
 DOjS supports IPX networking. Node addresses are arrays of 6 numbers between 0-255. Default socket number and broadcast address definitions can be found in `jsboot/ipx.js`.

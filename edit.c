@@ -34,6 +34,7 @@ SOFTWARE.
 
 #include "DOjS.h"
 #include "dialog.h"
+#include "edi_render.h"
 #include "edit.h"
 #include "lines.h"
 #include "util.h"
@@ -45,11 +46,6 @@ SOFTWARE.
 #define EDI_HELPFILE BOOT_DIR "help.txt"      //!< filename for help file
 
 #define EDI_CNP_SIZE 4096  //!< initial size of Copy&Paste buffer
-
-/***********************
-** external variables **
-***********************/
-extern syntax_t edi_wordlist[];
 
 /************************
 ** function prototypes **
@@ -65,6 +61,8 @@ static void edi_do_del(edi_t* edi);
 static void edi_do_enter(edi_t* edi, bool autoindent);
 static void edi_do_wordright(edi_t* edi);
 static void edi_do_wordleft(edi_t* edi);
+static void edi_del_wordright(edi_t* edi);
+static void edi_del_wordleft(edi_t* edi);
 static void edi_do_tab(edi_t* edi);
 static void edi_do_save(edi_t* edi);
 static void edi_do_goto_line(edi_t* edi);
@@ -82,25 +80,13 @@ static void edi_do_cut(edi_t* edi);
 static void edi_do_paste(edi_t* edi);
 static void edi_do_del_sel(edi_t* edi);
 static edi_exit_t edi_loop(edi_t* edi);
-static bool edi_colcmp(syntax_t* sy, char* txt, int remainder);
-static int edi_syntax(line_t* l, int pos);
-static void edi_get_cnp(edi_t* edi, cnp_t* cnp);
-static void edi_sel_color(edi_t* edi, int x, int y);
-static void edi_draw_line(edi_t* edi, line_t** l, int y, int offset, int line_num);
-static void edi_redraw(edi_t* edi);
-static void edi_draw_status(edi_t* edi);
-static void edi_draw_commands(edi_t* edi);
 static edi_t* edi_init(char* fname);
 static void edi_shutdown(edi_t* edi);
 static void edi_start_selection(edi_t* edi);
 static void edi_goto_line(edi_t* edi, line_t* l, int line_num);
 static void edi_do_del_line(edi_t* edi);
 static void edi_do_backtab(edi_t* edi);
-
-#define EDI_NUM_COMMANDS 10  //!< number of commands
-
-//! array with command texts
-char* edi_f_keys[] = {"Help", "", "Save", "Run", "", "", "Find", "", "Log", "Exit"};
+static char* edi_get_context(edi_t* edi);
 
 /*********************
 ** static functions **
@@ -341,12 +327,15 @@ static void edi_do_enter(edi_t* edi, bool autoindent) {
  * @param edi the edi system to work on.
  */
 static void edi_do_wordright(edi_t* edi) {
-    int pre;
-    do {
-        pre = edi->x;
-        edi_do_right(edi);
-    } while (isalnum(edi->current->txt[edi->x]) && pre != edi->x);
-    while (isspace(edi->current->txt[edi->x])) {
+    if (isblank(edi->current->txt[edi->x])) {
+        while (isblank(edi->current->txt[edi->x])) {
+            edi_do_right(edi);
+        }
+    } else if (isalnum(edi->current->txt[edi->x])) {
+        while (isalnum(edi->current->txt[edi->x])) {
+            edi_do_right(edi);
+        }
+    } else {
         edi_do_right(edi);
     }
 }
@@ -357,11 +346,47 @@ static void edi_do_wordright(edi_t* edi) {
  * @param edi the edi system to work on.
  */
 static void edi_do_wordleft(edi_t* edi) {
-    int pre;
-    do {
-        pre = edi->x;
+    if (edi->x > 0 && isblank(edi->current->txt[edi->x - 1])) {
+        while (edi->x > 0 && isblank(edi->current->txt[edi->x - 1])) {
+            edi_do_left(edi);
+        }
+    } else if (edi->x > 0 && isalnum(edi->current->txt[edi->x - 1])) {
+        while (edi->x > 0 && isalnum(edi->current->txt[edi->x - 1])) {
+            edi_do_left(edi);
+        }
+    } else {
         edi_do_left(edi);
-    } while (isalnum(edi->current->txt[edi->x]) && pre != edi->x);
+    }
+}
+
+/**
+ * @brief editor command: delete word to the right.
+ *
+ * @param edi the edi system to work on.
+ */
+static void edi_del_wordright(edi_t* edi) {
+    if (isalnum(edi->current->txt[edi->x])) {
+        while (isalnum(edi->current->txt[edi->x])) {
+            edi_do_del(edi);
+        }
+    } else {
+        edi_do_del(edi);
+    }
+}
+
+/**
+ * @brief editor command: delete one word to the left.
+ *
+ * @param edi the edi system to work on.
+ */
+static void edi_del_wordleft(edi_t* edi) {
+    if (edi->x > 0 && isalnum(edi->current->txt[edi->x - 1])) {
+        while (edi->x > 0 && isalnum(edi->current->txt[edi->x - 1])) {
+            edi_do_bs(edi);
+        }
+    } else {
+        edi_do_bs(edi);
+    }
 }
 
 /**
@@ -769,6 +794,48 @@ static void edi_do_del_sel(edi_t* edi) {
 }
 
 /**
+ * @brief extract the HELP context under the cursor
+ *
+ * @param edi the edi system to work on.
+ *
+ * @return a string buffer if a context could be found or NULL if not. The buffer needs to be free()d.
+ */
+static char* edi_get_context(edi_t* edi) {
+    int start = edi->x;
+    int end = edi->x;
+
+    // find first char of context
+    while (start > 0 && isalnum(edi->current->txt[start])) {
+        start--;
+    }
+    start++;
+
+    // find last char of context
+    while (end < edi->current->length && isalnum(edi->current->txt[end])) {
+        end++;
+    }
+
+    if (start == end) {
+        return NULL;
+    }
+
+    int ctx_size = (end - start);
+    EDIF("start=%d, end=%d, size=%d, txt[start]=%c, txt[end]=%c\n", start, end, ctx_size, edi->current->txt[start], edi->current->txt[end]);
+
+    char* ctx = malloc(ctx_size + 1);
+    if (!ctx) {
+        return NULL;
+    }
+
+    memcpy(ctx, &edi->current->txt[start], ctx_size);
+    ctx[ctx_size] = 0x00;
+
+    EDIF("ctx=%s\n", ctx);
+
+    return ctx;
+}
+
+/**
  * @brief editor input loop.
  *
  * @param edi the edi system to work on.
@@ -833,6 +900,15 @@ static edi_exit_t edi_loop(edi_t* edi) {
                 } else {
                     edi_do_bs(edi);
                 }
+                break;
+
+            case K_Control_Backspace:
+                edi_del_wordleft(edi);
+                break;
+
+            case K_Control_Delete:
+            case K_Control_EDelete:
+                edi_del_wordright(edi);
                 break;
 
             case K_Delete:
@@ -930,6 +1006,8 @@ static edi_exit_t edi_loop(edi_t* edi) {
 
             case K_PageUp:
             case K_EPageUp:
+            case K_Control_Up:
+            case K_Control_EUp:
                 if (EDI_SHIFT_DOWN(shift)) {
                     edi_start_selection(edi);
                 } else {
@@ -940,6 +1018,8 @@ static edi_exit_t edi_loop(edi_t* edi) {
 
             case K_PageDown:
             case K_EPageDown:
+            case K_Control_Down:
+            case K_Control_EDown:
                 if (EDI_SHIFT_DOWN(shift)) {
                     edi_start_selection(edi);
                 } else {
@@ -957,11 +1037,17 @@ static edi_exit_t edi_loop(edi_t* edi) {
                 break;
 
             case K_F1:  // show help
-                dia_show_file(edi, EDI_HELPFILE, &last_help_pos, false);
+                dia_show_file(edi, EDI_HELPFILE, &last_help_pos, false, NULL);
                 break;
 
-            case K_Shift_F1:  // context help TODO
-                break;
+            case K_Shift_F1:  // context help
+            {
+                char* ctx = edi_get_context(edi);
+                dia_show_file(edi, EDI_HELPFILE, &last_help_pos, false, ctx);
+                if (ctx) {
+                    free(ctx);
+                }
+            } break;
 
             case K_F3:  // save file
                 edi_do_save(edi);
@@ -998,7 +1084,7 @@ static edi_exit_t edi_loop(edi_t* edi) {
                 break;
 
             case K_F9:  // show log
-                dia_show_file(edi, LOGFILE, NULL, true);
+                dia_show_file(edi, LOGFILE, NULL, true, NULL);
                 break;
 
             case K_F10:  // exit
@@ -1022,268 +1108,6 @@ static edi_exit_t edi_loop(edi_t* edi) {
         edi_redraw(edi);
     }
     return exit;
-}
-
-/**
- * @brief match a syntax highlight string with current cursor position.
- *
- * @param sy word to find
- * @param txt start of text to compare with
- * @param remainder remaining length of txt.
- * @return true if this is a match
- * @return false if no match was found
- */
-static bool edi_colcmp(syntax_t* sy, char* txt, int remainder) {
-    char* find = sy->word;
-    if (remainder < strlen(find)) {
-        return false;
-    }
-
-    while (*find) {
-        if (*find != *txt) {
-            return false;
-        }
-        txt++;
-        find++;
-        remainder--;
-    }
-
-    if (remainder == 0 || !isalnum(*txt) || sy->length == -1) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-/**
- * @brief switch display color for syntax highlighting word.
- *
- * @param l the line we are working on.
- * @param pos the cursor position in the line.
- *
- * @return int the number of characters to draw in the just set color or 0 if no match was found.
- */
-static int edi_syntax(line_t* l, int pos) {
-    int w = 0;
-    while (edi_wordlist[w].word) {
-        if (pos == 0 || edi_wordlist[w].word[0] == '.' || !isalnum(l->txt[pos - 1])) {
-            if (edi_colcmp(&edi_wordlist[w], &l->txt[pos], l->length - pos)) {
-                textcolor(edi_wordlist[w].color);
-                if (edi_wordlist[w].length == -1) {
-                    return l->length - pos;
-                } else {
-                    return edi_wordlist[w].length;
-                }
-            }
-        }
-        w++;
-    }
-    return 0;
-}
-
-/**
- * @brief convert the current selection in the edi struct to an ordered description of the selection in a cnp struct.
- *
- * @param edi the edi system to work on.
- * @param cnp an ordered version of the start-stop of the selection.
- */
-static void edi_get_cnp(edi_t* edi, cnp_t* cnp) {
-    if (edi->num > edi->sel_line) {  // selection stretches downwards
-        cnp->startX = edi->sel_char;
-        cnp->startY = edi->sel_line;
-        cnp->endX = edi->x;
-        cnp->endY = edi->num;
-        cnp->cursor_at_end = true;
-    } else if (edi->num < edi->sel_line) {  // selection stretches upwards
-        cnp->startX = edi->x;
-        cnp->startY = edi->num;
-        cnp->endX = edi->sel_char;
-        cnp->endY = edi->sel_line;
-        cnp->cursor_at_end = false;
-    } else {  // all on same line
-        cnp->startY = cnp->endY = edi->num;
-
-        if (edi->x > edi->sel_char) {  // selection goes to the right
-            cnp->startX = edi->sel_char;
-            cnp->endX = edi->x;
-            cnp->cursor_at_end = true;
-        } else if (edi->x < edi->sel_char) {  // selection goes to the left
-            cnp->startX = edi->x;
-            cnp->endX = edi->sel_char;
-            cnp->cursor_at_end = false;
-        } else {  // selection is on itself
-            cnp->startX = cnp->endX = edi->x;
-            cnp->cursor_at_end = true;
-        }
-    }
-}
-
-/**
- * @brief set background color for text according to current select status.
- *
- * @param edi the edi system to work on.
- * @param x x-position in whole text.
- * @param y y-position in whole text.
- */
-static void edi_sel_color(edi_t* edi, int x, int y) {
-    textbackground(BLACK);
-    if (EDI_IS_SEL(edi)) {  // check selection is active
-        cnp_t cnp;
-        edi_get_cnp(edi, &cnp);
-
-        if ((cnp.startY == cnp.endY) && (y == cnp.startY)) {
-            if ((x >= cnp.startX) && (x < cnp.endX)) {
-                textbackground(BLUE);
-            }
-        } else {
-            if ((y == cnp.startY) && (x >= cnp.startX)) {
-                textbackground(BLUE);
-            } else if ((y > cnp.startY) && (y < cnp.endY)) {
-                textbackground(BLUE);
-            } else if ((y == cnp.endY) && (x < cnp.endX)) {
-                textbackground(BLUE);
-            }
-        }
-    }
-}
-
-/**
- * @brief draw given line onto screen.
- *
- * @param edi the edi system to work on.
- * @param l the line to draw.
- * @param y y position on the currently drawn screen.
- * @param offset x-offset for the currently drawn screen (horizontal scrolling of long lines).
- * @param line_num the line number of the currently drawn line (total number).
- */
-static void edi_draw_line(edi_t* edi, line_t** l, int y, int offset, int line_num) {
-    textcolor(WHITE);
-    gotoxy(1, y);
-    int hskip = 0;
-    if (*l) {
-        for (int i = offset; i < (*l)->length && wherex() < edi->width; i++) {
-            if (hskip <= 0) {
-                textcolor(WHITE);
-                hskip = edi_syntax(*l, i);
-            }
-            edi_sel_color(edi, i, line_num);
-            putch((*l)->txt[i]);
-            if (hskip > 0) {
-                hskip--;
-            }
-        }
-        *l = (*l)->next;
-    }
-    textbackground(BLACK);
-    clreol();
-}
-
-/**
- * @brief redraw editor screen.
- *
- * @param edi the edi system to work on.
- */
-static void edi_redraw(edi_t* edi) {
-    int offset = 0;  // x drawing offset
-    if (edi->x > edi->width - 1) {
-        offset = edi->x - edi->width + 1;
-    }
-
-    textbackground(BLACK);
-    textcolor(WHITE);
-    edi_draw_status(edi);
-
-    textbackground(BLACK);
-    textcolor(WHITE);
-
-    // if offsets are changes redraw the whole screen
-    if ((edi->last_top != edi->top) || (edi->last_offset != offset) || EDI_IS_SEL(edi)) {
-        line_t* l = edi->top;
-        int line_num = edi->num - edi->y;
-        for (int y = 2; y <= edi->height; y++) {
-            edi_draw_line(edi, &l, y, offset, line_num);
-            line_num++;
-        }
-
-        edi_draw_commands(edi);
-    } else {
-        // if not, only redraw current line
-        line_t* l = edi->current;
-        edi_draw_line(edi, &l, edi->y + 2, offset, edi->num);
-    }
-
-    // set cursor to current position
-    if (offset) {
-        gotoxy(edi->width, edi->y + 2);
-    } else {
-        gotoxy(edi->x + 1, edi->y + 2);  // set cursor to current position
-    }
-
-    if (edi->msg) {
-        dia_show_message(edi, edi->msg);
-        edi->msg = NULL;
-        edi->last_offset = -1;
-        edi_redraw(edi);
-    }
-    edi->last_top = edi->top;
-    edi->last_offset = offset;
-}
-
-/**
- * @brief draw status bar.
- *
- * @param edi the edi system to work on.
- */
-static void edi_draw_status(edi_t* edi) {
-    textbackground(LIGHTGRAY);
-    textcolor(BLACK);
-
-    // draw 'modified' indicator
-    gotoxy(edi->scr.winleft, edi->scr.wintop);
-    cputs("DOjS " DOSJS_VERSION_STR " ");
-    if (edi->changed) {
-        cputs("* ");
-    } else {
-        cputs("  ");
-    }
-
-    // draw file/script name
-    if (edi->name) {
-        cputs(edi->name);
-    } else {
-        cputs("<unnamed>");
-    }
-
-    for (int i = wherex(); i < edi->scr.winright; i++) {
-        cputs(" ");
-    }
-
-    // draw cursor position
-    gotoxy(edi->scr.winright - 8, edi->scr.wintop);
-    cprintf("%04d/%04d", edi->num, edi->x + 1);
-}
-
-/**
- * @brief draw command bar.
- *
- * @param edi the edi system to work on.
- */
-static void edi_draw_commands(edi_t* edi) {
-    // 10 f-keys @ 80 col := 6 chars+SPACE+num
-    gotoxy(edi->scr.winleft, edi->scr.winbottom);
-    for (int i = 0; i < EDI_NUM_COMMANDS; i++) {
-        textbackground(BLACK);
-        textcolor(WHITE);
-        if (i == 0) {
-            cprintf("%d", i + 1);
-        } else {
-            cprintf(" %d", i + 1);
-        }
-
-        textbackground(BLUE);
-        textcolor(LIGHTGREEN);
-        cprintf("%-6s", edi_f_keys[i]);
-    }
 }
 
 /**

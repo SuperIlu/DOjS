@@ -41,11 +41,31 @@ File.prototype.Close = function () { };
  * Bitmap
  */
 /**
- * Load a BMP, TGA or PCX image.
- * @class
- * @param {string} filename name of the BMP or PNG file.
- */
+* Load a BMP, TGA or PCX image.
+* @constructor
+* @param {string} filename name of the BMP or PNG file.
+*//**
+* create empty bitmap of given size.
+* @constructor
+* @param {number} width bitmap width.
+* @param {number} height bitmap width.
+*//**
+* create Bitmap from integer array.
+* @constructor
+* @param {number[]} data 32bit integer data interpreted as ARGB.
+* @param {number} width bitmap width.
+* @param {number} height bitmap height.
+*//*
+* create Bitmap from current (3dfx) screen.
+* @constructor
+* @param {number} x screen x position.
+* @param {number} y screen y position.
+* @param {number} width bitmap width.
+* @param {number} height bitmap height.
+* @param {GR_BUFFER} [buffer] one of FRONTBUFFER, BACKBUFFER or AUXBUFFER for 3dfx access, omit for normal screen acccess.
+*/
 function Bitmap(filename) { };
+
 /**
  * Name of the file.
  */
@@ -95,6 +115,16 @@ Bitmap.prototype.DrawTrans = function (x, y) { };
  */
 Bitmap.prototype.GetPixel = function (x, y) { };
 
+/**
+ * draw the bitmap directly into the 3dfx/voodoo framebuffer (only works when fxInit() was called).
+ * 
+ * @param {number} x position to draw to.
+ * @param {number} y position to draw to.
+ * @param {GR_BUFFER} buffer one of FRONTBUFFER, BACKBUFFER or AUXBUFFER
+ * @param {boolean} pipeline true if the pixels shall be processed by the voodoos pixel pipeline, false to just draw.
+ */
+Bitmap.prototype.FxDrawLfb = function (x, y, buffer, pipeline) { };
+
 /********
  * Font
  */
@@ -116,6 +146,7 @@ Font.height = null;
  * Draw a left aligned string to the canvas.
  * @param {number} x x position
  * @param {number} y y position.
+ * @param {string} text the string to draw.
  * @param {Color} foreground foreground color.
  * @param {Color} background background color.
  */
@@ -124,6 +155,7 @@ Font.prototype.DrawStringLeft = function (x, y, text, foreground, background) { 
  * Draw a center aligned string to the canvas.
  * @param {number} x x position
  * @param {number} y y position.
+ * @param {string} text the string to draw.
  * @param {Color} foreground foreground color.
  * @param {Color} background background color.
  */
@@ -132,19 +164,20 @@ Font.prototype.DrawStringCenter = function (x, y, text, foreground, background) 
  * Draw a right aligned string to the canvas.
  * @param {number} x x position
  * @param {number} y y position.
+ * @param {string} text the string to draw.
  * @param {Color} foreground foreground color.
  * @param {Color} background background color.
  */
 Font.prototype.DrawStringRight = function (x, y, text, foreground, background) { };
 /**
  * Calculate string width for this font.
- * @param {string} the string to check.
+ * @param {string} text the string to check.
  * @returns {number} the width in pixels.
  */
 Font.prototype.StringWidth = function (text) { };
 /**
  * Calculate string height for this font.
- * @param {string} the string to check.
+ * @param {string} text the string to check.
  * @returns {number} the height in pixels.
  */
 Font.prototype.StringHeight = function (text) { };
@@ -172,16 +205,31 @@ Sample.length = null;
  */
 Sample.frequency = null;
 /**
+ * Sound resolution.
+ */
+Sample.bits = null;
+/**
+ * mono/stereo indicator.
+ */
+Sample.stereo = null;
+/**
  * Play the WAV.
  * @param {number} volume between 0-255.
  * @param {number} panning between (left) 0-255 (right).
  * @param {boolean} loop true := sample will loop, false := sample will only be played once.
+ * @returns {number} used voice number or null if not played.
  */
 Sample.prototype.Play = function (volume, panning, loop) { };
 /**
  * Stop playing.
  */
 Sample.prototype.Stop = function () { };
+/**
+ * Get sample data.
+ * @param {number} sample index to return.
+ * @returns {number} The sample value at that position. The sample data are always in unsigned format.
+ */
+Sample.prototype.Get = function (idx) { };
 
 /********
  * MIDI
@@ -221,11 +269,11 @@ ZBuffer.prototype.Set = function () { };
  * TexInfo
  */
 /**
- * create new texture from 3df file.
+ * create new texture from 3df file or a Bitmap.
  * @class
- * @param {string} filename 3df file to load as texture.
+ * @param {(string|Bitmap)} src 3df file to load as texture or Bitmap to convert to texture
  */
-function TexInfo(filename) { }
+function TexInfo(src) { }
 
 /**
  * filename

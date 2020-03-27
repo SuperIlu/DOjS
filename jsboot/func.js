@@ -176,6 +176,24 @@ function CompareKey(k, s) {
 	return (k & 0xFF) == CharCode(s);
 }
 
+/**
+ * get random integer between min and max (or between 0 and min if max is not provided).
+ * 
+ * @param {number} min min
+ * @param {number} max max
+ * 
+ * @returns {number} an integer between min and max.
+ */
+function RandomInt(min, max) {
+	if (max === undefined) {
+		max = min;
+		min = 0;
+	}
+
+	return Math.floor(Math.random() * (max - min) + min);
+}
+
+// add startsWith() endsWith() to String class
 if (!String.prototype.startsWith) {
 	Object.defineProperty(String.prototype, 'startsWith', {
 		value: function (search, rawPos) {
@@ -191,6 +209,15 @@ if (!String.prototype.endsWith) {
 		}
 		return this.substring(this_len - search.length, this_len) === search;
 	};
+}
+
+/**
+ * Write the given value to io-port 80h to be displayed by a POST card.
+ * 
+ * @param {number} val value to write to 0x80.
+ */
+function POST(val) {
+	OutPortByte(0x80, val);
 }
 
 /**
@@ -211,6 +238,22 @@ SOUND = {
 		BITS8: 8,
 		BITS16: 16
 	}
+};
+
+/**
+ * System() flags for subsystem shutdown/restart.
+ * @property {*} MOUSE de/reinit mouse
+ * @property {*} SOUND de/reinit sound
+ * @property {*} JOYSTICK de/reinit joystick
+ * @property {*} KEYBOARD de/reinit keyboard
+ * @property {*} TIMER de/reinit timer
+ */
+SYSTEM = {
+	MOUSE: 0x01,
+	SOUND: 0x02,
+	JOYSTICK: 0x04,
+	KEYBOARD: 0x08,
+	TIMER: 0x10
 };
 
 /**

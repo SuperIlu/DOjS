@@ -69,3 +69,85 @@ class Matrix { }
  * @type V3D
  */
 class V3D { }
+
+/**
+ * complex object containing the state information for all buttons and sticks.
+ * @example
+{
+	"analogue": true,
+	"buttons": [
+		{ "name": "B1", "state": false },
+		{ "name": "B2", "state": false },
+		{ "name": "B3", "state": false },
+		{ "name": "B4", "state": false },
+		{ "name": "B5", "state": false },
+		{ "name": "B6", "state": false },
+		{ "name": "B7", "state": false },
+		{ "name": "B8", "state": false },
+		{ "name": "B9", "state": false }
+	],
+	"calib_analogue": false,
+	"calib_digital": false,
+	"calibrate": false,
+	"digital": false,
+	"signed": true,
+	"sticks": [
+		{
+			"analogue": true,
+			"axis": [
+				{ "d1": 0, "d2": 0, "name": "X", "pos": 0 },
+				{ "d1": 0, "d2": 0, "name": "Y", "pos": 0 }
+			],
+			"calib_analogue": false,
+			"calib_digital": false,
+			"calibrate": false,
+			"digital": false,
+			"name": "Stick",
+			"signed": true,
+			"unsigned": false
+		},
+		{
+			"analogue": true,
+			"axis": [
+				{ "d1": 0, "d2": 0, "name": "", "pos": 0 }
+			],
+			"calib_analogue": false,
+			"calib_digital": false,
+			"calibrate": false,
+			"digital": false,
+			"name": "Twist",
+			"signed": true,
+			"unsigned": false
+		},
+		{
+			"analogue": true,
+			"axis": [
+				{ "d1": 0, "d2": 0, "name": "", "pos": 0 }
+			],
+			"calib_analogue": false,
+			"calib_digital": false,
+			"calibrate": false,
+			"digital": false,
+			"name": "Throttle",
+			"signed": true,
+			"unsigned": false
+		},
+		{
+			"analogue": false,
+			"axis": [
+				{ "d1": 0, "d2": 0, "name": "X", "pos": 0 },
+				{ "d1": 0, "d2": 0, "name": "Y", "pos": 0 }
+			],
+			"calib_analogue": false,
+			"calib_digital": false,
+			"calibrate": false,
+			"digital": true,
+			"name": "Hat",
+			"signed": true,
+			"unsigned": false
+		}
+	],
+	"unsigned": false
+}
+ */
+class JoyInfo { }

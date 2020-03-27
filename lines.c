@@ -67,6 +67,15 @@ edi_t* lin_init(char* name) {
         edi->cnp_size = 0;
         edi_clear_selection(edi);
 
+#ifdef EDI_FAST
+        // alloc screen buffer
+        edi->screen = calloc(edi->scr.screenwidth * edi->scr.screenheight, sizeof(uint16_t));
+        if (!edi->screen) {
+            free(edi);
+            return NULL;
+        }
+#endif
+
         return edi;
     } else {
         return NULL;

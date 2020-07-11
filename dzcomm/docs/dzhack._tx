@@ -1,0 +1,270 @@
+@#
+@# This is the source for the dzcomm Hacker's Guide, in a weird custom
+@# format. Read makedoc.c for a description of what is going on...
+@#
+@<html>
+@<head>
+@<title>Dzcomm Hacker's Guide</title>
+@<body>
+<center><h1><b>
+The Dzcomm Hacker's Guide
+</b></h1></center>
+<hr>
+<i>
+This is a guide to some of the internal workings of dzcomm, for people who 
+are interested in hacking on it. This document is far from complete, and may 
+not always be 100% accurate. Remember that when in doubt, the sources are 
+always the definitive reference. Suggestions for what to include in this 
+document will be very welcome: there is far too much code for me to go over 
+it all in any kind of detail, so I want to concentrate on the things that 
+people find most confusing...
+
+This guide is the goal towards which we are moving. Eventually the code will
+all be compliant with these ideas and all the references to 'allegro' will
+have been corrected as appropriate.
+
+Dzcomm has been inspired by two things: First, the original version written
+by Dim to take advantage of the DJGPP compiler. Second, Allegro. Allegro has
+inspired me to see if I can make this thing a multi-platform API. You will
+notice a huge similarity between the way dzcomm is set up and Allegro. In
+this case imitation is a sincere form of recognition of something excellent.
+
+Consequently you wil find that this document is very similar to the one that
+comes with Allegro.
+</i>
+
+
+@!text
+@heading
+Contents
+
+@shortcontents
+
+
+@text
+
+@heading
+Coding Style
+
+[As per Allegro]
+
+I'm not going to be a fascist about this, but it does make life easier if 
+all the code uses a consistent layout. If you are going to write and 
+maintain more than one complete source file of your own, I think you are 
+entitled to do that however you like, but for smaller contributions, I will 
+probably reformat your code to fit in with my existing style. It will 
+obviously save me time if you write it this way in the first place, hence 
+this description:
+
+Basic Allegro style: K&R, with 3 space indentation. On disk, though, tab 
+stops are 8 spaces, so if for example a line was indented by 12 spaces, this 
+would be saved out as either 12 space characters or 1 tab and 4 spaces, not 
+as 4 tabs. If your editor can't handle the difference between 3 char 
+internal and 8 char external tab stops, either get a better editor or use 
+indent to clean up after yourself. The indent.pro file included with the 
+Allegro distribution comes close to getting this layout right, but doesn't 
+quite manage it, so some things still need to be cleaned up by hand.
+
+Preprocessor defines and structure names are UPPER_CASE. Function and 
+variable names are lower_case. MixedCaseNames are evil and should not be 
+used. That silly m_pHungarian notation is _really_ evil and should not even 
+be thought about.
+
+All symbols should be declared as static unless that is absolutely not 
+possible, in which case they should be prefixed with an underscore.
+
+Functions look like this:
+<pre>
+/* foobar:
+ *  Description of what it does.
+ */
+void foobar(int foo, int bar)
+{
+   /* do some stuff */
+}
+</pre>
+Three blank lines between functions.
+
+Conditionals look like:
+<pre>
+   if (foo) {
+      /* stuff */
+   }
+   else {
+      /* stuff */
+   }
+</pre>
+The only time when something comes on the same line after a closing brace is 
+at the end of a do/while loop, eg:
+<pre>
+   do {
+      /* stuff */
+   } while (foo);
+</pre>
+Case statements look like this:
+<pre>
+   switch (foo) {
+
+      case bar:
+	 /* stuff */
+	 break;
+
+      default:
+	 /* stuff */
+	 break;
+   }
+</pre>
+Examples of where to put spaces:
+<pre>
+   char *p;
+   if (condition) { }
+   for (x=0; x&lt10; x++) { }
+   function(foo, bar);
+   (BITMAP *)data[id].dat;
+</pre>
+All sources should begin with the standard header:
+<pre>
+/*
+ * DZcomm : a serial port API.
+ * file : XXXXXX.c
+ *
+ * Brief description of what this file does
+ * 
+ * Brief credits
+ *
+ * See readme.txt for copyright information.
+ */
+</pre>
+Author credits should be added in chronological order, and email addresses 
+should not be included: those can be found in the main credits file, and if 
+they only exist in one place, it is easier to update them when people change 
+address.
+
+People only need to be listed in the source file header if they've made a 
+significant contribution to it (one-line fixes don't count), but no matter 
+how small their addition, they must be added to the docs/thanks._tx file. 
+This is sorted alphabetically by name. If they are already in it, update the 
+text to describe the new addition, otherwise make a new entry for the new 
+contributor. Also, anything more than very tiny modifications should be 
+added to the docs/changes._tx file, which grows from the top in reverse 
+chronological order. This file should briefly describe both the nature of 
+the modification and who did it.
+
+
+
+@heading
+Build Process
+
+This is very different depending on whether you are using autoconf or a 
+fixed makefile. For most platforms, though, the fixup script (eg. 
+fixdjgpp.bat), will create a small makefile, which defines MAKEFILE_INC to 
+the make of another file (eg. makefile.dj), and then includes makefile.all. 
+This contains a lot of generic rules, and includes the file named in 
+MAKEFILE_INC to provide additional platform-specific information. The actual 
+source files are listed in makefile.lst.
+
+There are three library targets: alleg (release), alld (debugging), and allp 
+(profiling). Objects go in obj/compiler/version/, where version is one of 
+alleg, alld, or allp. Libraries go in lib/compiler/. A few generated things 
+(asmdefs.inc, mmxtest.s, etc), go in the root of obj/compiler/. Dependencies 
+are generated by "make depend", and go in obj/compiler/version/makefile.dep, 
+which is included by makefile.all.
+
+When you run "make clean", this only deletes harmless generated files like 
+the objects. "make distclean" strips you right back to the original 
+distribution, including getting rid of the test executables and the library 
+itself. For the ultimate in personal hygene, run "make veryclean", which 
+will wipe absolutely all generated files. After doing this, you will have to 
+run "make depend" before you can build the library, and also "fixdll.bat" if 
+you are working on a Windows platform.
+
+To pass long commandlines to the MSVC and Watcom linkers, the program 
+runner.exe is compiled using gcc, so make can pass it a decent number of 
+arguments. This just saves the parameters into a temporary file, and then 
+invokes the real command using that as an argument file.
+
+All the makefiles currently use gcc for dependency generation, because this 
+is easier than trying to get MSVC or Watcom to output the right info.
+
+The symbol LIBRARY_VERSION, defined at the top of the makefile.all, is used 
+for including a version number in things like the DLL filename.
+
+
+
+@heading
+Header Files
+
+dzcomm.h lives in the include/ directory. This includes other headers which 
+live in include/dzcomm/. The reason for this slightly odd approach is that 
+allegro.h can include things like "allegro/alconfig.h", which will work both 
+in-situ within the build directory, and if we copy allegro.h to the system 
+include directory and the other headers into system_include/allegro/. This 
+avoids cluttering the system directories with lots of our headers, while 
+still allowing programs to just include &ltallegro.h&gt, and also makes it 
+possible for people to access internal headers with #include 
+&ltallegro/aintern.h&gt.
+
+dzcomm.h contains structure definitions and function prototypes. At the end 
+of the file, it includes alinline.h, which defines all the inline routines 
+and vtable wrappers, along with C versions of the fixed point math routines 
+if no inline asm is available. If inline asm is supported, it includes one 
+of al386gcc.h, al386vc.h, or al386wat.h.
+
+dzintern.h defines routines that are shared between multiple sources, but
+that we don't generally want user programs to see. For platform-specific
+internal definitions, we will use dzintdos.h, dzintwin.h, etc. if necessary.
+These headers are not included directly by dzcomm.h, but can still be
+included by the more brave or foolish type of user program :-)
+
+
+
+@heading
+Definitions
+
+All header function prototypes should use the macro AL_FUNC(). Inline 
+routines use the macro AL_INLINE(). Global variables use AL_VAR() or 
+AL_ARRAY(). Global pointers to functions use AL_FUNCPTR(). Pointers to 
+functions which are passed as parameters to other routines or stored in a 
+structure typedef use AL_METHOD(). This may seem like something of an 
+overkill, but it gives us a lot of flexibility to add DLL import/export 
+specifiers, calling convention markers like __cdecl, and even to mangle 
+symbol names on some compilers. If you forget to use these macros, your code 
+won't work on some platforms.
+
+This only applies to header files, though: you can write normal code in the 
+C sources.
+
+The symbol ALLEGRO_SRC is defined while compiling library source files. If 
+you want to inline a function in one of your sources, use the INLINE macro. 
+To declare a zero-sized array in a structure, use int x[ZERO_SIZE]. To use 
+64 bit integers, declare a LONG_LONG variable (this won't be defined on all 
+platforms). To do things with filenames, check the macros ALLEGRO_LFN, 
+OTHER_PATH_SEPARATOR, and DEVICE_SEPARATOR. See the headers for details.
+
+
+
+@heading
+Asm Routines
+
+Currently there is no asm code in dzcomm. If we do start using it we will use
+something on the same lines as Allegro.
+
+
+
+@heading
+Other Stuff
+
+Any portable routines that run inside a timer handler or input callback must 
+be sure to lock all the code and data that they touch. This is done by 
+placing an END_OF_FUNCTION(x) or END_OF_STATIC_FUNCTION(x) after each 
+function definition (this is not required if you declare the function as 
+INLINE, though), and then calling LOCK_FUNCTION() somewhere in your init 
+code. Use LOCK_VARIABLE() to lock global variables, and LOCK_DATA() to lock 
+allocated memory.
+
+Any modules that have cleanup code should register their exit function by 
+calling _add_exit_func(). This will ensure that they are closed down 
+gracefully no matter whether the user calls allegro_exit(), falls off the 
+bottom of main(), or the program dies suddenly due to a runtime error. You 
+must call _remove_exit_func() from inside your shutdown routine, or you will 
+find yourself stuck in an endless loop.

@@ -20,21 +20,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "funcs.h"
+
 #include <allegro.h>
 #include <dirent.h>
 #include <dpmi.h>
 #include <errno.h>
+#include <go32.h>
 #include <mujs.h>
 #include <pc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/farptr.h>
 #include <sys/stat.h>
 #include <time.h>
 
 #include "DOjS.h"
 #include "color.h"
-#include "funcs.h"
 #include "util.h"
 
 /*********************
@@ -430,6 +433,73 @@ static void f_InPortByte(js_State *J) { js_pushnumber(J, inportb(js_toint16(J, 1
 static void f_InPortWord(js_State *J) { js_pushnumber(J, inportw(js_toint16(J, 1)) & 0xFFFF); }
 static void f_InPortLong(js_State *J) { js_pushnumber(J, inportl(js_toint16(J, 1))); }
 
+/**
+ * @brief get a list of parallel port addresses from BIOS
+ *
+ * @param J VM state.
+ */
+static void f_GetParallelPorts(js_State *J) {
+    unsigned long ptraddr = 0x0408;  // Base Address: segment is zero
+    int idx = 0;
+
+    js_newarray(J);
+    for (int j = 0; j < 3; j++) {
+        unsigned int port = _farpeekw(_dos_ds, ptraddr);
+        ptraddr += 2;
+        if (port) {
+            js_pushnumber(J, port);
+            js_setindex(J, -2, idx);
+            idx++;
+        }
+    }
+}
+
+/**
+ * @brief get a list of serial port addresses from BIOS
+ *
+ * @param J VM state.
+ */
+static void f_GetSerialPorts(js_State *J) {
+    unsigned long ptraddr = 0x0400;  // Base Address: segment is zero
+    int idx = 0;
+
+    js_newarray(J);
+    for (int j = 0; j < 3; j++) {
+        unsigned int port = _farpeekw(_dos_ds, ptraddr);
+        ptraddr += 2;
+        if (port) {
+            js_pushnumber(J, port);
+            js_setindex(J, -2, idx);
+            idx++;
+        }
+    }
+}
+
+/**
+ * reset lpt port
+ * @param J VM state.
+ */
+static void f_LPTReset(js_State *J) { biosprint(1, 0, js_toint16(J, 1)); }
+
+/**
+ * send data to lpt port
+ * @param J VM state.
+ */
+static void f_LPTSend(js_State *J) {
+    int port = js_toint16(J, 1);
+    char *data = js_tostring(J, 2);
+
+    while (*data) {
+        biosprint(0, *data++, port);
+    }
+}
+
+/**
+ * get status of lpt port
+ * @param J VM state.
+ */
+static void f_LPTStatus(js_State *J) { js_pushnumber(J, biosprint(2, 0, js_toint16(J, 1))); }
+
 /***********************
 ** exported functions **
 ***********************/
@@ -489,6 +559,11 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     FUNCDEF(J, f_InPortByte, "InPortByte", 1);
     FUNCDEF(J, f_InPortWord, "InPortWord", 1);
     FUNCDEF(J, f_InPortLong, "InPortLong", 1);
+    FUNCDEF(J, f_GetParallelPorts, "GetParallelPorts", 0);
+    FUNCDEF(J, f_GetSerialPorts, "GetSerialPorts", 0);
+    FUNCDEF(J, f_LPTReset, "_LPTReset", 1);
+    FUNCDEF(J, f_LPTSend, "_LPTSend", 2);
+    FUNCDEF(J, f_LPTStatus, "_LPTStatus", 1);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

@@ -1,0 +1,60 @@
+DZCOMM
+
+Mingw32-specific information.
+
+See readme.txt for a more general overview.
+
+
+
+=======================================
+============ Mingw32 notes ============
+=======================================
+
+   A stub has been written. It returns success but doesn't actually do
+   anything.
+
+
+
+===========================================
+============ Required software ============
+===========================================
+
+   - Mingw32 compiler (see below).
+   - GNU make.
+   - Optional: rm. Used by the clean and uninstall targets.
+
+
+   For the Mingw32 part, you will need to obtain the following distributions 
+   from the internet:
+
+   1) Mingw32 compiler itself from
+      http://www.ming.org. Install it as per the allegro instructions.
+
+
+
+============================================
+============ Installing dzcomm =============
+============================================
+
+   Type "cd dzcomm", followed by "fixming.bat", followed by 
+   "make". Here is an example:
+
+      make
+
+   Then go do something interesting while everything compiles. When it 
+   finishes compiling, type "make MINGDIR=<your mingw32 directory> install" 
+   to set the library up ready for use.
+
+   Other than that, installation is as per he DJGPP instructions.
+
+
+
+=======================================
+============ Using Dzcomm =============
+=======================================
+
+   All the dzcomm functions, variables, and data structures are defined in 
+   dzcomm.h. You should include this in your programs, and link with either 
+   the optimised library libdzcomm.a, the debugging library libdzd.a, or the 
+   profiling library libdzp.a.
+

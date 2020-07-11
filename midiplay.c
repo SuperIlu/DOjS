@@ -21,10 +21,11 @@ SOFTWARE.
 */
 
 #include "midiplay.h"
-#include <mujs.h>
-#include "DOjS.h"
 
 #include <allegro.h>
+#include <mujs.h>
+
+#include "DOjS.h"
 
 /*********************
 ** static functions **
@@ -96,24 +97,44 @@ static void mid_IsPlaying(js_State *J) {
     }
 }
 
+/**
+ * @brief stop MIDI playing
+ *
+ * @param J VM state.
+ */
 static void mid_Stop(js_State *J) {
     if (DOjS.midi_available) {
         stop_midi();
     }
 }
 
+/**
+ * @brief pause MIDI playing.
+ *
+ * @param J VM state.
+ */
 static void mid_Pause(js_State *J) {
     if (DOjS.midi_available) {
         midi_pause();
     }
 }
 
+/**
+ * @brief resume MIDI playing after pause.
+ *
+ * @param J VM state.
+ */
 static void mid_Resume(js_State *J) {
     if (DOjS.midi_available) {
         midi_resume();
     }
 }
 
+/**
+ * @brief get current play time.
+ *
+ * @param J VM state.
+ */
 static void mid_GetTime(js_State *J) {
     if (DOjS.midi_available) {
         js_pushnumber(J, midi_time);
@@ -122,6 +143,24 @@ static void mid_GetTime(js_State *J) {
     }
 }
 
+/**
+ * @brief get current play position.
+ *
+ * @param J VM state.
+ */
+static void mid_GetPos(js_State *J) {
+    if (DOjS.midi_available) {
+        js_pushnumber(J, midi_pos);
+    } else {
+        js_pushnumber(J, -1);
+    }
+}
+
+/**
+ * @brief send MIDI command to playback device.
+ *
+ * @param J VM state.
+ */
 static void mid_Out(js_State *J) {
     if (DOjS.midi_available) {
         if (!js_isarray(J, 1)) {
@@ -164,6 +203,7 @@ void init_midi(js_State *J) {
     FUNCDEF(J, mid_Resume, "MidiResume", 0);
     FUNCDEF(J, mid_Out, "MidiOut", 1);
     FUNCDEF(J, mid_GetTime, "MidiGetTime", 0);
+    FUNCDEF(J, mid_GetPos, "MidiGetPos", 0);
 
     js_newobject(J);
     { PROTDEF(J, mid_Play, TAG_MIDI, "Play", 1); }

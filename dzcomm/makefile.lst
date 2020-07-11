@@ -1,0 +1,77 @@
+# a big bad list of all the library source files
+
+DZCOMM_SRC_FILES = \
+	src/comm.c \
+	src/queue.c \
+	src/inline.c\
+
+DZCOMM_SRC_C_FILES = \
+
+DZCOMM_SRC_I386_FILES = \
+
+DZCOMM_SRC_DOS_FILES = \
+	src/dos/dcomm.c \
+	src/dos/djirq.c \
+	src/dos/djirqs.s \
+	src/dos/dtimer.c \
+	src/timer.c
+
+DZCOMM_SRC_MINGW32_FILES = \
+	src/mingw32/mcomm.c
+
+DZCOMM_SRC_WIN_FILES = \
+
+DZCOMM_SRC_BEOS_FILES = \
+
+DZCOMM_SRC_LINUX_FILES = \
+	src/linux/lcomm.c \
+
+DZCOMM_SRC_UNIX_FILES = \
+	src/unix/ucomm.c \
+
+DZCOMM_SRC_X_FILES = \
+
+DZCOMM_LIB_EXE_SOURCES = \
+	tests/rs232.c
+
+DZCOMM_LIB_EXES = \
+	tests/rs232
+
+DZCOMM_DATAFILE_EXE_SOURCES = \
+
+DZCOMM_DATAFILE_EXES = \
+
+DZCOMM_EXAMPLE_FILES = \
+	examples/exqueue.c \
+	examples/exterm.c \
+
+DZCOMM_EXAMPLE_EXES = \
+	examples/exqueue \
+	examples/exterm \
+
+DZCOMM_NOLIB_EXE_SOURCES = \
+	docs/makedoc.c \
+	src/i386/asmdef.c
+
+CLEAN_FILES = \
+	docs/*.texi docs/*.txi docs/*.tex docs/*.info docs/*.inf \
+	obj/*/*.o obj/*/*/*.o obj/*/*/*/*.o obj/*/*.obj obj/*/*/*.obj \
+	obj/*/*.h obj/*/*.s obj/*/*.exe obj/*/*/*.lst obj/*/*/*.asm \
+	obj/*/*/*.res obj/*/asmdef src/i386/asmdef \
+	lib/*/*.a lib/unix/*.so* lib/unix/sta* \
+	lib/*/*.lib lib/*/*.exp lib/*/*.dll \
+	lib/*/*.pdb lib/*/*.ilk lib/*/*.map *.pdb */*.pdb \
+	*/*.ilk */*.map */*.sym gmon.out */gmon.out */*.prf \
+	dzcomm.log */dzcomm.log */*/dzcomm.log \
+	log */log */*/log core */core */*/core
+
+DISTCLEAN_FILES = \
+	docs/*.html docs/*.htm docs/*.rtf docs/makedoc */*.exe \
+	$(DZCOMM_LIB_EXES) $(DZCOMM_EXAMPLE_EXES) $(DZCOMM_DATAFILE_EXES) \
+	wintests/*.scr config.cache config.log stamp-h stamp-h[0-9]* suid
+
+VERYCLEAN_FILES = \
+	dzcomm.txt authors AUTHORS changes CHANGES faq.txt help.txt \
+	thanks THANKS obj/*/*.inc obj/*/*/*.dep lib/*/*.def \
+	include/dzcomm/rsxdll.h include/dzcomm/alunixac.h \
+	makefile.dep config.status

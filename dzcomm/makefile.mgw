@@ -1,0 +1,409 @@
+#
+#  Rules for building the dzcomm library with mingw32. This file is included
+#  by the primary makefile, and should not be used directly.
+#
+#  The "depend" target uses sed.
+
+
+
+# -------- define some variables that the primary makefile will use --------
+
+PLATFORM = mingw32
+OBJ_DIR = obj/mingw32/$(VERSION)
+LIB_NAME = lib/mingw32/lib$(VERSION).a
+EXE = .exe
+OBJ = .o
+
+
+
+# -------- autodetect whether to use LFN --------
+
+ifdef CROSSCOMPILE
+HTML = html
+INFO = info
+TEXI = texi
+else
+ifeq ($(LFN),y)
+HTML = html
+INFO = info
+TEXI = texi
+else
+HTML = htm
+INFO = inf
+TEXI = txi
+endif
+endif
+
+
+
+# -------- run some sanity checks on the mingw32 installation --------
+
+.PHONY: badmingdir badgcc badld badmake badtxi badpath
+
+
+# -------- check that the MINGDIR environment variable is set --------
+
+ifndef MINGDIR
+badmingdir:
+	@echo Your MINGDIR environment variable is not set correctly! It should
+	@echo point to the top directory of the mingw32 installation.
+endif
+
+MINGDIR_U = $(subst \,/,$(MINGDIR))
+MINGDIR_D = $(subst /,\,$(MINGDIR))
+
+
+
+ifndef CROSSCOMPILE
+
+
+# -------- check that the gcc package is installed --------
+
+ifeq ($(wildcard $(MINGDIR_U)/bin/gcc.exe),)
+badgcc:
+	@echo Missing mingw32 package (gcc)! Check that your mingw32 installation
+	@echo is complete.
+endif
+
+
+
+# -------- check that the binutils package is installed --------
+
+ifeq ($(wildcard $(MINGDIR_U)/bin/ld.exe),)
+badld:
+	@echo Missing mingw32 package (ld)! Check that your mingw32 installation
+	@echo is complete.
+endif
+
+
+
+# -------- check that the make package is installed --------
+
+ifeq ($(wildcard $(MINGDIR_U)/bin/make.exe),)
+badmake:
+	@echo Missing mingw32 package (make)! Check that your mingw32 installation
+	@echo is complete.
+endif
+
+
+
+# -------- check that the texinfo package is installed --------
+ifeq ($(wildcard $(addsuffix /makeinfo.exe,$(subst ;, ,$(PATH)))),)
+ifeq ($(wildcard $(addsuffix /MAKEINFO.EXE,$(subst ;, ,$(PATH)))),)
+badtxi:
+	@echo Missing makeinfo package! PLease install it, either via
+	@echo DJGPP or some other route. If you do not need the Info
+	@echo documentation, run make all to ignore this error.
+endif
+endif
+
+# -------- check that things are pathed --------
+
+ifeq ($(wildcard $(addsuffix /as.exe,$(subst ;, ,$(PATH)))),)
+badpath:
+	@echo Your PATH is not set correctly! This must include the
+	@echo necessary bin directories: see the ming installation notes
+	@echo for details.
+endif
+
+
+
+# -------- check that dzcomm has a good directory structure --------
+
+ifeq ($(wildcard src/comm.c),)
+baddzcomm:
+	@echo Bad dzcomm installation! You did not preserve the directory structure
+	@echo while unzipping it: did you remember to use the -d flag with pkunzip?
+endif
+
+endif
+
+
+
+# -------- give a sensible default target for make without any args --------
+
+.PHONY: _default
+
+_default: default
+
+
+
+# -------- decide what compiler options to use --------
+
+ifdef WARNMODE
+WFLAGS = -Wall -W -Werror -Wno-unused
+else
+WFLAGS = -Wall -Wno-unused
+endif
+
+ifdef PGCC
+OFLAGS = -mpentium -O6 -ffast-math
+else
+OFLAGS = -march=i486 -O3 -ffast-math
+endif
+
+ifndef ALLEGRONOTAVAIL
+ifndef ALLEGRONOTPROGS
+AFLAGS = -DDZCOMM_ALLEGRO_AVAIL -DDZCOMM_ALLEGRO_AVAIL_PROGS
+else
+AFLAGS = -DDZCOMM_ALLEGRO_AVAIL
+endif
+else
+ifndef ALLEGRONOTPROGS
+AFLAGS = -DDZCOMM_ALLEGRO_AVAIL_PROGS
+endif
+endif
+
+ifndef ALLEG_LIB_NAME
+ALLEG_LIB_NAME = alleg
+endif
+
+ifdef DEBUGMODE
+
+# -------- debugging build --------
+CFLAGS = -DDEBUGMODE=$(DEBUGMODE) $(AFLAGS) $(WFLAGS) -g
+SFLAGS = -DDEBUGMODE=$(DEBUGMODE) $(AFLAGS) $(WFLAGS)
+LFLAGS = -g
+ifndef ALLEGRONOTPROGS
+EXTRA_EXE_LIBS = -l$(ALLEG_LIB_NAME)
+endif
+else
+ifdef PROFILEMODE
+
+# -------- profiling build --------
+CFLAGS = $(AFLAGS) $(WFLAGS) $(OFLAGS) -pg
+SFLAGS = $(AFLAGS) $(WFLAGS)
+LFLAGS = -pg
+ifndef ALLEGRONOTPROGS
+EXTRA_EXE_LIBS = -l$(ALLEG_LIB_NAME)
+endif
+
+else
+
+# -------- optimised build --------
+CFLAGS = $(AFLAGS) $(WFLAGS) $(OFLAGS) -fomit-frame-pointer
+SFLAGS = $(AFLAGS) $(WFLAGS)
+ifndef ALLEGRONOTPROGS
+EXTRA_EXE_LIBS = -l$(ALLEG_LIB_NAME)
+endif
+
+ifndef SYMBOLMODE
+LFLAGS = -s
+endif
+
+endif
+endif
+
+# -------- list which platform specific objects to include --------
+
+VPATH = src/mingw32 src/misc 
+
+
+OBJECT_LIST = $(COMMON_OBJECTS) $(MY_OBJECTS) \
+	      $(basename $(notdir $(DZCOMM_SRC_MINGW32_FILES))) 
+
+
+# -------- rules for installing and removing the library files --------
+
+ifdef CROSSCOMPILE
+
+$(MINGDIR_U)/lib/lib$(VERSION).a: $(LIB_NAME)
+	cp lib/mingw32/lib$(VERSION).a $(MINGDIR_U)/lib
+
+$(MINGDIR_U)/include/dzcomm.h: include/dzcomm.h
+	cp include/dzcomm.h $(MINGDIR_U)/include
+
+$(MINGDIR_U)/include/dzcomm:
+	mkdir $(MINGDIR_U)/include/dzcomm
+
+$(MINGDIR_U)/include/dzcomm/%.h: include/dzcomm/%.h
+	cp $< $@
+
+$(MINGDIR_U)/info/dzcomm.$(INFO): docs/dzcomm.$(INFO)
+	-cp docs/dzcomm.$(INFO) $(MINGDIR_U)/info
+	-install-info $(MINGDIR_U)/info/dzcomm.$(INFO) $(MINGDIR_U)/info/dir
+
+else
+
+$(MINGDIR_U)/lib/lib$(VERSION).a: $(LIB_NAME)
+	copy lib\mingw32\lib$(VERSION).a $(MINGDIR_D)\lib
+
+$(MINGDIR_U)/include/dzcomm.h: include/dzcomm.h
+	copy include\dzcomm.h $(MINGDIR_D)\include
+
+$(MINGDIR_U)/include/dzcomm:
+	md $(MINGDIR_D)\include\dzcomm
+
+$(MINGDIR_U)/include/dzcomm/%.h: include/dzcomm/%.h
+	copy $(subst /,\,$< $@)
+
+$(MINGDIR_U)/info/dzcomm.$(INFO): docs/dzcomm.$(INFO)
+	-copy docs\dzcomm.$(INFO) $(MINGDIR_D)\info
+	-install-info $(MINGDIR_U)/info/dzcomm.$(INFO) $(MINGDIR_U)/info/dir
+
+endif
+
+HEADERS = $(addprefix $(MINGDIR_U)/,$(wildcard include/dzcomm/*.h))
+
+INSTALL_FILES = $(MINGDIR_U)/lib/lib$(VERSION).a \
+		$(MINGDIR_U)/info/dzcomm.$(INFO) \
+		$(MINGDIR_U)/include/dzcomm.h \
+		$(MINGDIR_U)/include/dzcomm $(HEADERS)
+
+install: $(INSTALL_FILES)
+	@echo The $(DESCRIPTION) mingw32 library has been installed.
+
+UNINSTALL_FILES = $(MINGDIR_U)/lib/libdzcomm.a \
+		  $(MINGDIR_U)/lib/libdzcd.a \
+		  $(MINGDIR_U)/lib/libdzcp.a \
+		  $(MINGDIR_U)/include/dzcomm.h \
+		  $(MINGDIR_U)/include/dzcomm/*.h \
+		  $(MINGDIR_U)/info/dzcomm.$(INFO)
+
+uninstall:
+	-install-info --delete $(MINGDIR_U)/info/dzcomm.$(INFO) $(MINGDIR_U)/info/dir
+	-rm -fv $(UNINSTALL_FILES)
+ifdef CROSSCOMPILE
+	-rmdir $(MINGDIR_U)/include/dzcomm
+else
+	-rd $(MINGDIR_D)\include\dzcomm
+endif
+	@echo All gone!
+
+
+
+# -------- autodetect whether the assembler supports MMX instructions --------
+
+.PHONY: mmxtest
+
+mmxtest:
+ifdef CROSSCOMPILE
+	echo // no MMX > obj/mingw32/mmx.h
+	echo .text > obj/mingw32/mmxtest.s
+	echo emms >> obj/mingw32/mmxtest.s
+	gcc -c obj/mingw32/mmxtest.s -o obj/mingw32/mmxtest.o
+	echo #define DZCOMM_MMX > obj/mingw32/mmx.h
+else
+	echo // no MMX > obj\mingw32\mmx.h
+	echo .text > obj\mingw32\mmxtest.s
+	echo emms >> obj\mingw32\mmxtest.s
+	gcc -c obj/mingw32/mmxtest.s -o obj/mingw32/mmxtest.o
+	echo #define DZCOMM_MMX > obj\mingw32\mmx.h
+endif
+
+obj/mingw32/mmx.h:
+	@echo Testing for MMX assembler support...
+	-$(MAKE) mmxtest
+
+
+
+# -------- helper function for compressing the executables --------
+
+ifneq ($(wildcard $(MINGDIR_U)/bin/upx.exe),)
+DJP = $(MINGDIR_U)/bin/upx.exe
+else
+ifneq ($(wildcard $(MINGDIR_U)/bin/djp.exe),)
+DJP = $(MINGDIR_U)/bin/djp.exe -s
+endif
+endif
+
+.PHONY: compress
+
+compress: $(PROGRAMS)
+    ifdef DJP
+	$(DJP) demo/*.exe examples/*.exe setup/*.exe tests/*.exe tools/*.exe
+    else
+	@echo No executable compressor found! This target requires either the
+	@echo DJP or UPX utilities to be installed in your bin directories.
+    endif
+
+
+
+# -------- finally, we get to the fun part... --------
+
+define MAKE_LIB
+ar rs $(LIB_NAME) $(OBJECTS)
+endef
+
+COMPILE_FLAGS = $(subst src/,-DMINGW32_SRC ,$(findstring src/, $<))$(CFLAGS)
+
+$(OBJ_DIR)/%.o: %.c
+	gcc $(COMPILE_FLAGS) -I. -I./include $(XC_INCLUDE) -o $@ -c $<
+
+$(OBJ_DIR)/%.o: %.s
+	gcc $(SFLAGS) -I. -I./include -x assembler-with-cpp -o $@ -c $<
+
+*/%.exe: $(OBJ_DIR)/%.o $(LIB_NAME)
+	gcc $(LFLAGS) -o $@ $< $(XC_LIBS) $(EXTRA_EXE_LIBS) $(LIB_NAME)
+
+ifndef CROSSCOMPILE
+
+obj/mingw32/asmdef.inc: obj/mingw32/asmdef.exe
+	obj/mingw32/asmdef.exe obj/mingw32/asmdef.inc
+
+obj/mingw32/asmdef.exe: src/i386/asmdef.c include/*.h include/dzcomm/*.h obj/mingw32/mmx.h
+	gcc -O $(WFLAGS) -I. -I./include -o obj/mingw32/asmdef.exe src/i386/asmdef.c
+
+obj/mingw32/setupdat.s: setup/setup.dat tools/dat2s.exe
+	tools/dat2s.exe -p setup -o obj/mingw32/setupdat.s setup/setup.dat
+
+obj/mingw32/setupdat.o: obj/mingw32/setupdat.s
+	gcc -o obj/mingw32/setupdat.o -c obj/mingw32/setupdat.s
+
+setup/setup.exe: $(OBJ_DIR)/setup.o obj/mingw32/setupdat.o $(LIB_NAME)
+	gcc $(LFLAGS) -o setup/setup.exe $(OBJ_DIR)/setup.o obj/mingw32/setupdat.o $(EXTRA_EXE_LIBS) $(LIB_NAME)
+
+else
+
+obj/mingw32/asmdef.s: src/i386/asmdef.c include/*.h include/dzcomm/*.h
+	gcc $(WFLAGS) -I. -I./include -S -o obj/mingw32/asmdef.s src/i386/asmdef.c
+
+obj/mingw32/asmdef.inc: obj/mingw32/asmdef.s
+	if [ ! -x obj/mingw32/asmdef.sh ]; then chmod a+x obj/mingw32/asmdef.sh; fi
+	obj/mingw32/asmdef.sh obj/mingw32/asmdef.s obj/mingw32/asmdef.inc
+
+setup/setup.exe:
+	# do nothing
+
+endif
+
+PLUGIN_LIB = lib/mingw32/lib$(VERY_SHORT_VERSION)dat.a
+PLUGINS_H = obj/mingw32/plugins.h
+PLUGIN_DEPS = $(LIB_NAME) $(PLUGIN_LIB)
+PLUGIN_SCR = scr
+
+ifdef CROSSCOMPILE
+
+define GENERATE_PLUGINS_H
+cat tools/plugins/*.inc > obj/mingw32/plugins.h
+endef
+
+else
+
+define GENERATE_PLUGINS_H
+copy tools\plugins\*.inc obj\mingw32\plugins.h
+endef
+
+endif
+
+define MAKE_PLUGIN_LIB
+ar rs $(PLUGIN_LIB) $(PLUGIN_OBJS)
+endef
+
+define LINK_WITH_PLUGINS
+gcc $(LFLAGS) -o $@ $< $(strip S(EXTRA_EXE_LIBS) $(PLUGIN_LIB) $(addprefix @,$(PLUGIN_SCRIPTS)) $(LIB_NAME))
+endef
+
+
+
+# -------- generate automatic dependencies --------
+
+depend:
+	gcc -MM -MG -I. -I./include src/*.c src/mingw32/*.c src/i386/*.c examples/*.c tests/*.c > _depend.tmp
+	gcc -MM -MG -I. -I./include -x assembler-with-cpp src/dos/*.s >> _depend.tmp
+	sed -e "s/^[a-zA-Z0-9_\/]*\///" _depend.tmp > _depend2.tmp
+	sed -e "s/^\([a-zA-Z0-9_]*\.o:\)/obj\/mingw32\/dzcom\/\1/" _depend2.tmp > obj/mingw32/dzcom/makefile.dep
+	sed -e "s/^\([a-zA-Z0-9_]*\.o:\)/obj\/mingw32\/dzcd\/\1/" _depend2.tmp > obj/mingw32/dzcd/makefile.dep
+	sed -e "s/^\([a-zA-Z0-9_]*\.o:\)/obj\/mingw32\/dzcp\/\1/" _depend2.tmp > obj/mingw32/dzcp/makefile.dep
+	rm _depend.tmp _depend2.tmp
+

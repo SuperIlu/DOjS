@@ -10,9 +10,11 @@ MUJS=mujs-1.0.5
 ALLEGRO=allegro-4.2.2-xc-master
 GLIDE=glide3x
 TEXUS=$(GLIDE)/texus
+DZCOMMDIR=dzcomm
+LIBDZCOMM=$(DZCOMMDIR)/lib/djgpp/libdzcom.a
 
-INCLUDES=-I$(MUJS) -I$(ALLEGRO)/include -I$(GLIDE)/v1/include
-LIBS=-lalleg -lmujs -lm -lemu -lglide3i
+INCLUDES=-I$(MUJS) -I$(ALLEGRO)/include -I$(GLIDE)/v1/include -I$(DZCOMMDIR)/include
+LIBS=-lalleg -lmujs -lm -lemu -lglide3i -ldzcom -L$(DZCOMMDIR)/lib/djgpp
 
 CDEF=-DPLATFORM_MSDOS -DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED 
 CFLAGS=-MMD -Wall -std=gnu99 -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -fgnu89-inline -Wmissing-prototypes $(CDEF)
@@ -35,6 +37,7 @@ RANLIB=$(DJGPP)/$(CROSS_PLATFORM)ranlib
 export
 
 PARTS= \
+	$(BUILDDIR)/comport.o \
 	$(BUILDDIR)/dosbuff.o \
 	$(BUILDDIR)/ipx.o \
 	$(BUILDDIR)/edit.o \
@@ -60,11 +63,16 @@ PARTS= \
 	$(BUILDDIR)/3dfx-state.o \
 	$(BUILDDIR)/3dfx-glide.o
 
-all: init libmujs liballegro TEXUS.EXE $(EXE)
+all: init libmujs liballegro dzcomm TEXUS.EXE $(EXE)
 
 libmujs: $(MUJS)/build/release/libmujs.a
 
 liballegro: $(ALLEGRO)/lib/djgpp/liballeg.a
+
+dzcomm: $(LIBDZCOMM)
+
+$(LIBDZCOMM):
+	$(MAKE) -C $(DZCOMMDIR) lib/djgpp/libdzcom.a
 
 $(MUJS)/build/release/libmujs.a:
 	$(MAKE) -C $(MUJS) build/release/libmujs.a
@@ -85,13 +93,13 @@ TEXUS.EXE:
 
 zip: all doc
 	rm -f $(ZIP)
-	cp $(GLIDE)/v1/lib/glide3x.dxe .
-	zip -9 -v -r $(ZIP) $(EXE) GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE
+	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
+	zip -9 -v -r $(EXE) CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE
 
 devzip: all doc
 	rm -f $(ZIP)
-	cp $(GLIDE)/v1/lib/glide3x.dxe .
-	zip -9 -v -r $(ZIP) $(EXE) GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE tests/
+	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
+	zip -9 -v -r $(EXE) CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE tests/
 	scp $(ZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:
@@ -106,12 +114,19 @@ init:
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) DOjS.exe $(ZIP) JSLOG.TXT TEXUS.EXE
+	rm -f $(EXE) DOjS.exe $(ZIP) JSLOG.TXT TEXUS.EXE GLIDE3X.DXE
 
-distclean: clean
-	cd $(ALLEGRO) && ./xmake.sh clean
-	$(MAKE) -C $(MUJS) clean
+distclean: clean alclean jsclean dzclean
 	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT GLIDE3X.DXE
+
+dzclean:
+	$(MAKE) -C $(DZCOMMDIR) clean
+
+jsclean:
+	$(MAKE) -C $(MUJS) clean
+
+alclean:
+	cd $(ALLEGRO) && ./xmake.sh clean
 
 glideclean:
 	rm -rf dxe.c

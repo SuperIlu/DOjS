@@ -64,15 +64,24 @@ function _Debug(str) {
 }
 
 /**
+ * Print info message.
+ * 
+ * @param {string} str the message to print.
+ */
+function Info(str) {
+	Println(">>> ", str);
+}
+
+/**
  * import a module.
  * @param {string} name module file name.
  * @returns the imported module.
  */
 function Require(name) {
 	// look in cache
-	if (name in Require.cache) {
+	if (name in Require._cache) {
 		Debug("Require(cached) " + name);
-		return Require.cache[name];
+		return Require._cache[name];
 	}
 
 	var names = [name, name + '.JS', 'JSBOOT/' + name, 'JSBOOT/' + name + '.JS'];
@@ -89,7 +98,7 @@ function Require(name) {
 			continue;
 		}
 		var exports = {};
-		Require.cache[name] = exports;
+		Require._cache[name] = exports;
 		Function('exports', content)(exports);
 		return exports;
 	};
@@ -97,7 +106,7 @@ function Require(name) {
 
 	throw 'Could not load "' + name + '"';
 }
-Require.cache = Object.create(null);
+Require._cache = Object.create(null);
 
 /**
  * include a module. The exported functions are copied into global scope.
@@ -128,11 +137,13 @@ function StartupInfo() {
 	var width = SizeX();
 	var height = SizeY();
 
-	if (DEBUG) {
-		_Debug("Screen size=" + width + "x" + height + "x" + mode);
-		_Debug("Memory=" + JSON.stringify(MemoryInfo()));
-		_Debug("Command line args=" + JSON.stringify(ARGS));
+	Info("Screen size=" + width + "x" + height + "x" + mode);
+	Info("Memory=" + JSON.stringify(MemoryInfo()));
+	Info("Command line args=" + JSON.stringify(ARGS));
+	Info("SerialPorts=" + JSON.stringify(GetSerialPorts().map(function (e) { return "0x" + e.toString(16) })));
+	Info("ParallelPorts=" + JSON.stringify(GetParallelPorts().map(function (e) { return "0x" + e.toString(16) })));
 
+	if (DEBUG) {
 		var funcs = [];
 		var other = [];
 		for (var e in global) {
@@ -219,6 +230,175 @@ if (!String.prototype.endsWith) {
 function POST(val) {
 	OutPortByte(0x80, val);
 }
+
+/*
+see:
+https://en.wikipedia.org/wiki/Parallel_port
+http://electrosofts.com/parallel/
+https://web.archive.org/web/20120301022928/http://retired.beyondlogic.org/spp/parallel.pdf
+https://stanislavs.org/helppc/bios_data_area.html
+*/
+
+var _lptPorts = GetParallelPorts();
+
+/**
+ * read/write data to LPT data register.
+ * 
+ * @param {number} port port number (0-3).
+ * @param {number} data data to write, null to read
+ * 
+ * @returns {number} current LPT value if data was null.
+ * 
+ * @see GetParallelPorts
+ */
+function LPTRawData(port, data) {
+	if (port < 0 && ports >= _lptPorts.length) {
+		throw 'LPT port out of range';
+	}
+	var addr = _lptPorts[port];
+
+	var old = InPortByte(addr + PARALLEL.CONTROL.ADDR);
+	if (data) {
+		OutPortByte(addr + PARALLEL.CONTROL.ADDR, old & ~PARALLEL.CONTROL.BIDI);
+
+		OutPortByte(addr + PARALLEL.DATA.ADDR, data);
+	} else {
+		OutPortByte(addr + PARALLEL.CONTROL.ADDR, old | PARALLEL.CONTROL.BIDI);
+
+		return InPortByte(addr + PARALLEL.DATA.ADDR);
+	}
+}
+
+/**
+ * read status register of LPT port.
+ * 
+ * @param {number} port port number (0-3).
+ * 
+ * @see GetParallelPorts
+ */
+function LPTRawStatus(port) {
+	if (port < 0 && ports >= _lptPorts.length) {
+		throw 'LPT port out of range';
+	}
+	var addr = _lptPorts[port];
+
+	return InPortByte(addr + PARALLEL.STATUS.ADDR);
+}
+
+/**
+ * write bits to LPT control register.
+ * 
+ * @param {number} port port number (0-3).
+ * @param {number} bits data to write
+ * 
+ * @see GetParallelPorts
+ */
+function LPTRawControl(port, bits) {
+	if (port < 0 && ports >= _lptPorts.length) {
+		throw 'LPT port out of range';
+	}
+	var addr = _lptPorts[port];
+
+	OutPortByte(addr + PARALLEL.CONTROL.ADDR, bits);
+}
+
+/**
+ * reset parallel port.
+ * @param {number} port port number (0-3).
+ * 
+ * @see GetParallelPorts
+ */
+function LPTReset(port) {
+	if (port < 0 && ports >= _lptPorts.length) {
+		throw 'LPT port out of range';
+	}
+	_LPTReset(port);
+}
+
+/**
+ * send data to parallel port.
+ * @param {number} port port number (0-3).
+ * @param {string} data data to transfer.
+ * 
+ * @see GetParallelPorts
+ */
+function LPTSend(port, data) {
+	if (port < 0 && ports >= _lptPorts.length) {
+		throw 'LPT port out of range';
+	}
+	_LPTSend(port, data);
+}
+
+/**
+ * read parallel port status.
+ * @param {number} port port number (0-3).
+ * 
+ * @see GetParallelPorts
+ */
+function LPTStatus(port) {
+	if (port < 0 && ports >= _lptPorts.length) {
+		throw 'LPT port out of range';
+	}
+	return _LPTStatus(port);
+}
+
+/**
+ * parallel port IO register definitions.
+ * 
+ *  [*] CONTROL.BIDI must be set to 1 in order to read from DATA. Not supported by all ports!
+ * 
+ * @property {*} DATA.BIT0 Data 0, pin 2 (out/in*)
+ * @property {*} DATA.BIT1 Data 1, pin 3 (out/in*)
+ * @property {*} DATA.BIT2 Data 2, pin 4 (out/in*)
+ * @property {*} DATA.BIT3 Data 3, pin 5 (out/in*)
+ * @property {*} DATA.BIT4 Data 4, pin 6 (out/in*)
+ * @property {*} DATA.BIT5 Data 5, pin 7 (out/in*)
+ * @property {*} DATA.BIT6 Data 6, pin 8 (out/in*)
+ * @property {*} DATA.BIT7 Data 7, pin 9 (out/in*)
+ * 
+ * @property {*} STATUS.BUSY pin 11, inverted (in)
+ * @property {*} STATUS.ACK pin 10 (in)
+ * @property {*} STATUS.PAPER_OUT pin 12 (in)
+ * @property {*} STATUS.SELECT_IN pin 13 (in)
+ * @property {*} STATUS.ERROR pin 15 (in)
+ * @property {*} STATUS.TIMEOUT LPTStatus() only
+ * 
+ * @property {*} CONTROL.BIDI this bit must be set in order to read DATA
+ * @property {*} CONTROL.SELECT_OUT pin 17, inverted (out)
+ * @property {*} CONTROL.RESET pin 16 (out)
+ * @property {*} CONTROL.LINEFEED pin 14, inverted (out)
+ * @property {*} CONTROL.STROBE pin 1, inverted (out)
+ */
+PARALLEL = {
+	DATA: {
+		ADDR: 0,
+		BIT0: (1 << 0),
+		BIT1: (1 << 1),
+		BIT2: (1 << 2),
+		BIT3: (1 << 3),
+		BIT4: (1 << 4),
+		BIT5: (1 << 5),
+		BIT6: (1 << 6),
+		BIT7: (1 << 7)
+	},
+	STATUS: {
+		ADDR: 1,
+		BUSY: (1 << 7),
+		ACK: (1 << 6),
+		PAPER_OUT: (1 << 5),
+		SELECT_IN: (1 << 4),
+		ERROR: (1 << 3),
+		TIMEOUT: (1 << 1)
+	},
+	CONTROL: {
+		ADDR: 2,
+		BIDI: (1 << 5),
+		SELECT_OUT: (1 << 3),
+		RESET: (1 << 2),
+		LINEFEED: (1 << 1),
+		STROBE: (1 << 0)
+	}
+};
 
 /**
  * sound input selection.

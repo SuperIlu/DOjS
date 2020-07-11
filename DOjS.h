@@ -23,11 +23,10 @@ SOFTWARE.
 #ifndef __DOJS_H__
 #define __DOJS_H__
 
+#include <allegro.h>
 #include <mujs.h>
 #include <stdbool.h>
 #include <stdio.h>
-
-#include <allegro.h>
 
 /************
 ** defines **
@@ -38,8 +37,8 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 1.00         //!< version number
-#define DOSJS_VERSION_STR "V1.00"  //!< version number as string
+#define DOSJS_VERSION 1.10          //!< version number
+#define DOSJS_VERSION_STR "V1.1.0"  //!< version number as string
 
 #define BOOT_DIR "JSBOOT/"  //!< directory with boot files.
 
@@ -107,14 +106,18 @@ SOFTWARE.
 #define DEBUGF(str, ...)                                   \
     {                                                      \
         fprintf(LOGSTREAM, "[DEBUG] " str, ##__VA_ARGS__); \
+        printf("[DEBUG] " str, ##__VA_ARGS__);             \
         fflush(LOGSTREAM);                                 \
+        fflush(stdout);                                    \
     }
 
 //! print debug message to logfile/console
 #define DEBUG(str)                        \
     {                                     \
         fputs("[DEBUG] " str, LOGSTREAM); \
+        puts("[DEBUG] " str);             \
         fflush(LOGSTREAM);                \
+        fflush(stdout);                   \
     }
 #else
 #define DEBUGF(str, ...)

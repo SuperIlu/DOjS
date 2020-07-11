@@ -176,8 +176,9 @@ Check if the file is still playing
 ### MidiStop()
 Pause/resume/stop playing midi.
 
+### MidiGetPos():number
 ### MidiGetTime():number
-Get current play position.
+Get current play position (in seconds).
 
 ### MidiOut(data:number[])
 Send MIDI commands to output.
@@ -473,3 +474,57 @@ Clear ZBuffer with given z value.
 
 ## 3dfx/Glide
 The API is only documented in the HTML API-doc.
+
+## COMPort
+### GetSerialPorts():number[]
+Get available serial ports and their addresses
+
+### com = new COMPort(port:number, baud:number, bits:number, parity:number, stop:number, flow:number[, addr:number, irq:number])
+Open/create new COM port.
+
+### com.Close()
+close port.
+
+### com.FlushInput()
+flush receive buffer.
+
+### com.FlushOutput()
+ flush send buffer.
+
+### com.IsOutputEmpty():boolean
+### com.IsOutputFull():boolean
+check state of send buffer.
+
+### com.IsInputEmpty():boolean
+### com.IsInputFull():boolean
+check state of receive buffer.
+
+### com.WriteByte(number)
+### com.WriteString(string):number
+Write a byte/string to a COM port.
+
+### com.ReadByte():number
+### com.ReadBuffer():string
+Read a single byte/the buffer from COM port.
+
+## LPT
+### GetParallelPorts():number[]
+Get available parallel ports and their addresses
+
+### LPTRawData(port:number, data:number)
+read/write data to LPT data register.
+
+### LPTRawStatus(port:number)
+read status register of LPT port.
+
+### LPTRawControl(port:number, bits:number)
+write bits to LPT control register.
+
+### LPTReset(port:number)
+reset parallel port.
+
+### LPTSend(port:number, data:string)
+send data to parallel port.
+
+### LPTStatus(port:number)
+read parallel port status.

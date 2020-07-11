@@ -1,0 +1,150 @@
+DZCOMM
+
+DJGPP-specific information.
+
+See readme.txt for a more general overview.
+
+
+=====================================
+============ djgpp notes ============
+=====================================
+
+   Status: complete. This is the original version, and has had 
+   plenty of time to become nice and stable.
+
+
+
+===========================================
+============ Required software ============
+===========================================
+
+   -Allegro
+
+   Can be downloaded from .....
+
+   Allegro requires:
+
+   - djgpp compiler (djdev*.zip, gcc*b.zip, and bnu*b.zip).
+   - GNU make (mak*b.zip).
+   - Texinfo (txi*b.zip).
+   - Optional: rm (fil*b.zip). Used by the clean and uninstall targets.
+   - Optional: sed (sed*b.zip). Used by "make depend".
+
+   All of which can be downloaded from your nearest SimTel mirror site, 
+   in the /pub/simtelnet/gnu/djgpp/ directory, or you can use the zip picker 
+   on http://www.delorie.com/djgpp/. Please make sure that you have 
+   installed djgpp according to the instructions in readme.1st, and that you 
+   aren't mixing it with any files from different compilers (eg. the Borland 
+   version of make).
+
+
+
+============================================
+============ Installing Dzcomm =============
+============================================
+
+   This is a source-only distribution, so you will have to compile Allegro 
+   before you can use it. To do this you should:
+
+   Go to wherever you want to put your copy of dzcomm (your main djgpp 
+   directory would be fine, but you can put it somewhere else if you 
+   prefer), and unzip everything. Dzcomm contains several subdirectories, 
+   so you must specify the -d flag if you are using pkunzip.
+
+   If you are using PGCC, set the environment variable "PGCC=1".
+
+   If you are running a unix type OS, and want to cross-compile the djgpp 
+   version of Dzcomm, set up the file makefile.x according to the
+   instructions in the file and make by executing "make -f makefile.x".
+
+   Type "cd dzcomm", followed by "make". Then go do something interesting 
+   while everything compiles. When it finishes compiling, type "make 
+   install" to set the library up ready for use. If you have any trouble 
+   with the build, look at faq.txt for the solutions to some of the more 
+   common problems.
+
+   If you want the test and example programmes to be built and installed
+   without allegro, use the following: "make install ALLEGRONOTPROGS=1"
+
+   If you want the library itself to make the assumption that allegro is
+   not present (if you do this is will have problems if you try and use it
+   with allegro), use: "make install ALLEGRONOTAVAIL=1 ALLEGRONOTPROGS=1"
+
+   If you are compiling suing allegro for the programmes but wish to use
+   a library other than liballeg (eg. liballd) use "make install
+   ALLEG_LIB_NAME=XXXX" where XXXX is the lib you wish to use (eg "alld").
+
+   If you also want to install a debugging version of the library (highly 
+   recommended), now type "make install DEBUGMODE=1". Case is important, so 
+   it must be DEBUGMODE, not debugmode!
+
+   If you also want to install a profiling version of the library, now type 
+   "make install PROFILEMODE=1".
+
+   If you want to read the Allegro documentation with the Rhide online help 
+   system, go to the "Help / Syntax help / Files to search" menu, and add 
+   "allegro" after the existing "libc" entry (separated by a space).
+
+   If you want to create the HTML documentation as one large allegro.html 
+   file rather than splitting it into sections, edit docs/allegro._tx, 
+   remove the @multiplefiles statement from line 8, and run make again.
+
+   Once the build is finished you can recover some disk space by running 
+   "make compress" (which uses the DJP or UPX programs to compress the 
+   executable files), and/or "make clean" (to get rid of all the temporary 
+   files and HTML format documentation).
+
+   If your copy of dzcomm is set up for use with some different compiler 
+   (unlikely, if you downloaded the djgpp distribution), you will have to 
+   run fixdjgpp.bat before compiling it.
+
+   If your copy of dzcomm doesn't include the makefile.dep dependency files 
+   (unlikely, unless you have run "make veryclean" at some point), you can 
+   regenerate them by running "make depend".
+
+
+
+=======================================
+============ Using Dzcomm =============
+=======================================
+
+   All the Dzcomm functions, variables, and data structures are defined in 
+   dzcomm.h. You should include this in your programs, and link with either 
+   the optimised library libdzcom.a, the debugging library libdzcd.a, or the 
+   profiling library libdzcp.a. To do this you should:
+
+   Put the following line at the beginning of one of the C or C++ file that
+   use Dzcomm:
+
+      #include <dzcomm.h>
+
+   Put this at the beginning of one of the other C or C++ files that use
+   Dzcomm:
+
+      #define DZCOMM_SECONDRY_INCLUDE
+      #include <dzcomm.h>
+
+   If you compile from the command line or with a makefile, add either 
+   '-ldzcom' (for the optimised version), '-ldzcd' (debugging version), or 
+   '-ldzcp' (profiling version) to the end of the gcc command, eg:
+
+      gcc foo.c -o foo.exe -ldzcomm
+
+   If you are using Rhide, go to the Options/Libraries menu, type either 
+   'dzcom' (for the optimised version), 'dzcd' (debugging version), or 
+   'dzcp' (profiling version) into the first empty space, and make sure the 
+   box next to it is checked.
+
+   If you are using allegro in parallel, it is imperative that you put the
+   two includes in this order:
+
+      #include <allegro.h>
+      #include <dzcomm.h>
+
+
+============================================
+============ Supported hardware ============
+============================================
+
+   The bare minimum you need to use dzcomm is a 386 with at least one
+   serial port.

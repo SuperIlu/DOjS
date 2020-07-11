@@ -552,9 +552,9 @@ GR_COLORCOMBINE = {
 var TEXMEM_2MB_EDGE = 2097152;
 
 /** TMU memory start address/next address per TMU */
-var nextTexture = [0, 0, 0];
+var _nextTexture = [0, 0, 0];
 /** TMU memory end address per TMU */
-var lastTexture = [0, 0, 0];
+var _lastTexture = [0, 0, 0];
 
 /**
  * (re)initialize simple texture memory management for given TMU.
@@ -562,10 +562,10 @@ var lastTexture = [0, 0, 0];
  * @param {GR_TMU} tmu the tmu to initialize.
  */
 function FxTexMemInit(tmu) {
-	nextTexture[tmu] = fxTexMinAddress(tmu);
-	lastTexture[tmu] = fxTexMaxAddress(tmu);
+	_nextTexture[tmu] = fxTexMinAddress(tmu);
+	_lastTexture[tmu] = fxTexMaxAddress(tmu);
 
-	Debug("TMU[" + tmu + "] memory 0x" + nextTexture[tmu].toString(16) + "..0x" + lastTexture[tmu].toString(16));
+	Debug("TMU[" + tmu + "] memory 0x" + _nextTexture[tmu].toString(16) + "..0x" + _lastTexture[tmu].toString(16));
 }
 
 /**
@@ -577,17 +577,17 @@ function FxTexMemInit(tmu) {
  * @returns {number} a start address or null.
  */
 function FxTexMemGetStartAddress(tmu, info) {
-	start = nextTexture[tmu];
+	start = _nextTexture[tmu];
 	/* check for 2MB edge and space past it if necessary */
 	if ((start < TEXMEM_2MB_EDGE) && (start + info.textureSize > TEXMEM_2MB_EDGE)) {
 		start = TEXMEM_2MB_EDGE;
 	}
-	nextTexture[tmu] += info.textureSize;
-	if (nextTexture[tmu] <= lastTexture[tmu]) {
-		Debug("TMU[" + tmu + "] found texture memory at 0x" + start.toString(16) + " for texture of size " + info.textureSize + ". Remaining texture memory is " + (lastTexture[tmu] - nextTexture[tmu]) + " bytes.");
+	_nextTexture[tmu] += info.textureSize;
+	if (_nextTexture[tmu] <= _lastTexture[tmu]) {
+		Debug("TMU[" + tmu + "] found texture memory at 0x" + start.toString(16) + " for texture of size " + info.textureSize + ". Remaining texture memory is " + (_lastTexture[tmu] - _nextTexture[tmu]) + " bytes.");
 		return start;
 	} else {
-		nextTexture[tmu] = start;
+		_nextTexture[tmu] = start;
 		Debug("TMU[" + tmu + "] found NO texture memory for texture of size " + info.textureSize);
 		return null;
 	}

@@ -1,0 +1,70 @@
+@#
+@# This is the source for the Allegro thanks list, in a weird custom format.
+@# Read makedoc.c for a description of what is going on...
+@#
+@<html>
+@<head>
+@<title>Dzcomm Contributors</title>
+@<body>
+@<center><h1><b><i>The Hall of not very much fame, but hey, it was fun</i></b></h1></center><hr>
+@startoutput AUTHORS
+<i>
+I hope I've remembered everyone who ought to be mentioned here. If your 
+name should be included, my apologies, and please tell me so I can correct 
+the oversight!
+</i>
+
+
+@heading
+Contributors
+   Dim Zegebart (<email>zager@teleaction.de</a>).<br>
+   Wrote the initial version of the library. No Dim, no dzcomm.
+
+   Salvador Eduardo Tropea (<email>salvador@inti.edu.ar</a>).<br>
+   Early (and later) fixes for the CTS/RTS handshaking and handling IRQs 8-15.
+
+   Chirayu Krisgnappa .<br>
+   Lots of good ideas and bug fixes.
+
+   Henrik Berg (<email>henrik@lansen.se</a>).<br>
+   Tidied up parity and suggested the _empty calls.
+
+   Tim Collins (<email>t.collins@bham.ac.uk</a>).<br>
+   Buged fixes and fine tuning of the CTS/RTS handshaking and a couple
+   other bug fixes.
+
+   Mike (<email>mike@posicon.de</a>).<br>
+   Spotted and corrected a potential event mishandling in the DOS IRQ code.
+
+   Neil Townsend (<email>neil@robots.ox.ac.uk</a>).<br>
+   Made it IRQ sharing and now trying to move it to multi-platform
+   status.
+
+@endoutput AUTHORS
+
+@startoutput THANKS
+
+@heading
+Thanks!
+
+   Many thanks to everyone who's helped in the ongoing development of
+   dzcomm. 
+   
+   First, a big thank you to all the people who help me test and debug this 
+   code. It sometimes gets frustrating to receive messages saying "it 
+   doesn't work!", but they are useful all the same...
+
+   DJ Delorie (<email>dj@delorie.com</a>),
+   Eli Zaretskii (<email>eliz@is.elta.co.il</a>),
+   and everyone else who has contributed to djgpp.
+
+   Shawn Hargreaves (<email>shawn@talula.demon.co.uk</a>)
+   and everyone else who has contributed to Allegro.
+
+   Bill Currie (<emaile>bill@taniwha.tssc.co.nz</a>)
+   Wrote BCSerio, much use as a reference in developping dzcomm.
+   
+   Sam Vincent
+   Wrote SVASync, used as a reference in developping dzcomm.
+
+@endoutput THANKS

@@ -1,0 +1,323 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(include/dzcomm.h)
+AC_CONFIG_AUX_DIR(misc)
+AC_CONFIG_HEADER(include/dzcomm/dzunixac.h:include/dzcomm/dzunixac.hin)
+AC_PREREQ(2.12)
+AC_ARG_PROGRAM
+
+dnl Allegro is available
+AC_ARG_WITH(allegro,
+[  --with-allegro[=x]      use allegro if user code does [yes]],
+test "X$withval" != "Xno" && dzcomm_allegro_avail=yes,
+dzcomm_allegro_avail=yes)
+
+dnl Allegro is to be used in the test and example programmes
+AC_ARG_WITH(allegroprogs,
+[  --with-allegroprogs[=x] use allegro in the test and example programmes [yes]],
+test "X$withval" != "Xno" && dzcomm_allegro_avail_progs=yes,
+dzcomm_allegro_avail_progs=yes)
+
+dnl Allegro pathness
+AC_ARG_WITH(allegropath,
+[  --with-allegropath=ADIR    give a root directory for allegro, if needed],
+dzcomm_allegro_path=$withval)
+
+AC_ARG_WITH(allegrolibpath,
+[  --with-allegrolibpath=path give a path for the allegro includes, [ADIR/lib]],
+dzcomm_allegro_lib_path=$withval)
+
+AC_ARG_WITH(allegrobinpath,
+[  --with-allegrobinpath=path give a path for allegro-config, [ADIR/bin]],
+dzcomm_allegro_bin_path=$withval)
+
+AC_ARG_WITH(allegroincpath,
+[  --with-allegroincpath=path give a path for the allegro bits, [ADIR/include]],
+dzcomm_allegro_include_path=$withval)
+
+dnl Enable static library.
+AC_ARG_ENABLE(static,
+[  --enable-static[=x]     build static libraries [default=yes]],
+test "X$enableval" != "Xno" && dzcomm_static_libraries=yes,
+dzcomm_static_libraries=yes)
+
+dnl Enable shared library.
+AC_ARG_ENABLE(shared,
+[  --enable-shared[=x]     build shared libraries [default=no]],
+test "X$enableval" != "Xno" && dzcomm_shared_libraries=yes)
+
+dnl Enable building normal library (default).
+AC_ARG_ENABLE(stdlib,
+[  --enable-stdlib[=x]     enable building normal library [default=yes]],
+test "X$enableval" != "Xno" && dzcomm_build_normal_library=yes,
+dzcomm_build_normal_library=yes)
+
+dnl Enable building debugging library.
+AC_ARG_ENABLE(dbglib,
+[  --enable-dbglib[=x]     enable building debugging library [default=no]],
+test "X$enableval" != "Xno" && dzcomm_build_debugging_library=yes)
+
+dnl Enable building profiling library.
+AC_ARG_ENABLE(proflib,
+[  --enable-proflib[=x]    enable building profiling library [default=no]],
+test "X$enableval" != "Xno" && dzcomm_build_profiling_library=yes)
+
+dnl Enable building debugging programs.
+AC_ARG_ENABLE(dbgprog,
+[  --enable-dbgprog[=x]    enable building debugging programs [default=no]],
+test "X$enableval" != "Xno" && dzcomm_build_debugging_programs=yes)
+
+dnl Enable building profiling programs.
+AC_ARG_ENABLE(profprog,
+[  --enable-profprog[=x]   enable building profiling programs [default=no]],
+test "X$enableval" != "Xno" && dzcomm_build_profiling_programs=yes)
+
+dnl Link programs with shared library rather than static (if available)
+AC_ARG_ENABLE(shareprog,
+[  --enable-shareprog[=x]  link programs with shared library [default=no]],
+test "X$enableval" != "Xno" && dzcomm_build_shared_programs=yes)
+
+dnl Sanity check on shared/static options
+if test "X$dzcomm_shared_libraries" != "Xyes"; then
+  if test "X$dzcomm_static_libraries" != "Xyes"; then
+    AC_MSG_WARN([static and shared libraries all disabled, assuming static])
+    dzcomm_static_libraries=yes
+  fi
+  dzcomm_build_shared_programs=no
+elif test "X$dzcomm_static_libraries" != "Xyes"; then
+  dzcomm_build_shared_programs=yes
+fi
+
+dnl How strict should we be about compiler warnings
+AC_ARG_ENABLE(strictwarn,
+[  --enable-strictwarn[=x] produce strict compiler warnings [default=no]],
+test "X$enableval" != "Xno" && dzcomm_strict_warnings=yes)
+
+dnl Check for tools.
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_RANLIB
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+AC_PROG_LN_S
+
+dnl LDCONFIG is used for installing shared libraries, in Linux/ELF at least
+AC_PATH_PROGS(LDCONFIG, ldconfig, [echo ought to run ldconfig], $PATH:/sbin:/usr/sbin)
+
+dnl Test target machine endianess.
+AC_C_BIGENDIAN
+if test "$ac_cv_c_bigendian" = yes; then
+  AC_DEFINE(DZCOMM_BIG_ENDIAN)
+else
+  AC_DEFINE(DZCOMM_LITTLE_ENDIAN)
+fi
+
+dnl How to compile C and asm files.
+if test -n "GCC"; then
+  if test "X$dzcomm_strict_warnings" = "Xyes"; then
+    WFLAGS="-Wall -Werror"
+  else
+    WFLAGS="-Wall"
+  fi
+  CFLAGS="-O3 -ffast-math -fomit-frame-pointer $WFLAGS"
+  DZCOMM_DEBUG_CFLAGS="-O2 -g $WFLAGS -DDEBUGMODE"
+  DZCOMM_PROFILE_CFLAGS="-O3 -pg -ffast-math $WFLAGS"
+  DZCOMM_SFLAGS="-x assembler-with-cpp"
+  DZCOMM_SHAREDLIB_CFLAGS="-fPIC -DDZCOMM_SHARED"
+else
+  CFLAGS="$CFLAGS"
+  DZCOMM_DEBUG_CFLAGS="$CFLAGS"
+  DZCOMM_PROFILE_CFLAGS="$CFLAGS"
+  DZCOMM_SFLAGS=
+  DZCOMM_SHAREDLIB_CFLAGS=
+fi
+
+dnl Allegro paths
+if test "X$dzcomm_allegro_path" != "X"; then
+  dzcomm_allegro_bin_path_f=$dzcomm_allegro_path/bin
+  dzcomm_allegro_lib_path_f=$dzcomm_allegro_path/lib
+  dzcomm_allegro_include_path_f=$dzcomm_allegro_path/include
+fi
+
+if test "X$dzcomm_allegro_bin_path" != "X"; then
+  dzcomm_allegro_bin_path_f=$dzcomm_allegro_bin_path
+fi
+
+if test "X$dzcomm_allegro_lib_path" != "X"; then
+  dzcomm_allegro_lib_path_f=$dzcomm_allegro_lib_path
+fi
+
+if test "X$dzcomm_allegro_include_path" != "X"; then
+  dzcomm_allegro_include_path_f=$dzcomm_allegro_include_path
+fi
+
+if test "X$dzcomm_allegro_include_path_f" != "X"; then
+  INCLUDES="-I$dzcomm_allegro_include_path_f $INCLUDES"
+fi
+
+if test "X$dzcomm_allegro_lib_path_f" != "X"; then
+  LDFLAGS="-L$dzcomm_allegro_lib_path_f $LDFLAGS"
+fi
+
+dnl Allegroness
+if test "X$dzcomm_allegro_avail" = "Xyes"; then
+  CFLAGS="-DDZCOMM_ALLEGRO_AVAIL $CFLAGS"
+  if test "X$dzcomm_allegro_avail_progs" = "Xyes"; then
+    CFLAGS="-DDZCOMM_ALLEGRO_AVAIL_PROGS $CFLAGS"
+    if test "X$dzcomm_allegro_bin_path_f" != "X"; then
+      LIBS="\`$dzcomm_allegro_bin_path_f/allegro-config --shared\`"
+    else
+      LIBS="\`allegro-config --shared\`"
+    fi
+  fi
+else
+  if test "X$dzcomm_allegro_avail_progs" = "Xyes"; then
+    CFLAGS="-DDZCOMM_ALLEGRO_AVAIL_PROGS $CFLAGS"
+    if test "X$dzcomm_allegro_bin_path_f" != "X"; then
+      LIBS="\`$dzcomm_allegro_bin_path_f/allegro-config --shared\`"
+    else
+      LIBS="\`allegro-config --shared\`"
+    fi
+  fi
+fi
+
+AC_SUBST(INCLUDES)
+AC_SUBST(CFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(DZCOMM_DEBUG_CFLAGS)
+AC_SUBST(DZCOMM_PROFILE_CFLAGS)
+AC_SUBST(DZCOMM_SFLAGS)
+AC_SUBST(DZCOMM_SHAREDLIB_CFLAGS)
+
+dnl Which version of library to link with (shared/debugging/profiling/normal)?
+if test "X$dzcomm_build_debugging_programs" = "Xyes"; then
+  COMPILE_PROGRAM=COMPILE_DEBUG
+  COMPILE_S_PROGRAM=COMPILE_S_DEBUG
+  lib_to_link=dzcd
+  dzcomm_build_debugging_library=yes
+elif test "X$dzcomm_build_profiling_programs" = "Xyes"; then
+  COMPILE_PROGRAM=COMPILE_PROFILE
+  COMPILE_S_PROGRAM=COMPILE_S_PROFILE
+  lib_to_link=dzcp
+  dzcomm_build_profiling_library=yes
+else
+  COMPILE_PROGRAM=COMPILE_NORMAL
+  COMPILE_S_PROGRAM=COMPILE_S_NORMAL
+  lib_to_link=dzcom
+  dzcomm_build_normal_library=yes
+fi
+if test "X$dzcomm_build_shared_programs" = "Xyes"; then
+  LIBDZCOM=lib/unix/lib$lib_to_link.so
+  LINK_LIBDZCOM="-Llib/unix -l$lib_to_link"
+else
+  LIBDZCOM=lib/unix/lib$lib_to_link.a
+  LINK_LIBDZCOM="$LIBDZCOM"
+fi
+AC_SUBST(LIBDZCOM)
+AC_SUBST(LINK_LIBDZCOM)
+AC_SUBST(COMPILE_PROGRAM)
+AC_SUBST(COMPILE_S_PROGRAM)
+
+dnl Which libraries to build (static, shared, normal, debugging, profiling)?
+DZCOMM_LIB_TARGETS=
+if test "X$dzcomm_static_libraries" = "Xyes"; then
+  if test "X$dzcomm_build_normal_library" = "Xyes"; then
+    DZCOMM_LIB_TARGETS="$DZCOMM_LIB_TARGETS lib/unix/libdzcom.a"
+  fi
+  if test "X$dzcomm_build_debugging_library" = "Xyes"; then
+    DZCOMM_LIB_TARGETS="$DZCOMM_LIB_TARGETS lib/unix/libdzcd.a"
+  fi
+  if test "X$dzcomm_build_profiling_library" = "Xyes"; then
+    DZCOMM_LIB_TARGETS="$DZCOMM_LIB_TARGETS lib/unix/libdzcp.a"
+  fi
+fi
+if test "X$dzcomm_shared_libraries" = "Xyes"; then
+  if test "X$dzcomm_build_normal_library" = "Xyes"; then
+    DZCOMM_LIB_TARGETS="$DZCOMM_LIB_TARGETS lib/unix/libdzcom.so lib/unix/libdzcom_nonshared.a"
+  fi
+  if test "X$dzcomm_build_debugging_library" = "Xyes"; then
+    DZCOMM_LIB_TARGETS="$DZCOMM_LIB_TARGETS lib/unix/libdzcd.so lib/unix/libdzcd_nonshared.a"
+  fi
+  if test "X$dzcomm_build_profiling_library" = "Xyes"; then
+    DZCOMM_LIB_TARGETS="$DZCOMM_LIB_TARGETS lib/unix/libdzcp.so lib/unix/libdzcp_nonshared.a"
+  fi
+fi
+AC_SUBST(DZCOMM_LIB_TARGETS)
+
+dnl Enable Linux console support
+AC_ARG_ENABLE(linux,
+[  --enable-linux[=x]      enable Linux specific support [default=yes]],
+test "X$enableval" != "Xno" && dzcomm_support_linux=yes,
+dzcomm_support_linux=yes)
+
+dnl Test that MAP_FAILED defined in system headers.
+AC_MSG_CHECKING(for MAP_FAILED)
+AC_CACHE_VAL(dzcomm_cv_have_map_failed,
+[AC_TRY_COMPILE([#include <unistd.h>
+#include <sys/mman.h>],
+[int test_mmap_failed (void *addr) { return (addr == MAP_FAILED); }],
+dzcomm_cv_have_map_failed=yes,
+dzcomm_cv_have_map_failed=no)])
+AC_MSG_RESULT($dzcomm_cv_have_map_failed)
+if test "$dzcomm_cv_have_map_failed" = no; then
+  AC_DEFINE(MAP_FAILED, [(void *)-1])
+fi
+
+dnl Some miscellaneous defines.
+DZCOMM_MAYBE_LINUX_FILES=DZCOMM_EMPTY_LIST
+
+dzcomm_system=`uname -s | tr A-Z a-z`
+case "$dzcomm_system" in
+
+*linux*)
+  if test "$dzcomm_support_linux" = yes; then
+    AC_DEFINE(DZCOMM_LINUX)
+    DZCOMM_MAYBE_LINUX_FILES=DZCOMM_SRC_LINUX_FILES
+
+  fi
+  ;;
+
+esac
+
+AC_SUBST(DZCOMM_MAYBE_LINUX_FILES)
+
+dnl Additional libraries.
+LIBS="$LIBS -lm"
+AC_SUBST(LIBS)
+
+dnl Headers, features, functions and macros.
+AC_HEADER_STDC
+AC_HEADER_DIRENT
+AC_HEADER_TIME
+AC_CHECK_HEADERS(fcntl.h limits.h sys/time.h unistd.h)
+
+AC_C_CONST
+AC_C_INLINE
+AC_TYPE_SIZE_T
+AC_STRUCT_TM
+
+AC_FUNC_MEMCMP
+AC_FUNC_MMAP
+AC_TYPE_SIGNAL
+AC_FUNC_VPRINTF
+AC_CHECK_FUNCS(findfirst memcmp stricmp strlwr strupr)
+
+dnl Prepare initial dependencies file (if missing).
+if test -f "$srcdir/makefile.dep"; then
+  if test `cd "$srcdir" ; pwd` != `cd . ; pwd`; then
+    cp "$srcdir/makefile.dep" makefile.dep
+  fi
+elif test ! -f makefile.dep; then
+  echo '# Execute "make depend".' >makefile.dep
+fi
+AC_MSG_WARN([execute \"make depend\" first])
+
+dnl Wait for a moment, to ensure the makefile gets a nice late
+dnl timestamp, otherwise `makefile.dep' looks too new.
+echo 'Having a snooze...'
+sleep 1
+
+dnl Prepare makefile.
+AC_OUTPUT(makefile:makefile.in,
+  [test -z "$CONFIG_HEADERS" || echo timestamp > stamp-h])
+

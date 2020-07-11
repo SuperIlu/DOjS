@@ -1,0 +1,13 @@
+Generalities:
+
+Need to clear up the '_set_' versus 'into action' timing so that _get_
+always returns the currently functioning value ...
+
+Specifics:
+
+DOS   : seems fine.
+Linux : rts twiddling for users and lsr/msr handling
+        space and mark parity not implemented properly
+	not sure if either flow control works
+Unix  : As linux, also no IRQ/io address control.
+Others: everything

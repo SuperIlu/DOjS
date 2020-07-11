@@ -1,3 +1,15 @@
+# Version 1.1.0 (the COM together)
+* Added COM port access through the `COMPort()` object.
+* Added RAW LPT port access through LPT-funktions `LPTRawData()`, `LPTRawStatus()` and `LPTRawControl()`.
+* Added LPT printer acces through `LPTReset()`, `LPTSend()` and `LPTStatus()`.
+* Added LPT/COM port enumeration through `GetParallelPorts()` and `GetSerialPorts()`.
+* Added more verbose output about detected 3dfx card and found ports when startig up.
+
+# Version 1.0.1 (the minimal midi modification)
+* Added `MidiGetPos()`
+* Added example script that implements a simple MIDI player.
+* Small cleanups for release building.
+
 # Version 1.0.0 (the major mashup)
 * Fixed memory leaks in TexInfo
 * Added dynamic TexInfo generation from Bitmap

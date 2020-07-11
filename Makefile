@@ -94,11 +94,10 @@ TEXUS.EXE:
 zip: all doc
 	rm -f $(ZIP)
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	zip -9 -v -r $(EXE) CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE
+	zip -9 -v -r $(EXE) GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE
 
 devzip: all doc
 	rm -f $(ZIP)
-	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
 	zip -9 -v -r $(EXE) CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE tests/
 	scp $(ZIP) smbshare@192.168.2.8:/sata/c64
 

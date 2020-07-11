@@ -1,0 +1,3 @@
+# Shared library versions
+shared_version = 0.9.9
+shared_major = 1

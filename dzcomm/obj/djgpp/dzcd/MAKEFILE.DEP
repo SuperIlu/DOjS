@@ -1,0 +1,49 @@
+obj/djgpp/dzcd/comm.o: src/comm.c include/dzcomm.h include/dzcomm/dzconfig.h \
+ include/dzcomm/dzdjgpp.h include/dzcomm/dzqueue.h \
+ include/dzcomm/dzinline.h include/dzcomm/dz386gcc.h \
+ include/dzcomm/dzdos.h include/dzcomm/dzintern.h \
+ include/dzcomm/dintdos.h
+obj/djgpp/dzcd/inline.o: src/inline.c include/dzcomm.h include/dzcomm/dzconfig.h \
+ include/dzcomm/dzdjgpp.h include/dzcomm/dzqueue.h \
+ include/dzcomm/dzinline.h include/dzcomm/dz386gcc.h \
+ include/dzcomm/dzdos.h include/dzcomm/dzintern.h \
+ include/dzcomm/dintdos.h
+obj/djgpp/dzcd/queue.o: src/queue.c include/dzcomm.h include/dzcomm/dzconfig.h \
+ include/dzcomm/dzdjgpp.h include/dzcomm/dzqueue.h \
+ include/dzcomm/dzinline.h include/dzcomm/dz386gcc.h \
+ include/dzcomm/dzdos.h include/dzcomm/dzintern.h \
+ include/dzcomm/dintdos.h
+obj/djgpp/dzcd/timer.o: src/timer.c include/dzcomm.h include/dzcomm/dzconfig.h \
+ include/dzcomm/dzdjgpp.h include/dzcomm/dzqueue.h \
+ include/dzcomm/dzinline.h include/dzcomm/dz386gcc.h \
+ include/dzcomm/dzdos.h include/dzcomm/dzintern.h \
+ include/dzcomm/dintdos.h
+obj/djgpp/dzcd/dcomm.o: src/dos/dcomm.c include/dzcomm.h include/dzcomm/dzconfig.h \
+ include/dzcomm/dzdjgpp.h include/dzcomm/dzqueue.h \
+ include/dzcomm/dzinline.h include/dzcomm/dz386gcc.h \
+ include/dzcomm/dzdos.h include/dzcomm/dzintern.h \
+ include/dzcomm/dintdos.h
+obj/djgpp/dzcd/djirq.o: src/dos/djirq.c include/dzcomm.h include/dzcomm/dzconfig.h \
+ include/dzcomm/dzdjgpp.h include/dzcomm/dzqueue.h \
+ include/dzcomm/dzinline.h include/dzcomm/dz386gcc.h \
+ include/dzcomm/dzdos.h include/dzcomm/dzintern.h \
+ include/dzcomm/dintdos.h src/dos/../i386/asmdefs.inc \
+ obj/djgpp/asmdef.inc
+obj/djgpp/dzcd/dtimer.o: src/dos/dtimer.c include/dzcomm.h include/dzcomm/dzconfig.h \
+ include/dzcomm/dzdjgpp.h include/dzcomm/dzqueue.h \
+ include/dzcomm/dzinline.h include/dzcomm/dz386gcc.h \
+ include/dzcomm/dzdos.h include/dzcomm/dzintern.h \
+ include/dzcomm/dintdos.h
+obj/djgpp/dzcd/asmdef.o: src/i386/asmdef.c include/dzcomm.h include/dzcomm/dzconfig.h \
+ include/dzcomm/dzdjgpp.h include/dzcomm/dzqueue.h \
+ include/dzcomm/dzinline.h include/dzcomm/dz386gcc.h \
+ include/dzcomm/dzdos.h include/dzcomm/dzintern.h \
+ include/dzcomm/dintdos.h
+obj/djgpp/dzcd/exqueue.o: examples/exqueue.c include/dzcomm.h \
+ include/dzcomm/dzconfig.h include/dzcomm/dzdjgpp.h \
+ include/dzcomm/dzqueue.h include/dzcomm/dzinline.h \
+ include/dzcomm/dz386gcc.h include/dzcomm/dzdos.h
+obj/djgpp/dzcd/exterm.o: examples/exterm.c
+obj/djgpp/dzcd/rs232.o: tests/rs232.c
+obj/djgpp/dzcd/djirqs.o: src/dos/djirqs.s src/dos/../i386/asmdefs.inc \
+ obj/djgpp/asmdef.inc

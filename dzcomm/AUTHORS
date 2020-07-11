@@ -1,0 +1,33 @@
+
+I hope I've remembered everyone who ought to be mentioned here. If your 
+name should be included, my apologies, and please tell me so I can correct 
+the oversight!
+
+
+
+======================================
+============ Contributors ============
+======================================
+   Dim Zegebart (zager@teleaction.de).
+   Wrote the initial version of the library. No Dim, no dzcomm.
+
+   Salvador Eduardo Tropea (salvador@inti.edu.ar).
+   Early (and later) fixes for the CTS/RTS handshaking and handling IRQs 8-15.
+
+   Chirayu Krisgnappa .
+   Lots of good ideas and bug fixes.
+
+   Henrik Berg (henrik@lansen.se).
+   Tidied up parity and suggested the _empty calls.
+
+   Tim Collins (t.collins@bham.ac.uk).
+   Buged fixes and fine tuning of the CTS/RTS handshaking and a couple
+   other bug fixes.
+
+   Mike (mike@posicon.de).
+   Spotted and corrected a potential event mishandling in the DOS IRQ code.
+
+   Neil Townsend (neil@robots.ox.ac.uk).
+   Made it IRQ sharing and now trying to move it to multi-platform
+   status.
+

@@ -1,0 +1,140 @@
+@#
+@# This is the source for the recent changes list, in a weird custom format.
+@# Read makedoc.c for a description of what is going on...
+@#
+@<html>
+@<head>
+@<title>Dzcomm Changes</title>
+@<body>
+
+@heading
+Changes from 0.7.2 to current
+<ul>
+<li>
+   0.9.9: Addition of beta functions for controlling flow control lines for
+   DOS and linux, shells only for unix and ming
+<li>
+   0.9.9: Signals now cause clean closedown under DOS
+<li>
+   0.9.9: Documentation corrections (Thanks to Christopher Sandberg)
+<li>
+   0.9.9: Stub (ie non functioning but non failing) ming version added
+<li>
+   0.9.9: exterm.c uses Allegro properly under linux now!
+<li>
+   0.9.9: Linux version does not fail before allowing reconfigure if the
+   default (com) port is not physically present now.
+<li>
+   0.9.8: Djgpp makefile extended to allow user to specify the allegro
+   library name.
+<li>
+   0.9.8: fifo code cleaned up a bit.
+<li>
+   0.9.8: djirqs.s ljmp brought into line with more recent (stricter) gcc
+   assembler syntax.
+<li>
+   0.9.8: First go at removing dependance on allegro.
+<li>
+   0.9.7: Initial go at a generic unix driver. Does not handle setting of IRQs
+   and io addresses.
+<li>
+   0.9.7: Corrected an RTS/CTS flow error, thanks SET.
+<li>
+   0.9.7: Added in a couple of slowing reads to the DOS FIFO initialisation
+   code so that less perfect motherboards don't hang.
+<li>
+   0.9.6: Failure to load config files now trapped and exitted on in exterm.
+<li>
+   0.9.6: Added a makefile for a unix to DOS cross compiler.
+<li>
+   0.9.6: Corrected a flow error in the 0.9.5 DOS interrupt handler that
+   hung the machine.
+<li>
+   0.9.5: Added comm_port_{in,out}_full calls. Changed the indirect function
+   to achieve this.
+<li>
+   0.9.5: Kicking of UARTs that do not handle THRE properly put in correctly,
+   hopefully. thanks to Peter Worsfield and Mike for pointing out the
+   omission.
+<li>
+   0.9.5: Error in final return statement in comm_port_out_empty corrected.
+<li>
+   0.9.4: becomes its own library to ease multi-platform installation 
+<li>
+   0.9.4: No longer necessary to call comm_port_delete on exit as dzcomm
+   installs it's own atexit routine (dzcomm_closedown) which will clear up
+   whatever needs clearing up. comm_port_delete still available and
+   dzcomm_closedown can be called prior to program exit if resources need
+   releasing.
+<li>
+   0.9.4: All of the output functions now return an integer.
+<li>
+   0.9.4: linux generally works excepting: direct RTS control (which is
+   a hack in DOS only currently) and MCR/LSR callback routines.
+<li>
+   0.9.4: now a separate file tree from allegro to keep things clear 
+   and simple.
+<li>
+   0.9.4: test program (rs232) added. It either tests between two ports on
+   the same machine or between two machines running it.
+<li>
+   0.9.4: documentation now done using the allegro system, man (unix) and
+   info pages generated automatically and installed if so required.
+<li>
+   0.9.4: All the enums made to be standard 0-(N-1) enums. Different low
+   level drivers then interrpret them as appropriate.
+<li>
+   0.9.3: Minor bugs cleared up, thanks to Tim Collins.
+<li>
+   0.9.3: Tim Collins makes the RTS/CTS handshaking work.
+<li>
+   0.9.2: comm_port_{in,out}_empty added, they idnicate whether then in/out 
+   buffers currently have anything in them.
+<li>
+   0.9.2: PARITY enum and code changed to extend and imrpove parity handling.
+<li>
+   0.9.1: Changed to three files to fit in with Allegro 4.0 sturcture
+<li>
+   0.9.1: Makefile changed to take advantage of new allegro makefile
+<li>
+   0.9.1: Unlimited number of ports added
+<li>
+   0.9.1: removed the cport macro
+<li>
+   0.9.1: comN vaiables removed
+<li>
+   0.9.1: IRQ sharing seems to work
+<li>
+   0.9.1: comm_port_send_break() added
+<li>
+   0.9.1: access functions for the comm_port structure added so the the API
+   is not dependant on users altering the comm_port structure directly
+<li>
+   0.9.1: examples files moved to allegro/examples
+<li>
+   0.9.1: exqueue added to demonstrate queue functionality
+<li>
+   0.9.1: .ini files only define one port but no longer require the [] syntax
+   at the beginning and end
+</ul>
+
+
+@heading
+Changes from 0.6 to 0.7.x (Mar 1999)
+<ul><li>
+   The need to alter allegro source was removed. The source tree then 
+   split into the 0.7.x branch, bug changes only for the DJGPP allegro
+   only version.
+</ul>
+
+
+@heading
+Changes from 0.5 to 0.6 (Sep 1998)
+<ul><li>
+   Initial version of IRQ sharing software added. Obviously this requires 
+   the hardware to be capable of generating shared IRQs. 
+<li>   
+   comm_port_delete() and comm_port_reinstall() cleaned up.
+</ul>
+
+

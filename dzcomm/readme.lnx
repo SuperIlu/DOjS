@@ -1,0 +1,203 @@
+DZCOMM
+
+Linux-specific information.
+
+See readme.txt for a more general overview.
+
+Also see readme.uni for general Unix information.
+
+
+=======================================
+============ General notes ============
+=======================================
+
+   Status: A first version has been written. I believe that it works
+   with the possible exception of sending break signals.
+
+
+
+===========================================
+============ Required software ============
+===========================================
+
+   Allegro. http:// .....
+
+   Since you are using Linux, you probably already have GNU CC and 
+   GNU Make.  That's all you need.  However, autoconf and autoheader
+   (part of autoconf I believe) may also be needed if you're using 
+   between-WIP patches from third parties (e.g. my own).  You might
+   need to have bash installed, but I'm not sure.
+
+   If you have problems with missing include files or symbols not 
+   being defined in the include files, please let me know -- tell me
+   what Linux distribution you have, which file is failing, what
+   options you passed to `./configure' (see `config.status'), and
+   anything else you think is relevant.  I might need to ask you for
+   more information later on, of course.
+
+
+============================================
+============ Installing dzcomm =============
+============================================
+
+   Fix up:
+      $ chmod +x fixunix.sh
+      $ ./fixunix.sh
+
+   Configure [use the -help option to see the options]:
+      $ ./configure
+
+   Build:
+      $ make
+
+   Install: (note that you probably need to be root here)
+      # make install
+
+
+=====================================
+============ Configuring ============
+=====================================
+
+   There are a number of options you can pass to the configure 
+   script to influence its decisions.  See `./configure --help'
+   for brief descriptions.  The options specific to the Linux
+   console version are:
+
+
+=======================================
+============ Using dzcomm =============
+=======================================
+ 
+   Essentially, the same as for Allegro. So, quoting from allegro:
+
+   Some parts of Linux console Allegro need root privileges.  Others
+   don't.  Specifically, the VGA, mode-X and VBE/AF graphics drivers 
+   do.  The fbcon driver doesn't.  Also, if you intend to run a
+   program from something which isn't a VT (e.g. an xterm (but not 
+   using the X version), a remote login, a screen session) then you
+   need to either own a (free) console numbered from 1 to 15 or to 
+   have root privileges.
+
+   If you want a program to run with privileges even though the user
+   running it is not root, make root own the binary and set the suid 
+   bit:
+
+       # chown root.allegro exhello
+       # chmod 4770 exhello
+
+   That makes the executable be owned by root and group `allegro'.
+   It's readable, writable and executable by root and people in 
+   that group.  Also, when it runs, it has root privileges.  For
+   that reason, it's not executable by the general public.  Put
+   trusted users into group `allegro'.
+
+   You might prefer to use `4750' instead of `4770' -- then people 
+   in the group cannot write to the binary.
+
+   Allegro will drop the privileges almost immediately after 
+   initialisation, using `seteuid'.  This means that you can still
+   get the permissions back later on.  Allegro needs to be able to
+   regain the privileges if you intend to call `allegro_init' again
+   in the future.  If this isn't the case, you can completely give
+   up the privileges using `setuid(getuid());' -- then they are 
+   lost for good.
+
+   Security note:  If you don't do this, any buffer overflows are
+   a severe security problem.  In any case, you should take great
+   care when allowing random people to execute third-party programs
+   suid root.
+
+   If, as root, you run `make suid', it will do this to all of the
+   programs generated -- the demo game, the examples, the tests, 
+   etc.
+
+
+============================================================
+============ Shared libraries -- Allegro itself ============
+============================================================
+
+   The Allegro libraries can be built as shared libraries.  To do this,
+   configure with `--enable-shared'; the default is only to generate
+   static libraries.  The programs will still be statically linked 
+   unless you also use `--enable-shareprog', or disable static library
+   generation using `--disable-static'.  Whichever of the normal, 
+   debugging and profiling libraries you've enabled will be built in 
+   whichever modes (shared, static) you've enabled.
+
+   If you build the programs using a shared library but do not install
+   the library, the programs will not run unless you tell the dynamic
+   linker where to find the shared library.  Add to the environment
+   variable `LD_LIBRARY_PATH' the full path to Allegro's library
+   directory -- e.g. /usr/local/src/allegro/lib/unix:
+
+      $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/src/allegro/lib/unix
+
+   Even if you install the libraries to the default location, you may 
+   need to edit /etc/ld.so.conf and add `/usr/local/lib' to the list.
+
+   Users of your programs will either need to install the shared 
+   libraries to `/usr/local/lib' and edit `/etc/ld.so.conf', or install
+   them to `/usr/lib' (no editing necessary).  Binary distributions of
+   Allegro will be available for users, in various formats (including
+   RPM), I hope.
+
+   Because of the way Allegro is structured, it is unlikely that there
+   will be much compatibility of libraries between WIP versions.  Each
+   WIP will probably be a new major version of the library.
+
+
+====================================================
+============ Shared libraries -- others ============
+====================================================
+
+   Allegro can interface with a lot of other libraries -- in particular,
+   various X libraries, GGI and SVGAlib.  Whether you use Allegro itself
+   as a shared library or static, these other libraries are usually 
+   linked shared.  This means that your program won't even load on a
+   user's machine unless he/she has all these libraries installed!
+
+   At present there are no satisfactory total solutions to this problem.
+   If you're linking Allegro statically, you can build cut-down versions 
+   of the library, using `--without-x', `--disable-ggi', and/or
+   `--disable-svgalib', and distribute multiple copies of your binaries.
+   Not a nice solution.
+
+   A similar option for people linking to shared Allegro libraries is to
+   distribute several versions of the shared libraries, covering all the 
+   possibilities -- GGI only, SVGAlib only, both GGI and SVGAlib but not
+   X, etc.  The user installs whichever one matches their system, and
+   doesn't need redundant shared libraries that'll never get used.  
+   Again, though, there are a lot of possible combinations.
+
+   From the Allegro developers' points of view, we could modify the 
+   library so that all calls to these other libraries are indirected,
+   and load these libraries at run-time (rather than load-time) only
+   if they're available.  This is somewhat less efficient though.
+
+   An alternative, suggested by Jason Wilkins, is to split the Allegro
+   shared library into pieces -- a core, an X portion, a GGI portion 
+   and a SVGAlib portion.  The user then sets up the central shared 
+   library to only refer to those sublibraries whose dependencies are 
+   accessible.
+
+   Finally, we could split the library up as Jason suggested, and 
+   provide two copies of each optional component -- one complete copy, 
+   and one stub with no dependencies.  If a user doesn't have GGI, they
+   install the stub Allegro-GGI library instead of the real thing, and 
+   it always fails initialisation.
+
+   Most of these systems will require a fair amount of discipline.
+
+
+==============================
+============ Bugs ============
+==============================
+
+   The low level code hasn't been written yet.
+
+
+===============================
+============ To do ============
+===============================
+
+   See above.

@@ -1,0 +1,25 @@
+
+=================================
+============ Thanks! ============
+=================================
+
+   Many thanks to everyone who's helped in the ongoing development of
+   dzcomm. 
+   
+   First, a big thank you to all the people who help me test and debug this 
+   code. It sometimes gets frustrating to receive messages saying "it 
+   doesn't work!", but they are useful all the same...
+
+   DJ Delorie (dj@delorie.com),
+   Eli Zaretskii (eliz@is.elta.co.il),
+   and everyone else who has contributed to djgpp.
+
+   Shawn Hargreaves (shawn@talula.demon.co.uk)
+   and everyone else who has contributed to Allegro.
+
+   Bill Currie (bill@taniwha.tssc.co.nz)
+   Wrote BCSerio, much use as a reference in developping dzcomm.
+   
+   Sam Vincent
+   Wrote SVASync, used as a reference in developping dzcomm.
+

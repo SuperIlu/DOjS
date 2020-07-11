@@ -1,0 +1,533 @@
+
+                    DZCOMM 0.9.9 (WIP)
+
+                    A serial port API.
+
+              By Neil Townsend, Dec 08, 1999.
+
+                See the AUTHORS file for a
+               complete list of contributors.
+
+
+
+#include <std_disclaimer.h>
+
+   "I do not accept responsibility for any effects, adverse or otherwise, 
+    that this code may have on you, your computer, your sanity, your dog, 
+    and anything else that you can think of. Use it at your own risk."
+
+
+
+========================================
+============ General points ============
+========================================
+
+See readme.txt for a general introduction, copyright details, and 
+information about how to install dzcomm and link your program with it.
+
+Dzcomm is a result of the magnificent Allegro library. It has provided the
+inspiration and in many cases the code which has simplfied the process of
+developping what I hope will become a multi-platform serial line API.
+
+Hopefully, Dzcomm has now evolved to the point where it can work alongside
+allegro but no longer relies on it. It should have alternative routines
+for everything it previosuly relied on allegro to do and should decide
+when you compile it in whether to use allegros routines or its own.
+
+To use dzcomm in your code you will need to put
+
+      #include <dzcomm.h>
+
+in your code. Obviously (I hope) this will only work after you've installed
+the library. If you wish to use allegro alongside dzcomm you will need to
+include the allegro library. If you do so it is IMPERATIVE that you include
+allegro first (this how dzcomm knows where to link to):
+
+      #include <allegro.h>
+      #include <dzcomm.h>
+
+
+If you have more than one C file in a project and you wish to access dzcomm
+from more than one of those files, you must put the following #define before
+all but one of the dzcomm includes:
+
+      #define DZCOMM_SECONDARY_INCLUDE
+      #include <dzcomm.h>
+
+However, do remember to inlcude it once without the #define!
+
+============================================
+============ Port configuration ============
+============================================
+
+To use dzcomm it is necessary to initialise the library and then to configure
+the ports. Each serial line is considered as an indepnedent input/output port
+and has certain characteristics associated with it. All the routines which talk
+to, read from or somehow control an serial line will take, as one of their
+arguemnts, a pointer to the structure which defines that port:
+
+      comm_port *port.
+
+This structure contains a complete desription of how the port is configured.
+However, it is not necessary (or advisable) to alter the contents of this
+structure directly. A collection of routines are provided which enable the
+port to be configured and used without having to mess around with the guts
+of this structure.
+
+The following sequence should be used:
+
+      comm_port *my_port;
+
+      dzcomm_init();                      // initialise the library
+      my_port = comm_port_init(_comN);    // create the port
+      comm_port_set_*(my_port, *);        // define it
+      comm_port_install_handler(my_port)  // run the port as per this definition
+
+      // And then read and write from and to the port.
+
+
+int dzcomm_init();
+   Initialises the dzcomm library. A necessary call before using any of the
+   other functions. Having done this you will want to initialise one or more
+   ports and then use them. The function returns 1 if dzcomm is successfully
+   installed, 0 otherwise.
+
+void dzcomm_closedown();
+   Does the opposite to dzcomm_init. Closedown the dzcomm serial API and
+   releases system resources as much as it can. Is automatically called
+   on program exit (assuming that dzcomm_init has been called) and will
+   will uninstall and delete any ports which require it. It is therefore
+   not necessary to uninstall or delete ports explicity in code which uses
+   the dzcomm library (0.9.4 and above).
+
+comm_port *comm_port_init(comm n);
+   Creates a handle (which is a pointer to a structre) for a new port.
+   The argument, defined below, simply gives comm_port_init a hint as
+   to which potentially built-in port the port should define. If the
+   port you are using bears no relation to a standard PC built in port
+   just send an arbitrary argument and then use the comm_port_set_*
+   routines to describe the port. Even if if you are using a standard
+   port you will want to use the comm_port_set_* routines to complete
+   the configuration of the port.
+
+   The argument must be one of the following. Please use these values
+   rather than infering what the enum values might be.
+
+      typedef enum {_com1, _com2, _com3, _com4, _com5, _com6, _com7, _com8} comm;
+
+
+int comm_port_load_settings(comm_port *port, char *file_name)
+   Load the setting for a comm port from a file. Traditionally these files
+   have had a ".ini" extension but that is not required. Return values are
+   1 for success and 0 for failure.
+
+   Format of the file:
+
+      baud=; //={110,150,300,600,1200,2400,...,115200}
+      Example : baud=9600;
+
+      data=; //={5,6,7,8}
+      Example : data=7;
+
+      parity=; //={Even,Odd,No(None)}
+      Example : parity=Even;
+
+      stop=; //={1,2}
+      Example : stop=1;
+
+      irq=;
+      Example : irq=5;
+
+      address=; // port address in hex.
+      Example : address=0x2f8; // Note : use 0x prefix always.
+
+      control=;
+      //={xon_xoff(xon/xoff),rts_cts(rts/cts),no(none)}
+      Example : control=xon_xoff;
+
+      name=; // just name of port. Not used by any lib function.
+      Example : name=Modem Courier V.EVERYTHING;
+
+
+void comm_port_set_irq_num(comm_port *port, unsigned char irq_num);
+   Set the IRQ number for the port. irq_num should be the IRQ line the port is
+   set to use, between 0 and 15 inclusive. The value set will only come into effect
+   when a port is reinstalled.
+
+void comm_port_set_name(comm_port *port, char *name);
+   Set the name that is associated with the port. name should be a pointer to
+   a 0 terminated string which will be copied into an internal string. The
+   maximum allowed length of the string is DZCOMM_PORT_NAME_MAX_LENGTH, which
+   is defined in dzcomm.h. This name is irrelevant to the actual running of the
+   port and this _set_ call will take effect immediately.
+
+void comm_port_set_port_address(comm_port *port, unsigned short int port_address);
+   Set the address of the port. The value set will only come into effect
+   when a port is reinstalled.
+
+void comm_port_set_baud_rate(comm_port *port, baud_bits baud_rate);
+   Set the baud rate the port should use. The value set will only come into effect
+   when a port is reinstalled.
+
+   The argument must be one of the following. Please use these values
+   rather than infering what the enum values might be.
+
+      typedef enum {_110,   _150,   _300,   _600,   _1200,  _2400,  _4800,
+                    _9600,  _19200, _38400, _57600, _115200} baud_bits;
+
+
+
+void comm_port_set_data_bits(comm_port *port, data_bits num_data_bits);
+   Set the number of data bits the port should use. The value set will only
+   come into effect when a port is reinstalled.
+
+   The argument must be one of the following. Please use these values
+   rather than infering what the enum values might be.
+
+      typedef enum {BITS_5, BITS_6, BITS_7, BITS_8} data_bits;
+
+
+void comm_port_set_stop_bits(comm_port *port, data_bits num_stop_bits);
+   Set the number of stop bits the port should use. The value set will only
+   come into effect when a port is reinstalled.
+
+   The argument must be one of the following. Please use these values
+   rather than infering what the enum values might be.
+
+      typedef enum {STOP_1, STOP_2} stop_bits;
+
+
+void comm_port_set_parity(comm_port *port, parity_bits irq_num);
+   Set the parity method for the port. The value set will only
+   come into effect when a port is reinstalled.
+
+   The argument must be one of the following. Please use these values
+   rather than infering what the enum values might be.
+
+      typedef enum {NO_PARITY, ODD_PARITY, EVEN_PARITY, MARK_PARITY, SPACE_PARITY} parity_bits;
+
+
+void comm_port_set_flow_control(comm_port *port, flow_control_type flow_option);
+   Set the flow control method the port should employ. The value set will only
+   come into effect when a port is reinstalled.
+
+   The argument must be one of the following. Please use these values
+   rather than infering what the enum values might be.
+
+      typedef enum {NO_CONTROL, XON_XOFF, RTS_CTS} flow_control_type;
+
+
+void comm_port_set_lsr_handler(comm_port *port, dz_ll_handler lsr_handler);
+   HANDLE WITH CARE. This sets a routine which will be called when the
+   UART returns an LSR condition. The code mnust be locked in memory if
+   your system requires it. The lsr_handler argument is the function
+   which will be called when the condition arises:
+
+      int lsr_hander(comm_port *port, int lsr_contents)
+
+   It take two arguments: the port on which the condition arose and the
+   contents of the LSR register. You should not reread the LSR in the
+   handler as the read which was used to pass the contents to this
+   function will have reset it.
+
+   dz_ll_handler is simply a shorthand for a pointer to the above type of
+   function.
+
+   This call takes effect immediately.
+   
+void comm_port_set_msr_handler(comm_port *port, int (*msr_handler)(comm_port *port, int msr_contents));
+   HANDLE WITH CARE. This sets a routine which will be called when the
+   UART returns an MSR condition. The code mnust be locked in memory if
+   your system requires it. the msr_handler argument is the function
+   which will be called when the condition arises:
+
+      int msr_hander(comm_port *port, int msr_contents)
+
+   It take two arguments: the port on which the condition arose and the
+   contents of the MSR register. You should not reread the MSR in the
+   handler as the read which was used to pass the contents to this
+   function will have reset it.
+
+   dz_ll_handler is simply a shorthand for a pointer to the above type of
+   function.
+
+   This call takes effect immediately.
+
+unsigned char comm_port_get_irq_num(comm_port *port);
+   Returns the IRQ number for the port. Returns the most recent value set by the
+   _set_ routine, which may not have been into action yet.
+
+char *comm_port_get_name(comm_port *port, char *name, int max_chars);
+   Returns the name that is associated with the port. name should be a pointer to
+   a block of memory which can hold up to max_chars characters in which the name
+   will be stored. Note that the maximum length of a port name is
+   DZCOMM_PORT_NAME_MAX_LENGTH.
+
+unsigned short int comm_port_get_port_address(comm_port *port);
+   Returns the address of the port. Returns the most recent value set by the
+   _set_ routine, which may not have been into action yet.
+
+baud_bits comm_port_get_baud_rate(comm_port *port);
+   Returns the baud rate the port should use. Returns the most recent value set by the
+   _set_ routine, which may not have been into action yet.
+
+data_bits comm_port_get_data_bits(comm_port *port);
+   Returns the number of data bits the port should use. Returns the most recent value set by the
+   _set_ routine, which may not have been into action yet.
+
+data_bits comm_port_get_stop_bits(comm_port *port);
+   Returns the number of stop bits the port should use. Returns the most recent value set by the
+   _set_ routine, which may not have been into action yet.
+
+parity_bits comm_port_get_parity(comm_port *port);
+   Returns the flow control method for the port. Returns the most recent value set by the
+   _set_ routine, which may not have been into action yet.
+
+flow_control_type comm_port_get_flow_control(comm_port *port);
+   Returns the flow control method used by the port.
+
+dz_ll_handler comm_port_get_lsr_handler(comm_port *port);
+   Return the user's lsr handler, if any. It returns a pointer to a function
+   of type:
+
+      int lsr_hander(comm_port *port, int lsr_contents)
+
+   or NULL if no function has been set.
+
+dz_ll_handler comm_port_get_msr_handler(comm_port *port);
+   Return the user's lsr handler, if any. It returns a pointer to a function
+   of type:
+
+      int msr_hander(comm_port *port, int msr_contents)
+
+   or NULL if no function has been set.
+
+
+===================================
+============ Data flow ============
+===================================
+
+Having set up your ports you will want to use them! To do this you must
+install the handler. Having donw this ou can then read from and write
+to the ports.
+
+int comm_port_install_handler(comm_port *port);
+   Once the port has been configured, whether from a file or by using the
+   comm_port_set_* routines, this function must be called to ensure that
+   the port is running with the desired confiuration. It should only be
+   called once per port, configuration changes should be enfored using
+   comm_port_reinstall. Until this function is called the port cannot be
+   written to or read from.
+
+int comm_port_reinsatall(comm_port *port);
+   If there is a need to reconfigure the port after comm_port_install_port
+   has been called, this can be achieved in two steps. First, reconfigure
+   the comm_port structure either using a file or using the comm_port_set_*
+   functions. Then call this function to ensure that they take effect. This
+   call will wait for any remaining data on the transmit queue to clear
+   before reconfiguring the port.
+
+void comm_port_uninstall(comm_port *port);
+   Removes the port from the list of functioning ports under dzcomm. Once
+   this function has been called it is no longer to write to or read from
+   the port. Use comm_port_install_handler to get the port running again.
+   This function will wait for any remaining data on the transmit queue to
+   clear before uninstalling the port.
+   
+void comm_port_flush_output(comm_port *port);
+   Flushes the input buffer.
+
+void comm_port_flush_input(comm_port *port);
+   Flushes the input buffer.
+
+void comm_port_delete(comm_port *port);
+   Having uninstalled your port you may decide that you don't need the
+   configuration data either and can better use the memory elsewhere.
+   Calling this function will free up the memory used to store and run
+   the port. However, please don't try to install the port after you've
+   called comm_port_delete.
+
+int comm_port_out(comm_port *port, unsigned char c);
+   Puts 'c' on the software output buffer. The UART will then output the
+   contents of this buffer. c must not use more than the number of bits
+   specified configured for data. Returns 1 if the character is successfuly
+   placed on the buffer, 0 otherwise.
+
+int comm_port_out_empty(comm_port *port);
+   Indicates if there is data waiting to be sent to the UART. Returns 0
+   if there is data waiting to be sent, -1 if the buffer is empty. Also
+   returns 0 on failure.
+
+int comm_port_out_full(comm_port *port);
+   Indicates if the buffer of data waiting to be sent is now full. Returns -1
+   if this is the case and 0 if there is still room for more data on the
+   buffer. Also returns 0 on failure.
+
+int comm_port_string_send(comm_port *port,char *s);
+   The string 's' is sent to the output buffer one character at a time; the
+   UART will transmit this down the serial line. Returns the number of characters
+   successfully placed on the output buffer.
+
+int comm_port_command_send(comm_port *port,char *s);
+   The string 's' is sent to the output buffer one character at a time; the
+   UART will transmit this down the serial line. At the end of the string a
+   '\r' character is sent. Returns the number of characters successfully placed
+   on the output buffer, counting the '\r'. A successfuly send will therefore
+   return the length of the string given to it plus one.
+
+int comm_port_in_empty(comm_port *port);
+   Indicates if data has come in on the serial line. It returns -1 if there is
+   no data (ie. the buffer is empty), 0 if there is data waiting to be read.
+   Also returns 0 on failure.
+
+int comm_port_in_full(comm_port *port);
+   Indicates if the buffer of data which has come in on the serial line is now
+   full. It retunr -1 if this is the case (ie. the buffer is full) and 0
+   otherwise. Also return 0 on failure.
+
+inline int comm_port_test(comm_port *port);
+   Checks to see data has come in on the data line. If there is none it returns
+   -1, like comm_port_in_empty. If there is some it returns the next character
+   from the queue of those received from the serial line (and takes it off the
+   queue).
+
+void comm_port_send_break(comm_port *port, int msec_duration);
+   A break signal is issued on the serial line. The break signal will be at
+   least of the duration specified. It may be longer.
+
+int modem_hangup(comm_port *port);
+   Sends "+++ATH0" to the line which tells it to hang up if it's a modem. Returns
+   one if the entire string (including the concluding '\r') is placed on the output
+   buffer, zero otherwise.
+
+====================================
+============ Queue code ============
+====================================
+
+Dzcomm comes with some FIFO queue code whcih is lso available for general use.
+
+fifo_queue *queue_new(unsigned int size);
+   This function creates a queue of ints. If you need to store data values
+   of a different size use queue_new_ function instead of it. It returns
+   a pointer to a structure which serves as a handle for the queue, or
+   NULL on failure.
+   
+   Example :
+
+     fifo_queue *q;
+     if ((q=queue_new(1024))==NULL) return(0);
+
+
+fifo_queue *queue_new_(unsigned int size,unsigned int dsize);
+   Create a queue of 'size' elements each of size 'dsize'. It returns a
+   pointer to a structure which serves as a handle for the queue or NULL
+   on failure.
+
+   Example :
+
+      typedef struct {
+         int code;
+         int p1;
+         int p2;
+         } msg;
+
+      //...
+
+      fifo_queue *msg_q;
+      if ((msg_q=queue_new(1024,sizeof(msg)))==NULL) return(0);
+
+
+void queue_delete(fifo_queue *q);
+   Delete queue description and free occupied space. Don't use the
+   queue after this ...
+
+void queue_reset(fifo_queue *q);
+   Set head and tail of the queue to zero (data lost).
+
+int queue_put(fifo_queue *q,int c);
+   Put value into given integer queue. On success returns
+   DZQ_NEARLY_FULL if the queue's getting a tad full,
+   DZQ_NOT_NEARLY_FULL otherwise. On failure returns
+   DZQ_FAIL_NO_Q if q was a NULL pointer or DZQ_FAIL_FULL
+   if the queue was actually full. Note that failure codes
+   are less than zero, success codes greater than or equal
+   to zero. If you need to store data of a different size
+   then use the queue_put_ function.
+
+int queue_put_(fifo_queue *q,void *data)
+   Put value into given queue. On success returns 
+   DZQ_NEARLY_FULL if the queue's getting a tad full,
+   DZQ_NOT_NEARLY_FULL otherwise. On failure returns
+   DZQ_FAIL_NO_Q if q was a NULL pointer or DZQ_FAIL_FULL
+   if the queue was actually full. Note that failure codes
+   are less than zero, success codes greater than or equal
+   to zero.
+
+int queue_peek(fifo_queue *q);
+   See the integer value at the top of an integer queue. Returns the
+   value from the top of the queue but does not remove it from the
+   queue. If the queue is not of integers then use the queue_peek_
+   function. Use queue_empty before calling queue_get to verify that
+   there is data to peek at.
+
+int queue_peek_(fifo_queue *q,void *data);
+   See the value at the top of the queue. Returns (in the memory
+   location pointed to by data) the value from the top of the queue
+   but does not remove it from the queue. The returned integer is
+   DZQ_NEARLY_FULL if the queue's getting a tad full,
+   DZQ_NOT_NEARLY_FULL otherwise. On failure returns
+   DZQ_FAIL_NO_Q if q was a NULL pointer or DZQ_FAIL_EMPTY
+   if the queue was actually empty. Note that failure codes
+   are less than zero, success codes greater than or equal
+   to zero. It's not a bad idea to use
+   queue_empty before calling queue_peek_ to verify that there is data
+   to get.
+
+int queue_get(fifo_queue *q);
+   Get integer values from an integer queue. Returns the value from
+   the top of the queue. If the queue is not of integers then use the
+   queue_get_ function. Use queue_empty before calling queue_get to
+   verify that there is data to get.
+
+int queue_get_(fifo_queue *q,void *data);
+   Get value from queue. Returns the value from the top of the queue
+   (in the memory location pointed to by data). The returned integer
+   is DZQ_NEARLY_FULL if the queue's getting a tad full,
+   DZQ_NOT_NEARLY_FULL otherwise. On failure returns
+   DZQ_FAIL_NO_Q if q was a NULL pointer or DZQ_FAIL_EMPTY
+   if the queue was actually empty. Note that failure codes
+   are less than zero, success codes greater than or equal
+   to zero. Use queue_empty before calling queue_get to verify that
+   there is data to get.
+
+int queue_empty(fifo_queue *q);
+   Test queue for emptiness. Returns DZQ_EMPTY if the queue is empty,
+   DZQ_NOT_EMPTY if the queue is not full and DZQ_FAIL_INTERNAL on
+   failure.
+
+int queue_nearly_full(fifo_queue *q);
+   Test to indicate if the queue is nearly full (ie over 75% at
+   present). Returns DZQ_NEARLY_FULL if the queue is nearly full
+   and DZQ_NOT_NEARLY_FULL otherwise.
+
+int queue_full(fifo_queue *q);
+   Test to indicate if the queue is full. Returns DZQ_FULL if the
+   queue is full and DZQ_NOT_FULL otherwise.
+
+====================================
+============ Conclusion ============
+====================================
+
+Doubtless I've missed something or not been clear above. Feel free to
+suggest how the documentation could be improved!
+
+I hope you find some of this stuff useful.
+
+
+By Neil Townsned
+
+http://www.robots.ox.ac.uk/dzcomm
+
+
+
+

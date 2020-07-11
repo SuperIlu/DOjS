@@ -4,7 +4,6 @@
 *.ko
 *.obj
 *.elf
-DOjS
 *.exe
 *.EXE
 
@@ -47,12 +46,14 @@ stdout.txt
 miktest.c
 
 # other dirs
+doc/html/
 tmp/
 upx/
 cylindrix/
 build/
 capture/
 p5.js-master/
+p5.js-1.0.0/
 tests/p5.js/
 .vscode/ipch
 tests/SCR.TGA

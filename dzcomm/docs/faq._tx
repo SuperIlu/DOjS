@@ -1,0 +1,271 @@
+@#
+@# This is the source for the Allegro FAQ list, in a weird custom format.
+@# Read makedoc.c for a description of what is going on...
+@#
+@<html>
+@<head>
+@<title>Allegro FAQ</title>
+@<body>
+@!html
+@!rtf
+
+DZCOMM FAQ
+
+@html
+@rtf
+@!text
+<center><h1><b>
+The dzcomm FAQ
+<i>
+If the answer isn't here, ask and it will be added...</i></b></h1></center>
+<hr>
+@!text
+@heading
+Contents
+
+@shortcontents
+
+
+@text
+
+@heading
+Trivial problems
+
+<ul><h4><li>
+@@   What is dzcomm?
+</h4>
+      See readme.txt.
+
+<h4><li>
+@@   Where can I get it?
+</h4>
+      From the dzocmm homepage, 
+      <link>http://dzcomm.sourceforge.net</a>.
+
+<h4><li>
+@@   How do I use it?
+</h4>
+      See dzcomm.txt.
+</ul>
+
+
+
+@heading
+DJGPP problems
+
+<ul><h4><li>
+@@   What is this make program that I'm supposed to run?
+</h4>
+      Make is part of the standard djgpp distribution, in the file 
+      v2gnu/mak*b.zip (whatever the latest version number is). You can get 
+      this from <link>http://www.delorie.com/djgpp/</a>.
+
+<h4><li>
+@@   Make doesn't work properly.
+</h4>
+      Are you sure that you have installed djgpp correctly? Check the 
+      instructions in the djgpp readme.1st file, and in particular confirm 
+      that you have set the DJGPP environment variable and added the 
+      djgpp\bin directory to your path.
+
+<h4><li>
+@@   My djgpp installation is fine, but make still doesn't work properly.
+</h4>
+      Are you sure that you are using the GNU make program, and not some 
+      other version like the Borland one? If in doubt, run "make -v" and 
+      check that the GNU copyright message is displayed.
+
+<h4><li>
+@@   When I run make, it asks me for some parameters. What do I type?
+</h4>
+      You shouldn't be running make from the Win95 explorer! Bring up a DOS 
+      box, change to your Allegro directory, and type "make" at the command 
+      prompt.
+
+<h4><li>
+@@   When I run make, it says "makefile has modification time in the future".
+</h4>
+      Are you sure that your system time and date are set correctly?
+
+<h4><li>
+@@   When I run make, it says "virtual memory exhausted".
+</h4>
+      As the error message suggests, you need to provide more memory for the 
+      compiler to use. The go32-v2 program will tell you how much is 
+      currently available. If you are running under DOS, try to free up more 
+      disk space for use as a swapfile. When using win95, increase the DPMI 
+      memory limit in the properties for your DOS session to 65535 (you'll 
+      have to type this in by hand, because the pulldown list doesn't go 
+      above 16384).
+
+<h4><li>
+@@   make says "reloc refers to symbol 'bss' which is not being output".
+</h4>
+      This seems to be a problem with the replacement linker from the 
+      RSXNTDJ package. Either go back to using the standard djgpp linker, or 
+      remove the "-s" flag from the Allegro makefile. If anyone knows why 
+      this happens, and how I can avoid it, I'd like to know about it!
+
+<h4><li>
+@@   When I try to compile a program using Allegro, I get lots of errors like:<br>
+   C:\TEMP\ccdaaaaa(.text+0x9):x.c: undefined reference to `allegro_init'<br>
+   C:\TEMP\ccdaaaaa(.text+0xe):x.c: undefined reference to `install_keyboard'
+</h4>
+      You haven't read the docs, have you? :-) You need to link your program 
+      with the library file, liballeg.a. First, make sure you have installed 
+      everything properly (running make should do this for you). Second, if 
+      you are compiling from the command prompt or with a makefile, add 
+      -lalleg to the end of your gcc command line, or if you are using 
+      Rhide, go to the Options/Libraries menu, type 'alleg' into the first 
+      empty field, and make sure the box next to it is checked.
+
+<h4><li>
+@@   I give up: I can't compile this! Can you send me a precompiled version?
+</h4>
+      No, sorry. For starters, liballeg.a is about 450k, but you'd probably 
+      also want  various utilities like the grabber, sound setup, etc. And 
+      what about all the example programs? If I included compiled versions 
+      of everything, a binary distribution would be over 7 megs: way too big 
+      to be practical! More seriously though, there just isn't any reason 
+      why you can't build it yourself. A compiler is a deterministic 
+      process: given a particular input file and command line, it will 
+      always produce the same output. If this isn't working, you either have 
+      the wrong input files (ie. your copy of Allegro is broken in some 
+      way), or the wrong command line (it is hard to see how that could 
+      happen, since all you have to do is type "make"...) or your compiler 
+      is broken, ie. you didn't install djgpp properly. You need to find and 
+      fix the problem, not just sweep it under the carpet by getting someone 
+      else to compile Allegro for you...
+</ul>
+
+
+
+@heading
+DOS problems
+
+<ul><h4><li>
+@@   Does the DOS version of Allegro work under Windows NT?
+</h4>
+      Your mileage may vary. Some people have reported problems, while 
+      others say that it works fine. I don't have access to NT myself, so 
+      there is nothing I can do about it either way, and to be honest I 
+      don't care very much. Use the Windows version of Allegro if you want 
+      to make Windows programs. If you want to run DOS programs, use DOS!
+
+<h4><li>
+@@   Does Allegro work under OpenDOS?
+</h4>
+      Yes, but with some caveats. If you are using the OpenDOS version of 
+      EMM386, you must disable their DPMI implementation (specify DPMI=OFF 
+      on the EMM386.EXE device line in your config.sys). You should also 
+      make sure the PIC=OFF flag is set, but this is the default so it won't 
+      be a problem unless you have specifically enabled it.
+
+<h4><li>
+@@   How can I extend the 256k limit on Mode-X video memory?
+   I have two megs in my card.
+</h4>
+      You can't. The limit is imposed by the VGA hardware, not by Allegro. 
+      To access more than 256k of video memory you need to use an SVGA mode, 
+      which means either switching to a higher resolution or getting a copy 
+      of the SciTech Display Doctor, which provides several low resolution
+      SVGA modes.
+
+<h4><li>
+@@   Does DOS Allegro work with the SB-Live soundcard?
+</h4>
+      It does for some people, but not for others. The problem is that 
+      Creative Labs refuse to release any specs, so we don't know how to 
+      write a driver for it. Complain to them, or buy a different card from 
+      a more reasonable manufacturer.
+
+<h4><li>
+@@   Why does DOS Allegro play sounds so much quieter than in Windows?
+</h4>
+      This might be because you have the volume set very low: try changing 
+      this in the setup program. Also, Allegro is mixing several sounds into 
+      a single output buffer, unlike the Windows sound player that only 
+      plays one sample at a time, so each individual sound can only get a 
+      smaller percentage of the total output volume. This is just the price 
+      you pay for multiple output channels. If you don't like it, use the 
+      setup program to tweak the number of channels: this can be any power 
+      of two less than or equal to 64, and the smaller you make it, the 
+      louder the sound will be.
+
+<h4><li>
+@@   Why doesn't it work with my video card?
+</h4>
+      Try using a FreeBE/AF driver (<link>http://www.talula.demon.co.uk/freebe/</a>),
+      or the commercial SciTech Display Doctor (<link>http://www.scitechsoft.com</a>).
+      If it still doesn't work, post a description of your problem to the 
+      Allegro mailing list, along with a copy of the output from running the 
+      afinfo and vesainfo programs.
+
+<h4><li>
+@@   Why not use some sort of dynamic linking system?
+</h4>
+      The VBE/AF interface already provides this for the video drivers: see 
+      the FreeBE/AF project on <link>http://www.talula.demon.co.uk/freebe/</a>.
+      For more general things like the sound, VESA, and mode-X routines, 
+      this would be very difficult to do because the drivers depend on a lot 
+      of helper functions from the core lib. The djgpp DXE format is nowhere 
+      near flexible enough to support this, and I don't want to make Allegro 
+      dependent on any other dynamic linking packages.
+</ul>
+
+
+
+@heading
+General problems
+
+<ul>
+<h4><li>
+@@   Can I use dzcomm with my &ltfoobar&gt compiler?
+</h4>
+      Not unless &ltfoobar&gt is mentioned in readme.txt as one of the 
+      supported platforms. You could port it, but that is usually a lot of 
+      work. If &ltfoobar&gt is a 16 bit DOS compiler like Borland C, you 
+      might as well just forget the idea :-)
+
+<h4><li>
+@@   What is this "WIP" that I see people talking about?
+</h4>
+      WIP stands for "work in progress", and refers to any changes that are 
+      more recent than the last official release. WIP versions of the 
+      library can be obtained as from the dzcomm website 
+      (<link>http://www.robots.ox.ac.uk/allegro/dzcomm</a>), and are usually 
+      quite stable, although obviously not so well tested as a final release 
+      version.
+<h4><li>
+@@   Why aren't there more answers in this file?
+</h4>
+      Not enough people have asked me questions often enough. Either it's all
+      obvious or everyone's given up.
+
+<h4><li>
+@@   Can I use dzcomm in my &ltwhatever&gt commercial application?
+</h4>
+      Sure. See the giftware terms in readme.txt. I don't mind what you do 
+      with it, and there are no problems with commercial usage.
+
+<h4><li>
+@@   When will &ltfoobar&gt be finished? I can't wait...
+</h4>
+      Whenever it is done! A little encouragement is always welcome, but I 
+      don't have any completion deadlines and I'm not going to make one up 
+      for you :-) As soon as it is finished, it will be released.
+
+<h4><li>
+@@   How can I print out the documentation?
+</h4>
+      The dzcomm.rtf file can be read directly into Microsoft Word and 
+      printed from there, but you should right-click and update the table of 
+      contents and index fields to fill them with the correct data first. 
+      Alternatively you can install the TeX package and use the tex and 
+      dvips programs to convert allegro.txi into Postscript format.
+
+<h4><li>
+@@   I'm still confused. Where can I get help?
+</h4>
+      Mail <email>neil@robots.ox.ac.uk</a>.
+</ul>

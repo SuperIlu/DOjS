@@ -1,0 +1,426 @@
+#
+#  Rules for building the dzcomm library with djgpp. This file is included
+#  by the primary makefile, and should not be used directly.
+#
+#  The "depend" target uses sed.
+
+
+
+# -------- define some variables that the primary makefile will use --------
+
+PLATFORM = djgpp
+OBJ_DIR = obj/djgpp/$(VERSION)
+LIB_NAME = lib/djgpp/lib$(VERSION).a
+EXE = .exe
+OBJ = .o
+
+
+
+# -------- autodetect whether to use LFN --------
+
+ifdef CROSSCOMPILE
+HTML = html
+INFO = info
+TEXI = texi
+else
+ifeq ($(LFN),y)
+HTML = html
+INFO = info
+TEXI = texi
+else
+HTML = htm
+INFO = inf
+TEXI = txi
+endif
+endif
+
+
+
+# -------- run some sanity checks on the djgpp installation --------
+
+.PHONY: baddjgpp baddjdev badgcc badbnu badmake badtxi badpath baddzcomm
+
+
+
+# -------- check that the DJGPP environment variable is set --------
+
+ifndef DJDIR
+baddjgpp:
+	@echo Your DJGPP environment variable is not set correctly! It should
+	@echo point to the djgpp.env file: see the djgpp readme.1st for details.
+endif
+
+DJDIR_U = $(subst \,/,$(DJDIR))
+DJDIR_D = $(subst /,\,$(DJDIR))
+
+
+
+ifndef CROSSCOMPILE
+
+
+# -------- check that the djdev package is installed --------
+
+ifeq ($(wildcard $(DJDIR_U)/bin/djasm.exe),)
+baddjdev:
+	@echo Missing djgpp package! You need to install djdev202.zip (or whatever the
+	@echo latest version is). Download this from wherever you got djgpp, and unzip
+	@echo it into the root of your djgpp directory.
+endif
+
+
+
+# -------- check that the gcc package is installed --------
+
+ifeq ($(wildcard $(DJDIR_U)/bin/gcc.exe),)
+badgcc:
+	@echo Missing djgpp package! You need to install gcc281b.zip (or whatever the
+	@echo latest version is). Download this from wherever you got djgpp, and unzip
+	@echo it into the root of your djgpp directory.
+endif
+
+
+
+# -------- check that the binutils package is installed --------
+
+ifeq ($(wildcard $(DJDIR_U)/bin/ld.exe),)
+badbnu:
+	@echo Missing djgpp package! You need to install bnu281b.zip (or whatever the
+	@echo latest version is). Download this from wherever you got djgpp, and unzip
+	@echo it into the root of your djgpp directory.
+endif
+
+
+
+# -------- check that the make package is installed --------
+
+ifeq ($(wildcard $(DJDIR_U)/bin/make.exe),)
+badmake:
+	@echo Missing djgpp package! You need to install mak377b.zip (or whatever the
+	@echo latest version is). Download this from wherever you got djgpp, and unzip
+	@echo it into the root of your djgpp directory.
+endif
+
+
+
+# -------- check that the texinfo package is installed --------
+
+ifeq ($(wildcard $(DJDIR_U)/bin/makeinfo.exe),)
+badtxi:
+	@echo Missing djgpp package! You need to install txi312b.zip (or whatever the
+	@echo latest version is). Download this from wherever you got djgpp, and unzip
+	@echo it into the root of your djgpp directory. If you do not need the Info
+	@echo documentation, run make all to ignore this error.
+endif
+
+
+
+# -------- check that djgpp/bin is pathed --------
+
+ifeq ($(wildcard $(addsuffix /djasm.exe,$(subst ;, ,$(PATH)))),)
+badpath:
+	@echo Your PATH is not set correctly! This must include the
+	@echo djgpp bin directory: see the djgpp readme.1st for details.
+endif
+
+
+
+# -------- check that dzcomm has a good directory structure --------
+
+ifeq ($(wildcard src/comm.c),)
+baddzcomm:
+	@echo Bad dzcomm installation! You did not preserve the directory structure
+	@echo while unzipping it: did you remember to use the -d flag with pkunzip?
+endif
+
+
+endif
+
+
+
+# -------- give a sensible default target for make without any args --------
+
+.PHONY: _default
+
+_default: default
+
+
+
+# -------- decide what compiler options to use --------
+
+ifdef WARNMODE
+WFLAGS = -Wall -W -Werror -Wno-unused
+else
+WFLAGS = -Wall -Wno-unused
+endif
+
+ifdef PGCC
+OFLAGS = -mpentium -O6 -ffast-math
+else
+OFLAGS = -march=i386 -O2 -ffast-math
+endif
+
+ifndef ALLEGRONOTAVAIL
+ifndef ALLEGRONOTPROGS
+AFLAGS = -DDZCOMM_ALLEGRO_AVAIL -DDZCOMM_ALLEGRO_AVAIL_PROGS
+else
+AFLAGS = -DDZCOMM_ALLEGRO_AVAIL
+endif
+else
+ifndef ALLEGRONOTPROGS
+AFLAGS = -DDZCOMM_ALLEGRO_AVAIL_PROGS
+endif
+endif
+
+ifndef ALLEG_LIB_NAME
+ALLEG_LIB_NAME = alleg
+endif
+
+ifdef DEBUGMODE
+
+# -------- debugging build --------
+CFLAGS = -DDEBUGMODE=$(DEBUGMODE) $(AFLAGS) $(WFLAGS) -g
+SFLAGS = -DDEBUGMODE=$(DEBUGMODE) $(AFLAGS) $(WFLAGS)
+LFLAGS = -g
+ifndef ALLEGRONOTPROGS
+EXTRA_EXE_LIBS = -l$(ALLEG_LIB_NAME)
+endif
+else
+ifdef PROFILEMODE
+
+# -------- profiling build --------
+CFLAGS = $(AFLAGS) $(WFLAGS) $(OFLAGS) -pg
+SFLAGS = $(AFLAGS) $(WFLAGS)
+LFLAGS = -pg
+ifndef ALLEGRONOTPROGS
+EXTRA_EXE_LIBS = -l$(ALLEG_LIB_NAME)
+endif
+
+else
+
+# -------- optimised build --------
+CFLAGS = $(AFLAGS) $(WFLAGS) $(OFLAGS) -fomit-frame-pointer
+SFLAGS = $(AFLAGS) $(WFLAGS)
+ifndef ALLEGRONOTPROGS
+EXTRA_EXE_LIBS = -l$(ALLEG_LIB_NAME)
+endif
+
+ifndef SYMBOLMODE
+LFLAGS = -s
+endif
+
+endif
+endif
+
+# -------- list which platform specific objects to include --------
+
+VPATH = src/dos src/misc 
+
+
+OBJECT_LIST = $(COMMON_OBJECTS) $(MY_OBJECTS) \
+	      $(basename $(notdir $(DZCOMM_SRC_DOS_FILES))) 
+
+
+# -------- rules for installing and removing the library files --------
+
+ifdef CROSSCOMPILE
+
+$(DJDIR_U)/lib/lib$(VERSION).a: $(LIB_NAME)
+	cp lib/djgpp/lib$(VERSION).a $(DJDIR_U)/lib
+
+$(DJDIR_U)/include/dzcomm.h: include/dzcomm.h
+	cp include/dzcomm.h $(DJDIR_U)/include
+
+$(DJDIR_U)/include/dzcomm:
+	mkdir $(DJDIR_U)/include/dzcomm
+
+$(DJDIR_U)/include/dzcomm/%.h: include/dzcomm/%.h
+	cp $< $@
+
+$(DJDIR_U)/info/dzcomm.$(INFO): docs/dzcomm.$(INFO)
+	-cp docs/dzcomm.$(INFO) $(DJDIR_U)/info
+	-install-info $(DJDIR_U)/info/dzcomm.$(INFO) $(DJDIR_U)/info/dir
+
+else
+
+$(DJDIR_U)/lib/lib$(VERSION).a: $(LIB_NAME)
+	copy lib\djgpp\lib$(VERSION).a $(DJDIR_D)\lib
+
+$(DJDIR_U)/include/dzcomm.h: include/dzcomm.h
+	copy include\dzcomm.h $(DJDIR_D)\include
+
+$(DJDIR_U)/include/dzcomm:
+	md $(DJDIR_D)\include\dzcomm
+
+$(DJDIR_U)/include/dzcomm/%.h: include/dzcomm/%.h
+	copy $(subst /,\,$< $@)
+
+$(DJDIR_U)/info/dzcomm.$(INFO): docs/dzcomm.$(INFO)
+	-copy docs\dzcomm.$(INFO) $(DJDIR_D)\info
+	-install-info $(DJDIR_U)/info/dzcomm.$(INFO) $(DJDIR_U)/info/dir
+
+endif
+
+HEADERS = $(addprefix $(DJDIR_U)/,$(wildcard include/dzcomm/*.h))
+
+INSTALL_FILES = $(DJDIR_U)/lib/lib$(VERSION).a \
+		$(DJDIR_U)/info/dzcomm.$(INFO) \
+		$(DJDIR_U)/include/dzcomm.h \
+		$(DJDIR_U)/include/dzcomm $(HEADERS)
+
+install: $(INSTALL_FILES)
+	@echo The $(DESCRIPTION) djgpp library has been installed.
+
+UNINSTALL_FILES = $(DJDIR_U)/lib/libdzcomm.a \
+		  $(DJDIR_U)/lib/libdzcd.a \
+		  $(DJDIR_U)/lib/libdzcp.a \
+		  $(DJDIR_U)/include/dzcomm.h \
+		  $(DJDIR_U)/include/dzcomm/*.h \
+		  $(DJDIR_U)/info/dzcomm.$(INFO)
+
+uninstall:
+	-install-info --delete $(DJDIR_U)/info/dzcomm.$(INFO) $(DJDIR_U)/info/dir
+	-rm -fv $(UNINSTALL_FILES)
+ifdef CROSSCOMPILE
+	-rmdir $(DJDIR_U)/include/dzcomm
+else
+	-rd $(DJDIR_D)\include\dzcomm
+endif
+	@echo All gone!
+
+
+
+# -------- autodetect whether the assembler supports MMX instructions --------
+
+.PHONY: mmxtest
+
+mmxtest:
+ifdef CROSSCOMPILE
+	echo // no MMX > obj/djgpp/mmx.h
+	echo .text > obj/djgpp/mmxtest.s
+	echo emms >> obj/djgpp/mmxtest.s
+	$(CC) -c obj/djgpp/mmxtest.s -o obj/djgpp/mmxtest.o
+	echo #define DZCOMM_MMX > obj/djgpp/mmx.h
+else
+	echo // no MMX > obj\djgpp\mmx.h
+	echo .text > obj\djgpp\mmxtest.s
+	echo emms >> obj\djgpp\mmxtest.s
+	$(CC) -c obj/djgpp/mmxtest.s -o obj/djgpp/mmxtest.o
+	echo #define DZCOMM_MMX > obj\djgpp\mmx.h
+endif
+
+obj/djgpp/mmx.h:
+	@echo Testing for MMX assembler support...
+	-$(MAKE) mmxtest
+
+
+
+# -------- helper function for compressing the executables --------
+
+ifneq ($(wildcard $(DJDIR_U)/bin/upx.exe),)
+DJP = $(DJDIR_U)/bin/upx.exe
+else
+ifneq ($(wildcard $(DJDIR_U)/bin/djp.exe),)
+DJP = $(DJDIR_U)/bin/djp.exe -s
+endif
+endif
+
+.PHONY: compress
+
+compress: $(PROGRAMS)
+    ifdef DJP
+	$(DJP) demo/*.exe examples/*.exe setup/*.exe tests/*.exe tools/*.exe
+    else
+	@echo No executable compressor found! This target requires either the
+	@echo DJP or UPX utilities to be installed in your djgpp bin directory.
+    endif
+
+
+
+# -------- finally, we get to the fun part... --------
+
+define MAKE_LIB
+$(AR) rs $(LIB_NAME) $(OBJECTS)
+endef
+
+COMPILE_FLAGS = $(subst src/,-DDZCOMM_SRC ,$(findstring src/, $<))$(CFLAGS)
+
+$(OBJ_DIR)/%.o: %.c
+	$(CC) $(COMPILE_FLAGS) -I. -I./include $(XC_INCLUDE) -o $@ -c $<
+
+$(OBJ_DIR)/%.o: %.s
+	$(CC) $(SFLAGS) -I. -I./include -x assembler-with-cpp -o $@ -c $<
+
+*/%.exe: $(OBJ_DIR)/%.o $(LIB_NAME)
+	$(CC) $(LFLAGS) -o $@ $< $(XC_LIBS) $(EXTRA_EXE_LIBS) $(LIB_NAME)
+
+ifndef CROSSCOMPILE
+
+obj/djgpp/asmdef.inc: obj/djgpp/asmdef.exe
+	obj/djgpp/asmdef.exe obj/djgpp/asmdef.inc
+
+obj/djgpp/asmdef.exe: src/i386/asmdef.c include/*.h include/dzcomm/*.h obj/djgpp/mmx.h
+	$(CC) -O $(WFLAGS) -I. -I./include -o obj/djgpp/asmdef.exe src/i386/asmdef.c
+
+obj/djgpp/setupdat.s: setup/setup.dat tools/dat2s.exe
+	tools/dat2s.exe -p setup -o obj/djgpp/setupdat.s setup/setup.dat
+
+obj/djgpp/setupdat.o: obj/djgpp/setupdat.s
+	$(CC) -o obj/djgpp/setupdat.o -c obj/djgpp/setupdat.s
+
+setup/setup.exe: $(OBJ_DIR)/setup.o obj/djgpp/setupdat.o $(LIB_NAME)
+	$(CC) $(LFLAGS) -o setup/setup.exe $(OBJ_DIR)/setup.o obj/djgpp/setupdat.o $(EXTRA_EXE_LIBS) $(LIB_NAME)
+
+else
+
+obj/djgpp/asmdef.s: src/i386/asmdef.c include/*.h include/dzcomm/*.h
+	$(CC) $(WFLAGS) -I. -I./include -S -o obj/djgpp/asmdef.s src/i386/asmdef.c
+
+obj/djgpp/asmdef.inc: obj/djgpp/asmdef.s
+	if [ ! -x obj/djgpp/asmdef.sh ]; then chmod a+x obj/djgpp/asmdef.sh; fi
+	obj/djgpp/asmdef.sh obj/djgpp/asmdef.s obj/djgpp/asmdef.inc
+
+setup/setup.exe:
+	# do nothing
+
+endif
+
+PLUGIN_LIB = lib/djgpp/lib$(VERY_SHORT_VERSION)dat.a
+PLUGINS_H = obj/djgpp/plugins.h
+PLUGIN_DEPS = $(LIB_NAME) $(PLUGIN_LIB)
+PLUGIN_SCR = scr
+
+ifdef CROSSCOMPILE
+
+define GENERATE_PLUGINS_H
+cat tools/plugins/*.inc > obj/djgpp/plugins.h
+endef
+
+else
+
+define GENERATE_PLUGINS_H
+copy tools\plugins\*.inc obj\djgpp\plugins.h
+endef
+
+endif
+
+define MAKE_PLUGIN_LIB
+ar rs $(PLUGIN_LIB) $(PLUGIN_OBJS)
+endef
+
+define LINK_WITH_PLUGINS
+gcc $(LFLAGS) -o $@ $< $(strip S(EXTRA_EXE_LIBS) $(PLUGIN_LIB) $(addprefix @,$(PLUGIN_SCRIPTS)) $(LIB_NAME))
+endef
+
+
+
+# -------- generate automatic dependencies --------
+
+depend:
+	$(CC) -MM -MG -I. -I./include src/*.c src/dos/*.c src/i386/*.c examples/*.c tests/*.c > _depend.tmp
+	$(CC) -MM -MG -I. -I./include -x assembler-with-cpp src/dos/*.s >> _depend.tmp
+	sed -e "s/^[a-zA-Z0-9_\/]*\///" _depend.tmp > _depend2.tmp
+	sed -e "s/^\([a-zA-Z0-9_]*\.o:\)/obj\/djgpp\/dzcom\/\1/" _depend2.tmp > obj/djgpp/dzcom/makefile.dep
+	sed -e "s/^\([a-zA-Z0-9_]*\.o:\)/obj\/djgpp\/dzcd\/\1/" _depend2.tmp > obj/djgpp/dzcd/makefile.dep
+	sed -e "s/^\([a-zA-Z0-9_]*\.o:\)/obj\/djgpp\/dzcp\/\1/" _depend2.tmp > obj/djgpp/dzcp/makefile.dep
+	rm _depend.tmp _depend2.tmp
+

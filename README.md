@@ -1,6 +1,7 @@
 # DOjS
 ## A DOS JavaScript Canvas with sound.
-[DOjS](https://github.com/SuperIlu/DOjS) is a JavaScript-able canvas with WAV and MIDI sound support for systems running MS-DOS, [FreeDOS](http://freedos.org/) or any DOS based Windows (like 95, 98, ME).
+[DOjS](https://github.com/SuperIlu/DOjS) is a JavaScript programming environment for systems running MS-DOS, [FreeDOS](http://freedos.org/) or any DOS based Windows (like 95, 98, ME).
+It features an integrated editor, graphics & sound output, mouse/keyboard/joystick input and more (see below).
 It was inspired by [Processing](https://processing.org/) which is described on [Wikipedia](https://en.wikipedia.org/wiki/Processing_(programming_language)) as:
 
 > Processing is an open-source graphical library and integrated development environment (IDE) / playground built for the electronic arts, new media art, and visual design communities with the purpose of teaching non-programmers the fundamentals of computer programming in a visual context.
@@ -21,14 +22,14 @@ DOjS was only possible due to the work of these people/projects:
 You can find me on [Twitter](https://twitter.com/dec_hl) if you want...
 
 # Download and quick start
-**You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases).** Just extract the contents of the archive and run DOjS.
+**You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases).** Just extract the contents of the archive and run `DOjS.exe`.
 
 DOjS runs in [Dosbox](https://www.dosbox.com/) and on real hardware or a virtual machine with MS-DOS, [FreeDOS](https://www.freedos.org/) or any DOS based Windows like Windows 95/98/ME. To use 3Dfx/Glide support you need a Voodoo card or [DOSBox-X](https://github.com/joncampbell123/dosbox-x/releases) (see below).
 
 If you run it on real hardware you need at least a **80386 with 4MB**. I recommend a **Pentium class machine (>= 100MHz) with at least 32MB RAM**. The example files run fine on an Athlon 1GHz and with 256MB RAM.
 
 The following hardware/functions are available:
-* 8/16/24 and 32 bit 2D graphics. On 32bit display modes alpha channel transparency is available.
+* 8/16/24 and 32 bit 2D graphics. On 24/32bit display modes alpha channel transparency is available.
 * Keyboard input
 * Mouse input
 * Joystick/Joyport input
@@ -39,7 +40,9 @@ The following hardware/functions are available:
 * Allegro 3D rendering (software)
 * 3dfx/Glide3 3D rendering output (hardware)
 * p5js compatibility
-* direct io-port access
+* direct io-port access (inb, outb, etc)
+* LPT or parallel port access (bi-directional)
+* COM or serial port access
 
 ## A minimal script
 You can find the following example in `examples/exampl.js`:
@@ -110,8 +113,10 @@ DOjS supports most of the Glide3 API that was used with [3dfx](https://en.wikipe
 * Voodoo Rush (all versions) [tested]
 * Voodoo Banshee (PCI and AGP) [tested]
 
-Additionally you can use [DOSBox-X](https://github.com/joncampbell123/dosbox-x/releases) which emulates a Voodoo 1 card. Glide functions can be found in the 3dfx-module in the documentation, Javascript support functions have a "FX" prefix, all native functions are prefixed with "fx". Detailed Glide3-API documentation can be found on the internet, e.g. on [FalconFly Central](http://falconfly.3dfx.pl/reference.htm). Make sure you grab the Glide3 SDK and not Glide2!
+Additionally you can use [DOSBox-X](https://github.com/joncampbell123/dosbox-x/releases) which emulates a Voodoo 1 card. Glide functions can be found in the 3dfx-module in the documentation, Javascript support functions have a "FX" prefix, all native functions are prefixed with "fx". Detailed Glide3-API documentation can be found on the internet, e.g. on [FalconFly Central](http://falconfly.3dfx.pl/reference.htm). **Make sure you grab the Glide3 SDK and not Glide2!**
+
 You can use the included DOS version of `TEXUS.EXE` to convert bitmaps to `3df` texture files that can be loaded as textures.
+
 **!!! Attention !!!**
 3dfx/Glide3 support ONLY works in plain DOS, NOT in the DOS/command window of Windows 9x! Be sure to always boot into a pure DOS prompt before trying to use any of the fx-functions!
 Before using 3dfx/Glide3 support you need to copy the appropriate `GLIDE3X.DXE` into the same directory as `DOJS.EXE`. You can do so by using the `V_XXX.BAT` scripts in the distribution ZIP archive.
@@ -160,10 +165,7 @@ See the [changelog](/CHANGELOG.md) for the projects history.
 
 # Planed work
 * Fix bugs!
-* Improve help viewer (context help?).
 * Anything fun...
-* Switch to Duktape JS runtime
-* Add COM port access
 * add [watt32] support (http://www.watt-32.net/)
 
 # Licenses
@@ -190,6 +192,9 @@ It was [released](https://sourceforge.net/projects/cylindrix/) under **GPLv2**.
 ## 3dfx/Glide3
 The code is licensed under "3DFX GLIDE Source Code General Public License".
 Source code is available at https://github.com/SuperIlu/glide
+
+## DZComm
+DZComm serial library is release as **gift-ware**. See *readme.txt* in the dzcomm folder for details.
 
 ## Logo
 The DOjS logo dog was downloaded from [Pexels](https://www.pexels.com/photo/animal-cachorro-doge-pug-1753686/) and kindly provided by Iago Garcia Garcia.

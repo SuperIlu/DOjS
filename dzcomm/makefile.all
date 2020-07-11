@@ -1,0 +1,289 @@
+#
+#  Shared makefile for building the dzcomm library. Requires GNU make.
+# 
+#  Available options:
+#
+#     Environment variables:
+#        DEBUGMODE=1       selects a debug build.
+#        PROFILEMODE=1     selects a profiling build.
+#        WARNMODE=1        selects strict compiler warnings.
+#        STATICLINK=1      use static linking (MSVC only).
+#        PGCC=1            use PGCC compiler switches (djgpp only).
+#        CROSSCOMPILE=1    build djgpp version under Linux (djgpp only).
+#        ALLEGRONOTAVAIL=1 build a version which works only without allegro
+#        ALLEGRONOTPROGS=1 build the test and example progs without allegro
+#
+#     Targets: 
+#        default:          build library version, docs, and programs.
+#        all:              build all versions and programs.
+#        lib:              build a single library only, no programs.
+#        install:          install single library version.
+#        installall:       install all library versions.
+#        uninstall:        remove dzcomm from system directories.
+#        docs:             convert documentation from ._tx sources.
+#        clean:            remove object files.
+#        distclean:        remove objects and executables.
+#        veryclean:        remove all generated files.
+#        depend:           regenerate the dependency files.
+#        compress:         compress the executable files (djgpp only).
+#
+#  The "clean", "distclean", "veryclean", and "uninstall" targets require
+#  a Unix-style rm command to be installed, eg. from the djgpp fileutils
+#  package.
+
+
+
+# -------- version number for use in the DLL filename --------
+
+LIBRARY_VERSION = 099
+
+
+
+# -------- check environment to see what type of library to build --------
+
+ifdef DEBUGMODE
+
+# -------- build a debugging library --------
+VERSION = dzcd
+SHORT_VERSION = dzd
+VERY_SHORT_VERSION = dd
+DESCRIPTION = debugging
+
+else
+ifdef PROFILEMODE
+
+# -------- build a profiling library --------
+VERSION = dzcp
+SHORT_VERSION = dzp
+VERY_SHORT_VERSION = dp
+DESCRIPTION = profiling
+
+else
+
+# -------- build a release library --------
+VERSION = dzcom
+SHORT_VERSION = dzc
+VERY_SHORT_VERSION = dz
+DESCRIPTION = optimised
+
+endif
+endif
+
+
+
+# -------- list of what files we need to build --------
+
+include makefile.lst
+
+COMMON_OBJECTS = $(basename $(notdir $(DZCOMM_SRC_FILES)))
+C_OBJECTS = $(basename $(notdir $(DZCOMM_SRC_C_FILES)))
+I386_OBJECTS = $(basename $(notdir $(DZCOMM_SRC_I386_FILES)))
+
+
+
+# -------- include platform-specific definitions --------
+
+include $(MAKEFILE_INC)
+
+
+
+# -------- list what objects and programs we need to build --------
+
+VPATH += src demo docs examples setup tests tools tools/plugins
+
+OBJECTS = $(addprefix $(OBJ_DIR)/, $(addsuffix $(OBJ), $(OBJECT_LIST)))
+
+PROGRAMS += $(notdir $(DZCOMM_LIB_EXES)) \
+	    examples makedoc
+
+EXAMPLES = $(basename $(notdir $(DZCOMM_EXAMPLE_FILES)))
+
+EXAMPLE_FILES = $(addprefix examples/, $(addsuffix $(EXE), $(EXAMPLES)))
+
+ifdef HTML
+DOCS = docs/dzhack.$(HTML) CHANGES docs/changes.$(HTML) \
+       faq.txt docs/faq.$(HTML) help.txt docs/help.$(HTML) \
+       AUTHORS THANKS docs/thanks.$(HTML) \
+       dzcomm.txt docs/dzcomm.$(HTML) docs/dzcomm.rtf
+endif
+
+ifdef INFO
+DOCS += docs/dzcomm.$(TEXI) docs/dzcomm.$(INFO)
+endif
+
+
+
+# -------- top level boss targets like "default" and "all" --------
+
+.PHONY: default all msg lib install installall uninstall docs \
+	clean distclean veryclean depend $(PROGRAMS)
+
+.PRECIOUS: $(OBJ_DIR)/%$(OBJ)
+
+default: msg lib $(PROGRAMS) docs
+	@echo The $(DESCRIPTION) $(PLATFORM) library has been compiled.
+	@echo Run make install to complete the installation.
+
+all:
+	$(MAKE) msg lib
+	$(MAKE) msg lib DEBUGMODE=1
+	$(MAKE) msg lib PROFILEMODE=1
+	@echo Compiling utilities, examples and test programs. Please wait...
+	$(MAKE) $(PROGRAMS) docs
+	@echo All $(PLATFORM) library versions have been compiled.
+	@echo Run make installall to complete the installation.
+
+installall:
+	$(MAKE) msg lib install
+	$(MAKE) msg lib install DEBUGMODE=1
+	$(MAKE) msg lib install PROFILEMODE=1
+	@echo All $(PLATFORM) library versions have been installed.
+
+msg:
+	@echo Compiling dzcomm for $(PLATFORM), $(DESCRIPTION). Please wait...
+
+docs: $(DOCS)
+
+lib: $(LIB_NAME)
+
+$(LIB_NAME): $(OBJECTS) $(RUNNER)
+	$(MAKE_LIB)
+
+
+
+# -------- rules for deleting the generated files --------
+
+clean:
+	-rm -fv $(CLEAN_FILES)
+
+distclean: clean
+	-rm -fv $(DISTCLEAN_FILES)
+
+veryclean: distclean
+	-rm -fv $(VERYCLEAN_FILES)
+
+
+
+# -------- rules for converting the documentation --------
+
+ifdef CROSSCOMPILE
+
+MAKEDOC = docs/makedoc
+
+obj/djgpp/dzcom/makedoc.o : docs/makedoc.c
+	PATH=$(NATIVEPATH) gcc -O2 -o $@ -c $<
+
+docs/makedoc : obj/djgpp/dzcom/makedoc.o
+	PATH=$(NATIVEPATH) gcc -O2 -o $@ $<
+
+else
+
+MAKEDOC = docs/makedoc$(EXE)
+
+endif
+
+ifdef HTML
+
+%.txt: docs/%._tx $(MAKEDOC)
+	$(MAKEDOC) -ascii $@ $<
+
+docs/%.$(HTML): docs/%._tx $(MAKEDOC)
+	$(MAKEDOC) -$(HTML) $@ $<
+
+docs/%.rtf: docs/%._tx $(MAKEDOC)
+	$(MAKEDOC) -rtf $@ $<
+
+CHANGES: docs/changes._tx $(MAKEDOC)
+	$(MAKEDOC) -ascii CHANGES docs/changes._tx
+
+AUTHORS: docs/thanks._tx $(MAKEDOC)
+	$(MAKEDOC) -part -ascii AUTHORS docs/thanks._tx
+
+THANKS: docs/thanks._tx $(MAKEDOC)
+	$(MAKEDOC) -part -ascii THANKS docs/thanks._tx
+
+endif
+
+ifdef INFO
+
+docs/%.$(INFO): docs/%.$(TEXI)
+	-makeinfo --no-split -o $@ $<
+
+docs/%.$(TEXI): docs/%._tx $(MAKEDOC)
+	$(MAKEDOC) -$(TEXI) $@ $<
+
+endif
+
+
+
+# -------- special rules for linking win32 console applications --------
+
+ifdef LINK_CONSOLE
+
+docs/makedoc$(EXE): $(OBJ_DIR)/makedoc$(OBJ) $(LINK_CONSOLE_DEPS)
+	$(LINK_CONSOLE)
+
+tools/colormap$(EXE): $(OBJ_DIR)/colormap$(OBJ) $(LINK_CONSOLE_DEPS)
+	$(LINK_CONSOLE)
+
+tools/exedat$(EXE): $(OBJ_DIR)/exedat$(OBJ) $(LINK_CONSOLE_DEPS)
+	$(LINK_CONSOLE)
+
+tools/pack$(EXE): $(OBJ_DIR)/pack$(OBJ) $(LINK_CONSOLE_DEPS)
+	$(LINK_CONSOLE)
+
+tools/rgbmap$(EXE): $(OBJ_DIR)/rgbmap$(OBJ) $(LINK_CONSOLE_DEPS)
+	$(LINK_CONSOLE)
+
+tools/textconv$(EXE): $(OBJ_DIR)/textconv$(OBJ) $(LINK_CONSOLE_DEPS)
+	$(LINK_CONSOLE)
+
+endif
+
+
+
+# -------- special rules for linking the datafile plugins --------
+
+PLUGIN_SOURCES = $(wildcard tools/plugins/*.c)
+PLUGIN_OBJS = $(OBJ_DIR)/datedit$(OBJ) $(addprefix $(OBJ_DIR)/,$(addsuffix $(OBJ),$(basename $(notdir $(PLUGIN_SOURCES)))))
+PLUGIN_SCRIPTS = $(wildcard tools/plugins/*.$(PLUGIN_SCR))
+
+ifneq ($(PLUGIN_SCRIPTS),)
+PLUGIN_DEPS += $(PLUGIN_SCRIPTS)
+endif
+
+$(PLUGINS_H): $(wildcard tools/plugins/*.inc)
+	$(GENERATE_PLUGINS_H)
+
+$(PLUGIN_LIB): $(PLUGIN_OBJS)
+	$(MAKE_PLUGIN_LIB)
+
+ifndef LINK_CONSOLE_WITH_PLUGINS
+LINK_CONSOLE_WITH_PLUGINS = $(LINK_WITH_PLUGINS)
+endif
+
+tools/dat$(EXE): $(OBJ_DIR)/dat$(OBJ) $(PLUGIN_DEPS)
+	$(LINK_CONSOLE_WITH_PLUGINS)
+
+tools/dat2s$(EXE): $(OBJ_DIR)/dat2s$(OBJ) $(PLUGIN_DEPS)
+	$(LINK_CONSOLE_WITH_PLUGINS)
+
+tools/grabber$(EXE): $(OBJ_DIR)/grabber$(OBJ) $(PLUGIN_DEPS)
+	$(LINK_WITH_PLUGINS)
+
+tools/pat2dat$(EXE): $(OBJ_DIR)/pat2dat$(OBJ) $(PLUGIN_DEPS)
+	$(LINK_CONSOLE_WITH_PLUGINS)
+
+
+
+# -------- shortcuts for building various programs --------
+
+rs232: tests/rs232$(EXE)
+examples: $(EXAMPLE_FILES)
+
+
+
+# -------- automatic source dependencies --------
+
+-include $(OBJ_DIR)/makefile.dep
+

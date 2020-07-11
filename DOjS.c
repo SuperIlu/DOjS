@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "DOjS.h"
+
 #include <allegro.h>
 #include <conio.h>
 #include <glide.h>
@@ -34,10 +36,10 @@ SOFTWARE.
 #include "3dfx-glide.h"
 #include "3dfx-state.h"
 #include "3dfx-texinfo.h"
-#include "DOjS.h"
 #include "a3d.h"
 #include "bitmap.h"
 #include "color.h"
+#include "comport.h"
 #include "edit.h"
 #include "file.h"
 #include "font.h"
@@ -235,6 +237,10 @@ static void run_script(int argc, char **argv, int args) {
     // create logfile
     DOjS.logfile = fopen(LOGFILE, "a");
     setbuf(DOjS.logfile, 0);
+#ifdef DEBUG_ENABLED
+    freopen("STDOUT.DJS", "a", stdout);
+    freopen("STDERR.DJS", "a", stderr);
+#endif
 
     // create VM
     J = js_newstate(NULL, NULL, 0);
@@ -284,6 +290,7 @@ static void run_script(int argc, char **argv, int args) {
     init_texinfo(J);
     init_fxstate(J);
     init_joystick(J);
+    init_comport(J);
 
     // create canvas
     bool screenSuccess = true;
@@ -383,6 +390,7 @@ static void run_script(int argc, char **argv, int args) {
     shutdown_joystick();
     shutdown_ipx();
     shutdown_3dfx();
+    shutdown_comport();
     fclose(DOjS.logfile);
     allegro_exit();
     if (DOjS.lastError) {

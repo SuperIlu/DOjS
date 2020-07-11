@@ -1,0 +1,35 @@
+#!/bin/sh
+
+MAJOR="0"
+MINOR1="9"
+MINOR2="9"
+LETTER="c"
+
+if [ "x$LETTER" = "x" ]; then
+  short="$MAJOR$MINOR1$MINOR2"
+  long="$MAJOR""_""$MINOR1""_""$MINOR2"
+else
+  short="$MAJOR$MINOR1$MINOR2$LETTER"
+  long="$MAJOR""_""$MINOR1""_""$MINOR2""_""$LETTER"
+fi
+
+stamp=`date +%Y%m%d`
+echo $stamp
+tag="release_""$long""_"$stamp
+
+echo Making release documentation
+make -f makefile.all CC="gcc" docs/makedoc
+rm -f CHANGES AUTHORS THANKS dzcomm.txt faq.txt  help.txt
+make -f makefile.all HTML="yes" CHANGES AUTHORS THANKS dzcomm.txt faq.txt  help.txt
+make clean
+rm -f docs/makedoc
+
+echo Doing cvs updating, commiting and 
+cvs update
+cvs commit
+cvs -q tag $tag
+
+echo Generating ../dz$short.zip
+cd ..
+rm -f dz$short.zip
+zip -qr dz$short.zip dzcomm -x \*CVS\*

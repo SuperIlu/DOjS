@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "3dfx-glide.h"
+
 #include <allegro.h>
 #include <dirent.h>
 #include <dpmi.h>
@@ -32,7 +34,6 @@ SOFTWARE.
 #include <string.h>
 #include <sys/stat.h>
 
-#include "3dfx-glide.h"
 #include "DOjS.h"
 
 static GrContext_t fx_context;    //!< 3fx context
@@ -123,11 +124,30 @@ static void fx_init(js_State *J) {
 
     grCoordinateSpace(GR_WINDOW_COORDS);  // we use window coordinates by default
 
-    LOGF("GR_VENDOR: %s, ", grGetString(GR_VENDOR));
-    LOGF("GR_RENDERER: %s, ", grGetString(GR_RENDERER));
-    LOGF("GR_VERSION: %s, ", grGetString(GR_VERSION));
-    LOGF("GR_HARDWARE: %s, ", grGetString(GR_HARDWARE));
+    FxI32 num;
+    LOGF("GR_VENDOR: %s\n", grGetString(GR_VENDOR));
+    LOGF("GR_RENDERER: %s\n", grGetString(GR_RENDERER));
+    LOGF("GR_VERSION: %s\n", grGetString(GR_VERSION));
+    LOGF("GR_HARDWARE: %s\n", grGetString(GR_HARDWARE));
     LOGF("GR_EXTENSION: %s\n", grGetString(GR_EXTENSION));
+    if (grGet(GR_NUM_BOARDS, sizeof(num), &num)) {
+        LOGF("GR_NUM_BOARDS: %ld\n", num);
+    }
+    if (grGet(GR_NUM_FB, sizeof(num), &num)) {
+        LOGF("GR_NUM_FB: %ld\n", num);
+    }
+    if (grGet(GR_NUM_TMU, sizeof(num), &num)) {
+        LOGF("GR_NUM_TMU: %ld\n", num);
+    }
+    if (grGet(GR_MEMORY_FB, sizeof(num), &num)) {
+        LOGF("GR_MEMORY_FB: %ld\n", num);
+    }
+    if (grGet(GR_MEMORY_TMU, sizeof(num), &num)) {
+        LOGF("GR_MEMORY_TMU: %ld\n", num);
+    }
+    if (grGet(GR_MEMORY_UMA, sizeof(num), &num)) {
+        LOGF("GR_MEMORY_UMA: %ld\n", num);
+    }
 }
 
 /**

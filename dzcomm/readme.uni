@@ -1,0 +1,52 @@
+DZCOMM
+
+Unix-specific information.
+
+See readme.txt for a more general overview.
+
+
+
+====================================
+============ Unix notes ============
+====================================
+
+   Status: A first version has been written. It does not yet handle IRQ
+   and port address setting, but these are not really pertinant on a generic
+   unix architecture. I'm not sure if the break code works yet.
+
+
+
+===========================================
+============ Required software ============
+===========================================
+
+   Since you are using a Real Operating System, the chances are that you 
+   already have all the necessary development tools.
+
+
+
+============================================
+============ Installing Dzcomm =============
+============================================
+
+   Fix up:
+      $ chmod +x fixunix.sh
+      $ ./fixunix.sh
+
+   Configure [use the -help option to see the options]:
+      $ ./configure
+
+   Build:
+      $ make
+
+   Install: (note that you probably need to be root here)
+      # make install
+
+
+
+=======================================
+============ Using Dzcomm =============
+=======================================
+
+   
+

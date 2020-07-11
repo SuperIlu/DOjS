@@ -1,0 +1,45 @@
+Summary:        A serial Comms Library for allegro.
+Name:           dzcomm
+Version:        WIP0.9.4
+Release:        1
+Copyright:      Gift Ware
+Packager:       Neil Townsend <olsago@robots.ox.ac.uk>
+Group:  Development/Libraries
+Source: dzcom094.zip
+Patch:  shared.libraries.patch
+Buildroot: /var/tmp/dzcom-WIP0.9.4
+
+%description
+DZCOMM - Version 0.9.4 (WIP)
+
+Dzcomm is a cross platform library to simplify RS-232 usage under allegro.
+
+%prep
+
+rm -rf dzcomm
+unzip -o /usr/src/redhat/SOURCES/dzcom094.zip
+
+%setup -T -D -n dzcomm
+sh ./fixunix.sh
+%patch -p1
+
+%build
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=$RPM_BUILD_ROOT/usr \
+--disable-static --enable-shared --disable-ggi --disable-svgalib \
+--without-x
+make
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install
+
+%post
+/sbin/ldconfig -v
+
+%files
+/usr/bin/*
+/usr/lib/*
+/usr/include/allegro/*
+/usr/include/allegro.h
+
+%doc AUTHORS CHANGES THANKS allegro.txt faq.txt readme.lnx

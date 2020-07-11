@@ -1,0 +1,305 @@
+# Include version information
+include makefile.ver
+
+SHELL = /bin/sh
+
+srcdir = @srcdir@
+builddir = .
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+bindir = @bindir@
+includedir = @includedir@
+infodir = @infodir@
+libdir = @libdir@
+mandir = @mandir@
+
+EXE =
+OBJ = .o
+OBJDIR = obj/unix
+LIBDIR = lib/unix
+INFO_DIR = $(infodir)/dir
+
+ACLOCAL = aclocal
+ACLOCAL_M4 = $(srcdir)/aclocal.m4
+AUTOCONF = autoconf
+AUTOHEADER = autoheader
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_INFO_DIR = /sbin/install-info
+
+transform = @program_transform_name@
+
+CC = @CC@
+CPP = @CPP@
+MAKEINFO = makeinfo --no-split
+RANLIB = @RANLIB@
+AR = ar
+LIBS = @LIBS@
+
+LDCONFIG = @LDCONFIG@
+LN_S = @LN_S@
+
+mkinstalldirs = $(SHELL) misc/mkdirs.sh
+mksofile = $(SHELL) misc/mksofile.sh
+
+CONFIG_H = include/dzcomm/dzunixac.h
+CONFIG_H_IN = include/dzcomm/dzunixac.hin
+CONFIGURE = configure
+CONFIGURE_IN = configure.in
+
+INCLUDES = @INCLUDES@
+DEFS = @DEFS@ -Iinclude -I$(srcdir)/include -I.
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+LINK = $(CC) $(CFLAGS) $(LDFLAGS)
+
+CFLAGS = @CFLAGS@
+DZCOMM_DEBUG_CFLAGS = @DZCOMM_DEBUG_CFLAGS@
+DZCOMM_PROFILE_CFLAGS = @DZCOMM_PROFILE_CFLAGS@
+DZCOMM_SHAREDLIB_CFLAGS = @DZCOMM_SHAREDLIB_CFLAGS@
+COMPILE_NORMAL = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+COMPILE_DEBUG = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(DZCOMM_DEBUG_CFLAGS)
+COMPILE_PROFILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(DZCOMM_PROFILE_CFLAGS)
+
+DZCOMM_SFLAGS = @DZCOMM_SFLAGS@
+COMPILE_S_NORMAL = $(COMPILE_NORMAL) $(DZCOMM_SFLAGS)
+COMPILE_S_DEBUG = $(COMPILE_DEBUG) $(DZCOMM_SFLAGS)
+COMPILE_S_PROFILE = $(COMPILE_PROFILE) $(DZCOMM_SFLAGS)
+
+COMPILE_PROGRAM = $(@COMPILE_PROGRAM@)
+COMPILE_S_PROGRAM = $(@COMPILE_S_PROGRAM@)
+
+LIBDZCOM = @LIBDZCOM@
+LINK_LIBDZCOM = @LINK_LIBDZCOM@
+DZCOMM_LIB_TARGETS = @DZCOMM_LIB_TARGETS@
+
+default: all
+
+.SUFFIXES:
+makefile: $(srcdir)/makefile.in config.status
+	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+config.status: $(srcdir)/$(CONFIGURE)
+	$(SHELL) ./config.status --recheck
+$(srcdir)/$(CONFIGURE): $(srcdir)/$(CONFIGURE_IN) $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+	cd $(srcdir) && $(AUTOCONF) $(CONFIGURE_IN) >$(CONFIGURE)
+
+$(CONFIG_H): stamp-h
+stamp-h: $(srcdir)/$(CONFIG_H_IN) config.status
+	CONFIG_FILES= CONFIG_HEADERS="$(CONFIG_H):$(CONFIG_H_IN)" \
+	  $(SHELL) ./config.status
+	@echo timestamp > stamp-h
+$(srcdir)/$(CONFIG_H_IN): $(srcdir)/stamp-h.in
+$(srcdir)/stamp-h.in: $(srcdir)/$(CONFIGURE_IN) $(ACLOCAL_M4) $(srcdir)/acconfig.h
+	cd $(srcdir) && $(AUTOHEADER) $(CONFIGURE_IN) >$(CONFIG_H_IN)
+	@echo timestamp > $(srcdir)/stamp-h.in
+
+@SET_MAKE@
+
+# List of sources for libraries and programs.
+include $(srcdir)/makefile.lst
+
+DZCOMM_EMPTY_LIST =
+
+DZCOMM_LIBRARY_SOURCES = \
+	$(DZCOMM_SRC_FILES) \
+	$(DZCOMM_SRC_UNIX_FILES) \
+	$(@DZCOMM_MAYBE_LINUX_FILES@)
+
+DZCOMM_EXE_TARGETS = \
+	$(DZCOMM_LIB_EXES) \
+	$(DZCOMM_DATAFILE_EXES) \
+	$(DZCOMM_EXAMPLE_EXES)
+
+# Header files (look in makefile.dep for "Headers referred by symbols").
+# Some old allegro stuff left here for ref. in case I need it later
+#DZCOMM_EXTRA_HEADER = $(srcdir)/include/dzcomm/dzunix.h
+DZCOMM_INTERNAL_HEADER = $(srcdir)/include/dzcomm/dzintern.h
+DZCOMM_MMX_HEADER =
+#dzcomm_alconfig_h = $(srcdir)/include/allegro/alconfig.h \
+#	$(srcdir)/include/allegro/alucfg.h \
+#	$(CONFIG_H)
+#dzcomm_alinline_h = $(srcdir)/include/allegro/alinline.h \
+#	$(srcdir)/include/allegro/al386gcc.h \
+#	$(srcdir)/include/allegro/al386vc.h \
+#	$(srcdir)/include/allegro/al386wat.h
+dzcomm_h = $(srcdir)/include/dzcomm.h \
+	$(dzcomm_alconfig_h) \
+	$(dzcomm_alinline_h) \
+	$(DZCOMM_EXTRA_HEADER)
+dzcomm_aintern_h = $(srcdir)/include/allegro/aintern.h
+dzcomm_aintdos_h = $(srcdir)/include/allegro/aintdos.h \
+	$(srcdir)/include/allegro/aintvga.h
+obj_unix_asmdef_inc = $(OBJDIR)/asmdef.inc
+
+$(obj_unix_asmdef_inc): src/i386/asmdef$(EXE)
+	src/i386/asmdef$(EXE) $(obj_unix_asmdef_inc)
+
+# documentation
+DOCS = docs/dzhack.html CHANGES docs/changes.html faq.txt docs/faq.html \
+       help.txt docs/help.html AUTHORS THANKS docs/thanks.html \
+       dzcomm.txt docs/dzcomm.html docs/dzcomm.texi docs/dzcomm.info \
+       docs/dzcomm_init.3
+
+MAKEDOC = docs/makedoc$(EXE)
+
+dzcomm.txt: docs/dzcomm._tx $(MAKEDOC)
+	$(MAKEDOC) -ascii dzcomm.txt $(srcdir)/docs/dzcomm._tx
+
+docs/dzcomm.html: docs/dzcomm._tx $(MAKEDOC)
+	$(MAKEDOC) -html docs/dzcomm.html $(srcdir)/docs/dzcomm._tx
+
+docs/dzcomm.info: docs/dzcomm.texi
+	$(MAKEINFO) -o docs/dzcomm.info $(srcdir)/docs/dzcomm.texi
+
+docs/dzcomm.texi: docs/dzcomm._tx $(MAKEDOC)
+	$(MAKEDOC) -texi docs/dzcomm.texi $(srcdir)/docs/dzcomm._tx
+
+docs/dzcomm_init.3: docs/dzcomm._tx $(MAKEDOC)
+	$(MAKEDOC) -man docs/dummyname.3 $(srcdir)/docs/dzcomm._tx
+
+docs/dzhack.html: docs/dzhack._tx $(MAKEDOC)
+	$(MAKEDOC) -html docs/dzhack.html $(srcdir)/docs/dzhack._tx
+
+faq.txt: docs/faq._tx $(MAKEDOC)
+	$(MAKEDOC) -ascii faq.txt $(srcdir)/docs/faq._tx
+
+docs/faq.html: docs/faq._tx $(MAKEDOC)
+	$(MAKEDOC) -html docs/faq.html $(srcdir)/docs/faq._tx
+
+help.txt: docs/help._tx $(MAKEDOC)
+	$(MAKEDOC) -ascii help.txt $(srcdir)/docs/help._tx
+
+docs/help.html: docs/help._tx $(MAKEDOC)
+	$(MAKEDOC) -html docs/help.html $(srcdir)/docs/help._tx
+
+docs/changes.html: docs/changes._tx $(MAKEDOC)
+	$(MAKEDOC) -html docs/changes.html $(srcdir)/docs/changes._tx
+
+CHANGES: docs/changes._tx $(MAKEDOC)
+	$(MAKEDOC) -ascii CHANGES $(srcdir)/docs/changes._tx
+
+docs/thanks.html: docs/thanks._tx $(MAKEDOC)
+	$(MAKEDOC) -html docs/thanks.html $(srcdir)/docs/thanks._tx
+
+AUTHORS: docs/thanks._tx $(MAKEDOC)
+	$(MAKEDOC) -part -ascii AUTHORS $(srcdir)/docs/thanks._tx
+
+THANKS: docs/thanks._tx $(MAKEDOC)
+	$(MAKEDOC) -part -ascii THANKS $(srcdir)/docs/thanks._tx
+
+# Dependencies and rules for building libraries and simple programs.
+include makefile.dep
+
+all: lib programs docs
+
+lib: $(DZCOMM_LIB_TARGETS)
+
+programs: $(DZCOMM_EXE_TARGETS)
+
+docs: $(DOCS)
+
+suid: $(DZCOMM_EXE_TARGETS)
+	chown root.allegro $?
+	chmod 4750 $?
+	touch suid
+
+clean:
+	rm -fv $(CLEAN_FILES)
+
+distclean: clean
+	rm -fv $(DISTCLEAN_FILES)
+
+veryclean: distclean
+	rm -fv $(VERYCLEAN_FILES) makefile
+
+maintainer-clean: veryclean
+	rm -fv configure
+
+install: install-lib install-headers install-programs
+	 @echo "Run make install-man if you wish to install the man pages"
+	 @echo "Run make install-info if you wish to install the info documentation"
+	 @echo "Alternatively you may run make install-gzipped-info if you have gzip and wish to conserve space." 
+
+install-lib: lib
+	$(mkinstalldirs) $(libdir)
+	@for l in dzcom dzcd dzcp; do \
+	  if test -f $(LIBDIR)/lib$${l}.a; then \
+	    echo Installing $(LIBDIR)/lib$${l}.a to $(libdir); \
+	    $(INSTALL_DATA) $(LIBDIR)/lib$${l}.a $(libdir)/lib$${l}.a; \
+	  fi; \
+	done
+	@for l in dzcom dzcd dzcp; do \
+	  if test -f $(LIBDIR)/lib$${l}-$(shared_version).so; then \
+	    echo Installing $(LIBDIR)/lib$${l}-$(shared_version).so to $(libdir); \
+	    $(INSTALL_DATA) $(LIBDIR)/lib$${l}-$(shared_version).so $(libdir)/; \
+	    $(INSTALL_DATA) $(LIBDIR)/lib$${l}_nonshared.a $(libdir)/; \
+	    $(mksofile) $(libdir) lib$${l}.so lib$${l}-$(shared_version).so lib$${l}_nonshared.a; \
+	  fi; \
+	done
+	$(LDCONFIG) $(libdir)
+
+install-headers:
+	$(mkinstalldirs) $(includedir)/dzcomm
+	$(INSTALL_DATA) $(srcdir)/include/dzcomm.h $(includedir)/
+	$(INSTALL_DATA) $(CONFIG_H) $(includedir)/dzcomm/
+	@for file in $(srcdir)/include/dzcomm/*.h; do \
+	  echo Installing $$file to $(includedir)/dzcomm; \
+	  $(INSTALL_DATA) $$file $(includedir)/dzcomm/; \
+	done
+
+install-programs: programs
+	$(mkinstalldirs) $(bindir)
+	@for prog in $(DZCOMM_LIB_EXES) $(DZCOMM_DATAFILE_EXES); do \
+	  if test "X`echo $$prog | sed -e s,tools/.\*,,`" = X; then \
+	    echo Installing $$prog to $(bindir); \
+	    $(INSTALL_PROGRAM) $$prog $(bindir); \
+	  fi; \
+	done
+
+install-info:
+	@if test ! -e $(INFO_DIR); then \
+	  ln -s /usr/info/dir $(INFO_DIR); \
+	fi;
+	@echo Installing Dzcomm info documentation...
+	@$(INSTALL_DATA) $(srcdir)/docs/dzcomm.info $(infodir)
+	@$(INSTALL_INFO_DIR) $(infodir)/dzcomm.info $(INFO_DIR)
+
+install-gzipped-info: install-info
+	@echo Compressing documentation...
+	@gzip -9 -f $(infodir)/dzcomm.info
+
+install-man:
+	$(mkinstalldirs) $(mandir)/man3
+	@for file in $(srcdir)/docs/*.3; do \
+	  echo Installing $$file to $(mandir)/man3; \
+	  $(INSTALL_DATA) $$file $(mandir)/man3/; \
+	done
+
+makefile.dep: makefile $(srcdir)/makefile.lst $(srcdir)/misc/deplib.sh \
+		$(srcdir)/misc/deplexe.sh $(srcdir)/misc/depnexe.sh
+	rm -f makefile.dep
+	@echo "# Automatically generated." >makefile.dep
+	@echo "Generating dependencies for libraries"
+	$(SHELL) -c 'cd $(srcdir) && misc/deplib.sh $(DZCOMM_LIBRARY_SOURCES)' >>makefile.dep
+	@echo "Generating dependencies for simple programs"
+	$(SHELL) -c 'cd $(srcdir) && misc/deplexe.sh $(DZCOMM_LIB_EXE_SOURCES) $(DZCOMM_EXAMPLE_FILES)' >>makefile.dep
+	@echo "Generating dependencies for programs without libraries"
+	$(SHELL) -c 'cd $(srcdir) && misc/depnexe.sh $(DZCOMM_NOLIB_EXE_SOURCES)' >>makefile.dep
+	@echo "Dependency generation completed!"
+
+# Can be done with stamp file.
+depend: makefile.dep
+
+.PHONY: default all lib programs docs \
+clean distclean veryclean maintainer-clean \
+install install-lib install-headers install-programs install-info \
+install-gzipped-info depend
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

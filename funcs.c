@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@ SOFTWARE.
 #include "funcs.h"
 
 #include <allegro.h>
+#include <bios.h>
 #include <dirent.h>
 #include <dpmi.h>
 #include <errno.h>
@@ -39,6 +40,7 @@ SOFTWARE.
 #include "DOjS.h"
 #include "color.h"
 #include "util.h"
+#include "socket.h"
 
 /*********************
 ** static functions **
@@ -270,7 +272,7 @@ static void f_MemoryInfo(js_State *J) {
  *
  * @param J the JS context.
  */
-static void f_Sleep(js_State *J) { rest(js_toint32(J, 1)); }
+static void f_Sleep(js_State *J) { rest_callback(js_toint32(J, 1), tick_socket); }
 
 /**
  * @brief get current time in ms.
@@ -487,7 +489,7 @@ static void f_LPTReset(js_State *J) { biosprint(1, 0, js_toint16(J, 1)); }
  */
 static void f_LPTSend(js_State *J) {
     int port = js_toint16(J, 1);
-    char *data = js_tostring(J, 2);
+    const char *data = js_tostring(J, 2);
 
     while (*data) {
         biosprint(0, *data++, port);

@@ -1,0 +1,127 @@
+#include <winver.h>
+#include "../inc/tcp.h"
+
+APPICON ICON "watt-32.ico"
+
+/* LANGUAGE 0x09,0x01 */
+
+#define RC_VERSION  WATTCP_MAJOR_VER, WATTCP_MINOR_VER, WATTCP_DEVEL_REL, 0
+
+/* The CygWin define must come before MinGW since MinGW's windres is
+ * used to compile the resource.
+ */
+#if defined(__CYGWIN__)
+  #define BUILDER  "CygWin"
+
+#elif defined(__MINGW64__)
+  #define BUILDER  "MinGW-w64"
+
+#elif defined(__MINGW32__)
+  #define BUILDER  "MinGW"
+
+#elif defined(__POCC__)
+  #define BUILDER  "PellesC"
+
+#elif defined(__BORLANDC__)
+  #define BUILDER  "Borland"
+
+#elif defined(__clang__)
+  #define BUILDER  "Clang-CL"
+
+#elif defined(_MSC_VER)
+  #define BUILDER  "Visual-C"
+
+#elif defined(__WATCOMC__)
+  #define BUILDER  "OpenWatcom"
+
+#elif defined(__LCC__)
+  #define BUILDER  "LCC"
+
+#else
+  #define BUILDER  "??"
+#endif
+
+#define DBG      ""
+#define DBG_REL  ""
+
+#if defined(_MSC_VER)
+  #if defined(DEBUG) && (DEBUG > 0)
+    #undef  DBG
+    #undef  DBG_REL
+    #define DBG_REL  "(debug)"
+    #define DBG      "d"
+  #else
+    #undef  DBG_REL
+    #define DBG_REL  "(release)"
+  #endif
+#endif
+
+#ifndef BITS
+#define BITS 32
+#endif
+
+#if (BITS == 32)
+  #define BITS_STR  " (32-bit)"
+  #define DLL_NAME  "watt-32" DBG ".dll"
+#else
+  #define BITS_STR  " (64-bit)"
+  #define DLL_NAME  "watt-32" DBG "_64.dll"
+#endif
+
+/* Not used yet.
+ */
+#define MANIFEST  DLL_NAME ".manifest"
+
+/* Only targets using GNU-make sets the RC_DATE.
+ * It's a pain to accomplish this for other targets.
+ */
+#if defined(RC_DATE)
+  #define _STR2(x)  #x
+  #define _STR(x)   _STR2(x)
+  #define RC_DATE2  " (Build-date: " _STR(RC_DATE) ")."
+  #pragma message   ("RC_DATE2=" RC_DATE2)
+
+#else
+  #define RC_DATE2  "."
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+  FILEVERSION     RC_VERSION
+  PRODUCTVERSION  RC_VERSION
+  FILEFLAGSMASK   0x3FL
+#if defined(DEBUG) && (DEBUG > 0)
+  FILEFLAGS 1
+#else
+  FILEFLAGS 0
+#endif
+  FILEOS      VOS__WINDOWS32
+  FILETYPE    VFT_DLL
+  FILESUBTYPE 0x0L
+
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "000004B0"   /* Unicode */
+    BEGIN
+      VALUE "CompanyName",      "Watt-32 tcp/ip stack"
+      VALUE "FileDescription",  "Watt-32 shared library " DBG_REL BITS_STR
+      VALUE "FileVersion",      WATTCP_VER_STRING
+      VALUE "InternalName",     "Watt-32 " DBG_REL
+      VALUE "OriginalFilename", DLL_NAME
+      VALUE "ProductName",      "Watt-32 tcp/ip stack" RC_DATE2
+      VALUE "ProductVersion",   WATTCP_VER_STRING " (" BUILDER ")"
+      VALUE "LegalCopyright",   "This library carries a BSD-style licence.\r\n"
+                                "\t\t\tCopyright 1997-2017, Gisle Vanem <gvanem@yahoo.no>."
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0, 1200
+  END
+END
+
+#define MANIFEST_RESOURCE_ID  1
+#define RT_MANIFEST          24
+
+/* MANIFEST_RESOURCE_ID RT_MANIFEST MANIFEST */

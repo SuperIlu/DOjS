@@ -70,3 +70,8 @@ examples/aoc2019/
 syn.txt
 synC.txt
 synJ.txt
+STDERR.DJS
+STDOUT.DJS
+DOjS-cppcheck-build-dir/
+lpng1636/pnglibconf.h
+dzcomm/obj/djgpp/asmdef.s

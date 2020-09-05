@@ -1,16 +1,34 @@
-# Version 1.1.0 (the COM together)
+# Version 1.2.0 (Watt is that?)  / Sept 5, 2020
+* Added TCP/IP support through WATT32.
+* Fixed bug where text mode was not restored after exiting DOjS
+* Added `File.GetSize()`, `File.WriteBytes()` and `File.ReadBytes()`
+* Added fixnewlines target to Makefile.
+* Updated syntax highlighting file.
+* Switched JSDoc documentation to better-docs
+* Improved editor
+	* Quoted strings are now GREEN
+	* The cursor positioning at the end of line is more usable.
+	* 50-line mode can now be selected on the command line
+	* Fixed CTRL-L/Go to line
+* Fixed bugs in p5js compatibility layer
+	* `endShape()` polygon drawing
+	* `lerpColor()`
+* Cleaned up startup messages in logfile.
+* Re-added PNG loading/writing
+
+# Version 1.1.0 (the COM together)  / July 11, 2020
 * Added COM port access through the `COMPort()` object.
 * Added RAW LPT port access through LPT-funktions `LPTRawData()`, `LPTRawStatus()` and `LPTRawControl()`.
 * Added LPT printer acces through `LPTReset()`, `LPTSend()` and `LPTStatus()`.
 * Added LPT/COM port enumeration through `GetParallelPorts()` and `GetSerialPorts()`.
 * Added more verbose output about detected 3dfx card and found ports when startig up.
 
-# Version 1.0.1 (the minimal midi modification)
+# Version 1.0.1 (the minimal midi modification)  / Internal only
 * Added `MidiGetPos()`
 * Added example script that implements a simple MIDI player.
 * Small cleanups for release building.
 
-# Version 1.0.0 (the major mashup)
+# Version 1.0.0 (the major mashup) / Mar 27, 2020
 * Fixed memory leaks in TexInfo
 * Added dynamic TexInfo generation from Bitmap
 * Better memory handling between native and JS code (GC before malloc())
@@ -37,7 +55,7 @@
 * Added `createImage(w,h)` to p5js compatibility layer.
 * Added `Sample.Get()` and `VoiceGetPosition()`, updated `Sample.Play()`.
 
-# Version 0.9.9 (the voodoo vision)
+# Version 0.9.9 (the voodoo vision) / Jan 26, 2020
 * Fixed typo in the `GetXRotateMatrix()` functions.
 * Sped up several 3D math function by implementing them in C (native JS functions still available by prefixing 'N').
 * Added `Bitmap.DrawAdvanced()` for scaled bitmap drawing.
@@ -53,7 +71,7 @@
 * Added automatic fallback to 24bbp when 32bbp are not available
 * Fixed the remote logviewer and some examples
 
-# Version 0.9.8 (the expanded dimension)
+# Version 0.9.8 (the expanded dimension) / Nov 17, 2019
 * updated help.txt and README.md
 * added sound input functions.
 * finished 3D drawing functions, zbuffer functions and 3D math functions.
@@ -61,14 +79,14 @@
 * `Color()` now also works with three arguments (alpha is 255 for missing value).
 * Fixed missing documentation.
 
-# Version 0.9.7 (the latest lament)
+# Version 0.9.7 (the latest lament) / Oct 20, 2019
 * fixed `rect()`.
 * added `Bitmap.DrawTrans()` for 32bit TGA images w/ alpha.
 * Added Cut, Copy & Paste to the editor.
 * Added auto indent and backtab handling.
 * Started working on allegro 3D fuctions (unfinished, untested)!
 
-# Version 0.9.6 (the crashing creation)
+# Version 0.9.6 (the crashing creation) / May 26, 2019
 * Fixed massive crash when using the builtin font in p5 compatibility layer
 * Some API improvements
 * Even more examples and a DOjS presentation done with DOjS
@@ -78,7 +96,7 @@
 * As always: more examples
 * updated MuJS to latest version from http://git.ghostscript.com/?p=mujs.git;a=summary
 
-# Version 0.9.5 (the changed creation)
+# Version 0.9.5 (the changed creation) / May 2, 2019
 * Replaced libmikmod, GRX and all sound code by Allegro 4.2.2.
 * Transparency/RGBA now works.
 * added `TransparencyEnabled()` to switch during runtime.
@@ -94,14 +112,14 @@
 * Added a test-folder with scripts dedicated to test the API.
 * Added `translate()`, `rotate()`, `shearX()`, `shearY()`, `resetMatrix()`, `scale()` and `applyMatrix()` in p5js compatibility layer.
 
-# Version 0.9.1 (the fixed foreboding)
+# Version 0.9.1 (the fixed foreboding) / Apr 14, 2019
 * Fixed libmikmod creating a WAV file when no soundcard is detected.
 * Added logging to another machine using IPX. set `REMOTE_DEBUG=true` and start `jsboot/logview.js` on other machine.
 * Added `GetPixel()` which returns the `Color` of an on-screen pixel.
 * Added `Bitmap.GetPixel()` which returns the `Color` of an image pixel.
 * Fixed/added some stuff in GRX.
 
-# Version 0.9 (the fifth foreboding)
+# Version 0.9 (the fifth foreboding) / Apr 7, 2019
 * Fixed `millis()` in p5js compatibility layer.
 * Improved mouse display (still flickering, though).
 * Fixed `MouseShowCursor(false)` (sort of).
@@ -115,7 +133,7 @@
 * Fixed *Makefile* on OSX.
 * Switched to libmikmod for MOD and WAV sound output.
 
-# Version 0.8 (the fourth forecoming)
+# Version 0.8 (the fourth forecoming) / Mar 27, 2019
 * Tuned the compiler flags to pentium class CPUs
 * Added command line option to turn off SoundBlaster code
 * Added double buffering to video output to reduce the flickering
@@ -131,7 +149,7 @@
 * Added Processing/p5js compatibility layer.
 * Added some examples from the p5js example library.
 
-# Version 0.7 (the third installment)
+# Version 0.7 (the third installment) / Mar 3, 2019
 * Wrote a text editor for in-line script editing.
 * Added inline-help and logfile viewer.
 * Added frame rate limit and  `GetFramerate()` and `SetFramerate()`
@@ -149,7 +167,7 @@
 * DOjS now has a mascot.
 * Makefile now had ZIP target.
  
-# Version 0.6 (the 2nd coming)
+# Version 0.6 (the 2nd coming) / Feb 17, 2019
 * Added CHANGELOG
 * Now linking with DJGPP FPU emulation (`-lemu`)
 * Added support for file reading/writing (see `Read()` and `File()`)
@@ -164,6 +182,6 @@
 * Added MIDI playing
 * Added IPX networking
 
-# Version 0.5 (first release)
+# Version 0.5 (first release) / Feb 11, 2019
 * Initial release
 * Binary release no longer available because of the old script format

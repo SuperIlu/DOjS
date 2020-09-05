@@ -1,0 +1,131 @@
+#
+#  Watcom Makefile for _some_ Watt-32 tcp/ip test programs.
+#  16-bit large or flat version.
+#
+
+32bit = 0
+
+CFLAGS = -zq -fr=nul -bt=dos -d2 -fpi -w5 -oilrtfm &
+         -I$(%watcom)\h -I.. -I..\..\inc -DTEST_PROG -DWATT32
+
+!if 32bit==1
+CC     = *wcc386
+CFLAGS += -mf -3r
+
+LFLAGS = system dos32a debug all sort global option quiet, map,  &
+         verbose, caseexact, stack=50k, eliminate
+
+LIB    = ..\..\lib\wattcpwf.lib
+
+!else
+
+CC     = *wcc
+CFLAGS += -ml
+
+LFLAGS = system dos debug all sort global option quiet, map, &
+         verbose, caseexact, stack=10k, eliminate
+LIB    = ..\..\lib\wattcpwl.lib
+
+!endif
+
+PROGRAMS = cpu.exe cpuspeed.exe geteth.exe gettod.exe tftp.exe ttime.exe &
+           ttime2.exe cpuid.exe chksum.exe ip4_frag.exe fingerd.exe      &
+           ioctl.exe sel.exe wecho.exe pcconfig.exe misc.exe idna.exe
+
+!if 32bit==1
+PROGRAMS += eatsock.exe packet.exe
+!endif
+
+
+all: $(PROGRAMS)
+
+chksum.exe: chksum.obj
+    *wlink $(LFLAGS) file chksum.obj name chksum.exe library $(LIB)
+
+cpu.exe: cpu.obj
+    *wlink $(LFLAGS) file cpu.obj name cpu.exe library $(LIB)
+
+cpuspeed.exe: cpuspeed.obj
+    *wlink $(LFLAGS) file cpuspeed.obj name cpuspeed.exe library $(LIB)
+
+tftp.exe: tftp.obj
+    *wlink $(LFLAGS) file tftp.obj name tftp.exe library $(LIB)
+
+ttime.exe: ttime.obj
+    *wlink $(LFLAGS) file ttime.obj name ttime.exe library $(LIB)
+
+ttime2.exe: ttime2.obj
+    *wlink $(LFLAGS) file ttime2.obj name ttime2.exe library $(LIB)
+
+geteth.exe: geteth.obj
+    *wlink $(LFLAGS) file geteth.obj name geteth.exe library $(LIB)
+
+gettod.exe: gettod.obj
+    *wlink $(LFLAGS) file gettod.obj name gettod.exe library $(LIB)
+
+ip4_frag.exe: ip4_frag.obj
+    *wlink $(LFLAGS) file ip4_frag.obj name ip4_frag.exe library $(LIB)
+
+fingerd.exe: fingerd.obj
+    *wlink $(LFLAGS) file fingerd.obj name fingerd.exe library $(LIB)
+
+ioctl.exe: ioctl.obj
+    *wlink $(LFLAGS) file ioctl.obj name ioctl.exe library $(LIB)
+
+sel.exe: sel.obj
+    *wlink $(LFLAGS) file sel.obj name sel.exe library $(LIB)
+
+wecho.exe: wecho.obj
+    *wlink $(LFLAGS) file wecho.obj name wecho.exe library $(LIB)
+
+pcconfig.exe: pcconfig.obj
+    *wlink $(LFLAGS) file pcconfig.obj name pcconfig.exe library $(LIB)
+
+misc.exe: misc.obj
+    *wlink $(LFLAGS) file misc.obj name misc.exe library $(LIB)
+
+tftp.obj: ..\tftp.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+geteth.obj: ..\geteth.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+gettod.obj: ..\gettod.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+ip4_frag.obj: ..\ip4_frag.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+fingerd.obj: ..\listen.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+ioctl.obj: ..\ioctl.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+sel.obj: ..\select.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+wecho.obj: ..\echo.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+pcconfig.obj: ..\pcconfig.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+misc.obj: ..\misc.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+idna.obj: ..\idna.c
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+.obj.exe:
+    *wlink $(LFLAGS) file $*.obj name $*.exe library $(LIB)
+
+.ERASE
+.c.obj:
+    $(CC) $[@ $(CFLAGS) -fo=$@
+
+clean: .SYMBOLIC
+    del *.obj
+    del *.map
+    del *.exe
+

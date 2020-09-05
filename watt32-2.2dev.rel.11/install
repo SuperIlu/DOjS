@@ -1,0 +1,566 @@
+
+Guide to Watt-32 installation
+==============================
+
+This file guides you through obtaining, installing and using Watt-32.
+Please read all of this guide before asking for help.
+
+Watt-32 is a library for making networked tcp/ip programs in the
+language of C and C++. Both 16-bit real-mode and 32-bit protected-mode
+is supported. See README.TOO for table of supported environments.
+
+
+1. DISTRIBUTION CONTENT
+-----------------------
+
+The latest release of Watt-32 is available at http://www.watt-32.net/.
+The distribution consists of 3 separate .ZIP files where last part of name
+indicates version and development release.  E.g. "watt32b-2.0-dev.2.zip"
+indicates version 2.0 development release 2:
+
+  watt32s-*.zip - Sources and tools required to build your own library.
+                  This .zip-file isn't required if you don't need (or want)
+                  to re-build the example programs. However, it's recommended
+                  that you download this file also. See the `INSTALLATION'
+                  section for usage.
+
+  watt32b-*.zip - A collection of example programs showing how to use Watt-32.
+                  All the original Waterloo example programs are contained
+                  herein. Plus, I and others (Ken Yap in particular) have
+                  ported some traditional BSD-socket programs to Watt-32.
+                  These are:
+
+                    archie   - Queries archie-servers for files.
+                    bing     - ping tool with more statistics (djgpp only).
+                    dig      - Domain Information Groper, DNS tool.
+                    DOS-VNC  - Virtual Network Console; remote control (djgpp).
+                    finger   - shows who is logged-in to a host.
+                    fping    - fast, paralell ping client.
+                    host     - Host/DNS tool.
+                    ICMPpush - Generate custom ICMP messages.
+                    IOctrl   - Server for accessing IO ports via Telnet.
+                    MathOpd  - Small HTTP server.
+                    netcat   - Read/write arbitrary data using TCP/UDP.
+                    netio    - Network read/write performance (djgpp/Watcom).
+                    netkala  - Kalahari networked game.
+                    nslookup - Nameserver (DNS) query tool.
+                    pchar    - Test network path characteristics.
+                    popmail  - A simple POP3/SMTP mail client.
+                    rdate    - Fetches date from time servers
+                    rmtd     - Remote Magnetic Tape Daemon.
+                    syslogd  - A syslog daemon program.
+                    syslogd2 - Another syslog daemon program.
+                    suck     - NNTP articles retriever/poster.
+                    talk     - Talk client/server, chat via Internet.
+                    ttcp     - TCP/UDP performance tool.
+                    tftpd    - Trivial File Transfer daemon.
+                    vrfy     - Verifies Email addresses.
+                    wget     - http/ftp file retriever.
+
+                  See their respective directories (under the .\bin\ direc-
+                  tory) for detail.  The example programs are mostly client-
+                  side implementations of various standard Internet protocols.
+                  But some daemons (servers) are provided too.
+
+                  NOTE: Some of these programs have been very little tested
+                        with Watt-32. Don't yell if they don't work. Contribute
+                        a fix instead. You'll need to use the command:
+                        `make -f makefile.dj depend' to remake dependencies.
+
+  watt32d-*.zip   A collection of Unix man-pages (actually cat-files), RFCs
+                  and html-files.
+
+
+2. QUICK INSTALLATION
+---------------------
+
+These steps assumed you have installed "watt32*.zip" into directory
+"c:\net\watt". It it *not* advisable to install into a directory containing
+spaces. E.g. "c:\Program Files\watt\" will probably *not* work.
+
+1. Unzip "watt32*.zip" and do "set WATT_ROOT=c:\net\watt"
+
+2. In .\src do "configur.bat <your-compiler>". Run "configur.bat -?" for
+   possible targets.
+
+3. Run your make. E.g. "make -f djgpp.mak" for a djgpp version.
+
+4. Change to .\bin and try building some sample applications with the
+   library you just built. Then do a "set WATTCP.CFG=c:\net\watt\bin"
+   before running any samples. Try "tcpinfo.exe" to see if everything is
+   setup correctly. I.e. the packet-driver or WinPcap is installed correctly.
+   WinPcap is available at <https://www.winpcap.org/install/>
+
+5. If something doesn't work, refer the INSTALLATION DETAILS below or
+   email the Watt-32 mailing-list at <watt-32@yahoogroups.com>. Go here
+   to join: <http://groups.yahoo.com/group/watt-32/join>
+
+
+
+3. INSTALLATION DETAILS
+-----------------------
+
+Follow these steps closely:
+
+1. Create a new top-level directory for extraction of Watt-32 zip files.
+   E.g. `c:\net\watt'
+
+
+2. All three .ZIP files `watt32[bsd]*.zip' contain subdirectories, so
+   remember to use the `-d' option when extracting using `pkunzip' or
+   `unzip'.
+
+   Unzip all Watt-32 zip files into this new directory.
+   There's are no long-file names (LFN), so pkunzip or unzip for
+   DOS is safe to use. E.g. use this command to extract:
+     `pkunzip -d watt*.zip c:\net\watt'.
+
+   All three .ZIP files have some files in common (MANUAL.TXT, README.*,
+   CHANGES, INSTALL and BIN\*.cfg).  If the .ZIP files are of the same
+   version, the common files should be the same.  Then these files can
+   safely be overwritten.  With pkunzip, use option `-o' or press `o'
+   when prompted.  Otherwise make sure the oldest ZIP-file is extracted
+   first.
+
+
+3. Create an environment variable `WATT_ROOT' pointing to this directory.
+   E.g. `WATT_ROOT=c:\net\watt'.
+
+   NOTE: no spaces on either side of `=' and no trailing `\'. This variable
+   is used by the various makefiles to access the sub-directories `.\inc'
+   and `.\lib'.
+
+   NOTE: DO NOT RENAME ANY OF THE SUB-DIRECTORIES.
+
+   If you are using djgpp and want to compile under Win95/98/XP, you should
+   create the environment variable `LFN=n' (or edit `djgpp.env').
+
+
+4. If your're NOT building for Pharlap DOS-extender (*), proceed to step 5.
+
+   Define an environment variable `PHARLAP' to specify root directory for
+   Pharlap's files.
+
+   Pharlap targets (*) requires the use of an exception-handling library
+   of mine. This is available from:
+     http://www.watt-32.net/misc/exc_dx07.zip
+
+   Install this library before proceeding. The assumed location for the
+   `exc.h' header file is in a sub-directory `mw' somewhere specified by
+   your `INCLUDE' or `IPATH' environment variable. The Watcom compiler use
+   the `DOS_INCLUDE' variable.
+   E.g. say:
+      SET DOS_INCLUDE=C:\WATCOM\H;C:\EXCEPT
+
+   in you AUTOEXEC.BAT. Otherwise, see install guide for the exception
+   library.
+
+    (*) Currently Metaware's HighC and Watcom's wcc386 are supported.
+        Default target for wcc386 is DOS4GW (or similar; DOS32A, PmodeW
+        or WDOSX).  Edit `.\src\target.h' to specify PHARLAP target. At
+        around line 90, change to:
+           "#define DOSX PHARLAP"
+
+
+5. The configure process (in step 7 below) uses some programs in the
+   `$(WATT_ROOT)\util\' directory.  Some of these programs (mk*.exe)
+   requires the use of a DPMI-server (because they are compiled with djgpp).
+   If you are running Win9x/ME/NT/XP you should already have a DPMI-server
+   present.  Otherwise you would need `$(WATT_ROOT)\bin\cwsdpmi.exe'.
+
+   If you don't have a 80387 math processor, you would also need an
+   emulator contained in `$(WATT_ROOT)\bin\emu387.dxe'.
+
+   Copy the following files:
+     `$(WATT_ROOT)\bin\cwsdpmi.exe' and `$(WATT_ROOT)\bin\emu387.dxe'
+
+   to a directory on your PATH.  The best thing is to edit your `AUTOEXEC.BAT'
+   and include `$(WATT_ROOT)\bin' in your `PATH' statement.
+
+   The programs `*_err.exe' and `win32/*_err.exe' are tools to produce a list
+   of errno's and a `sys_errlist[]' (or `_sys_errlist[]') which also includes
+   network related errno's.  These lists are included in `$(WATT_ROOT)\src\neterr.c'
+   and `$(WATT_ROOT)\inc\sys\werrno.h'.
+
+   You may have to rebuild one of these tools if you upgrade your compiler
+   and/or the vendor changes the `errno' numbering.  Normally, simply
+   proceed to next step.
+
+   The rationale behind `errnos.c', is to extend the vendor's normal `errno'
+   range without redefining existing errno's or producing holes in the range.
+   The lists produced by `*_err.exe' + `win32/*_err.exe' and the functions in
+   `neterr.c' (`perror' and `strerror'), will hopefully replace the existing
+   functions in your C-library without harming it's function.
+
+   `neterr.c' shall simply extend `sys_errlist[]' (or `_sys_errlist[]')
+   so it will give meaningful texts for network related errors.
+
+   BTW. some vendors have `__sys_errlist[]', which will NOT be updated
+        by the `neterr.c' module.
+
+   To recompile the `mk*.exe' tools you need:
+     Compiler GCC 2.7.1 + djgpp 2.01 or later and
+     S-Lang library avalable at <http://space.mit.edu/~davis/slang.html>
+     Change `.\util\makefile' to suite your location of S-Lang.
+
+   To recompile the `*_err.exe' tools you need:
+     Borland/Turbo C and Borland `make'  - to produce `bcc_err.exe'.
+     Watcom C (16-bit) and `wmake'       - to produce `wc_err.exe'.
+     GNU C + djgpp 2.x and GNU `make'    - to produce `dj_err.exe'.
+     GNU C + MinGW and GNU `make'        - to produce `mw_err.exe'.
+     Digitial Mars C  and Borland `make' - to produce `dm_err.exe'.
+     Metaware HighC + Pharlap SDK        - to produce `hc_err.exe'
+     Microsoft Visual C and `nmake'      - to produce `vc_err.exe'
+     PellesC and `pomake'                - to produce `po_err.exe'
+     Clang and any make program          - to produce `clang_err.exe'
+
+     E.g. for Borland issue this command:
+        C:\NET\WATT\UTIL\>make -f errnos.mak bcc_err.exe
+
+   *_err.exe have three command-line options:
+     -e :  produces a list of all errno's
+     -s :  produces the `sys_errlist[]' array
+     -t :  test; prints a list of "normal" errno's defined by
+           vendors compiler. Mainly for verifying -e option.
+
+   NOTE: only one (the first) option is handled.
+
+   All printout of data is on `stdout'. Data must be redirected to
+   correct file. E.g:
+
+     "bcc_err.exe -e > ..\inc\sys\borland.err"
+       produces an include file for `.\inc\sys\werrno.h' and Borland
+       targets.
+
+     "dj_err.exe -s > ..\src\build\djgpp\syserr.c"
+       produces a replacement `sys_errlist[]' for inclusion in
+       `.\src\neterr.c'.
+
+   NOTE: If you have djgpp 2.04 installed and the `dj_err.exe' was compiled
+         with 2.03 (or older), you *MUST* recompile `dj_err.exe' to fit the
+         new errnos added in 2.04 (ELOOP, EILSEQ etc.). Simply do a
+         "make -f errnos.mak dj_err.exe" in the .\util\ directory.
+
+
+6. If you've played with Watt-32 for a while and would like to change some
+   build settings or features, study this step. Otherwise, accept things
+   as they are and proceed to next step.
+
+   The `makefile.all' is a master makefile from which all makefiles will
+   be generated. The compiler switches and options are chosen to best suite
+   the majority of user. I.e. Borland users with only a 386-PC would probably
+   be upset if `makefile.all' would optimise for a Pentium based PC.  Study
+   the sections (inside `ifdef BORLAND', etc.) carefully before making any
+   changes. Refer to your compiler documentation for details.
+
+   djgpp users may benefit by specifying `-fomit-frame-pointer' in `CFLAGS'.
+   This isn't done by default to ease debugging and traceback when crashes
+   occur.  Only specify this flag when confident your application as a whole
+   (with all libraries) is stable and bug-free.  Watcom users could likewise
+   remove `f' from the list of `-o'ptimise flags.
+
+   The list of features compiled into Watt-32 is determined by settings in
+   `.\src\config.h'. For small and large memory-models the list of features
+   is severely limited.  Small model doesn't include the TCP protocol (only
+   UDP and ICMP).  You may change this if you like, but note that the data-
+   segment (DGROUP) will overflow easily.  The size of code and data could
+   be reduced significantly by only using the define `USE_FRAGMENTS'.  This
+   should AFAIK build a minimum compliant TCP/IP stack.  Refer RFC-1122 and
+   RFC-1123 for requirements.
+
+   The module '.\src\version.c' tries to detect what CPU the compilation was
+   optimised for and the function `wattcpVersion()' returns this and other
+   info at run-time.  Run the `.\bin\tcpinfo.exe' program to check.  You
+   should see something like this:
+
+     [..]
+
+     Version info  : Watt-32 (2.1.0), GNU C 2.95 (486), djgpp 2.x, Jan 12 2000
+     Capabilities  : /debug/bsdsock/bootp/dhcp/lang/frag/stat/bsdfatal/
+                     bsdfortify/fsext/loopback/tftp
+
+     Which simply states the Watt-32 version is v2.1.0 compiled with
+     GNU C 2.95, optimised for 80486 (-mcpu=486 switch) and library built
+     date.  "Capabilities :" lists the features defined in `.\src\config.h'.
+
+
+7. Run the `configur.bat' to generate the makefiles, sub-directories, list of
+   errno's and `sys_errlist[]' and dependency file for the library you want.
+   `configur.bat' takes at least one of these parameters:
+
+     borlandc -> Produces these makefiles for making Borland-C targets:
+                  `bcc_s.mak'  - For DOS small model.
+                  `bcc_l.mak'  - For DOS large model.
+                  `bcc_f.mak'  - For DOS flat model.
+                  `bcc_w.mak'  - For Win32.
+                + `build\borland\watt32.dep'.
+
+     watcom   -> similar for Watcom.
+     digmars  -> similar for Digital Mars.
+     highc    -> `highc.mak'     + `build\highc\watt32.dep'.
+     clang    -> `clang.mak'     + `build\clang\watt32.dep'.
+     djgpp    -> `djgpp.mak'     + `build\djgpp\watt32.dep'.
+     ladsoft  -> `ladsoft.mak'   + `build\ladsoft\watt32.wat'.
+     mingw32  -> `mingw32.mak'   + `build\mingw32\watt32.dep'.
+     mingw64  -> `mingw64.mak'   + `build\mingw64\watt32.dep'.
+     cygwin   -> `cygwin.mak'    + `build\cygwin\watt32.dep'.
+     visualc  -> `visualc-*.mak' + `build\visualc\watt32.dep'.
+     pellesc  -> `pellesc.mak'   + `build\pellesc\watt32.dep'.
+     lcc      -> `lcc.mak'       + `build\lcc\watt32.dep'.
+     all      -> All of the above.
+     clean    -> deletes all generated `*.mak', `watt32.dep', `zlib.dep',
+                 `syserr.c' and `.\inc\sys\*.err' files.
+
+   E.g. To make small and large libraries for Borland,
+        use the command `configur borlandc' followed by `make -f bcc_s.mak'
+        and `make -f bcc_l.mak'.
+
+   You can e.g. say:
+
+     C:\NET\WATT\SRC\configur borland djgpp
+
+   to prepare building all Borland and djgpp targets. This command would
+   produce the following files for both Borland and djgpp:
+
+     .\src\bcc_s.mak                ->  Borland Makefiles (small, large, flat and Win32)
+     .\src\bcc_l.mak
+     .\src\bcc_f.mak
+     .\src\bcc_w.mak
+
+     .\src\djgpp.mak                -> GNU Makefile for djgpp target.
+
+     .\src\build\borland\watt32.dep -> Dependency file for Borland targets.
+     .\src\build\djgpp\watt32.dep   -> Ditto for djgpp.
+
+     .\src\build\borland\syserr.c   -> Included in .\src\neterr.c (Borland)
+     .\src\build\djgpp\syserr.c     -> Included in .\src\neterr.c (djgpp)
+
+     .\inc\sys\borland.err    -> Included in .\inc\sys\werrno.h (Borland)
+     .\inc\sys\djgpp.err      -> Included in .\inc\sys\werrno.h (djgpp)
+
+
+   NOTE: All makefiles (except `djgpp.mak') generates additional files needed
+         to compile and create resulting libraries.  This is because DOS's
+         command-line is limited to only 128 characters.  djgpp has a limit of
+         16kB, hence no response files are needed.
+
+   NOTE: "configur.bat visualc" generates makefiles for both release and debug
+         modes (cl option `-MD' and `-MDd'). Issue this command for a release
+         version:
+           C:\NET\WATT\SRC\> nmake -f visualc-release.mak
+
+
+8. Building the source distribution WATT32S*.ZIP requires these tools:
+
+   For djgpp:   DJGPP 2.01 or later (djgpp 2.00 not tested)
+                (djdev2??.zip package from Simtel).
+                GCC 2.7 or later, (including `cpp' and `ar')
+                GNU Make 3.6 or later.
+
+   For Borland: Only Borland C 4.5 has been tested.
+                Borland's TASM (3.0 or later).
+                Borland's MAKE tool, linker and librarian.
+                NOTE: BCC32 users who doesn't have `tasm32.exe' can
+                      safely use `-E<bcc32-bin-path>\tasm.exe' in the
+                      BCC32 config-file (`<bcc32-bin-path>\bcc32.cfg').
+
+   For Watcom:  Only Watcom C v11.0A and OpenWatcom 1.x has been tested.
+                Watcom's assembler WASM, make tool WMAKE, linker WLINK
+                and librarian WLIB are required.
+                E.g. `wmake -f watcom_s.mak clean' will erase all temporary
+                files generated by Watcom/small.
+
+   For Microsoft (DOS): This target (i.e. Quick-C) has been dropped.
+
+   For Visual C (Win32): Currently ML (Microsoft's Macro Assembler) is required
+                for all .asm files. You can get it from the Windows SDK. It is
+                available here:
+                  http://www.microsoft.com/en-us/download/details.aspx?id=12654
+
+   For HighC:   Metaware HighC 3.1 and 3.61 has been tested.
+                Pharlap DOS-extender 4.0 or later (including 386link linker
+                and 386lib librarian) required.
+                Borland's TASM (3.0 or later).
+                Borland compatible MAKE tool (MWMAKE stinks!).
+
+                NOTE: the `MAKE.EXE' from recent (v4.0 onwards) Borland
+                      versions is a protected mode program which is in-
+                      compatible with hc386.exe (a Pharlap DOSX-program).
+                      Hence use the real-mode `MAKER.EXE' instead.
+
+   For DMC:     Digital Mars Compiler prior to v8.33 has not been tested.
+                Borland's TASM (3.0 or later).
+                Borland compatible MAKE tool (SMAKE stinks!).
+
+                To compile for both MS Quick-C and Digital Mars is a bit
+                tricky. Because they both have lib.exe and link.exe programs
+                in their bin directories, and they both use `$INCLUDE' to
+                search for header files. We therefore use an environment
+                variable `DIGMARS'. This should point to the Digital Mars
+                base directory. E.g. define "set digmars=c:\dmc" in your
+                environment.
+
+   For all: To make library after changing `.\src\language.l',
+            GNU Flex 2.5.4 is required. Download from a Simtel
+            mirror near you or from:
+            <ftp://ftp.simtel.net/pub/simtelnet/gnu/djgpp/v2gnu/flx254b.zip>
+
+   Hint: If you have a RAM-disk of at least 5 Mbyte, building djgpp target
+         may be speeded up by defining a `TMPDIR' directory on a RAM-disk;
+         Assuming RAM-disk is on `d:', change `$(DJDIR)/djgpp.env' to include
+         `TMPDIR=d:/'.  Speed up building for Metaware by defining `TMPPREFIX'.
+         E.g. `SET TMPPREFIX=d:\'.
+
+
+9.  Make your library with the generated makefile (see above). All libraries
+    produced are placed in the `.\lib\' directory. The libraries are named:
+
+     For DOS:
+     ----------------------------------------------------------
+     .\lib\wattcpBS.lib  - Borland      Small (16-bit) version
+     .\lib\wattcpBL.lib  - Borland      Large (16-bit) version
+     .\lib\wattcpBF.lib  - Borland      Flat  (32-bit) version
+     .\lib\wattcpTS.lib  - Turbo-C      Small (16-bit) version
+     .\lib\wattcpTL.lib  - Turbo-C      Large (16-bit) version
+     .\lib\wattcpHF.lib  - HighC        Flat  (32-bit) version
+     .\lib\wattcpWS.lib  - Watcom       Small (16-bit) version
+     .\lib\wattcpWL.lib  - Watcom       Large (16-bit) version
+     .\lib\wattcpWF.lib  - Watcom       Flat  (32-bit) version
+     .\lib\wattcpDS.lib  - Digital Mars Small (16-bit) version
+     .\lib\wattcpDL.lib  - Digital Mars Large (16-bit) version
+     .\lib\wattcpDF.lib  - Digital Mars Small (32-bit) version (!)
+     .\lib\libwatt.a     - djgpp        Flat  (32-bit) version
+
+     For Win32 targets (32-bit):
+     ----------------------------------------------------------------------------
+     .\lib\x86\wattcpvc.lib       - Visual C,  static lib (release)
+     .\lib\x86\wattcpvc_d.lib     - Visual C,  static lib (debug)
+     .\lib\x86\wattcpvc_imp.lib   - Visual C,  import lib for .\bin\watt-32.dll  (release)
+     .\lib\x86\wattcpvc_imp_d.lib - Visual C,  import lib for .\bin\watt-32d.dll (debug)
+     .\lib\libwatt32.a            - MinGW/,    static lib
+     .\lib\libwatt32.dll.a        - MinGW,     import lib for .\bin\watt-32.dll
+     .\lib\x86\libwatt32.a        - MinGW-w64, static lib
+     .\lib\x86\libwatt32.dll.a    - MinGW-w64, import lib for .\bin\watt-32.dll
+     .\lib\wattcpww.lib           - Watcom C,  static lib
+     .\lib\wattcpww_imp.lib       - Watcom C,  import lib for .\bin\watt-32.dll
+     .\lib\wattcppo_imp.lib       - PellesC,   import lib for .\bin\watt-32.dll
+     .\lib\wattcppo.lib           - PellesC,   static lib
+     .\lib\wattcp_clang_imp.lib   - Clang-cl,  import lib for .\bin\watt-32.dll
+     .\lib\wattcp_clang.lib       - Clang-cl,  static lib
+
+     For Win64 targets (64-bit):
+     ----------------------------------------------------------------------------
+     .\lib\x64\wattcpvc.lib       - Visual C,  static lib (release)
+     .\lib\x64\wattcpvc_d.lib     - Visual C,  static lib (debug)
+     .\lib\x64\wattcpvc_imp.lib   - Visual C,  import lib for .\bin\watt-32_64.dll  (release)
+     .\lib\x64\wattcpvc_imp_d.lib - Visual C,  import lib for .\bin\watt-32d_64.dll (debug)
+     .\lib\x64\libwatt32.a        - MinGW-w64, static lib
+     .\lib\x64\libwatt32.dll.a    - MinGW-w64, import lib for .\bin\watt-32_64.dll
+
+     (other compilers are not currently supported for 64-bits.)
+
+
+   NOTE: A handy tip for djgpp users; make a hard link between
+         `libwatt.a' and `/djgpp/lib/libsocket.a' by this command:
+
+         ln -f $WATT_ROOT/lib/libwatt.a $DJDIR/lib/libsocket.a
+
+         (soft links doesn't work for anything except .exe-files.)
+
+         djgpp users should also define environment variables
+         `C_INCLUDE_PATH' and `LIBRARY_PATH' to point to the include
+         directory and library directory respectively.  E.g. put this
+         in your AUTOEXEC.BAT:
+
+           set C_INCLUDE_PATH=c:/net/watt/inc
+           set LIBRARY_PATH=c:/net/watt/lib
+
+         `C_INCLUDE_PATH' and `LIBRARY_PATH' are used in `djgpp.env' and
+         read by gcc when compiling and linking. Compiling the Watt-32
+         library and samples does not require these variables, but they
+         make it easier to build other applications. I.e. compiling
+         and linking could be as easy as `gcc ping.c -o ping.exe -lwatt'.
+
+         (!) Yes, the 32-bit Digital Mars version is actually SMALL model
+             (not FLAT). I choose the letter 'F' to be consistent with
+             other 32-bit versions.
+
+   NOTE: Building for PellesC [*] under Windows assumes you have created an
+         environment variable %PELLESC% to point to the root directory
+         of PellesC files.
+         [*] http://www.smorgasbordet.com/pellesc/
+
+
+10. Create the following environment variables:
+
+    * `WATTCP.CFG' (or `WATTCP_CFG' if you're using bash) pointing to
+      the directory where configuration-file `WATTCP.CFG' is located.
+
+    * `ETC' pointing to the directory where the files `hosts', `services',
+      `protocol' and `networks' are located.
+
+      E.g. SET WATTCP.CFG=c:\net\watt\bin
+           SET ETC=c:\net\watt\bin
+
+   NOTE: no trailing `\' at end of value (allthough wouldn'‘t hurt).
+         Change the paths or environment variables in `WATTCP.CFG' to
+         match your setup.
+
+   NOTE: The `WATT_ROOT' variable created in step 3 above is NOT required to
+         run any Watt-32 programs. It's only used during the build process.
+
+
+11. Waterloo TCP/IP currently uses only a single real-mode packet-driver
+   (PKTDRVR) to access the link-layer (Ethernet, PPP etc). For information
+   on how to obtain or install a packet-driver, look elsewhere. It is
+   assumed you are familiar with it's use.
+
+   Watt-32 have no concept of `interfaces' to route packets to.  Only one
+   interface exists at a given time. (But it handles routing to proper
+   gateway off course).
+
+   Default behaviour is that the first packet-driver in the range 0x60 -
+   0x80 will be used.  If you have more than one packet-driver installed,
+   this may cause troubles;  E.g. If you have an EtherNet PKTDRVR at
+   interrupt 0x60 and you want to connect via e.g. Dos-PPP at interrupt
+   0x61, Watt-32 will choose to use the EtherNet driver.
+
+   To solve this situation, set the WATTCP.CFG variable `PKT.VECTOR=0xNN'.
+   Replace `NN' for the API interrupt of the driver you want to use.  This
+   way, no PKTDRVR searching is done; only the driver at interrupt `0xNN'
+   will be used.
+
+   NOTE: To solve the above situation without using the `PKT.VECTOR' variable,
+         make sure your EtherNet driver is installed on a interrupts higher
+         than the one Dos-PPP will use.  That way the lowest interrupt number
+         will always be the correct one.  I.e. DOS-PPP will grab 0x60 when
+         online.  When offline, only the EtherNet driver at 0x61 will exist.
+
+
+WEAKNESSES (-) and BUGS (!)
+---------------------------
+
+There are still bugs. Especially with the BSD-socket API:
+
+! The IP-reassembly doesn't properly handle IP-fragments in random order.
+  Especially when the first fragment sent is the last fragment received.
+  But sequential order is okay. Linux has the habit of always sending the
+  IP-fragment with the highest offset first. This speeds up memory alloc-
+  ation at the receiver side (because size is known), but may cause problems
+  for Watt-32 hosts.
+
+- You cannot send packets larger than link-layer MTU because IP-fragmentation
+  on output is not yet supported. Will most likely only be supported for
+  BSD-sockets.
+
+! The Initial Sequence Number (ISN) is selected from system-timer.
+  With local ports being reused more quickly than our peer accepts,
+  the connection will be reset. We should wait 60s (2*MSL) before reusing
+  a local port.
+
+! Running with PPPD (ppp link driver) seems to indicate OOB ("Out Of Band")
+  is received in some tcp segments. I don't know if this is a bug in the
+  protocol debugger (pcdbug.c) or in PPPD. However, Watt-32 doesn't support
+  OOB or urgent data.
+
+

@@ -14,7 +14,7 @@
  *
  *      See readme.txt for copyright information.
  */
-
+#define ALLEGRO_HAVE_STDINT_H 1
 
 /* which color depths to include? */
 #define ALLEGRO_COLOR8

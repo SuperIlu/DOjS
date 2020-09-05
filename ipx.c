@@ -698,4 +698,8 @@ void init_ipx(js_State *J) {
 /**
  * @brief shutdown fm music subsystem.
  */
-void shutdown_ipx() { Jonipx_Close(); }
+void shutdown_ipx() {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+    Jonipx_Close();
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
+}

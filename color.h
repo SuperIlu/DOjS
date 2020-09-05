@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@ SOFTWARE.
 #ifndef __COLOR_H__
 #define __COLOR_H__
 
-#include <mujs.h>
 #include "DOjS.h"
 
 /************
@@ -35,7 +34,6 @@ SOFTWARE.
 /***********************
 ** exported functions **
 ***********************/
-extern void Color_Finalize(js_State *J, void *data);
 extern void init_color(js_State *J);
 
 #endif  // __COLOR_H__

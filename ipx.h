@@ -21,7 +21,6 @@
 #ifndef __IPX_H__
 #define __IPX_H__
 
-#include <mujs.h>
 #include "DOjS.h"
 
 /*************

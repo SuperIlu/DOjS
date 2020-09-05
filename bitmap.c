@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ SOFTWARE.
 #include <stdlib.h>
 
 #include <allegro.h>
+#include <loadpng.h>
 
 #include "3dfx-glide.h"
 #include "DOjS.h"
@@ -313,7 +314,7 @@ static void Bitmap_SaveBmpImage(js_State *J) {
 
 /**
  * @brief save Bitmap to file.
- * SaveBmpImage(fname:string)
+ * SavePcxImage(fname:string)
  *
  * @param J the JS context.
  */
@@ -331,7 +332,7 @@ static void Bitmap_SavePcxImage(js_State *J) {
 
 /**
  * @brief save Bitmap to file.
- * SaveBmpImage(fname:string)
+ * SaveTgaImage(fname:string)
  *
  * @param J the JS context.
  */
@@ -347,6 +348,24 @@ static void Bitmap_SaveTgaImage(js_State *J) {
     }
 }
 
+/**
+ * @brief save Bitmap to file.
+ * SavePngImage(fname:string)
+ *
+ * @param J the JS context.
+ */
+static void Bitmap_SavePngImage(js_State *J) {
+    BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
+    const char *fname = js_tostring(J, 1);
+
+    PALETTE pal;
+    get_palette(pal);
+
+    if (save_png(fname, bm, (const struct RGB *)&pal) != 0) {
+        js_error(J, "Can't save Bitmap to PNG file '%s': %s", fname, allegro_error);
+    }
+}
+
 /***********************
 ** exported functions **
 ***********************/
@@ -357,6 +376,9 @@ static void Bitmap_SaveTgaImage(js_State *J) {
  */
 void init_bitmap(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
+
+    /* Make Allegro aware of PNG file format. */
+    register_png_file_type();
 
     // define the Bitmap() object
     js_newobject(J);
@@ -369,6 +391,7 @@ void init_bitmap(js_State *J) {
         PROTDEF(J, Bitmap_SaveBmpImage, TAG_BITMAP, "SaveBmpImage", 1);
         PROTDEF(J, Bitmap_SavePcxImage, TAG_BITMAP, "SavePcxImage", 1);
         PROTDEF(J, Bitmap_SaveTgaImage, TAG_BITMAP, "SaveTgaImage", 1);
+        PROTDEF(J, Bitmap_SavePngImage, TAG_BITMAP, "SavePngImage", 1);
 #ifdef LFB_3DFX
         PROTDEF(J, Bitmap_FxDrawLfb, TAG_BITMAP, "FxDrawLfb", 4);
 #endif

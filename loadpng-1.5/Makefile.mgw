@@ -1,0 +1,25 @@
+## Aux -*- Makefile -*- for MinGW
+
+prefix := $(MINGDIR)
+libdir := $(MINGDIR)/lib
+includedir := $(MINGDIR)/include
+
+EXE := .exe
+EXAMPLECFLAGS := -Wl,--subsystem,windows -Wno-deprecated
+EXAMPLELIBS := -lpng -lz -lalleg
+
+#--------------------------------------------------
+# TODO: DLL generation, although I wouldn't really recommend it
+
+#--------------------------------------------------
+.PHONY: install
+
+install: $(LIB)
+	copy loadpng.h $(subst /,\,$(includedir))
+	copy $(LIB) $(subst /,\,$(libdir))
+
+#--------------------------------------------------
+# Hmm, my copy of mingw make seems to be particularly stupid tonight
+
+loadpng.o: loadpng.c
+	$(CC) $(CFLAGS) -o $@ -c $^

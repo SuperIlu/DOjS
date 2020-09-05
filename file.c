@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -62,7 +62,7 @@ static void File_Finalize(js_State *J, void *data) {
 
 /**
  * @brief open a file and store it as userdata in JS object.
- * new File(filename:string)
+ * new File(filename:string, mode:string)
  *
  * @param J VM state.
  */
@@ -124,6 +124,36 @@ static void File_ReadByte(js_State *J) {
 }
 
 /**
+ * @brief return the remaining bytes from the file as number array.
+ * file.ReadBytes():number[]
+ *
+ * @param J VM state.
+ */
+static void File_ReadBytes(js_State *J) {
+    file_t *f = js_touserdata(J, 0, TAG_FILE);
+    if (!f->file) {
+        js_error(J, "File was closed!");
+        return;
+    }
+
+    if (f->writeable) {
+        js_error(J, "File was opened for writing!");
+        return;
+    } else {
+        js_newarray(J);
+
+        int idx = 0;
+        int ch = getc(f->file);
+        while (ch != EOF) {
+            js_pushnumber(J, ch);
+            js_setindex(J, -2, idx);
+            idx++;
+            ch = getc(f->file);
+        }
+    }
+}
+
+/**
  * @brief return the next line from the file as string.
  * file.ReadLine():string
  *
@@ -165,6 +195,27 @@ static void File_Close(js_State *J) {
 }
 
 /**
+ * @brief get size of file.
+ * file.GetSize():number
+ *
+ * @param J VM state.
+ */
+static void File_GetSize(js_State *J) {
+    file_t *f = js_touserdata(J, 0, TAG_FILE);
+    if (!f->file) {
+        js_error(J, "File was closed!");
+        return;
+    }
+
+    int old = ftell(f->file);
+    fseek(f->file, 0, SEEK_END);
+    int size = ftell(f->file);
+    fseek(f->file, old, SEEK_SET);
+
+    js_pushnumber(J, size);
+}
+
+/**
  * @brief write a byte to a file.
  * file.WriteByte(ch:number)
  *
@@ -177,14 +228,53 @@ static void File_WriteByte(js_State *J) {
         return;
     }
 
-    int ch = js_toint16(J, 1);
+    if (!f->writeable) {
+        js_error(J, "File was opened for reading!");
+        return;
+    } else {
+        int ch = js_toint16(J, 1);
+        fputc((char)ch, f->file);
+        fflush(f->file);
+    }
+}
+
+/**
+ * @brief write a bytes to a file.
+ * file.WriteBytes(data:number[])
+ *
+ * @param J VM state.
+ */
+static void File_WriteBytes(js_State *J) {
+    file_t *f = js_touserdata(J, 0, TAG_FILE);
+    if (!f->file) {
+        js_error(J, "File was closed!");
+        return;
+    }
 
     if (!f->writeable) {
         js_error(J, "File was opened for reading!");
         return;
     } else {
-        fputc((char)ch, f->file);
-        fflush(f->file);
+        if (js_isarray(J, 1)) {
+            int len = js_getlength(J, 1);
+
+            uint8_t *data = malloc(len);
+            if (!data) {
+                JS_ENOMEM(J);
+                return;
+            }
+
+            for (int i = 0; i < len; i++) {
+                js_getindex(J, 1, i);
+                data[i] = (uint8_t)js_toint16(J, -1);
+                js_pop(J, 1);
+            }
+            fwrite(data, 1, len, f->file);
+
+            free(data);
+        } else {
+            JS_ENOARR(J);
+        }
     }
 }
 
@@ -251,11 +341,14 @@ void init_file(js_State *J) {
     js_newobject(J);
     {
         PROTDEF(J, File_ReadByte, TAG_FILE, "ReadByte", 0);
+        PROTDEF(J, File_ReadBytes, TAG_FILE, "ReadBytes", 0);
         PROTDEF(J, File_ReadLine, TAG_FILE, "ReadLine", 0);
         PROTDEF(J, File_Close, TAG_FILE, "Close", 0);
         PROTDEF(J, File_WriteByte, TAG_FILE, "WriteByte", 1);
+        PROTDEF(J, File_WriteBytes, TAG_FILE, "WriteBytes", 1);
         PROTDEF(J, File_WriteLine, TAG_FILE, "WriteLine", 1);
         PROTDEF(J, File_WriteString, TAG_FILE, "WriteString", 1);
+        PROTDEF(J, File_GetSize, TAG_FILE, "GetSize", 0);
     }
     js_newcconstructor(J, new_File, new_File, TAG_FILE, 2);
     js_defglobal(J, TAG_FILE, JS_DONTENUM);

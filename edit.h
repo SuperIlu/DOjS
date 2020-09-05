@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -126,6 +126,8 @@ typedef struct _edi {
     int scr_idx;
     int scr_x;
 #endif
+
+    char open_quote;  // indicates if we are in a string and which quote was used
 } edi_t;
 
 //! syntax highlight entry
@@ -147,7 +149,7 @@ typedef struct _cnp {
 /***********************
 ** exported functions **
 ***********************/
-extern edi_exit_t edi_edit(char *fname);
+extern edi_exit_t edi_edit(char *fname, bool highres);
 extern void edi_clear_selection(edi_t *edi);
 
 #endif  // __EDI_H__

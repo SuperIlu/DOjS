@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ SOFTWARE.
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
+#include <loadpng.h>
 
 #include "DOjS.h"
 #include "bitmap.h"
@@ -604,7 +605,7 @@ static void f_SaveBmpImage(js_State *J) {
 
 /**
  * @brief save current screen to file.
- * SaveBmpImage(fname:string)
+ * SavePcxImage(fname:string)
  *
  * @param J the JS context.
  */
@@ -621,7 +622,7 @@ static void f_SavePcxImage(js_State *J) {
 
 /**
  * @brief save current screen to file.
- * SaveBmpImage(fname:string)
+ * SaveTgaImage(fname:string)
  *
  * @param J the JS context.
  */
@@ -633,6 +634,23 @@ static void f_SaveTgaImage(js_State *J) {
 
     if (save_tga(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
         js_error(J, "Can't save screen to TGA file '%s': %s", fname, allegro_error);
+    }
+}
+
+/**
+ * @brief save current screen to file.
+ * SavePngImage(fname:string)
+ *
+ * @param J the JS context.
+ */
+static void f_SavePngImage(js_State *J) {
+    const char *fname = js_tostring(J, 1);
+
+    PALETTE pal;
+    get_palette(pal);
+
+    if (save_png(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
+        js_error(J, "Can't save screen to PNG file '%s': %s", fname, allegro_error);
     }
 }
 
@@ -741,6 +759,7 @@ void init_gfx(js_State *J) {
     FUNCDEF(J, f_SaveBmpImage, "SaveBmpImage", 1);
     FUNCDEF(J, f_SavePcxImage, "SavePcxImage", 1);
     FUNCDEF(J, f_SaveTgaImage, "SaveTgaImage", 1);
+    FUNCDEF(J, f_SavePngImage, "SavePngImage", 1);
 
     FUNCDEF(J, f_GetPixel, "GetPixel", 2);
     FUNCDEF(J, f_DrawArray, "DrawArray", 5);

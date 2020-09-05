@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -66,6 +66,8 @@ edi_t* lin_init(char* name) {
         edi->cnp_pos = 0;
         edi->cnp_size = 0;
         edi_clear_selection(edi);
+
+        edi->open_quote = 0;
 
 #ifdef EDI_FAST
         // alloc screen buffer

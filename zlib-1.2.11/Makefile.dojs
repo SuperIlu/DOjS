@@ -1,0 +1,44 @@
+# modified for DOjS by Andre Seidelt
+# Makefile for zlib.  Modified for djgpp v2.0 by F. J. Donahoe, 3/15/96.
+# Copyright (C) 1995-1998 Jean-loup Gailly.
+# For conditions of distribution and use, see copyright notice in zlib.h
+
+# To compile libz.a
+#
+#   make 
+#
+
+INCLUDE_PATH=.
+
+CFLAGS=-MMD -Os -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
+             -Wstrict-prototypes -Wmissing-prototypes -I$(INCLUDE_PATH) -march=i386 -mtune=i586
+
+INCL=zlib.h zconf.h
+LIBS=libz.a
+
+OBJS = adler32.o compress.o crc32.o gzclose.o gzlib.o gzread.o gzwrite.o \
+       uncompr.o deflate.o trees.o zutil.o inflate.o infback.o inftrees.o inffast.o
+
+all: $(LIBS)
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+libz.a: $(OBJS) $(OBJA)
+	$(AR) cr $@ $(OBJS) $(OBJA)
+
+# INCLUDE_PATH and LIBRARY_PATH were set for [make] in djgpp.env .
+
+.PHONY : uninstall clean
+
+clean:
+	$(RM) *.d
+	$(RM) *.o
+	$(RM) *.exe
+	$(RM) libz.a
+	$(RM) foo.gz
+
+DEPS := $(wildcard *.d)
+ifneq ($(DEPS),)
+include $(DEPS)
+endif

@@ -1,0 +1,36 @@
+## Aux -*- Makefile -*- for Unices
+
+prefix := /usr/local
+libdir := $(prefix)/lib
+includedir := $(prefix)/include
+DESTDIR :=
+
+EXAMPLECFLAGS := -Wno-deprecated-declarations
+EXAMPLELIBS := -lpng -lz `allegro-config --libs`
+
+#--------------------------------------------------
+# Note: this is for gcc
+# And I don't really think you should use it, but it's up to you
+.PHONY: shared
+
+SHAREDLIB := libloadpng-$(VERSION).so
+
+shared: $(SHAREDLIB)
+
+$(SHAREDLIB): loadpng.c savepng.c regpng.c
+	$(CC) -o $(SHAREDLIB) $(CFLAGS) -fPIC -shared loadpng.c savepng.c regpng.c
+
+#--------------------------------------------------
+.PHONY: install install-headers install-shared
+
+install: $(LIB) install-headers
+	install -d -m 755 $(DESTDIR)$(libdir)
+	install -m 644 $(LIB) $(DESTDIR)$(libdir)
+
+install-shared: $(SHAREDLIB) install-headers
+	install -d -m 755 $(DESTDIR)$(libdir)
+	install -m 755 $(SHAREDLIB) $(DESTDIR)$(libdir)
+
+install-headers:
+	install -d -m 755 $(DESTDIR)$(includedir)
+	install -m 644 loadpng.h $(DESTDIR)$(includedir)

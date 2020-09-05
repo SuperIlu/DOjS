@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,7 @@ static void edi_do_cut(edi_t* edi);
 static void edi_do_paste(edi_t* edi);
 static void edi_do_del_sel(edi_t* edi);
 static edi_exit_t edi_loop(edi_t* edi);
-static edi_t* edi_init(char* fname);
+static edi_t* edi_init(char* fname, bool highres);
 static void edi_shutdown(edi_t* edi);
 static void edi_start_selection(edi_t* edi);
 static void edi_goto_line(edi_t* edi, line_t* l, int line_num);
@@ -439,14 +439,15 @@ static void edi_do_save(edi_t* edi) {
 static void edi_do_goto_line(edi_t* edi) {
     char buff[DIA_ASK_SIZE];
     buff[0] = 0;
-    dia_ask_text(edi, buff, "1234567890", "<Enter Line number, ENTER or ESC>");
-    int line = atoi(buff) - 1;
-    line_t* l = lin_find(edi, line);
+    if (dia_ask_text(edi, buff, "1234567890", "<Enter Line number, ENTER or ESC>")) {
+        int line = atoi(buff) - 1;
+        line_t* l = lin_find(edi, line);
 
-    if (l) {
-        edi_goto_line(edi, l, line);
-    } else {
-        dia_show_message(edi, "Line not found!");
+        if (l) {
+            edi_goto_line(edi, l, line);
+        } else {
+            dia_show_message(edi, "Line not found!");
+        }
     }
 }
 
@@ -464,7 +465,7 @@ static void edi_goto_line(edi_t* edi, line_t* l, int line_num) {
             edi->x = edi->current->length;
         }
         edi->y = 0;
-        edi->num = line_num;
+        edi->num = line_num + 1;
     }
 }
 
@@ -801,8 +802,8 @@ static void edi_do_del_sel(edi_t* edi) {
  * @return a string buffer if a context could be found or NULL if not. The buffer needs to be free()d.
  */
 static char* edi_get_context(edi_t* edi) {
-    int start = edi->x;
-    int end = edi->x;
+    int start, end;
+    start = end = edi->x;
 
     // find first char of context
     while (start > 0 && isalnum(edi->current->txt[start])) {
@@ -1114,11 +1115,16 @@ static edi_exit_t edi_loop(edi_t* edi) {
  * @brief initialize editor.
  *
  * @param fname filename to use in title bar.
+ * @param highres TRUE to use 50line video mode.
  *
  * @return a usable editor with a single empty line.
  */
-static edi_t* edi_init(char* fname) {
-    textmode(C80);                  // switch to 80column/color mode
+static edi_t* edi_init(char* fname, bool highres) {
+    if (highres) {
+        textmode(C4350);  // switch to 80column/50line/color mode
+    } else {
+        textmode(C80);  // switch to 80column/color mode
+    }
     clrscr();                       // clear screen
     _setcursortype(_NORMALCURSOR);  // underline cursor
     _wscroll = 0;                   // disable scrolling
@@ -1169,17 +1175,18 @@ void edi_clear_selection(edi_t* edi) {
  * @brief edi the given file.
  *
  * @param fname name of the file.
+ * @param highres TRUE to use 50line video mode.
  *
  * @return a code describing why the editor was quit.
  */
-edi_exit_t edi_edit(char* fname) {
+edi_exit_t edi_edit(char* fname, bool highres) {
     check_file_t exists = ut_check_file(fname);
     if (exists == CF_ERROR) {
         perror("Error accessing file");
         return EDI_ERROR;
     }
 
-    edi_t* edi = edi_init(fname);
+    edi_t* edi = edi_init(fname, highres);
     if (exists == CF_YES) {
         char* error = edi_load(edi, fname);
         if (error) {

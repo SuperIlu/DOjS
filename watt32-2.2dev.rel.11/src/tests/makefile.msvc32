@@ -1,0 +1,72 @@
+#
+#  Visual-C (Win32) Makefile Watt-32 tcp/ip test programs.
+#
+
+CC     = cl
+CFLAGS = -nologo -MD -Os -W3 -Gy -GS -Zi \
+         -I.. -I..\..\inc -DWIN32 -D_CRT_NONSTDC_NO_WARNINGS \
+         -D_CRT_OBSOLETE_NO_WARNINGS -DWATT32 -DWATT32_STATIC \
+         -DTEST_PROG
+
+WATTLIB = ..\..\lib\x86\wattcpvc.lib
+LDFLAGS = $(WATTLIB) user32.lib advapi32.lib -link -map -incremental:no
+RM_CRAP = rm -f $*.exp $*.ilk $*.lib $*.obj
+
+
+all: cl.arg cpu.exe cpuspeed.exe chksum.exe ip4_frag.exe fingerd.exe \
+     ioctl.exe geteth.exe tftp.exe ttime.exe select.exe wecho.exe \
+     pcconfig.exe idna.exe gtod_tst.exe packet.exe udp_test.exe \
+     language.exe eatsock.exe getserv.exe get_ai.exe gethost.exe \
+     gethost6.exe pcarp.exe pc_cbrk.exe btree.exe socktest.exe bind.exe \
+     syslog.exe udp_srv.exe mcast.exe punycode.exe misc.exe swap.exe \
+     timeit_test.exe
+
+cl.arg:: Makefile.MSVC32
+      @echo $(CFLAGS) > $@
+
+chksum.exe: chksum.c $(WATTLIB) cl.arg
+    $(CC) @cl.arg $*.c -Fe$*.exe $(LDFLAGS)
+    $(RM_CRAP)
+    @echo
+
+wecho.exe: ..\echo.c $(WATTLIB) cl.arg
+    $(CC) @cl.arg ..\echo.c -Fe$@ $(LDFLAGS)
+    $(RM_CRAP)
+    @echo
+
+fingerd.exe: ..\listen.c $(WATTLIB) cl.arg
+    $(CC) @cl.arg ..\listen.c -Fe$@ $(LDFLAGS)
+    $(RM_CRAP)
+    @echo
+
+cpu.exe: cpu.c $(WATTLIB) cl.arg
+    $(CC) @cl.arg cpu.c -Fe$@ $(LDFLAGS)
+    $(RM_CRAP)
+    @echo
+
+swap.exe: swap.c timeit.h cl.arg
+    $(CC) @cl.arg -Gr swap.c -Fe$@ $(LDFLAGS)
+    $(RM_CRAP)
+    @echo
+
+timeit_test.exe: timeit_test.c timeit.h cl.arg
+    $(CC) @cl.arg -Gr timeit_test.c -Fe$@ $(LDFLAGS)
+    $(RM_CRAP)
+    @echo
+
+.c.exe:
+    $(CC) @cl.arg $*.c -Fe$*.exe $(LDFLAGS)
+    $(RM_CRAP)
+    @echo
+
+.c.obj:
+    $(CC) @cl.arg -c $*.c
+    @echo
+
+{..}.c.exe:
+    $(CC) @cl.arg ..\$*.c -Fe$*.exe $(LDFLAGS)
+    $(RM_CRAP)
+    @echo
+
+clean:
+    - rm -f *.map *.exe *.lib *.pdb cl.arg

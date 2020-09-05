@@ -30,6 +30,8 @@ If you run it on real hardware you need at least a **80386 with 4MB**. I recomme
 
 The following hardware/functions are available:
 * 8/16/24 and 32 bit 2D graphics. On 24/32bit display modes alpha channel transparency is available.
+* BMP, PCX, TGA and PNG image reading and writing
+* GRX font loading and rendering
 * Keyboard input
 * Mouse input
 * Joystick/Joyport input
@@ -43,6 +45,7 @@ The following hardware/functions are available:
 * direct io-port access (inb, outb, etc)
 * LPT or parallel port access (bi-directional)
 * COM or serial port access
+* IPX and TCP/IP networking
 
 ## A minimal script
 You can find the following example in `examples/exampl.js`:
@@ -131,9 +134,9 @@ I used the following command lines to update/install my dependencies:
 ```bash
 sudo apt-get update
 sudo apt-get dist-upgrade
-sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev g++ unzip htop screen git bash-completion build-essential npm zip
+sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev g++ unzip htop screen git bash-completion build-essential npm zip dos2unix
 sudo npm install -g jsdoc
-sudo npm install -g tui-jsdoc-template
+sudo npm install -g better-docs
 ```
 
 And the following commands to build and install DJGPP to `/home/ilu/djgpp`.:
@@ -153,6 +156,7 @@ git clone https://github.com/SuperIlu/DOjS.git
 ```
 
 Open the Makefile in a text editor and change the path to DJGPP according to your installation.
+If you used Windows-Tools to check out DOjS from git you may need to fix the newlines of the shell scripts by using `make fixnewlines`.
 
 Now you are ready to compile DOjS with `make clean all`. This might take some time as the dependencies are quite a large.
 `make distclean` will clean dependencies as well. `make zip` will create the distribution ZIP and `make doc` will re-create the HTML help.
@@ -166,7 +170,6 @@ See the [changelog](/CHANGELOG.md) for the projects history.
 # Planed work
 * Fix bugs!
 * Anything fun...
-* add [watt32] support (http://www.watt-32.net/)
 
 # Licenses
 ## DOjS
@@ -215,11 +218,51 @@ p5js is is released under **LGPL**.
 
 The examples are licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
+## libpng
+[libpng](http://www.libpng.org/pub/png/libpng.html) is released under [PNG Reference Library License version 2](http://www.libpng.org/pub/png/src/libpng-LICENSE.txt)
+
+## zlib
+[zlib](http://www.zlib.net/) is released under [zlib license](http://www.zlib.net/zlib_license.html).
+
+## loadpng
+[loadpng](https://tjaden.strangesoft.net/loadpng/) is placed in the public domain.
+
+## WATTCP
+WATTCP - TCP/IP library routines
+
+Copyright (c) 1990, 1991, 1992, 1993 Erick Engelke
+
+Portions Copyright (c) 1993  Quentin Smart
+Portions Copyright (c) 1991  University of Waterloo
+Portions Copyright (c) 1990  National Center for Supercomputer Applications
+Portions Copyright (c) 1990  Clarkson University
+Portions Copyright (c) 1983, 1986, Imagen Corporation
+
+    This software is distributed in the hope that it will be useful,
+    but without any warranty; without even the implied warranty of
+    merchantability or fitness for a particular purpose.
+
+**RESTRICTIONS**
+You may freely use this library to produce programs which you may give
+away or sell in source format, or as compiled executables, or both.
+
+You may not sell this library or a portion thereof or distribute modified
+versions the library code in either source or OBJect or LIBrary format
+without written permission from the author.  The author still maintains
+copyright privileges and will assert the privileges of ownership for
+purposes of royalties such distributions.
+
+Portions of this code were written or enhanced by others and offerred
+to me for distribution in WATTCP under my copyright.  To my knowledge,
+all copyrights exercised are listed at the top of this file.  If this
+is incorrect, please contact me so I can rectify the situation.
+
 # Usage
 ## Command line
 ```
-Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script> [script parameters]
+Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
     -r             : Do not invoke the editor, just run the script.
+    -l             : Use 50-line mode in the editor.
     -w <width>     : Screen width: 320 or 640, Default: 640.
     -b <bpp>       : Bit per pixel:8, 16, 24, 32. Default: 32.
     -s             : No wave sound.

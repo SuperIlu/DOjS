@@ -1,0 +1,57 @@
+#
+#  Makefile for _some_ Watt-32 tcp/ip test programs.
+#  Borland 16-bit version.
+#
+
+CC     = bcc
+CFLAGS = -DTEST_PROG -DWATT32 -ml -v -ls  -I..;..\..\inc \
+         -L ..\..\lib\wattcpbl.lib #-f87
+
+all: cpu.exe chksum.exe tftp.exe ttime.exe ttime2.exe gettod.exe \
+     pc_cbrk.exe geteth.exe getserv.exe ip4_frag.exe fingerd.exe sel.exe
+
+tftp.exe: ..\tftp.c
+    $(CC) $(CFLAGS) ..\tftp.c
+
+gettod.exe: ..\gettod.c
+    $(CC) $(CFLAGS) ..\gettod.c
+
+geteth.exe: ..\geteth.c
+    $(CC) $(CFLAGS) ..\geteth.c
+
+getserv.exe: ..\getserv.c
+    $(CC) $(CFLAGS) ..\getserv.c
+
+pc_cbrk.exe: ..\pc_cbrk.c
+    $(CC) $(CFLAGS) ..\pc_cbrk.c
+
+ip4_frag.exe: ..\ip4_frag.c
+    $(CC) $(CFLAGS) ..\ip4_frag.c
+
+fingerd.exe: ..\listen.c
+    $(CC) $(CFLAGS) ..\listen.c -efingerd.exe
+
+sel.exe: ..\select.c
+    $(CC) $(CFLAGS) ..\select.c -esel.exe
+
+clean:
+    del *.obj
+    del *.map
+    del *.exe
+
+cpu.c: ..\wattcp.h ..\misc.h ..\cpumodel.h
+..\geteth.c: ..\wattcp.h ..\pcbsd.h ..\pcarp.h ..\pcconfig.h ..\pcdns.h
+..\tftp.c: ..\socket.h ..\pcdns.h ..\tftp.h
+chksum.c: ..\wattcp.h ..\misc.h ..\getopt.h ..\gettod.h ..\chksum.h \
+          ..\cpumodel.h
+..\gettod.c: ..\wattcp.h ..\misc.h ..\x32vm.h ..\gettod.h
+..\pc_cbrk.c: ..\wattcp.h ..\sock_ini.h ..\wdpmi.h ..\x32vm.h ..\language.h \
+              ..\strings.h ..\pc_cbrk.h
+..\getserv.c: ..\wattcp.h ..\strings.h ..\misc.h ..\language.h ..\pcconfig.h \
+              ..\pcbsd.h
+..\ip4_frag.c: ..\wattcp.h ..\strings.h ..\language.h ..\chksum.h ..\ip4_out.h \
+               ..\misc.h ..\pcconfig.h ..\pcstat.h ..\pcqueue.h ..\pcsed.h    \
+               ..\pcpkt.h ..\pcdbug.h ..\pcicmp.h ..\pcsed.h ..\pcbsd.h       \
+               ..\ip4_frag.h ..\pctcp.h
+
+

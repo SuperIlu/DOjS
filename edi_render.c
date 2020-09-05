@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ SOFTWARE.
 static void edi_draw_line(edi_t* edi, line_t** l, int y, int offset, int line_num);
 static void edi_draw_status(edi_t* edi);
 static void edi_draw_commands(edi_t* edi);
-static int edi_syntax(line_t* l, int pos);
+static int edi_syntax(edi_t* edi, line_t* l, int pos);
 static void edi_sel_color(edi_t* edi, int x, int y);
 static bool edi_colcmp(const syntax_t* sy, char* txt, int remainder);
 
@@ -87,25 +87,38 @@ static bool edi_colcmp(const syntax_t* sy, char* txt, int remainder) {
 /**
  * @brief switch display color for syntax highlighting word.
  *
+ * @param edi the edi system to work on.
  * @param l the line we are working on.
  * @param pos the cursor position in the line.
  *
  * @return int the number of characters to draw in the just set color or 0 if no match was found.
  */
-static int edi_syntax(line_t* l, int pos) {
-    int w = 0;
-    while (edi_wordlist[w].word) {
-        if (pos == 0 || edi_wordlist[w].word[0] == '.' || !isalnum(l->txt[pos - 1])) {
-            if (edi_colcmp(&edi_wordlist[w], &l->txt[pos], l->length - pos)) {
-                edi_textcolor(edi_wordlist[w].color);
-                if (edi_wordlist[w].length == -1) {
-                    return l->length - pos;
-                } else {
-                    return edi_wordlist[w].length;
+static int edi_syntax(edi_t* edi, line_t* l, int pos) {
+    if (edi->open_quote) {
+        edi_textcolor(GREEN);
+        if (edi->open_quote == l->txt[pos]) {
+            edi->open_quote = 0;
+            // EDIF("Closing quote detected: %s\n", &l->txt[pos]);
+        }
+    } else if ((l->txt[pos] == '"') || (l->txt[pos] == '\'')) {
+        edi->open_quote = l->txt[pos];
+        edi_textcolor(GREEN);
+        // EDIF("Open quote detected: %s\n", &l->txt[pos]);
+    } else {
+        int w = 0;
+        while (edi_wordlist[w].word) {
+            if (pos == 0 || edi_wordlist[w].word[0] == '.' || !isalnum(l->txt[pos - 1])) {
+                if (edi_colcmp(&edi_wordlist[w], &l->txt[pos], l->length - pos)) {
+                    edi_textcolor(edi_wordlist[w].color);
+                    if (edi_wordlist[w].length == -1) {
+                        return l->length - pos;
+                    } else {
+                        return edi_wordlist[w].length;
+                    }
                 }
             }
+            w++;
         }
-        w++;
     }
     return 0;
 }
@@ -151,15 +164,18 @@ static void edi_sel_color(edi_t* edi, int x, int y) {
 static void edi_draw_line(edi_t* edi, line_t** l, int y, int offset, int line_num) {
     edi_textcolor(WHITE);
     edi_gotoxy(edi, 1, y);
-    int hskip = 0;
     if (*l) {
-        for (int i = offset; i < (*l)->length && edi_wherex(edi) < edi->width; i++) {
+        edi->open_quote = 0;  // lines start always with close quotes because line spaning strings are not allowed in JS
+        int hskip = 0;
+        for (int i = 0; i < (*l)->length && edi_wherex(edi) < edi->width; i++) {
             if (hskip <= 0) {
                 edi_textcolor(WHITE);
-                hskip = edi_syntax(*l, i);
+                hskip = edi_syntax(edi, *l, i);
             }
             edi_sel_color(edi, i, line_num);
-            edi_putch(edi, (*l)->txt[i]);
+            if (i >= offset) {
+                edi_putch(edi, (*l)->txt[i]);
+            }
             if (hskip > 0) {
                 hskip--;
             }
@@ -282,8 +298,8 @@ void edi_get_cnp(edi_t* edi, cnp_t* cnp) {
 void edi_redraw(edi_t* edi) {
     int refresh_line = -1;
     int offset = 0;  // x drawing offset
-    if (edi->x > edi->width - 1) {
-        offset = edi->x - edi->width + 1;
+    if (edi->x > edi->width - 2) {
+        offset = edi->x - edi->width + 2;
     }
 
     edi_textbackground(BLACK);
@@ -328,7 +344,7 @@ void edi_redraw(edi_t* edi) {
 
     // set cursor to current position
     if (offset) {
-        gotoxy(edi->width, edi->y + 2);
+        gotoxy(edi->width - 1, edi->y + 2);
     } else {
         gotoxy(edi->x + 1, edi->y + 2);  // set cursor to current position
     }

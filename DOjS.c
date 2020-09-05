@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,10 @@ SOFTWARE.
 
 #include "DOjS.h"
 
-#include <allegro.h>
 #include <conio.h>
 #include <glide.h>
 #include <jsi.h>
-#include <mujs.h>
 #include <signal.h>
-#include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -40,6 +36,8 @@ SOFTWARE.
 #include "bitmap.h"
 #include "color.h"
 #include "comport.h"
+#include "watt.h"
+#include "socket.h"
 #include "edit.h"
 #include "file.h"
 #include "font.h"
@@ -79,8 +77,9 @@ END_OF_FUNCTION(tick_handler)
  * @brief show usage on console
  */
 static void usage() {
-    fputs("Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script> [script parameters]\n", stderr);
+    fputs("Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]\n", stderr);
     fputs("    -r             : Do not invoke the editor, just run the script.\n", stderr);
+    fputs("    -l             : Use 50-line mode in the editor.\n", stderr);
     fputs("    -w <width>     : Screen width: 320 or 640, Default: 640.\n", stderr);
     fputs("    -b <bpp>       : Bit per pixel:8, 16, 24, 32. Default: 32.\n", stderr);
     fputs("    -s             : No wave sound.\n", stderr);
@@ -88,7 +87,7 @@ static void usage() {
     fputs("    -a             : Disable alpha (speeds up rendering).\n", stderr);
     fputs("\n", stderr);
     fputs("This is DOjS " DOSJS_VERSION_STR "\n", stderr);
-    fputs("(c) 2019 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
+    fputs("(c) 2019-2020 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
     fputs("See LICENSE for detailed licensing information.\n", stderr);
     fputs("\n", stderr);
     exit(1);
@@ -291,6 +290,8 @@ static void run_script(int argc, char **argv, int args) {
     init_fxstate(J);
     init_joystick(J);
     init_comport(J);
+    init_watt(J);
+    init_socket(J);
 
     // create canvas
     bool screenSuccess = true;
@@ -334,6 +335,7 @@ static void run_script(int argc, char **argv, int args) {
         js_dofile(J, JSINC_IPX);
         js_dofile(J, JSINC_A3D);
         js_dofile(J, JSINC_3DFX);
+        js_dofile(J, JSINC_SOCKET);
 
         // load main file
         DOjS.lastError = NULL;
@@ -345,6 +347,7 @@ static void run_script(int argc, char **argv, int args) {
                 // call loop() until someone calls Stop()
                 while (DOjS.keep_running) {
                     long start = DOjS.sys_ticks;
+                    tick_socket();
                     if (!callGlobal(J, CB_LOOP)) {
                         if (!DOjS.lastError) {
                             DOjS.lastError = "Loop() not found.";
@@ -393,6 +396,7 @@ static void run_script(int argc, char **argv, int args) {
     shutdown_comport();
     fclose(DOjS.logfile);
     allegro_exit();
+    textmode(C80);
     if (DOjS.lastError) {
         fputs(DOjS.lastError, stdout);
         fputs("\nDOjS ERROR\n", stdout);
@@ -425,6 +429,7 @@ void update_transparency() {
 int main(int argc, char **argv) {
     DOjS.params.script = NULL;
     DOjS.params.run = false;
+    DOjS.params.highres = false;
     DOjS.params.no_sound = false;
     DOjS.params.no_fm = false;
     DOjS.params.no_alpha = false;
@@ -433,7 +438,7 @@ int main(int argc, char **argv) {
     int opt;
 
     // check parameters
-    while ((opt = getopt(argc, argv, "rsfahw:b:")) != -1) {
+    while ((opt = getopt(argc, argv, "lrsfahw:b:")) != -1) {
         switch (opt) {
             case 'w':
                 DOjS.params.width = atoi(optarg);
@@ -443,6 +448,9 @@ int main(int argc, char **argv) {
                 break;
             case 'r':
                 DOjS.params.run = true;
+                break;
+            case 'l':
+                DOjS.params.highres = true;
                 break;
             case 's':
                 DOjS.params.no_sound = true;
@@ -486,7 +494,7 @@ int main(int argc, char **argv) {
     while (true) {
         edi_exit_t exit = EDI_KEEPRUNNING;
         if (!DOjS.params.run) {
-            exit = edi_edit(DOjS.params.script);
+            exit = edi_edit(DOjS.params.script, DOjS.params.highres);
         } else {
             exit = EDI_RUNSCRIPT;
         }

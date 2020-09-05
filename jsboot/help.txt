@@ -1,7 +1,8 @@
 # Usage
 ## Command line
-Usage: DOjS.EXE [-r] [-s] [-f] [-a] <script> [script parameters]
+Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
     -r             : Do not invoke the editor, just run the script.
+    -l             : Use 50-line mode in the editor.
     -w <width>     : Screen width: 320 or 640, Default: 640.
     -b <bpp>       : Bit per pixel:8, 16, 24, 32. Default: 32.
     -s             : No wave sound.
@@ -60,8 +61,9 @@ This function is called whenever mouse/keyboard input happens. The parameter is 
 Open a file, for file modes see `jsboot/file.js`. Files can only either be read or written, never both. Writing to a closed file throws an exception.
 
 ### f.ReadByte():number
+### f.ReadBytes():number[]
 ### f.ReadLine():string
-Read a single byte/line from file. The maximum line length is 4096 byte.
+Read a single/multiple byte(s)/line from file. The maximum line length is 4096 byte.
 
 ### f.WriteByte(ch:number)
 ### f.WriteString(txt:string)
@@ -70,6 +72,9 @@ Write a byte/string/NEWLINE terminated string to a file.
 
 ### f.Close()
 Close the file.
+
+### f.GetSize():number
+Get file size.
 
 ## Color
 See `jsboot/color.js` for predefined EGA colors. Use `NO_COLOR` for the transparent color.
@@ -124,12 +129,9 @@ Draw the image to the canvas at given coordinates using RGBA transparency.
 get the color of an image pixel.
 
 ### bm.SaveBmpImage(fname:string)
-Save Bitmap to file.
-
 ### bm.SavePcxImage(fname:string)
-Save Bitmap to file.
-
 ### bm.SaveTgaImage(fname:string)
+### bm.SavePngImage(fname:string)
 Save Bitmap to file.
 
 ## Font
@@ -292,12 +294,9 @@ Draw a text with the default font.
 Enable/disable transparency.
 
 ### SaveBmpImage(fname:string)
-Save current screen to file.
-
 ### SavePcxImage(fname:string)
-Save current screen to file.
-
 ### SaveTgaImage(fname:string)
+### SavePngImage(fname:string)
 Save current screen to file.
 
 ## Keyboard/Mouse Input
@@ -528,3 +527,101 @@ send data to parallel port.
 
 ### LPTStatus(port:number)
 read parallel port status.
+
+## TCP/IP
+### GetLocalIpAddress():number[]
+Get the local IP address.
+
+### GetNetworkMask():number[]
+Get the netmask.
+
+### Resolve(hostname:string):number[]
+Resolve an IP address using DNS.
+
+### ResolveIp(ip:number[]):string
+Reverse lookup IP address using DNS.
+
+### GetHostname():string
+Get hostname.
+
+### GetDomainname():string
+Get domainname.
+
+### http_get(url:string, head:string[]):HTTPResult
+Do a HTTP GET request and return the answer as array.
+
+### http_string_content(res:HTTPResult):string
+Convert the data array returned by http_get() into a string.
+
+### http_ok(res:HTTPResult):bool
+Check if a HTTP request succeeded.
+
+### http_headers(res:HTTPResult):Object
+Extract all response headers.
+
+## Sockets
+### socket = Socket(host:IpAddres|string, rport:number, [lport:number])
+Create a TCP client socket (outgoing connection).
+
+### socket = UdpSocket(host:IpAddres|string, rport:number, [lport:number])
+Create a UDP socket.
+
+### socket = ServerSocket(host:IpAddres|string, lport:number)
+Create a server socket.
+
+### socket.Close([doFlush:boolean = false])
+close the socket.
+
+### socket.WaitFlush()
+wait until all written data is flushed.
+
+### socket.WaitInput([timeout:number = 1])
+wait on socket for incoming data with timeout.
+
+### socket.ReadByte():number
+return the next byte from the socket as number.
+
+### socket.WriteByte(ch:number)
+write a byte to a socket.
+
+### socket.WriteBytes(data:number[])
+send binary data.
+
+### socket.WriteString(data:string)
+send string
+
+### socket.Mode(mode:number)
+Set binary or ascii mode for UDP/TCP sockets.
+
+### socket.Flush([flushWait:boolean = false])
+Send pending TCP data.
+
+### socket.NoFlush()
+Sets non-flush mode on next TCP write.
+
+### socket.FlushNext()
+Causes next transmission to have a flush (PUSH bit set).
+
+### socket.DataReady():number
+returns number of bytes waiting to be read.
+
+### socket.Established():bool
+check if the socket connection is established.
+
+### socket.GetRemoteHost():number[]
+get the remote host ip
+
+### socket.GetLocalPort():number
+get the local port number
+
+### socket.GetRemotePort():number
+get the remote port number
+
+### socket.ReadLine():string
+return the next line from the socket as string (blocks until CR/NL).
+
+### socket.ReadString(len:number):string
+return data as string (blocks until 'len' was read).
+
+### socket.ReadBytes(len:number):number[]
+return data as array of numbers (blocks until 'len' was read).

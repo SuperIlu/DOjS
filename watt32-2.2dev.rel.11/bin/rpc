@@ -1,0 +1,186 @@
+#ident  "@(#)rpc        1.0    98/10/16 JVD"
+#
+#       rpc
+#
+# offical name  number  alias(es)
+#-------------------------------------------
+
+rpcbind         100000  portmap sunrpc rpcbind
+rstatd          100001  rstat rup perfmeter
+rusersd         100002  rusers
+nfs             100003  nfsprog
+ypserv          100004  ypprog
+mountd          100005  mount showmount
+ypbind          100007
+walld           100008  rwall shutdown
+yppasswdd       100009  yppasswd
+etherstatd      100010  etherstat
+rquotad         100011  rquotaprog quota rquota
+sprayd          100012  spray
+3270_mapper     100013
+rje_mapper      100014
+selection_svc   100015  selnsvc
+database_svc    100016
+rexd            100017  rex
+alis            100018
+sched           100019
+llockmgr        100020
+nlockmgr        100021
+x25.inr         100022
+statmon         100023
+status          100024
+bootparam       100026
+ypupdated       100028  ypupdate
+keyserv         100029  keyserver
+sunlink_mapper  100033
+tfsd            100037
+nsed            100038
+nsemntd         100039
+showfhd         100043  showfh
+ioadmd          100055  rpc.ioadmd
+NETlicense      100062
+sunisamd        100065
+debug_svc       100066  dbsrv
+cmsd            100068
+ypxfrd          100069
+bugtraqd        100071
+kerbd           100078
+ttdbserverd     100083
+admind          100087
+autofsd         100099  autofsd
+event           100101  na.event        # SunNet Manager
+logger          100102  na.logger       # SunNet Manager
+sync            100104  na.sync
+diskinfo        100105  na.diskinfo     # SunNet Manager
+iostat          100106  na.iostat
+hostperf        100107  na.hostperf
+activity        100109  na.activity     # SunNet Manager
+lpstat          100111  na.lpstat       # SunNet Manager
+hostmem         100112  na.hostmem
+sample          100113  na.sample
+x25             100114  na.x25
+ping            100115  na.ping
+rpcnfs          100116  na.rpcnfs
+hostif          100117  na.hostif
+etherif         100118  na.etherif
+ippath          100119  na.ippath       # SunNet Manager
+iproutes        100120  na.iproutes
+layers          100121  na.layers
+snmp            100122  na.snmp snmp-cmc snmp-synoptics snmp-unisys snmp-utk
+traffic         100123  na.traffic
+layers2         100131  na.layers2      # SunNet Manager
+etherif2        100135  na.etherif2     # SunNet Manager
+hostmem2        100136  na.hostmem2     # SunNet Manager
+iostat2         100137  na.iostat2      # SunNet Manager
+snmpv2          100138  na.snmpv2       # SunNet Manager
+sender          100139  cc_sender       # Cooperative Consoles
+kcms            100221
+nfs_acl         100227
+sadmind         100232
+ufsd            100233  ufsd
+cachefsd        100235
+snmpXdmid       100249
+nisd            100300  rpc.nisd
+nispasswd       100303  rpc.nispasswdd
+ufsd            100233  ufsd
+metad           100229  metad           # rpc.metad
+metamhd         100230  metamhd         # rpc.metamhd
+nf_snmd         120126                  # SunNet Manager
+nf_snmd         120127
+
+pcnfsd          150001
+
+amd             300019  amq
+dmispd          300598
+
+sgi_snoopd      391000  snoopd snoop
+sgi_toolkitbus  391001
+sgi_fam         391002
+sgi_notepad     391003  notepad
+sgi_mountd      391004  mount showmount
+sgi_smtd        391005  smtd
+sgi_pcsd        391006  pcsd
+sgi_nfs         391007
+sgi_rfind       391008  rfind
+sgi_pod         391009  pod
+sgi_iphone      391010
+sgi_videod      391011
+sgi_testcd      391012  testcd
+sgi_ha_hb       391013  ha_heartbeat
+sgi_ha_nc       391014  ha_nc
+sgi_ha_appmon   391015  ha_appmon
+sgi_xfsmd       391016
+sgi_mediad      391017  mediad
+sgi_reserved    391018
+sgi_reserved    391019
+sgi_reserved    391020
+sgi_reserved    391021
+sgi_reserved    391022
+sgi_reserved    391023
+sgi_reserved    391024
+sgi_reserved    391025
+sgi_reserved    391026
+sgi_reserved    391027
+sgi_reserved    391028
+sgi_reserved    391029
+sgi_reserved    391030
+sgi_reserved    391031
+sgi_reserved    391032
+sgi_reserved    391033
+sgi_reserved    391034
+sgi_reserved    391035
+sgi_reserved    391036
+sgi_reserved    391037
+sgi_reserved    391038
+sgi_reserved    391039
+sgi_reserved    391032
+sgi_reserved    391033
+sgi_reserved    391034
+sgi_reserved    391035
+sgi_reserved    391036
+sgi_reserved    391037
+sgi_reserved    391038
+sgi_reserved    391039
+sgi_reserved    391040
+sgi_reserved    391041
+sgi_reserved    391042
+sgi_reserved    391043
+sgi_reserved    391044
+sgi_reserved    391045
+sgi_reserved    391046
+sgi_reserved    391047
+sgi_reserved    391048
+sgi_reserved    391049
+sgi_reserved    391050
+sgi_reserved    391051
+sgi_reserved    391052
+sgi_reserved    391053
+sgi_reserved    391054
+sgi_reserved    391055
+sgi_reserved    391056
+sgi_reserved    391057
+sgi_reserved    391058
+sgi_reserved    391059
+sgi_reserved    391060
+sgi_reserved    391061
+sgi_reserved    391062
+sgi_reserved    391063
+
+bwnfsd          545580417
+
+inetray.start   555555554
+inetray         555555555
+inetray         555555556
+inetray         555555557
+inetray         555555558
+inetray         555555559
+inetray         555555560
+
+fypxfrd         600100069       freebsd-ypxfrd
+
+# some services that choose numbers but start often at these values
+dmispd          805306368
+cfsd            824395111
+cfsd            1092830567
+ttsession       1342177279
+

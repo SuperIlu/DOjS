@@ -2,10 +2,10 @@
  * File
  */
 /**
- * Open a file, for file modes see {@link FILE}. Files can only either be read or written, never both.Writing to a closed file throws an exception.
+ * Open a file, for file modes see {@link FILE}. Files can only either be read or written, never both. Writing to a closed file throws an exception.
  * @class
  * @param {string} filename the name of the file.
- * @param {string} mode READ, WRITE or APPEND.
+ * @param {FILE} mode READ, WRITE or APPEND.
  */
 function File(filename, mode) { }
 /**
@@ -15,6 +15,7 @@ function File(filename, mode) { }
 File.prototype.ReadByte = function () { };
 /**
  * Write a single byte to a file.
+ * @param {number} ch the byte to write.
  */
 File.prototype.WriteByte = function (ch) { };
 /**
@@ -36,36 +37,50 @@ File.prototype.WriteString = function (txt) { };
  * Close the file.
  */
 File.prototype.Close = function () { };
+/**
+ * get file contents as number array.
+ * @returns {number[]} the remaining contents of the file as array of numbers.
+ */
+File.prototype.ReadBytes = function () { };
+/**
+ * get file size.
+ * @returns {number} the size of the file in bytes.
+ */
+File.prototype.GetSize = function () { };
+/**
+ * Write a bytes to a file.
+ * @param {number[]} data the data to write as array of numbers (must be integers between 0-255).
+ */
+File.prototype.WriteBytes = function (data) { };
 
 /********
  * Bitmap
  */
 /**
 * Load a BMP, TGA or PCX image.
-* @constructor
+* @constructor 
 * @param {string} filename name of the BMP or PNG file.
 *//**
 * create empty bitmap of given size.
-* @constructor
+* @constructor 
 * @param {number} width bitmap width.
 * @param {number} height bitmap width.
 *//**
 * create Bitmap from integer array.
-* @constructor
+* @constructor 
 * @param {number[]} data 32bit integer data interpreted as ARGB.
 * @param {number} width bitmap width.
 * @param {number} height bitmap height.
-*//*
-* create Bitmap from current (3dfx) screen.
-* @constructor
-* @param {number} x screen x position.
-* @param {number} y screen y position.
-* @param {number} width bitmap width.
-* @param {number} height bitmap height.
-* @param {GR_BUFFER} [buffer] one of FRONTBUFFER, BACKBUFFER or AUXBUFFER for 3dfx access, omit for normal screen acccess.
+*//**
+* create Bitmap from current(3dfx) screen.
+* @constructor 
+* @param { number } x screen x position.
+* @param { number } y screen y position.
+* @param { number } width bitmap width.
+* @param { number } height bitmap height.
+* @param { GR_BUFFER } [buffer] one of FRONTBUFFER, BACKBUFFER or AUXBUFFER for 3dfx access, omit for normal screen acccess.
 */
 function Bitmap(filename) { };
-
 /**
  * Name of the file.
  */
@@ -78,14 +93,12 @@ Bitmap.width = null;
  * Height in pixels
  */
 Bitmap.height = null;
-
 /**
  * Draw the image to the canvas at given coordinates.
  * @param {number} x position to draw to.
  * @param {number} y position to draw to.
  */
 Bitmap.prototype.Draw = function (x, y) { };
-
 /**
  * Draw the image to the canvas at given coordinates.
  * 
@@ -99,14 +112,12 @@ Bitmap.prototype.Draw = function (x, y) { };
  * @param {number} destH size to draw.
  */
 Bitmap.prototype.DrawAdvanced = function (srcX, srcY, srcW, srcH, destX, destY, destW, destH) { };
-
 /**
  * Draw the image to the canvas at given coordinates using the alpha channel transparency. Only works for 32bit TGA with alpha channel information.
  * @param {number} x position to draw to.
  * @param {number} y position to draw to.
  */
 Bitmap.prototype.DrawTrans = function (x, y) { };
-
 /**
  * Get the color of a pixel of this image.
  * @param {number} x position.
@@ -114,7 +125,6 @@ Bitmap.prototype.DrawTrans = function (x, y) { };
  * @returns {number} the color of the pixel.
  */
 Bitmap.prototype.GetPixel = function (x, y) { };
-
 /**
  * draw the bitmap directly into the 3dfx/voodoo framebuffer (only works when fxInit() was called).
  * 
@@ -124,6 +134,30 @@ Bitmap.prototype.GetPixel = function (x, y) { };
  * @param {boolean} pipeline true if the pixels shall be processed by the voodoos pixel pipeline, false to just draw.
  */
 Bitmap.prototype.FxDrawLfb = function (x, y, buffer, pipeline) { };
+/**
+ * clear the bitmap to EGA.BLACK.
+ */
+Bitmap.prototype.Clear = function () { };
+/**
+ * Save bitmap to BMP file.
+ * @param {string} fname filename.
+ */
+Bitmap.prototype.SaveBmpImage = function (fname) { };
+/**
+ * Save bitmap to PCX file.
+ * @param {string} fname filename.
+ */
+Bitmap.prototype.SavePcxImage = function (fname) { };
+/**
+ * Save bitmap to TGA file.
+ * @param {string} fname filename.
+ */
+Bitmap.prototype.SaveTgaImage = function (fname) { };
+/**
+ * Save bitmap to PNG file.
+ * @param {string} fname filename.
+ */
+Bitmap.prototype.SavePngImage = function (fname) { };
 
 /********
  * Font
@@ -274,7 +308,6 @@ ZBuffer.prototype.Set = function () { };
  * @param {(string|Bitmap)} src 3df file to load as texture or Bitmap to convert to texture
  */
 function TexInfo(src) { }
-
 /**
  * filename
  */
@@ -319,18 +352,15 @@ TexInfo.tmu = null;
  * @param {GR_MIPMAPLEVELMASK} evenOdd one of GR_MIPMAPLEVELMASK.
  */
 TexInfo.prototype.DownloadMipMap = function (tmu, address, evenOdd) { };
-
 /**
  * mark the texture as 'not downloaded' again.
  */
 TexInfo.prototype.MarkUnused = function () { };
-
 /**
  * specify this TexInfo as the current texture source for rendering.
  * @param {GR_MIPMAPLEVELMASK} evenOdd one of GR_MIPMAPLEVELMASK.
  */
 TexInfo.prototype.Source = function (evenOdd) { };
-
 /**
  * return the texture memory consumed by a texture
  * @param {GR_MIPMAPLEVELMASK} evenOdd one of GR_MIPMAPLEVELMASK.
@@ -343,10 +373,214 @@ TexInfo.prototype.MemRequired = function (evenOdd) { };
  */
 /**
  * save current glide state into this object.
+ * @class
  */
 function FxState() { }
-
 /**
  * restore glide state from this object.
  */
 FxState.prototype.Set = function () { }
+
+/********
+ * COMPort
+ */
+/**
+ * open a COM port.
+ * 
+ * @class
+ * @param {number} port one of COM.PORT: COM1, COM2, COM3, COM4.
+ * @param {number} baud one of COM.BAUD: B50, B75, B110, B134, B150, B200, B300, B600, B1200, B1800, B2400, B4800, B9600, B19200, B38400, B57600, B115200
+ * @param {number} bits one of COM.BIT: BITS_5, BITS_6, BITS_7, BITS_8
+ * @param {number} parity one of COM.PARITY: NO_PARITY, ODD_PARITY, EVEN_PARITY, MARK_PARITY, SPACE_PARITY
+ * @param {number} stop one of COM.STOP: STOP_1, STOP_2
+ * @param {number} flow one of COM.FLOW: NO_CONTROL, XON_XOFF, RTS_CTS
+ * @param {number} [addr] optional: port io address
+ * @param {number} [irq] optional: port IRQ
+ */
+function COMPort(port, baud, bits, parity, stop, flow, addr, irq) { }
+/**
+ * close port.
+ */
+COMPort.prototype.Close = function () { };
+/**
+ * flush input buffer.
+ */
+COMPort.prototype.FlushInput = function () { };
+/**
+ * flush output buffer.
+ */
+COMPort.prototype.FlushOutput = function () { };
+/**
+ * check state of send buffer.
+ * @returns {boolean} true if the output buffer is empty.
+ */
+COMPort.prototype.IsOutputEmpty = function () { };
+/**
+ * check state of send buffer.
+ * @returns {boolean} true if the output buffer is full.
+ */
+COMPort.prototype.IsOutputFull = function () { };
+/**
+ * check state of receive buffer.
+ * @returns {boolean} true if the input buffer is empty.
+ */
+COMPort.prototype.IsInputEmpty = function () { };
+/**
+ * check state of receive buffer.
+ * @returns {boolean} true if the input buffer is full.
+ */
+COMPort.prototype.IsInputFull = function () { };
+/**
+ * Write a single byte to COM port.
+ * @param {number} ch the byte to write.
+ */
+COMPort.prototype.WriteByte = function (ch) { };
+/**
+ * Write a string to COM port.
+ * @param {string} txt the string to write.
+ */
+COMPort.prototype.WriteString = function (txt) { };
+/**
+ * read a byte from COM port
+ * @returns {number} the value of the byte.
+ */
+COMPort.prototype.ReadByte = function () { };
+/**
+ * read a string from the receive buffer.
+ * @returns {string} contents of the received buffer.
+ */
+COMPort.prototype.ReadBuffer = function () { };
+
+/********
+ * Socket
+ */
+/**
+ * @class
+ */
+function Socket() { }
+
+/**
+ * flush the socket output to the network.
+ */
+Socket.prototype.Flush = function () { };
+
+/**
+ * close the socket.
+ * @param {boolean} [doFlush=false] flush before close.
+ */
+Socket.prototype.Close = function (doFlush) { }
+
+/**
+ * Wait until all written data is flushed.
+ */
+Socket.prototype.WaitFlush = function () { }
+
+/**
+ * Wait on socket for incoming data with timeout.
+ * @param {boolean} [timeout=1] max wait time.
+ */
+Socket.prototype.WaitInput = function (timeout) { }
+
+/**
+ * Get the next byte from the socket as number.
+ * @returns {number} the next byte from the socket.
+ */
+Socket.prototype.ReadByte = function () { }
+
+
+/**
+ * write a byte to a socket.
+ * @param {number} ch the byte to write.
+ */
+Socket.prototype.WriteByte = function (ch) { }
+
+/**
+ * send binary data.
+ * @param {number[]} data data to write as number array.
+ */
+Socket.prototype.WriteBytes = function (data) { }
+
+/**
+ * send string.
+ * @param {string} str data to send.
+ */
+Socket.prototype.WriteString = function (str) { }
+
+/**
+ * Set binary or ascii mode for UDP/TCP sockets.
+ * @param {number} mode one of SOCKET.MODE.
+ */
+Socket.prototype.Mode = function (mode) { }
+
+/**
+ * Send pending TCP data.
+ * @param {boolean} [flushWait=false] wait until data is flushed.
+ */
+Socket.prototype.Flush = function (flushWait) { }
+
+/**
+ * Sets non-flush mode on next TCP write.
+ */
+Socket.prototype.NoFlush = function () { }
+
+/**
+ * Causes next transmission to have a flush (PUSH bit set).
+ */
+Socket.prototype.FlushNext = function () { }
+
+/**
+ * Get number of bytes waiting to be read.
+ * @returns {number} number of bytes waiting to be read.
+ */
+Socket.prototype.DataReady = function () { }
+
+/**
+ * Check if the socket connection is established.
+ * @returns {boolean} true if the connection is established.
+ */
+Socket.prototype.Established = function () { }
+
+/**
+ * Get the remote host ip
+ * @returns {IpAddress} IP of the remote host.
+ */
+Socket.prototype.GetRemoteHost = function () { }
+
+/**
+ * Get the local port number.
+ * @returns {number} the local port number.
+ */
+Socket.prototype.GetLocalPort = function () { }
+
+/**
+ * Get the remote port number.
+ * @returns {number} the remote port number.
+ */
+Socket.prototype.GetRemotePort = function () { }
+
+/**
+ * Return the next line from the socket as string.
+ * This method blocks until a newline is read.
+ * @returns {string} the next line from the socket as string.
+ */
+Socket.prototype.ReadLine = function () { }
+
+/**
+ * Return data as string.
+ * This method blocks until 'len' bytes have been read.
+ * 
+ * @param {number} len number of bytes to read from socket.
+ * 
+ * @returns {string} data as string.
+ */
+Socket.prototype.ReadString = function (len) { }
+
+/**
+ * Return data as array of numbers.
+ * This method blocks until 'len' bytes have been read.
+ * 
+ * @param {number} len number of bytes to read from socket.
+ * 
+ * @returns {number[]} data as array.
+ */
+Socket.prototype.ReadBytes = function (len) { }

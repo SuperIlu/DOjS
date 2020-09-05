@@ -1,0 +1,117 @@
+#
+# GNU Makefile for Watt-32 tcp/ip (MinGW32+ MinGW64) test programs.
+#
+
+#
+# Set to 1 if "USE_IPV6" is defined in ../config.h
+#
+HAVE_IPV6 = 1
+
+USE_DLL ?= 0
+
+#
+# If '$(CPU)=x64', build 64-bit programs. Otherwise 32-bit programs.
+#
+ifeq ($(CPU),)
+  CPU = x86
+endif
+
+VPATH = ..
+
+CC      = gcc.exe
+CFLAGS  = -Wall -W -O2 -g -I.. -I../../inc -DTEST_PROG -DWATT32
+
+ifeq ($(CPU),x64)
+  LIBDIR = ../../lib/x64
+  CFLAGS += -m64
+
+else ifeq ($(CPU),X64)
+  LIBDIR = ../../lib/x64
+  CFLAGS += -m64
+
+else
+  #
+  # Change this to '../../lib' for old-school MinGW.
+  #
+  LIBDIR = ../../lib/x86
+  CFLAGS += -m32
+endif
+
+ifeq ($(USE_DLL),1)
+  WATTLIB = $(LIBDIR)/libwatt32.dll.a
+else
+  CFLAGS += -DWATT32_STATIC
+  WATTLIB = $(LIBDIR)/libwatt32.a
+endif
+
+LDFLAGS = -Wl,--print-map,--sort-common
+
+
+PROGS = btree.exe cpuspeed.exe ip4_frag.exe socktest.exe ioctl.exe \
+        bind.exe gethost.exe select.exe syslog.exe chksum.exe udp_srv.exe \
+        udp_test.exe getserv.exe geteth.exe tftp.exe mcast.exe \
+        fingerd.exe wecho.exe pcconfig.exe punycode.exe idna.exe \
+        packet.exe gtod_tst.exe swap.exe eatsock.exe language.exe \
+        misc.exe pcarp.exe pc_cbrk.exe timeit_test.exe ttime.exe
+
+#
+# Needs the static libwatt32.a
+#
+ifneq ($(USE_DLL),1)
+  PROGS += cpu.exe
+endif
+
+ifeq ($(HAVE_IPV6),1)
+  PROGS += presaddr.exe get_ai.exe get_ni.exe gethost6.exe
+endif
+
+define COMP_AND_LINK
+  $(CC) $(CFLAGS) $(LDFLAGS) -o $(1) $(2) > $(1:.exe=.map)
+  @echo
+endef
+
+all: $(PROGS)
+	@echo 'MinGW32/64 binaries done. $$(CPU)=$(CPU).'
+
+$(PROGS): $(WATTLIB)
+
+clean:
+	rm -f $(PROGS)  $(PROGS:.exe=.map) *.o
+
+fingerd.exe: ../listen.c
+	$(call COMP_AND_LINK, $@, $^)
+
+wecho.exe: ../echo.c
+	$(call COMP_AND_LINK, $@, $^)
+
+%.exe: %.c
+	$(call COMP_AND_LINK, $@, $^)
+
+swap.exe:     swap.c timeit.h
+select.exe:   ../select.c
+bind.exe:     ../bind.c
+btree.exe:    ../btree.c
+ip4_frag.exe: ../ip4_frag.c
+ioctl.exe:    ../ioctl.c
+gethost.exe:  ../gethost.c
+gethost6.exe: ../gethost6.c
+getserv.exe:  ../getserv.c
+geteth.exe:   ../geteth.c
+syslog.exe:   ../syslog.c
+get_ni.exe:   ../get_ni.c
+get_ai.exe:   ../get_ai.c
+oldstuff.exe: ../oldstuff.c
+tftp.exe:     ../tftp.c
+presaddr.exe: ../presaddr.c
+language.exe: ../language.c
+pcconfig.exe: ../pcconfig.c
+punycode.exe: ../punycode.c
+misc.exe:     ../misc.c
+idna.exe:     ../idna.c
+udp_test.exe: udp_test.c
+socktest.exe: socktest.c
+ttime.exe:    ttime.c
+mcast.exe:    mcast.c
+chksum.o:     chksum.c
+udp_srv.exe:  udp_srv.c
+

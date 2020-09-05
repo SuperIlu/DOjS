@@ -1,0 +1,77 @@
+#
+# GNU Makefile for Watt-32 tcp/ip (CygWin) test programs.
+#
+
+.SUFFIXES: .exe
+
+#
+# Set to 1 if "USE_IPV6" is defined in ../config.h
+#
+HAVE_IPV6 = 1
+
+VPATH = ..
+
+CC      = gcc-4.exe
+CFLAGS  = -Wall -W -O2 -g -I.. -I../../inc -DTEST_PROG -DWATT32 -DWATT32_STATIC
+WATTLIB =  ../../lib/libwatt32-cygwin.a
+
+SOURCES = udp_srv.c udp_test.c socktest.c ttime.c mcast.c chksum.c gtod_tst.c \
+          $(addprefix ../, echo.c listen.c select.c bind.c ip4_frag.c ioctl.c \
+            gethost.c gethost6.c getserv.c geteth.c syslog.c get_ai.c get_ni.c \
+            oldstuff.c tftp.c presaddr.c language.c pcconfig.c punycode.c \
+            idna.c cpuspeed.c pcarp.c pc_cbrk.exe btree.exe)
+
+ifeq ($(HAVE_IPV6),1)
+  SOURCES += ../presaddr.c ../get_ni.c ../gethost6.c
+endif
+
+PROGS  = $(notdir $(SOURCES:.c=.exe))
+
+COMP_AND_LINK = $(CC) $(CFLAGS)
+MAP_FILE      = -Wl,--print-map,--sort-common,--cref > $*.map
+
+all: $(PROGS)
+
+$(PROGS): $(WATTLIB)
+
+clean:
+	rm -f $(PROGS) *.o
+
+fingerd.exe: ../listen.c
+	$(COMP_AND_LINK) -o $@ $^ $(WATTLIB) $(MAP_FILE)
+	@echo
+
+wecho.exe: ../echo.c
+	$(COMP_AND_LINK) -o $@ $^ $(WATTLIB) $(MAP_FILE)
+	@echo
+
+.c.exe:
+	$(COMP_AND_LINK) -o $@ $^ $(WATTLIB) $(MAP_FILE)
+	@echo
+
+bind.exe:     ../bind.c
+ip4_frag.exe: ../ip4_frag.c
+ioctl.exe:    ../ioctl.c
+gethost.exe:  ../gethost.c
+gethost6.exe: ../gethost6.c
+getserv.exe:  ../getserv.c
+geteth.exe:   ../geteth.c
+syslog.exe:   ../syslog.c
+get_ni.exe:   ../get_ni.c
+oldstuff.exe: ../oldstuff.c
+tftp.exe:     ../tftp.c
+presaddr.exe: ../presaddr.c
+language.exe: ../language.c
+pcconfig.exe: ../pcconfig.c
+punycode.exe: ../punycode.c
+misc.exe:     ../misc.c
+idna.exe:     ../idna.c
+udp_test.exe: udp_test.c
+socktest.exe: socktest.c
+ttime.exe:    ttime.c
+mcast.exe:    mcast.c
+chksum.o:     chksum.c
+
+depend:
+	$(CC) -M $(CFLAGS) $(SOURCES) > .depend.CygWin
+

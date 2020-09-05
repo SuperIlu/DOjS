@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -923,10 +923,19 @@ void init_3dfx(js_State *J) {
     FUNCDEF(J, fx_lfb_constant_depth, "fxLfbConstantDepth", 1);
 #endif
 
+    FxI32 num;
+    if (grGet(GR_NUM_BOARDS, sizeof(num), &num)) {
+        LOGF("3dfx cards detected: %ld\n", num);
+    }
+
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
 
 /**
  * @brief shutdown glide if needed.
  */
-void shutdown_3dfx() { fx_shutdown(); }
+void shutdown_3dfx() {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
+    fx_shutdown();
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
+}

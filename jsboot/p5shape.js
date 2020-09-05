@@ -527,17 +527,11 @@ exports.endShape = function (p) {
 			}
 		}
 	} else {
-		if (p === CLOSE) {
-			if (_currentEnv._fill != NO_COLOR) {
-				FilledPolygon(_shape, _currentEnv._fill);
-			}
-			if (_currentEnv._stroke != NO_COLOR) {
-				_PolyLine(_shape, true);
-			}
-		} else {
-			if (_currentEnv._stroke != NO_COLOR) {
-				_PolyLine(_shape, false);
-			}
+		if (_currentEnv._fill != NO_COLOR) {
+			FilledPolygon(_shape, _currentEnv._fill);
+		}
+		if (_currentEnv._stroke != NO_COLOR) {
+			_PolyLine(_shape, p === CLOSE);
 		}
 	}
 };

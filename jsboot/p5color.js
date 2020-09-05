@@ -1569,7 +1569,7 @@ exports.hue = function (c) {
  */
 exports.lerpColor = function (c1, c2, amt) {
 	var mode = _currentEnv._colorMode;
-	var maxes = _colorMaxes;
+	var maxes = _currentEnv._colorMaxes;
 	var l0, l1, l2, l3;
 	var fromArray, toArray;
 

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -217,7 +217,9 @@ void init_midi(js_State *J) {
  * @brief shutdown MIDI subsystem.
  */
 void shutdown_midi() {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
     if (DOjS.midi_available) {
         stop_midi();
     }
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

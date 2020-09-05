@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ function Setup() {
 	i1 = new Bitmap("examples/dojs.bmp");
 	i2 = new Bitmap("examples/3dfx.tga");
 	i3 = new Bitmap("examples/glow.pcx");
+	i6 = new Bitmap("examples/3dfx.png");
 
 	var dat = [];
 	for (var x = 0; x < 255; x++) {
@@ -88,6 +89,18 @@ function Input(e) {
 	if (CompareKey(e.key, '5')) {
 		img = new Bitmap(100, 100, 255, 255);
 		Println(img.constructor.toString());
+		img.SaveTgaImage("5.tga");
+		img.SavePcxImage("5.pcx");
 		img.SaveBmpImage("5.bmp");
+		img.SavePngImage("5.png");
+
+		SaveTgaImage("scr.tga");
+		SavePcxImage("scr.pcx");
+		SaveBmpImage("scr.bmp");
+		SavePngImage("scr.png");
+	}
+	if (CompareKey(e.key, '6')) {
+		img = i6;
+		Println(img.constructor.toString());
 	}
 }

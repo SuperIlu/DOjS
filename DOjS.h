@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -37,8 +37,8 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 1.10          //!< version number
-#define DOSJS_VERSION_STR "V1.1.0"  //!< version number as string
+#define DOSJS_VERSION 1.20          //!< version number
+#define DOSJS_VERSION_STR "V1.2.0"  //!< version number as string
 
 #define BOOT_DIR "JSBOOT/"  //!< directory with boot files.
 
@@ -139,6 +139,7 @@ typedef struct {
     bool no_sound;  //!< do not initialize sound
     bool no_fm;     //!< do not initialize fm sound
     bool no_alpha;  //!< disable alpha blending
+    bool highres;   //!< use 50-line mode in editor
     int width;      //!< requested screen with
     int bpp;        //!< requested bit depth
 } cmd_params_t;

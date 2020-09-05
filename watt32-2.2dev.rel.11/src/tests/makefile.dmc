@@ -1,0 +1,72 @@
+#
+#  Makefile for _some_ Watt-32 tcp/ip test programs.
+#  Flat X32VM version only
+#
+
+CC     = dmc
+CFLAGS = -mx -g -I.. -I..\..\inc -DTEST_PROG -DWATT32
+LFLAGS = -mx -L/map:full -L/stack:200000
+LIBS   = ..\..\lib\wattcpdf.lib x32.lib
+
+all: cpu.exe chksum.exe tftp.exe ttime.exe ttime2.exe gettod.exe \
+     pc_cbrk.exe geteth.exe getserv.exe ip4_frag.exe fingerd.exe \
+     sel.exe
+
+tftp.exe: ..\tftp.c
+    $(CC) -c $(CFLAGS) ..\tftp.c
+    $(CC) $(LFLAGS) $*.obj $(LIBS)
+
+gettod.exe: ..\gettod.c
+    $(CC) -c $(CFLAGS) ..\gettod.c
+    $(CC) $(LFLAGS) $*.obj $(LIBS)
+
+geteth.exe: ..\geteth.c
+    $(CC) -c $(CFLAGS) ..\geteth.c
+    $(CC) $(LFLAGS) $*.obj $(LIBS)
+
+getserv.exe: ..\getserv.c
+    $(CC) -c $(CFLAGS) ..\getserv.c
+    $(CC) $(LFLAGS) $*.obj $(LIBS)
+
+pc_cbrk.exe: ..\pc_cbrk.c
+    $(CC) -c $(CFLAGS) ..\pc_cbrk.c
+    $(CC) $(LFLAGS) $*.obj $(LIBS)
+
+ip4_frag.exe: ..\ip4_frag.c
+    $(CC) -c $(CFLAGS) ..\ip4_frag.c
+    $(CC) $(LFLAGS) $*.obj $(LIBS)
+
+fingerd.exe: ..\listen.c
+    $(CC) -c $(CFLAGS) ..\listen.c
+    $(CC) $(LFLAGS) $*.obj -ofingerd.exe $(LIBS)
+
+sel.exe: ..\select.c
+    $(CC) -c $(CFLAGS) ..\select.c
+    $(CC) $(LFLAGS) $*.obj -osel.exe $(LIBS)
+
+.obj.exe:
+    $(CC) $(LFLAGS) $*.obj $(LIBS)
+
+.c.obj:
+    $(CC) -c $(CFLAGS) $*.c
+
+clean:
+    del *.obj
+    del *.map
+    del *.exe
+
+cpu.c: ..\wattcp.h ..\misc.h ..\cpumodel.h
+..\geteth.c: ..\wattcp.h ..\pcbsd.h ..\pcarp.h ..\pcconfig.h ..\pcdns.h
+..\tftp.c: ..\socket.h ..\pcdns.h ..\tftp.h
+chksum.c: ..\wattcp.h ..\misc.h ..\getopt.h ..\gettod.h ..\chksum.h \
+          ..\cpumodel.h
+..\gettod.c: ..\wattcp.h ..\misc.h ..\x32vm.h ..\gettod.h
+..\pc_cbrk.c: ..\wattcp.h ..\sock_ini.h ..\wdpmi.h ..\x32vm.h ..\language.h \
+              ..\strings.h ..\pc_cbrk.h
+..\getserv.c: ..\wattcp.h ..\strings.h ..\misc.h ..\language.h ..\pcconfig.h \
+              ..\pcbsd.h
+..\ip4_frag.c: ..\wattcp.h ..\strings.h ..\language.h ..\chksum.h ..\ip4_out.h \
+               ..\misc.h ..\pcconfig.h ..\pcstat.h ..\pcqueue.h ..\pcsed.h    \
+               ..\pcpkt.h ..\pcdbug.h ..\pcicmp.h ..\pcsed.h ..\pcbsd.h       \
+               ..\ip4_frag.h ..\pctcp.h
+

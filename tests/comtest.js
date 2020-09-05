@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ function Setup() {
     Println("COM3 opened");
 
     trans = false;
-    
+
     LPTReset(0);
 }
 
@@ -86,7 +86,7 @@ function Loop() {
         Print(com3.ReadByte());
     }
 
-    LPTSend(0, "TX="+trans+"\r\n");
+    LPTSend(0, "TX=" + trans + "\r\n");
     Println("LPTStatus=" + LPTStatus(0));
 }
 

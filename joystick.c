@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -207,6 +207,8 @@ void init_joystick(js_State *J) {
     DOjS.joystick_available = install_joystick(JOY_TYPE_AUTODETECT) == 0;
     if (!DOjS.joystick_available) {
         LOGF("No joystick found: %s\n", allegro_error);
+    } else {
+        LOGF("Joystick found.\n");
     }
     PROPDEF_B(J, DOjS.joystick_available, "JOYSTICK_AVAILABLE");
     PROPDEF_N(J, num_joysticks, "NUM_JOYSTICKS");
@@ -218,7 +220,9 @@ void init_joystick(js_State *J) {
  * @brief shutdown joystick subsystem.
  */
 void shutdown_joystick() {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
     if (DOjS.joystick_available) {
         remove_joystick();
     }
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

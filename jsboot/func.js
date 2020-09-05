@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -69,7 +69,7 @@ function _Debug(str) {
  * @param {string} str the message to print.
  */
 function Info(str) {
-	Println(">>> ", str);
+	Println(">>>", str);
 }
 
 /**
@@ -137,11 +137,11 @@ function StartupInfo() {
 	var width = SizeX();
 	var height = SizeY();
 
-	Info("Screen size=" + width + "x" + height + "x" + mode);
-	Info("Memory=" + JSON.stringify(MemoryInfo()));
-	Info("Command line args=" + JSON.stringify(ARGS));
-	Info("SerialPorts=" + JSON.stringify(GetSerialPorts().map(function (e) { return "0x" + e.toString(16) })));
-	Info("ParallelPorts=" + JSON.stringify(GetParallelPorts().map(function (e) { return "0x" + e.toString(16) })));
+	Info("Screen size: " + width + "x" + height + "x" + mode);
+	Info("Memory: " + JSON.stringify(MemoryInfo()));
+	Info("Command line args: " + JSON.stringify(ARGS));
+	Info("SerialPorts: " + JSON.stringify(GetSerialPorts().map(function (e) { return "0x" + e.toString(16) })));
+	Info("ParallelPorts: " + JSON.stringify(GetParallelPorts().map(function (e) { return "0x" + e.toString(16) })));
 
 	if (DEBUG) {
 		var funcs = [];

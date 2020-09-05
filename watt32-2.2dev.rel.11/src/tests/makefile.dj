@@ -1,0 +1,97 @@
+#
+# GNU Makefile for Watt-32 tcp/ip (djgpp) test programs.
+#
+
+#
+# Set to 1 to make a .map-file
+#
+MAKE_MAPFILE = 0
+
+#
+# Set to 1 if "USE_IPV6" is defined
+#
+HAVE_IPV6 = 1
+
+VPATH = ..
+
+CC     = gcc.exe
+CFLAGS = -Wall -O2 -g -I.. -I../../inc -DTEST_PROG -DWATT32
+
+PROGS  = btree.exe ip4_frag.exe socktest.exe ioctl.exe bind.exe \
+         gethost.exe sel.exe syslog.exe fsext.exe pc_cbrk.exe   \
+         cpu.exe cpuspeed.exe chksum.exe gettod.exe udp_srv.exe \
+         udp_test.exe oldstuff.exe ttime.exe ttime2.exe         \
+         getserv.exe geteth.exe tftp.exe mcast.exe fingerd.exe  \
+         wecho.exe pcconfig.exe punycode.exe misc.exe idna.exe  \
+         eatsock.exe gtod_tst.exe packet.exe
+
+ifeq ($(HAVE_IPV6),1)
+  PROGS += presaddr.exe get_ni.exe get_ai.exe gethost6.exe
+endif
+
+#
+# For gcc 2.8.1 or older change `-e' to `-o'
+#
+ifeq ($(MAKE_MAPFILE),1)
+  COMP_AND_LINK = redir -o $*.map $(CC) $(CFLAGS) \
+                  -Wl,--print-map,--sort-common,--cref,--verbose
+else
+  COMP_AND_LINK = $(CC) $(CFLAGS)
+endif
+
+LIB = ../../lib/libwatt.a
+
+all: $(PROGS)
+
+clean:
+	rm -f $(PROGS) $(PROGS:.exe=.map) *.o
+
+sel.exe: ../select.c
+	$(COMP_AND_LINK) -o $@ $^ $(LIB)
+	@echo
+
+fingerd.exe: ../listen.c
+	$(COMP_AND_LINK) -o $@ $^ $(LIB)
+	@echo
+
+wecho.exe: ../echo.c
+	$(COMP_AND_LINK) -o $@ $^ $(LIB)
+	@echo
+
+.c.exe:
+	$(COMP_AND_LINK) -o $@ $^ $(LIB)
+	@echo
+
+bind.exe:     ../bind.c
+btree.exe:    ../btree.c
+ip4_frag.exe: ../ip4_frag.c
+ioctl.exe:    ../ioctl.c
+gethost.exe:  ../gethost.c
+gethost6.exe: ../gethost6.c
+getserv.exe:  ../getserv.c
+geteth.exe:   ../geteth.c
+syslog.exe:   ../syslog.c
+pc_cbrk.exe:  ../pc_cbrk.c
+gettod.exe:   ../gettod.c
+get_ai.exe:   ../get_ai.c
+get_ni.exe:   ../get_ni.c
+oldstuff.exe: ../oldstuff.c
+tftp.exe:     ../tftp.c
+presaddr.exe: ../presaddr.c
+language.exe: ../language.c
+pcconfig.exe: ../pcconfig.c
+punycode.exe: ../punycode.c
+misc.exe:     ../misc.c
+idna.exe:     ../idna.c
+cpu.exe:      cpu.c ../timer.c
+cpuspeed.exe: cpuspeed.c
+udp_srv.exe:  udp_srv.c
+udp_test.exe: udp_test.c
+fsext.exe:    fsext.c
+socktest.exe: socktest.c
+ttime.exe:    ttime.c
+ttime2.exe:   ttime2.c
+mcast.exe:    mcast.c
+cpu.o:        cpu.c
+chksum.o:     chksum.c
+

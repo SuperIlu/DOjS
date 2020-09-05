@@ -1,0 +1,516 @@
+@ifndef CYGWIN CYGWIN64 DJGPP HIGHC MINGW32 MINGW64 VISUALC WATCOM BORLAND
+
+  This is a master makefile that will generate all ./test GNU-makefiles.
+  Currently supported compilers include:
+
+     CYGWIN, CYGWIN64, DJGPP, HIGHC, MINGW32, MINGW64, VISUALC, WATCOM, BORLAND
+
+  Supported memory models and targets include:
+
+     SMALL, LARGE, FLAT, WIN32, WIN64
+
+@else
+#
+# NB! THIS MAKEFILE WAS AUTOMATICALLY GENERATED FROM ./src/tests/Makefile.all.
+#     DO NOT EDIT. Edit Makefile.all and run "configur.bat" <target>.
+#
+# GNU Makefile for Watt-32 test programs.
+#
+
+#
+# Set to 1 if "USE_IPV6" is defined in ../config.h
+#
+USE_IPV6 = 1
+
+@ifdef HIGHC
+  EXE = exp
+@else
+  EXE = exe
+@endif
+
+PROGRAMS = bind.$(EXE)        \
+           btree.$(EXE)       \
+           chksum.$(EXE)      \
+           cpu.$(EXE)         \
+           cpuspeed.$(EXE)    \
+           eatsock.$(EXE)     \
+           fingerd.$(EXE)     \
+           geteth.$(EXE)      \
+           gethost.$(EXE)     \
+           gettod.$(EXE)      \
+           getserv.$(EXE)     \
+           gtod_tst.$(EXE)    \
+           idna.$(EXE)        \
+           ioctl.$(EXE)       \
+           ip4_frag.$(EXE)    \
+           language.$(EXE)    \
+           mcast.$(EXE)       \
+           misc.$(EXE)        \
+           packet.$(EXE)      \
+           pc_cbrk.$(EXE)     \
+           pcarp.$(EXE)       \
+           pcconfig.$(EXE)    \
+           punycode.$(EXE)    \
+           select.$(EXE)      \
+           socktest.$(EXE)    \
+           swap.$(EXE)        \
+           syslog.$(EXE)      \
+           tftp.$(EXE)        \
+           timeit_test.$(EXE) \
+           ttime.$(EXE)       \
+           udp_srv.$(EXE)     \
+           udp_test.$(EXE)    \
+           wecho.$(EXE)
+
+ifeq ($(USE_IPV6),1)
+  PROGRAMS += get_ai.$(EXE) get_ni.$(EXE) gethost6.$(EXE) presaddr.$(EXE)
+endif
+
+@ifdef DJGPP WATCOM HIGHC BORLAND
+  PROGRAMS += oldstuff.$(EXE) ttime2.$(EXE)
+@endif
+
+BIN_PREFIX =
+
+@ifdef DJGPP
+  ifeq ($(OS),Windows_NT)
+    ifneq ($(DJ_PREFIX),)
+      #
+      # Windows hosted djgpp cross compiler. Get it from:
+      #   https://github.com/andrewwutw/build-djgpp/releases
+      #
+      # Define an env-var 'DJ_PREFIX=f:/gv/djgpp/bin/i586-pc-msdosdjgpp-'
+      # Thus the full path to 'gcc' becomes:
+      #   $(DJ_PREFIX)gcc.exe
+      #
+      # If not building on Windows, the '$(BIN_PREFIX)gcc' should simply become
+      # 'gcc' and GNU-make should find that on %PATH.
+      #
+      BIN_PREFIX = $(DJ_PREFIX)
+
+      ifeq ($(wildcard $(BIN_PREFIX)gcc.exe),)
+        $(error Failed to find 'i586-pc-msdosdjgpp-gcc.exe'.)
+      endif
+    endif
+  endif
+
+  PROGRAMS += fsext.$(EXE)
+@endif
+
+VPATH = ..
+
+@ifdef IS_GCC
+  CC      = $(BIN_PREFIX)gcc
+  CFLAGS  = -O2 -g -W -Wall -Wno-strict-aliasing
+  LDFLAGS = -Wl,--print-map,--sort-common
+
+  define COMP_AND_LINK
+    $(CC) $(CFLAGS) $(LDFLAGS) -o $(1) $(2) $(WATT_LIB) > $(1:.exe=.map)
+    echo
+  endef
+@endif
+
+LIB_DIR = ../../lib
+
+CFLAGS += -DTEST_PROG -DWATT32 -DWATT32_STATIC -I.. -I../../inc
+
+@ifdef VISUALC
+  CFLAGS += -nologo
+  LDFLAGS = -nologo
+@endif
+
+default: all
+
+@ifdef MINGW64 VISUALC CYGWIN64
+  @ifdef WIN32
+    #
+    # WIN32 -> 32-bit programs.
+    #
+    LIB_DIR = ../../lib/x86
+    @ifdef MINGW64
+      CFLAGS += -m32
+    @elifdef VISUALC
+      LDFLAGS += -machine:x86
+    @endif
+
+  @elifdef WIN64
+    #
+    # WIN64 -> 64-bit programs.
+    #
+    LIB_DIR = ../../lib/x64
+    @ifdef MINGW64 CYGWIN64
+      CFLAGS += -m64
+    @elifdef VISUALC
+      LDFLAGS += -machine:x64
+    @endif
+  @endif
+@endif
+
+@ifdef MINGW32
+  CFLAGS  += -m32
+  WATT_LIB = $(LIB_DIR)/libwatt32.a
+
+@elifdef MINGW64
+  WATT_LIB = $(LIB_DIR)/libwatt32.a
+
+@elifdef CYGWIN CYGWIN64
+  WATT_LIB = $(LIB_DIR)/libwatt32-cygwin.a
+
+@elifdef DJGPP
+  WATT_LIB = $(LIB_DIR)/libwatt.a
+
+@elifdef HIGHC
+  WATT_LIB = $(LIB_DIR)/wattcphf.lib
+
+@elifdef VISUALC
+  WATT_LIB = $(LIB_DIR)/wattcpvc_d.lib
+
+@elifdef WATCOM
+  WATT_LIB = $(LIB_DIR)/wattcpwc.lib
+
+@elifdef BORLAND
+  @ifdef FLAT
+    WATT_LIB = $(LIB_DIR)/wattcpbf.lib
+  @else
+    WATT_LIB = $(LIB_DIR)/wattcpbw.lib
+  @endif
+@endif
+
+
+@ifdef CYGWIN CYGWIN64
+  CC      = gcc
+  CFLAGS += -static-libgcc
+
+@elifdef VISUALC
+  CC      = cl
+  CFLAGS += -Zi -W3 -MDd -Ot -EHsc -RTCc -RTCs -RTCu -GF
+
+  LDFLAGS += -map -debug -debugtype:cv -verbose -incremental:no
+  EX_LIBS  = user32.lib
+
+  define COMP_AND_LINK
+    $(CC) $(CFLAGS) -Fe./$(strip $(1)) $(2) -link $(LDFLAGS) $(WATT_LIB) user32.lib advapi32.lib > link.tmp
+    cat link.tmp >> $(1:.exe=.map)
+    rm -f link.tmp $(1:.exe=.obj) $(1:.exe=.lib) $(1:.exe=.exp)
+    # @echo
+  endef
+
+@elifdef HIGHC
+  CC = hc386
+
+  CFLAGS += -I$(PHARLAP)/include -w3 -g -O2                             \
+            -Hpentium_only -DBUGGY_FARPTR=1 -Hnocopyr -Hnoswap          \
+            -Hon=relax_func_ptr_rules -Hon=Preload_args_from_memory     \
+            -Hon=char_is_rep -Hon=quiet -Hoff=check_stack               \
+            -Hon=Recognize_library -Hon=Align_labels -Hoff=Call_trace   \
+            -Hoff=Prolog_trace -Hoff=Epilog_trace -Hpragma=Offwarn(257) \
+            -Hpragma=Offwarn(572) -Hpragma=Offwarn(578)                 \
+            -Hpragma=Offwarn(491)
+
+  LDFLAGS  = -lib $(WATT_LIB)            # Watt-32 TCP/IP for MetaWare/PharLap
+  LDFLAGS += -libpath $(LIBPATH)         # Path to below libs
+  LDFLAGS += -lib hc386,hc387,hcna       # MetaWare HighC libraries
+  LDFLAGS += -lib dosx32                 # PharLap DOSX API library
+  LDFLAGS += -lib exc_hc.lib             # Exception handler library
+  LDFLAGS += -offset 1000h               # start at 4kB (traps NULL-pointers)
+  LDFLAGS += -stack 300000               # >256 kByte stack
+  LDFLAGS += -386                        # 386 (or later) processor target
+  LDFLAGS += -twocase                    # case sensitive link
+  LDFLAGS += -nostub                     # don't prepend a stub
+  LDFLAGS += -unprivileged               # run at ring 3
+  LDFLAGS += -fullwarn                   # give all warnings
+  LDFLAGS += -maxdata 0                  # limit data to what we use (no heap)
+  LDFLAGS += -symbols                    # -symbols (386debug) or -cvsymbols (Mdb)
+  LDFLAGS += -publist both               # map-list by name and address
+  LDFLAGS += -purge none *
+  LDFLAGS += -mapnames 30
+  LDFLAGS += -mapwidth 132
+  LDFLAGS += -pack                       # pack BSS segment
+
+  define COMP_AND_LINK
+    echo '$(CFLAGS)' > highc.arg
+    echo '$(LDFLAGS)' > 386link.arg
+    $(CC) -c @highc.arg -o $(1:.c=.obj) $(1)
+    386link @386link.arg $(1:.c=.obj) -exe $(2)
+    rm -f highc.arg 386link.arg
+  endef
+
+@elifdef WATCOM
+  @ifdef SMALL
+    CC       = wcc
+    CFLAGS += -ms -0 -os -zc -s -bt=dos
+
+  @elifdef LARGE
+    CC      = wcc
+    CFLAGS += -ml -0 -os -zc -s -bt=dos
+
+  @elifdef FLAT
+    #
+    # The '-3x' MUST match what 'wattcpwf.lib' was built with.
+    #
+    CC      = wcc386
+    CFLAGS += -mf -3r -zff -zgf -zm -s -bt=dos -oilrtfm
+
+  @elifdef WIN32
+    #
+    # The '-3x' MUST match what 'wattcpw_imp.lib' was built with.
+    #
+    CC       = wcc386
+    CFLAGS  += -mf -3s -zm -zw -bd -bm -d3 -bt=nt -oilrtfm
+    LDFLAGS += system nt dll
+
+  @else
+    $(error Unknown WATCOM model. Only 'SMALL', 'LARGE', 'FLAT' and 'WIN32'.)
+  @endif
+
+  CFLAGS += -zq -fr=nul -wx -fpi
+
+@elifdef BORLAND
+  CC = bcc32
+
+  @ifdef FLAT
+    CFLAGS += -mx
+
+  @elifdef WIN32
+    CFLAGS += -WC
+
+  @else
+    $(error Unknown BORLAND model. Currently only 'FLAT' and 'WIN32'.)
+  @endif
+
+  define COMP_AND_LINK
+    $(CC) -q -v4 -y $(CFLAGS) -e$(strip $(1)) $(2) -v -ls -q -r -L $(WATT_LIB)
+    rm -f $(1:.exe=.tds)
+  endef
+@endif
+
+########################################################################
+
+all: $(PROGRAMS)
+	@echo 'All done'
+
+# @ifdef IS_GCC
+#   define COMP_AND_LINK
+#     $(CC) $(CFLAGS) $(LDFLAGS) -o $(1) $(2) $(WATT_LIB) > $(1:.exe=.map)
+#     @echo
+#   endef
+# @endif
+
+fingerd.$(EXE): ../listen.c $(WATT_LIB)
+	$(call COMP_AND_LINK, $@, $<)
+
+wecho.$(EXE): ../echo.c $(WATT_LIB)
+	$(call COMP_AND_LINK, $@, $<)
+
+%.$(EXE): %.c $(WATT_LIB)
+	$(call COMP_AND_LINK, $@, $<)
+
+clean realclean vclean:
+	rm -f $(PROGRAMS) $(PROGRAMS:.$(EXE)=.map)
+@ifdef VISUALC
+	rm -f $(PROGRAMS:.$(EXE)=.pdb) vc1*.pdb
+@endif
+	@echo 'Cleaning done.'
+
+#
+# Hand-made dependencies:
+#
+../pcdbug.h: ../strings.h
+
+../misc.h: $(addprefix ../../inc/, \
+             sys/pack_on.h         \
+             sys/pack_off.h        \
+             sys/cdefs.h           \
+             sys/swap.h            \
+             sys/whide.h           \
+             sys/wtime.h)
+
+../socket.h: $(addprefix ../, \
+               wattcp.h chksum.h wdpmi.h misc.h run.h timer.h strings.h \
+               sock_ini.h language.h pcconfig.h pcqueue.h pcdbug.h pcsed.h \
+               pcpkt.h pcstat.h pcigmp.h pctcp.h pcbuf.h pcicmp.h pcarp.h \
+               pcrecv.h printk.h netaddr.h ip4_in.h ip4_out.h ip6_in.h \
+               ip6_out.h rs232.h bsddbug.h bsdname.h gettod.h) \
+             $(addprefix ../../inc/, \
+               sys/socket.h          \
+               sys/ioctl.h           \
+               sys/syslog.h          \
+               net/if.h              \
+               net/if_dl.h           \
+               net/if_arp.h          \
+               net/if_ether.h        \
+               net/if_packe.h        \
+               net/route.h           \
+               netinet/in.h          \
+               netinet/in_systm.h    \
+               netinet/ip.h          \
+               netinet/ip_var.h      \
+               netinet/ip_icmp.h     \
+               netinet/in_pcb.h      \
+               netinet/in_var.h      \
+               netinet/tcp.h         \
+               netinet/tcpip.h       \
+               netinet/ip6.h         \
+               netinet/tcp_time.h    \
+               arpa/inet.h           \
+               arpa/nameser.h        \
+               arpa/tftp.h           \
+               netdb.h               \
+               resolv.h)
+
+../wattcp.h: ../target.h ../config.h ../fortify.h \
+              $(addprefix ../../inc/, \
+                tcp.h                 \
+                sys/w32api.h          \
+                sys/whide.h           \
+                sys/wtypes.h          \
+                sys/wtime.h           \
+                sys/pack_on.h         \
+                sys/pack_off.h        \
+                sys/whide.h)
+
+../lang.c: ../lang.l
+	flex -8 -t $< > $@
+
+btree.$(EXE): ../btree.c ../wattcp.h ../strings.h ../misc.h ../btree.h
+
+bind.$(EXE): ../bind.c ../socket.h ../pcdbug.h
+
+chksum.$(EXE): chksum.c ../wattcp.h ../misc.h ../timer.h ../sock_ini.h \
+               ../gettod.h ../chksum.h ../cpumodel.h
+
+cpu.$(EXE): cpu.c ../wattcp.h ../timer.h ../misc.h ../cpumodel.h
+
+cpuspeed.$(EXE): cpuspeed.c ../wattcp.h ../timer.h ../misc.h ../cpumodel.h
+
+eatsock.$(EXE): eatsock.c ../socket.h ../pcdbug.h ../profile.h
+
+fingerd.$(EXE): ../listen.c ../socket.h $(WATT_LIB)
+
+geteth.$(EXE): $(addprefix ../, \
+                 geteth.c wattcp.h misc.h run.h pcarp.h pcconfig.h pcdns.h \
+                 pcdbug.h strings.h netaddr.h bsddbug.h get_xby.h pcdbug.h \
+                 sock_ini.h)
+
+gethost.$(EXE): $(addprefix ../, \
+                  gethost.c wattcp.h strings.h misc.h run.h timer.h language.h \
+                  pcconfig.h netaddr.h pctcp.h bsdname.h bsddbug.h pcdns.h \
+                  get_xby.h pcdbug.h sock_ini.h)
+
+getserv.$(EXE): $(addprefix ../, \
+                  getserv.c wattcp.h strings.h misc.h run.h language.h \
+                  netaddr.h pcconfig.h get_xby.h pcdbug.h sock_ini.h)
+
+gtod_tst.$(EXE): gtod_tst.c ../../inc/tcp.h
+
+idna.$(EXE): $(addprefix ../, \
+               idna.c wattcp.h misc.h strings.h pcdbug.h punycode.h idna.h \
+               sock_ini.h pcdns.h pcdbug.h) \
+             $(addprefix ../iconv/, \
+               ascii.h jisx0201.h jisx0208.h cp437.h cp737.h cp775.h cp850.h \
+               cp852.h cp853.h cp855.h cp856.h cp857.h cp858.h cp860.h \
+               cp861.h cp862.h cp863.h cp864.h cp865.h cp866.h cp869.h \
+               cp874.h cp922.h cp932.h cp943.h ksc5601.h cp949.h big5.h \
+               cp950.h cp1046.h cp1124.h cp1125.h cp1129.h cp1133.h cp1161.h \
+               cp1162.h cp1163.h cp1250.h cp1251.h cp1252.h cp1253.h cp1254.h \
+               cp1255.h cp1256.h cp1257.h cp1258.h)
+
+ioctl.$(EXE): ../ioctl.c ../socket.h
+
+ip4_frag.$(EXE): $(addprefix ../, \
+                   ip4_frag.c wattcp.h strings.h language.h misc.h timer.h \
+                   chksum.h pcconfig.h pcqueue.h pcstat.h pcpkt.h pcicmp.h \
+                   pctcp.h pcdbug.h netaddr.h run.h ip4_in.h ip4_out.h \
+                   ip4_frag.h sock_ini.h loopback.h pcarp.h)
+
+language.$(EXE): $(addprefix ../, \
+                   language.c wattcp.h strings.h sock_ini.h pcconfig.h run.h \
+                   misc.h language.h lang.c)
+
+mcast.$(EXE): mcast.c \
+              $(addprefix ../../inc/, \
+                sys/socket.h          \
+                sys/whide.h           \
+                netinet/in.h          \
+                arpa/inet.h           \
+                tcp.h)
+
+misc.$(EXE): $(addprefix ../, \
+               misc.c wattcp.h wdpmi.h x32vm.h powerpak.h strings.h cpumodel.h \
+               sock_ini.h pcsed.h pcpkt.h pcconfig.h pcdbug.h bsddbug.h \
+               ioport.h timer.h run.h stkwalk.h nochkstk.h misc.h) \
+               $(addprefix ../../inc/, \
+                 sys/pack_on.h         \
+                 sys/pack_off.h        \
+                 sys/swap.h            \
+                 sys/whide.h)
+
+packet.$(EXE): packet.c                \
+               $(addprefix ../../inc/, \
+                 sys/socket.h          \
+                 net/if.h              \
+                 net/if_ether.h        \
+                 net/if_packet.h)
+
+pc_cbrk.$(EXE): $(addprefix ../, \
+                  pc_cbrk.c copyrigh.h wattcp.h sock_ini.h wdpmi.h x32vm.h \
+                  misc.h printk.h bsddbug.h language.h strings.h nochkstk.h)
+
+pcarp.$(EXE): $(addprefix ../, \
+                pcarp.c copyrigh.h wattcp.h strings.h language.h netaddr.h \
+                misc.h run.h timer.h rs232.h ip4_in.h ip4_out.h sock_ini.h \
+                chksum.h pcdbug.h pctcp.h pcsed.h pcconfig.h pcqueue.h \
+                pcstat.h pcicmp.h pcdhcp.h pcpkt.h pcarp.h pcdns.h pcbuf.h)
+
+pcconfig.$(EXE): $(addprefix ../, \
+                   pcconfig.c copyrigh.h wattcp.h strings.h misc.h timer.h \
+                   language.h pcdns.h netaddr.h bsdname.h pcqueue.h pcdbug.h \
+                   pcsed.h pcpkt.h pctcp.h pcarp.h pcrarp.h pcdhcp.h pcbootp.h \
+                   pcicmp.h sock_ini.h ip4_frag.h ip4_out.h ip6_out.h \
+                   loopback.h get_xby.h printk.h profile.h pcconfig.h \
+                   pcicmp6.h teredo64.h)
+
+punycode.$(EXE): $(addprefix ../, \
+                   punycode.c wattcp.h misc.h strings.h punycode.h)
+
+select.$(EXE): ../select.c ../socket.h
+
+socktest.$(EXE): socktest.c ../socket.h ../loopback.h ../pcdbug.h
+
+swap.$(EXE): swap.c ../wattcp.h ../misc.h ../timer.h ../sock_ini.h \
+             ../gettod.h ../cpumodel.h timeit.h
+
+syslog.$(EXE): $(addprefix ../, \
+                 syslog.c wattcp.h misc.h run.h printk.h pctcp.h pcsed.h \
+                 pcstat.h pcbuf.h pcdbug.h pcconfig.h netaddr.h sock_ini.h \
+                 strings.h syslog2.h nochkstk.h sock_ini.h pcdbug.h)
+
+tftp.$(EXE): $(addprefix ../, \
+               tftp.c socket.h pcdns.h run.h tftp.h netaddr.h pcdbug.h pcarp.h)
+
+timeit_test.$(EXE): timeit_test.c timeit.h
+
+ttime.$(EXE): ttime.c ../wattcp.h ../misc.h ../timer.h ../printk.h \
+              $(addprefix ../../inc/sys/, wtime.h whide.h)
+
+udp_srv.$(EXE): $(addprefix ../../inc/, \
+                  tcp.h                 \
+                  netinet/in.h          \
+                  sys/socket.h          \
+                  sys/ioctl.h           \
+                  sys/whide.h           \
+                  arpa/inet.h)
+
+udp_test.$(EXE):  $(addprefix ../../inc/, \
+                    tcp.h                 \
+                    netdb.h               \
+                    sys/socket.h          \
+                    sys/whide.h           \
+                    arpa/inet.h)
+
+wecho.$(EXE): $(addprefix ../, \
+                echo.c wattcp.h strings.h pcconfig.h pctcp.h pcdbug.h misc.h \
+                run.h netaddr.h echo.h) $(WATT_LIB)
+
+@endif
+

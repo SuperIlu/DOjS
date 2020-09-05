@@ -1,0 +1,605 @@
+http://grafi.ii.pw.edu.pl/gbm/x86/cpuid.html
+
+
+                 Identification of x86 CPUs with CPUID support
+                                       
+   
+    Copyright 1996-2000 by Grzegorz Mazur
+    
+   
+    All the brand names used here belong to their respective owners.
+   ______________________________________________________________________
+   
+   Revision history:
+   2000-09-29 - K7 and Centaur info expanded & corrected
+   2000-09-18 - Rise info updated, also undocumented CPUID
+   2000-09-14 - more signatures, Transmeta info
+   1998-11-09 - Rise info, C6-2, ids updated
+   980913 - ids updated
+   980415 - more new cpuids
+   980409 - new cpuids
+   971104 - info on 486DX w/CPUID
+   971014/15 - some corrections, Cyrix ext. CPUID, more info on Cyrix,
+   New and undocumented AMD K6 CPUID, IDT C6
+   970514 - K5 info corrected
+   970508 - Pentium II and some other info corrected/expanded
+   970124 - Cx6x86 info corrected and extended
+   970107 - K5 info extended
+   961127 - some corrections
+   1996-05-20 - signatures updated
+   1996-04-03 - initial version, not yet finished
+   ______________________________________________________________________
+   
+   This part of article describes recognition of contemporary x86 CPUs
+   supporting the CPUID instruction (beginning with newer versions of
+   486).
+   The newest up-to-date information on CPUID is usually available from
+   CPU manufacturers. The information below should be treated as a
+   supplement to the official documentation. In particular those who want
+   to use CPUID in their programs should read Intel's CPUID application
+   note available from developers.intel.com and AMD documents available
+   in Tech Docs section of AMD's website.
+   ______________________________________________________________________
+   
+Some background
+
+   CPUID instruction was introduced by Intel in Pentium processor. Since
+   then it became the official method of identification for Pentium class
+   and newer chips. It is also supported by newer 486-class chips made by
+   Intel, AMD, UMC and Cyrix, and newer NexGen CPUs.
+   ______________________________________________________________________
+   
+Checking for CPUID support...
+
+   ...is described in another part of this article.
+   
+   Note that NexGen CPUs are believed not to support CPUIDF bit, but some
+   of them have CPUID...
+   ______________________________________________________________________
+   
+Obtaining CPUID info
+
+   CPUID instruction opcode is 0fh, 0a2h (two bytes). An argument is
+   passed in EAX. The argument selects information that should be
+   returned by CPUID.
+   
+  Standard CPUID
+  
+   This section describes CPUID as defined by Intel.
+   
+    Entry: EAX=0
+    
+   Exit:
+   EAX = maximum value of CPUID argument supported by the CPU (on early
+   Intel Pentium sample chips EAX contained the CPU signature, described
+   below, so its value was >500h.
+   EBX:EDX:ECX= vendor id string (EBX.lsb = first char, ECX.msb = last
+   char).
+   NOTE: IDT processors may supply any vendor string when programmed
+   appropriately, even "GenuineIntel" or "MyOwnGoodCPU". The proposed IDT
+   identification routine is described below.
+   
+    Entry: EAX = 1
+    
+   Exit (for Intel CPUs only, others are similar but not the same!):
+   EAX = cpu id signature, currently bits 31..16 - unused, bits 15..12 -
+   type (t), bits 11..8 - family (f), bits 7..4 - model (m), bits 3..0 -
+   mask revision (r) .
+   Note: IDT and Cyrix family CPUs may fool you there.
+   EBX = 31..24 - default APIC ID, 23..16 - Logical processsor ID, 15..8
+   - CFLUSH chunk size , 7..0 - brand ID - available from Pentium III up
+   EDX = cpu feature flags - interpretation may depend on manufacturer
+   and model, currently these bits are defined by Intel as follows:
+   
+   
+   CAPTION: Standard CPU features returned by CPUID with EAX=1
+   
+   bit mnemonic description
+   0 FPU Floating Point Unit
+   1 VME V86 Mode Extensions
+   2 DE Debug Extensions - I/O breakpoints
+   3 PSE Page Size Extensions (4 MB pages)
+   4 TSC Time Stamp Counter and RDTSC instruction
+   5 MSR Model Specific Registers
+   6 PAE Physical Address Extensions (36-bit address, 2MB pages)
+   7 MCE Machine Check Exception
+   8 CX8 CMPXCHG8B instruction available
+   9 APIC Local APIC present (multiprocesssor operation support) AMD K5
+   model 0 (SSA5) only: global pages supported !
+   10 reserved (Fast System Call on AMD K6 model 6 and Cyrix)
+   11 SEP Fast system call (SYSENTER and SYSEXIT instructions) - (on
+   Intel CPUs only if signature >= 0633!)
+   12 MTRR Memory Type Range Registers
+   13 PGE Page Global Enable - global oages support
+   14 MCA Machine Check Architecture and MCG_CAP register
+   15 CMOV Conditional MOVe instructions
+   16 PAT Page Attribute Table (MSR 277h)
+   17 PSE36 36 bit Page Size Extenions (36-bit addressing for 4 MB pages
+   with 4-byte descriptors)
+   18 PSN Processor Serial Number
+   19 CFLSH Cache Flush
+   20 ?
+   21 DTES Debug Trace Store
+   22 ACPI ACPI support
+   23 MMX MultiMedia Extensions
+   24 FXSR FXSAVE and FXRSTOR instructions
+   25 SSE SSE instructions (introduced in Pentium III)
+   26 SSE2 SSE2 (WNI) instructions (introduced in Pentium 4)
+   27 SELFSNOOP
+   28 ?
+   29 ACC Automatic clock control
+   30 IA64 IA64 instructions?
+   31 ?
+   
+   Other vendors may define these bits slightly different. Known
+   differences are: K5 Global Pages, K6 model 6 Fast system call, Cyrix
+   Fast system call and bit 24 (Extended MMX). All these differences are
+   documented in the appropriate manuals available via www directly from
+   vendors.
+   
+    EAX = 2 (Available only if CPUID 0 returns > 1 - P6 line, new Cyrix)
+    
+   Exit:
+   Cache and TLB information, described in PPro manuals and application
+   note AP-485 available on-line.
+   
+    EAX = 3
+    
+   Return Processor Serial Number
+   
+  Extended CPUID
+  
+   Starting with K5 model 1 (= K5-PR120/133), AMD introduced extended
+   CPUID instruction. Extended CPUID is called when EAX content has bit
+   31 set to 1.
+   The Extended CPUID is supported by variuos vendors starting with the
+   following CPU models:
+     * AMD K6, K6-2
+     * Cyrix GXm, Cyrix III "Joshua"
+     * IDT C6-2.
+     * VIA Cyrix III
+     * Transmeta Crusoe
+     * Intel Pentium 4 !!!
+       
+    EAX=0x80000000: Get extended CPUID info.
+    
+   Returns max extended CPUID level in EAX (currently 0x80000005) or 0 if
+   no extended CPUID is available.
+   On IDT C6-2 the extended functions are mirrored with EAX=0xC000000x
+   for some C6 compatibility).
+   
+    EAX=0x80000001: Get extended CPU features.
+    
+   Described in manuals available from Cyrix, AMD and IDT.
+   
+    EAX=0x80000002..0x80000004: Get CPU name
+    
+   EAX:EBX:ECX:EDX contain 16 characters of CPU name string EAX.lsb =
+   first character, EDX.msb = last character. Note that this is different
+   from the convention used for returning VendorId string with EAX=0. The
+   CPU name can be up to 48 chars long. If it is shorter (like it
+   currently is), it is terminated with NUL character (code 0).
+   The name returned by IDT C6-2 (Winchip 2) depends on its operating
+   mode. If 3D Now! instructions are enabled, the name ends with "-3D".
+   
+    EAX=0x80000005: Get CPU TLB and cache information.
+    
+   Described in details in AMD and Cyrix manuals, available on-line.
+   
+    EAX = 0x80000006
+    
+   Get L2 TLB and cache information. Available on AMD K6-III, K6-2+,
+   K6-III+, K7 family
+   
+    EAX = 0x80000007
+    
+   Get power management information
+   
+    EAX = 0x80000008
+    
+   Get more CPU information (AMD Hammer family)
+   Returns number of physical and virtual address bits physically
+   implemented on a given CPU,
+   
+    EAX = 0x8086xxxx
+    
+   Transmeta extended CPUID. See Transmeta Crusoe page.
+   
+    EAX=0x8ffffffe: AMD K6 Unofficial CPU signature
+    
+   Undocumented. Returns the string "DEI"
+   
+   
+    EAX=0x8fffffff: AMD K6 Unofficial CPU signature
+    
+   Undocumented. Returns the string "NexGenerationAMD"
+   these CPUID levels serve as "hall of fame" for NexGen design team
+   which designed the K6.
+   
+   
+    EAX=0xc0000000: IDT extended features presence test.
+    
+   If this function returns 0xc0000000 in EAX, IDT-specific features are
+   present, which effectively means that output of CPUID 0 and 1 may be
+   controlled by a programmer. More info here. On C6-2 this function is
+   an equivalent of 0x80000000.
+   ______________________________________________________________________
+   
+  Rise extended CPUID
+  
+   Rise mP6 family CPUs use CPUID instruction in place of MSR access
+   instructions (WRMSR). Execution of CPUID with special register values
+   causes some changes to internal processor features. I would speculate
+   that the following forms of CPUID on Rise CPUs influence the features
+   reported by CPUID level 1.
+   
+   On entry, EDX:ECX:EAX contain 12-character string. The instruction may
+   modify any general purpose registers. Two forms are known:
+   "*Eccl_12:12*"
+   "#Eccl 12:13#"
+   ______________________________________________________________________
+   
+Interpretation of CPUID data
+
+   First find the section with proper vendor id string below, then
+   interpret the signature according to the description.
+   GenuineIntel
+   UMC UMC UMC
+   AuthenticAMD (AMD ISBETTER)
+   CyrixInstead
+   NexGenDriven
+   CentaurHauls
+   RiseRiseRise
+   GenuineTMx86
+   
+   Please email me if you have any of the chips listed below marked with
+   asterisk '*', or not listed below.
+   ______________________________________________________________________
+   
+  "GenuineIntel"
+  
+   Vendor: Intel Corp.
+   
+   Type field: 0 - standard, 1 - overdrive, 2 - 2nd processor in
+   dual-processor system.
+   
+   Family / Model / Mask rev.
+     * 3 - 386 - New chips may support CPUID ! *
+     * 4 - 486
+       
+     * 0,1 - 486DX - the chips should NOT support CPUID, but there is an
+       exception !!! *
+       
+     * 5 - 486DX, features = 0x00000003
+       
+     2 - 486SX
+     * 7 - cA0
+     * 8 - cB0
+     * E - E
+       
+     3 - 486DX2 - CPUID supported only on new chips (listed below)
+     * 5 - C
+     * 6 - P24D in WT mode, see 4-7-0
+       
+     4 - 486SL
+   
+     5 - 486SX2 *
+   
+     7 - 486DX2 WB (P24D) (returns 0436 while in WT mode)
+   
+     8 - 486DX4
+     * 0 - the only one I know
+       
+     9 - 486DX4 WB *
+   
+     5 - Pentium
+     * 0 - Early P5, A-step *
+     * 1 - P5 (80501, Pentium 60/66, 5 V)
+       
+     * 3 - B1 FDIV bug
+     * 5 - C1 FDIV bug
+     * 7 - D1
+     * A - tA0 - P54C overdrive for P5 socket - 120/133 Mhz
+       
+     2 - P54C (80502, Pentium 75-..., 3.x V)
+     * 1 - B1 FDIV bug
+     * 2 - B3 FDIV bug
+     * 4 - B5
+     * 5 - C2/mA1
+     * 6 - E0
+     * B - cB1, mcB1
+     * C - cC0, mcC0, acC0
+       
+     3 - P24T - Pentium overdrive for 486 socket (5V)
+     * 1 - P24T: B1, B2 - version 1.x
+     * 2 - P24B: C0 - version 2.x
+       
+     4 - Pentium with MMX (P55C)
+     * 4 - xA3/mxA3/(oxA3 if sig=1544) - the first commercially available
+       version
+     * 3 - xB1/mxB1
+       
+     5 - DX4 OverDrive ?
+   
+     6 - P5 OverDrive ?
+   
+     7 - P54C
+     * 0 - mA4
+       
+     8 - low voltage P55 (Pentium MMX)
+     * 1 - myA0
+       
+     6 - P6 family.
+     * 0 - Pentium Pro A step samples *
+     * 1 - regular Pentium Pro
+       
+     * 1 - B0
+     * 2 - C0
+     * 6 - sA0
+     * 7 - sA1
+     * 9 - sB1
+       
+     3 - Pentium II "Klamath" (063x), 233..333 MHz,  P6 overdrive with
+   MMX (163x)
+     * 2 - tdB0 (1632) - P II overdrive for PPro
+     * 3 - C0
+     * 4 - C1
+       
+     4 - P55CT? (overdrive for P54 ?)
+   
+     5 - Pentium II "Deschutes" (266..450 MHz), Pentium II Xeon (400..???
+   MHz) and Celeron w/o L2 cache (266, 300MHz) (Celeron with no L2 cache
+   returns the appropriate info via CPUID 2!)
+     * 0 - dA0
+     * 1 - dA1
+     * 2 - dB0
+     * 3
+       
+     6 - Celeron "A" "Mendocino" (w/ 128KB full speed L2 cache) or
+   Pentium II PE (256 KB cache)
+     * 0 - mA0
+     * 5 -
+     * a -
+       
+     7 - Pentium III "Katmai"
+     * 2 -
+     * 3 -
+       
+     8 - Pentium III "Coppermine", Celeron w/SSE
+     * 1 -
+     * 3 -
+     * 6 -
+       
+     a - Pentium III Xeon "Cascades"
+   
+     f - Pentium 4 ("Willamette") family
+   ______________________________________________________________________
+   
+  "UMC UMC UMC "
+  
+   Vendor: United Microelectronics Corporation
+   
+   Family / Model / Mask
+   
+   
+     * 4 - 486 (U5)
+       
+     * 1 - U5D (486DX) - never produced in quantity ...*
+     * 2 - U5S (486SX)
+       
+     * 3 - the only one known
+   ______________________________________________________________________
+   
+  "AuthenticAMD"
+  
+   Can also be "AMD ISBETTER" in some engineering samples (1994?) - email
+   me if you have such chip...
+   
+   Vendor: Advanced Micro Devices
+   
+   Family / Model / Mask rev.
+     * 4 - 486
+       
+     * 3 - 486DX2 or DX4 in 2x WT mode
+       
+     * 2 - DX2, DX4NV8T
+     * 4 - DX2, DX4SV8B
+       
+     7 - 486DX2 or DX4 in 2x WB mode
+     * 4 - SV8B (WT)
+       
+     8 - 486DX4 or 5x86 in 3x WT mode
+     * 4 - SV8B or 5x86
+       
+     9 - 486DX4 SV8B, 3x WB mode
+     * 4 - the only one I know
+       
+     E - 5x86, 4x WT mode
+     * 4 -
+       
+     F - 5x86, 4x WB mode
+     * 4 -
+       
+     5 - K5 (until June'96 known as 5k86) and K6
+     * 0 - Model 0, formerly known as SSA5 (105% Pentium speed at same
+       clock), PR75 @75MHz, PR90@90MHz, PR100@100MHz, internal clock =
+       1.5x bus clock
+       
+     * 0 - the first mask revision (version E)
+     * 1- 2nd revision (version F)
+       
+     1 - Model 1, (130% Pentium speed at same clock), PR120@90MHz,
+   PR133@100MHz, internal clock = 1.5x bus clock, first CPU with extended
+   CPUID.
+     * 1 - initial version
+     * 2 - another variety (early 1997)
+     * 4 - improved one, (model 1/2/3) working with Clock Multiplier =
+       1.5,  with Write Allocation working properly (so it can be enabled
+       safely...). Signature changes to 0524 or 0534 depending on CLKMUL.
+       
+     2 - Officially Model 2, PR150@105MHz, PR166@116MHz - 1.75x bus clock
+   !!!
+     * 4 - same chip as 5-1-4 but with Clock Multiplier = 1.75
+       
+     3 - Officially Model 3, PR200@133MHz, CPU clock = 2x bus clock
+     * 4 - same chip as 5-1-4/5-2-4 but with Clock Multiplier = 2
+       
+     6 - K6 model 6 (166..233 MHz)
+     * 1 - rev. B
+     * 2 - rev. C
+       
+     7 - K6 model 7 (266..300 MHz)
+     * 0 - rev. A
+       
+     8 - K6-2 model 8 (w/ 3D Now! extensions)
+     * 0 - rev.A
+     *
+       
+     9 - K6-3 model 9 "Sharptooth" (w/ 3DNow! and integrated L2 cache)
+     * 1 -
+       
+     d - K6-2+, K6-III+
+   
+     6 - K7 - Athlon, Duron
+     * 1 - Athlon 0.25u, Slot A, external L2 cache
+     * 2 - Athlon 0.18u, Slot A, external L2 cache
+     * 3 - Duron
+       
+     * 0 - A0, w/CPUID error (reports 1KB L2 cache)
+     * 1 - A2, no CPUID error
+       
+     4 - Athlon 0.18u, integrated L2 cache
+     * 2 - A4
+     * 3 - B0
+   ______________________________________________________________________
+   
+  "CyrixInstead"
+  
+   Vendor: Cyrix Corp., VIA Inc.
+   
+   Note1: CPUID support must be enabled to toggle CPUID bit in EFLAGS and
+   to exexcute CPUID. To do so, set CPUIDEN bit to one (it is bit 7 of
+   CCR4). Anyway it is better to use DIR registers, which provide more
+   precise identification than CPUID, at least on all CPUs up to 6x86MX.
+   
+   Note2: The value returned in EAX by CPUID level 1 has the following
+   structure:
+   YYYYXXMM
+       YYYY - normally 0, if VIPERM = 1 and MAPEN!=1 - on my chip 601ch
+       XX - value of control register 0FCh, 05h after reset, can be
+       changed by user to any value !!!
+       MM - supplied by CPU, so far 20h on 6x86
+       The above means that CPUID cannot be used for reliable CPU
+       detection of Cyrix chips, at least on 6x86 !!!
+       
+     * 4 - Cx5x86 (486 alike, advanced architecture, higher performance)
+       - only newer versions are believed to support CPUID
+       or MediaGX
+       
+     * 4 - MediaGX
+     * 9 (?) - Cx5x86 - to make it appear similar to 486DX4WB
+       
+     * 0 (?)
+       
+     5 - Cx6x86 (Pentium alike, 25% faster at same clock) and GXm
+     * 0
+       
+     * ?
+       
+     2 - standard Cx6x86
+     * 0 - returned by all revisions so far (mask revisions can be
+       distiguished by DIR1)
+       
+     4 - GXm
+   
+     6 - 6x86MX / M II, VIA Cyrix III "Joshua"
+     * 0 - 6x86MX, M II
+     * 5 - VIA Cyrix III "Joshua"
+   ______________________________________________________________________
+   
+  "NexGenDriven"
+  
+   Vendor: NexGen Inc., (acquired by AMD, so don't expect anything new
+   here).
+   CPUID support for Nx586 relies on BIOS, not on the CPU. In fact, the
+   BIOS loads the microcode responsible for CPUID execution. So if you
+   ant CPUID on Nx586, get the new BIOS from AMD.
+   Note: Nx586 CPUs (or rather some verions of the microcode) are
+   believed not to support CPUIDEN bit in EFLAGS, so there is no check
+   available. Only newer models support CPUID instruction. The only
+   method to check for CPUID is to execute it with illegal opcode handler
+   installed.
+     * 5 - Nx586 *
+       
+     * 0
+       
+     * 4 - P100 ?
+     * 6 - E2/C0 (P120 ?)
+   ______________________________________________________________________
+   
+  "CentaurHauls"
+  
+   Vendor: IDT/Centaur, now VIA
+   These chips may supply any vendor ID and Family/Model information. See
+   the identification routine below.
+     * 5 - IDT C6 (WinChip)
+       
+     * 4 - C6
+       
+     * 0 - stepping 0, some errors
+     * 1 - stepping 1, less errors...
+       
+     8 - WinChip 2 (C6-2)
+     * 5 - WC2
+     * 7..9 - WC 2A
+     * A..F - WC 2B
+       
+     9 - WinChip 3
+   
+     6 - VIA Cyrix III "Samuel"
+     * 6 - "Samuel"
+   ______________________________________________________________________
+   
+  "RiseRiseRise"
+  
+   Vendor: Rise
+     * 5 - mP6 family
+       
+     * 0 - iDragon .25u
+     * 2 - iDragon .18u
+     * 8 - iDragon II .25u
+     * 9 - iDragon II .18u
+   ______________________________________________________________________
+   
+  "GenuineTMx86"
+  
+   Vendor: Transmeta
+     * 5 - Crusoe family
+   ______________________________________________________________________
+   
+  IDT (Centaur) Identification routine
+  
+   C6 may return any string as VendorID and any value as Family/Model.
+   Once changed, the family/model/stepping information cannot be
+   recovered other than by resetting the processor. True Vendor ID can be
+   read at any time, provided that the control it is set to 0.  To check
+   if the CPU is IDT, follow the steps described below:
+     * execute CPUID with EAX=0xc0000000
+     * check if EAX=0xc0000000; if not - you are not being fooled, the
+       CPU is not IDT
+     * if EAX==0xc0000000 - change bit 14 of FCR2 (MSR#108h) to 0
+     * Execute CPUID 0 and 1 again, this time you will get true Vendor
+       info, but family/model/stepping will still be the same as before
+       
+   To get the real CPUID, I would sugest resetting the CPU using the
+   technique similar to the one used to get the reset signature.
+   
+  General IDT C6 CPUID behavior
+  
+   When CPUID is executed with EAX > 2, the EAX remains unchanged and
+   contains the original value. This complies with the behavior described
+   by IDT (CPUID 0xC0000000 returns 0xC0000000 in EAX).
+   ______________________________________________________________________
+   
+   
+    Copyright 1996-8 by Grzegorz Mazur

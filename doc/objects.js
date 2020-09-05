@@ -151,3 +151,15 @@ class V3D { }
 }
  */
 class JoyInfo { }
+
+/**
+ * An array with four numbers (e.g. [192.168.1.2]).
+ * @type IpAdddress
+ */
+class IpAddress { }
+
+/**
+ * An array with the HTTP result: [code, message, header, data]
+ * @type HTTPResult
+ */
+class HTTPResult { }

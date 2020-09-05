@@ -48,6 +48,21 @@ var currentMatrix = [
 	[0, 0, 0, 0]
 ];
 
+var matrixStack = [];
+
+exports.PushMatrix = function () {
+	matrixStack.push([
+		currentMatrix[0].slice(0),
+		currentMatrix[1].slice(0),
+		currentMatrix[2].slice(0),
+		currentMatrix[3].slice(0)
+	]);
+};
+
+exports.PopMatrix = function () {
+	currentMatrix = matrixStack.pop();
+};
+
 /**
  * dump current matrix
  */
@@ -159,7 +174,7 @@ exports.MultMatrix = function (m) {
 }
 
 /**
- * Multiply list of vertices w/ cirrent matrix. Expects vertices of the format [x, y, z, w, s, t]
+ * Multiply list of vertices w/ current matrix. Expects vertices of the format [x, y, z, w, s, t]
  */
 exports.TransformVertices = function (srcVerts) {
 	var m = currentMatrix;

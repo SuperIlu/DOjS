@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -117,6 +117,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "fxDepthBufferMode"),             //
     EDI_SYNTAX(LIGHTRED, "JoystickCalibrate"),             //
     EDI_SYNTAX(LIGHTRED, "GetRotationMatrix"),             //
+    EDI_SYNTAX(LIGHTRED, "GetLocalIpAddress"),             //
     EDI_SYNTAX(LIGHTRED, "NGetZRotateMatrix"),             //
     EDI_SYNTAX(LIGHTRED, "NGetYRotateMatrix"),             //
     EDI_SYNTAX(LIGHTRED, "NGetXRotateMatrix"),             //
@@ -126,14 +127,15 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "fxDepthBiasLevel"),              //
     EDI_SYNTAX(LIGHTRED, "fxChromakeyValue"),              //
     EDI_SYNTAX(LIGHTRED, "fxAADrawTriangle"),              //
+    EDI_SYNTAX(LIGHTRED, "VoiceGetPosition"),              //
     EDI_SYNTAX(LIGHTRED, "SoundInputSource"),              //
     EDI_SYNTAX(LIGHTRED, "JoystickSaveData"),              //
     EDI_SYNTAX(LIGHTRED, "JoystickLoadData"),              //
     EDI_SYNTAX(LIGHTRED, "GetZRotateMatrix"),              //
     EDI_SYNTAX(LIGHTRED, "GetYRotateMatrix"),              //
     EDI_SYNTAX(LIGHTRED, "GetXRotateMatrix"),              //
-    EDI_SYNTAX(LIGHTRED, "QTranslateMatrix"),              //
     EDI_SYNTAX(LIGHTRED, "GetParallelPorts"),              //
+    EDI_SYNTAX(LIGHTRED, "QTranslateMatrix"),              //
     EDI_SYNTAX(LIGHTRED, "GetScalingMatrix"),              //
     EDI_SYNTAX(LIGHTRED, "fxTexMipMapMode"),               //
     EDI_SYNTAX(LIGHTRED, "fxTexMinAddress"),               //
@@ -166,8 +168,9 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "PolygonZNormal"),                //
     EDI_SYNTAX(LIGHTRED, "MouseSetLimits"),                //
     EDI_SYNTAX(LIGHTRED, "IpxSocketClose"),                //
-    EDI_SYNTAX(LIGHTRED, "GetSerialPorts"),                //
     EDI_SYNTAX(LIGHTRED, "IpxCheckPacket"),                //
+    EDI_SYNTAX(LIGHTRED, "GetSerialPorts"),                //
+    EDI_SYNTAX(LIGHTRED, "GetNetworkMask"),                //
     EDI_SYNTAX(LIGHTRED, "ScenePolygon3D"),                //
     EDI_SYNTAX(LIGHTRED, "GetEmptyMatrix"),                //
     EDI_SYNTAX(LIGHTRED, "GetAlignMatrix"),                //
@@ -178,11 +181,12 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "MidiIsPlaying"),                 //
     EDI_SYNTAX(LIGHTRED, "IpxSocketOpen"),                 //
     EDI_SYNTAX(LIGHTRED, "GetScreenMode"),                 //
+    EDI_SYNTAX(LIGHTRED, "GetDomainname"),                 //
     EDI_SYNTAX(LIGHTRED, "FilledPolygon"),                 //
-    EDI_SYNTAX(LIGHTRED, "LPTRawControl"),                 //
     EDI_SYNTAX(LIGHTRED, "FilledEllipse"),                 //
     EDI_SYNTAX(LIGHTRED, "CustomEllipse"),                 //
     EDI_SYNTAX(LIGHTRED, "NPerspProject"),                 //
+    EDI_SYNTAX(LIGHTRED, "LPTRawControl"),                 //
     EDI_SYNTAX(LIGHTRED, "FxEmptyVertex"),                 //
     EDI_SYNTAX(LIGHTRED, "fxTexCombine"),                  //
     EDI_SYNTAX(LIGHTRED, "fxDitherMode"),                  //
@@ -192,6 +196,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "SetFramerate"),                  //
     EDI_SYNTAX(LIGHTRED, "SaveTgaImage"),                  //
     EDI_SYNTAX(LIGHTRED, "SavePcxImage"),                  //
+    EDI_SYNTAX(LIGHTRED, "SavePngImage"),                  //
     EDI_SYNTAX(LIGHTRED, "SaveBmpImage"),                  //
     EDI_SYNTAX(LIGHTRED, "PerspProject"),                  //
     EDI_SYNTAX(LIGHTRED, "JoystickPoll"),                  //
@@ -203,9 +208,9 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "VectorLength"),                  //
     EDI_SYNTAX(LIGHTRED, "QScaleMatrix"),                  //
     EDI_SYNTAX(LIGHTRED, "NApplyMatrix"),                  //
+    EDI_SYNTAX(LIGHTRED, "LPTRawStatus"),                  //
     EDI_SYNTAX(LIGHTRED, "IpxFindNodes"),                  //
     EDI_SYNTAX(LIGHTRED, "FxTexMemInit"),                  //
-    EDI_SYNTAX(LIGHTRED, "LPTRawStatus"),                  //
     EDI_SYNTAX(LIGHTRED, "FxRGB2Vertex"),                  //
     EDI_SYNTAX(LIGHTRED, "DestroyScene"),                  //
     EDI_SYNTAX(LIGHTRED, "CrossProduct"),                  //
@@ -219,6 +224,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "OutPortLong"),                   //
     EDI_SYNTAX(LIGHTRED, "OutPortByte"),                   //
     EDI_SYNTAX(LIGHTRED, "MidiGetTime"),                   //
+    EDI_SYNTAX(LIGHTRED, "GetHostname"),                   //
     EDI_SYNTAX(LIGHTRED, "CreateScene"),                   //
     EDI_SYNTAX(LIGHTRED, "ClearScreen"),                   //
     EDI_SYNTAX(LIGHTRED, "ApplyMatrix"),                   //
@@ -235,28 +241,32 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "Triangle3D"),                    //
     EDI_SYNTAX(LIGHTRED, "SetExitKey"),                    //
     EDI_SYNTAX(LIGHTRED, "MidiResume"),                    //
+    EDI_SYNTAX(LIGHTRED, "MidiGetPos"),                    //
     EDI_SYNTAX(LIGHTRED, "MemoryInfo"),                    //
     EDI_SYNTAX(LIGHTRED, "InPortWord"),                    //
     EDI_SYNTAX(LIGHTRED, "InPortLong"),                    //
     EDI_SYNTAX(LIGHTRED, "InPortByte"),                    //
     EDI_SYNTAX(LIGHTRED, "CustomLine"),                    //
-    EDI_SYNTAX(LIGHTRED, "LPTRawData"),                    //
     EDI_SYNTAX(LIGHTRED, "ClearScene"),                    //
     EDI_SYNTAX(LIGHTRED, "NMatrixMul"),                    //
+    EDI_SYNTAX(LIGHTRED, "LPTRawData"),                    //
     EDI_SYNTAX(LIGHTRED, "DotProduct"),                    //
     EDI_SYNTAX(LIGHTRED, "CompareKey"),                    //
     EDI_SYNTAX(LIGHTRED, "ClearScene"),                    //
     EDI_SYNTAX(LIGHTRED, "fxFogMode"),                     //
     EDI_SYNTAX(LIGHTRED, "fxDisable"),                     //
+    EDI_SYNTAX(LIGHTRED, "ResolveIp"),                     //
     EDI_SYNTAX(LIGHTRED, "Polygon3D"),                     //
     EDI_SYNTAX(LIGHTRED, "MouseWarp"),                     //
     EDI_SYNTAX(LIGHTRED, "MidiPause"),                     //
     EDI_SYNTAX(LIGHTRED, "MatrixMul"),                     //
+    EDI_SYNTAX(LIGHTRED, "LPTStatus"),                     //
     EDI_SYNTAX(LIGHTRED, "FloodFill"),                     //
     EDI_SYNTAX(LIGHTRED, "FilledBox"),                     //
-    EDI_SYNTAX(LIGHTRED, "LPTStatus"),                     //
+    EDI_SYNTAX(LIGHTRED, "DrawArray"),                     //
     EDI_SYNTAX(LIGHTRED, "CircleArc"),                     //
     EDI_SYNTAX(LIGHTRED, "RandomInt"),                     //
+    EDI_SYNTAX(LIGHTRED, "LPTStatus"),                     //
     EDI_SYNTAX(LIGHTRED, "fxSplash"),                      //
     EDI_SYNTAX(LIGHTRED, "fxOrigin"),                      //
     EDI_SYNTAX(LIGHTRED, "fxIsBusy"),                      //
@@ -264,17 +274,21 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "fxEnable"),                      //
     EDI_SYNTAX(LIGHTRED, "MsecTime"),                      //
     EDI_SYNTAX(LIGHTRED, "MidiStop"),                      //
+    EDI_SYNTAX(LIGHTRED, "LPTReset"),                      //
     EDI_SYNTAX(LIGHTRED, "GetPixel"),                      //
     EDI_SYNTAX(LIGHTRED, "GetGreen"),                      //
     EDI_SYNTAX(LIGHTRED, "GetAlpha"),                      //
-    EDI_SYNTAX(LIGHTRED, "IpxDebug"),                      //
     EDI_SYNTAX(LIGHTRED, "LPTReset"),                      //
+    EDI_SYNTAX(LIGHTRED, "IpxDebug"),                      //
     EDI_SYNTAX(LIGHTRED, "HSBColor"),                      //
     EDI_SYNTAX(LIGHTRED, "CharCode"),                      //
     EDI_SYNTAX(LIGHTRED, "fxFlush"),                       //
+    EDI_SYNTAX(LIGHTRED, "Resolve"),                       //
     EDI_SYNTAX(LIGHTRED, "Println"),                       //
     EDI_SYNTAX(LIGHTRED, "MidiOut"),                       //
+    EDI_SYNTAX(LIGHTRED, "LPTSend"),                       //
     EDI_SYNTAX(LIGHTRED, "IpxSend"),                       //
+    EDI_SYNTAX(LIGHTRED, "IpDebug"),                       //
     EDI_SYNTAX(LIGHTRED, "GetBlue"),                       //
     EDI_SYNTAX(LIGHTRED, "Ellipse"),                       //
     EDI_SYNTAX(LIGHTRED, "Require"),                       //
@@ -302,6 +316,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "List"),                          //
     EDI_SYNTAX(LIGHTRED, "Line"),                          //
     EDI_SYNTAX(LIGHTRED, "POST"),                          //
+    EDI_SYNTAX(LIGHTRED, "Info"),                          //
     EDI_SYNTAX(LIGHTRED, "Box"),                           //
     EDI_SYNTAX(LIGHTRED, "Gc"),                            //
 
@@ -316,36 +331,57 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTGREEN, "Midi"),     // .ctor()
 
     // Methods
-    EDI_SYNTAX(RED, ".DrawStringCenter"),  // Font
-    EDI_SYNTAX(RED, ".DrawStringRight"),   // Font
-    EDI_SYNTAX(RED, ".DownloadMipMap"),    // TexInfo
-    EDI_SYNTAX(RED, ".DrawStringLeft"),    // Font
-    EDI_SYNTAX(RED, ".IsOutputEmpty"),     // Comport
-    EDI_SYNTAX(RED, ".DrawAdvanced"),      // Bitmap
-    EDI_SYNTAX(RED, ".StringHeight"),      // Font
-    EDI_SYNTAX(RED, ".IsOutputFull"),      // Comport
-    EDI_SYNTAX(RED, ".IsInputEmpty"),      // Comport
-    EDI_SYNTAX(RED, ".WriteString"),       // File
-    EDI_SYNTAX(RED, ".StringWidth"),       // Font
-    EDI_SYNTAX(RED, ".MemRequired"),       // TexInfo
-    EDI_SYNTAX(RED, ".FlushOutput"),       // Comport
-    EDI_SYNTAX(RED, ".IsInputFull"),       // Comport
-    EDI_SYNTAX(RED, ".MarkUnused"),        // TexInfo
-    EDI_SYNTAX(RED, ".ReadBuffer"),        // Comport
-    EDI_SYNTAX(RED, ".FlushInput"),        // Comport
-    EDI_SYNTAX(RED, ".WriteLine"),         // File/Comport
-    EDI_SYNTAX(RED, ".WriteByte"),         // File/Comport
-    EDI_SYNTAX(RED, ".DrawTrans"),         // Bitmap
-    EDI_SYNTAX(RED, ".FxDrawLfb"),         // Bitmap
-    EDI_SYNTAX(RED, ".ReadLine"),          // File
-    EDI_SYNTAX(RED, ".ReadByte"),          // File/Comport
-    EDI_SYNTAX(RED, ".GetPixel"),          // Bitmap
-    EDI_SYNTAX(RED, ".Source"),            // TexInfo
-    EDI_SYNTAX(RED, ".Close"),             // File/Comport
-    EDI_SYNTAX(RED, ".Clear"),             // Bitmap
-    EDI_SYNTAX(RED, ".Stop"),              // Sample
-    EDI_SYNTAX(RED, ".Draw"),              // Bitmap
-    EDI_SYNTAX(RED, ".Play"),              // Midi
+    EDI_SYNTAX(RED, ".DrawStringCenter"),  //
+    EDI_SYNTAX(RED, ".DrawStringRight"),   //
+    EDI_SYNTAX(RED, ".DrawStringLeft"),    //
+    EDI_SYNTAX(RED, ".DownloadMipMap"),    //
+    EDI_SYNTAX(RED, ".IsOutputEmpty"),     //
+    EDI_SYNTAX(RED, ".GetRemotePort"),     //
+    EDI_SYNTAX(RED, ".GetRemoteHost"),     //
+    EDI_SYNTAX(RED, ".StringHeight"),      //
+    EDI_SYNTAX(RED, ".SaveTgaImage"),      //
+    EDI_SYNTAX(RED, ".SavePcxImage"),      //
+    EDI_SYNTAX(RED, ".SaveBmpImage"),      //
+    EDI_SYNTAX(RED, ".SavePngImage"),      //
+    EDI_SYNTAX(RED, ".IsOutputFull"),      //
+    EDI_SYNTAX(RED, ".IsInputEmpty"),      //
+    EDI_SYNTAX(RED, ".GetLocalPort"),      //
+    EDI_SYNTAX(RED, ".DrawAdvanced"),      //
+    EDI_SYNTAX(RED, ".WriteString"),       //
+    EDI_SYNTAX(RED, ".StringWidth"),       //
+    EDI_SYNTAX(RED, ".MemRequired"),       //
+    EDI_SYNTAX(RED, ".IsInputFull"),       //
+    EDI_SYNTAX(RED, ".FlushOutput"),       //
+    EDI_SYNTAX(RED, ".Established"),       //
+    EDI_SYNTAX(RED, ".WriteBytes"),        //
+    EDI_SYNTAX(RED, ".ReadString"),        //
+    EDI_SYNTAX(RED, ".ReadBuffer"),        //
+    EDI_SYNTAX(RED, ".MarkUnused"),        //
+    EDI_SYNTAX(RED, ".FlushInput"),        //
+    EDI_SYNTAX(RED, ".WriteLine"),         //
+    EDI_SYNTAX(RED, ".WriteByte"),         //
+    EDI_SYNTAX(RED, ".WaitInput"),         //
+    EDI_SYNTAX(RED, ".WaitFlush"),         //
+    EDI_SYNTAX(RED, ".ReadBytes"),         //
+    EDI_SYNTAX(RED, ".FxDrawLfb"),         //
+    EDI_SYNTAX(RED, ".FlushNext"),         //
+    EDI_SYNTAX(RED, ".DrawTrans"),         //
+    EDI_SYNTAX(RED, ".DataReady"),         //
+    EDI_SYNTAX(RED, ".ReadLine"),          //
+    EDI_SYNTAX(RED, ".ReadByte"),          //
+    EDI_SYNTAX(RED, ".GetPixel"),          //
+    EDI_SYNTAX(RED, ".NoFlush"),           //
+    EDI_SYNTAX(RED, ".GetSize"),           //
+    EDI_SYNTAX(RED, ".Source"),            //
+    EDI_SYNTAX(RED, ".Flush"),             //
+    EDI_SYNTAX(RED, ".Close"),             //
+    EDI_SYNTAX(RED, ".Clear"),             //
+    EDI_SYNTAX(RED, ".Stop"),              //
+    EDI_SYNTAX(RED, ".Play"),              //
+    EDI_SYNTAX(RED, ".Mode"),              //
+    EDI_SYNTAX(RED, ".Draw"),              //
+    EDI_SYNTAX(RED, ".Set"),               //
+    EDI_SYNTAX(RED, ".Get"),               //
 
     // members
     EDI_SYNTAX(YELLOW, ".aspectRatio"),  // TexInfo

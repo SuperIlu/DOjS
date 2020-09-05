@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -324,7 +324,9 @@ void init_sound(js_State *J) {
     // sound output
     bool sound_ok = install_sound(DOjS.params.no_sound ? DIGI_NONE : DIGI_AUTODETECT, DOjS.params.no_fm ? MIDI_NONE : MIDI_AUTODETECT, NULL) == 0;
     if (!sound_ok) {
-        LOGF("Sound init: %s\n", allegro_error);
+        LOGF("Sound output: %s\n", allegro_error);
+    } else {
+        LOGF("Sound output: OK\n");
     }
     DOjS.midi_available = sound_ok && !DOjS.params.no_fm;
     DOjS.sound_available = sound_ok && !DOjS.params.no_sound;
@@ -343,6 +345,8 @@ void init_sound(js_State *J) {
     DOjS.sndin_available = install_sound_input(DOjS.params.no_sound ? DIGI_NONE : DIGI_AUTODETECT, DOjS.params.no_fm ? MIDI_NONE : MIDI_AUTODETECT) == 0;
     if (!DOjS.sndin_available) {
         LOGF("Sound input: %s\n", allegro_error);
+    } else {
+        LOGF("Sound input: OK\n");
     }
 
     int cap = get_sound_input_cap_bits();
@@ -367,7 +371,9 @@ void init_sound(js_State *J) {
  * @brief shutdown module/sample subsystem.
  */
 void shutdown_sound() {
+    DEBUGF("%s\n", __PRETTY_FUNCTION__);
     if (DOjS.sound_available) {
         snd_stop_input(NULL);
     }
+    DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

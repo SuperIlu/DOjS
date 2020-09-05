@@ -194,6 +194,12 @@ function MidiResume() { }
 function MidiGetTime() { }
 
 /**
+ * Get song position.
+ * @returns {number} current song position in MIDI file.
+ */
+function MidiGetPos() { }
+
+/**
  * Send MIDI commands to output.
  * @param {number[]} data an array of midi commands.
  */
@@ -414,6 +420,12 @@ function SavePcxImage(fname) { }
 function SaveTgaImage(fname) { }
 
 /**
+ * Save current screen to PNG file.
+ * @param {string} fname filename.
+ */
+function SavePngImage(fname) { }
+
+/**
  * get color of on-screen pixel.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
@@ -597,6 +609,18 @@ function InPortWord(port) { }
  */
 function InPortLong(port) { }
 
+/**
+ * get available parallel ports.
+ * @returns {number[]} list of available parallel ports and their addresses.
+ */
+function GetParallelPorts() { }
+
+/**
+ * get available serial ports.
+ * @returns {number[]} list of available serial ports and their addresses.
+ */
+function GetSerialPorts() { }
+
 
 /** @module color */
 
@@ -606,7 +630,7 @@ function InPortLong(port) { }
  * @param {number} r red (0-255)
  * @param {number} g green (0-255)
  * @param {number} b blue (0-255)
- * @param {number} a alpha (0-255) (optional)
+ * @param {number} [a] alpha (0-255) (optional)
  * @returns {number} a color.
  */
 function Color(r, g, b, a) { }
@@ -1353,3 +1377,40 @@ function fxLfbConstantAlpha(val) { }
  * @param {number} val the constant depth value.
  */
 function fxLfbConstantDepth(val) { }
+
+/**
+ * @module tcpip
+ */
+
+/**
+ * get the local IP address.
+ * @returns {IpAddress} the local IP address as an array of numbers
+ */
+function GetLocalIpAddress() { }
+/**
+ * get the netmask.
+ * @returns {IpAddress} the netmask as an array of numbers
+ */
+function GetNetworkMask() { }
+/**
+ * get the hostname.
+ * @returns {string} the hostname
+ */
+function GetHostname() { }
+/**
+ * get the domain name.
+ * @returns {string} the domain name
+ */
+function GetDomainname() { }
+/**
+ * look up a hostname in DNS.
+ * @param {string} host the hostname.
+ * @returns {IpAddress} The IP address of the host or an exception.
+ */
+function Resolve(host) { }
+/**
+ * reverse look up a host in DNS.
+ * @param {IpAddress} host the ip address.
+ * @returns {string} The name of the host or an exception.
+ */
+function ResolveIp(ip) { }

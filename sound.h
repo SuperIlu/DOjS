@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,7 @@ SOFTWARE.
 #ifndef __SOUND_H__
 #define __SOUND_H__
 
-#include <mujs.h>
-#include <stdbool.h>
+#include "DOjS.h"
 
 /************
 ** defines **

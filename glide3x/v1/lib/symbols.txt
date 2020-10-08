@@ -98,7 +98,6 @@ export: `_guFogGenerateLinear'
 export: `_guFogTableIndexToW'
 export: `_guGammaCorrectionRGB'
 i586-pc-msdosdjgpp-ld -X -S -r -o dxe_tmp.o -L /home/ilu/djgpp473/lib -T dxe.ld distate.o diget.o gstrip.o distrip.o diglide.o disst.o ditex.o g3df.o gaa.o gbanner.o gdraw.o gerror.o gglide.o glfb.o gpci.o gsplash.o gsst.o gtex.o gtexdl.o gu.o gxdraw.o ../../init/init.o ../../init/vgdrvr.o ../../init/vg96drvr.o ../../init/initvg/gamma.o ../../init/initvg/dac.o ../../init/initvg/video.o ../../init/initvg/parse.o ../../init/initvg/sli.o ../../init/initvg/util.o ../../init/initvg/info.o ../../init/initvg/print.o ../../init/initvg/gdebug.o ../../init/initvg/sst1init.o ../../../swlibs/newpci/pcilib/sst1_pci.o ../../../swlibs/newpci/pcilib/fxmsr.o ../../../swlibs/newpci/pcilib/fxpci.o ../../../swlibs/newpci/pcilib/fxdpmi2.o 
-unresolved: `___dj_assert' (1 references)
 unresolved: `___dj_stderr' (1 references)
 unresolved: `___dj_stdout' (7 references)
 unresolved: `___djgpp_base_address' (2 references)

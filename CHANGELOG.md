@@ -1,3 +1,6 @@
+# Version 1.2.1 (Bugfix)  / Oct 8, 2020
+* Fixed crash in Voodoo detection which only happens on plain DOSBox.
+
 # Version 1.2.0 (Watt is that?)  / Sept 5, 2020
 * Added TCP/IP support through WATT32.
 * Fixed bug where text mode was not restored after exiting DOjS

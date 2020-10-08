@@ -113,7 +113,6 @@ export: `_guFogTableIndexToW'
 export: `_guGammaCorrectionRGB'
 export: `_guTexCreateColorMipMap'
 i586-pc-msdosdjgpp-ld -X -S -r -o dxe_tmp.o -L /home/ilu/djgpp473/lib -T dxe.ld fifo.o distate.o gstrip.o distrip.o diget.o gsplash.o g3df.o gu.o gpci.o diglide.o disst.o ditex.o gbanner.o gerror.o gaa.o gdraw.o gglide.o glfb.o gsst.o gtex.o gtexdl.o xtexdl_def.o gxdraw.o gthread.o ../../../swlibs/newpci/pcilib/fxpci.o ../../../swlibs/newpci/pcilib/fxdpmi2.o ../../minihwc/hwcio.o ../../minihwc/gdebug.o ../../minihwc/minihwc.o ../../minihwc/dos_mode.o ../../cinit/h3cinit.o 
-unresolved: `___dj_assert' (1 references)
 unresolved: `___dj_stdout' (5 references)
 unresolved: `___djgpp_base_address' (2 references)
 unresolved: `___djgpp_nearptr_disable' (1 references)

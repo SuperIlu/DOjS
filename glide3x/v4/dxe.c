@@ -1,6 +1,5 @@
 #include <sys/dxe.h>
 
-extern_asm(___dj_assert);
 extern_asm(___dj_stdout);
 extern_asm(___djgpp_base_address);
 extern_asm(___djgpp_nearptr_disable);
@@ -38,7 +37,6 @@ extern_asm(_vfprintf);
 extern_asm(_vsprintf);
 
 DXE_EXPORT_TABLE_AUTO (___dxe_eta___glide3x)
-	DXE_EXPORT_ASM (___dj_assert)
 	DXE_EXPORT_ASM (___dj_stdout)
 	DXE_EXPORT_ASM (___djgpp_base_address)
 	DXE_EXPORT_ASM (___djgpp_nearptr_disable)

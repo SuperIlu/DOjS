@@ -1,0 +1,582 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1300378B-563B-458D-81E5-C65BDE3D786D}</ProjectGuid>
+    <RootNamespace>Watt32</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+    <!-- <Import Project="..\flex.props" /> -->
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\..\bin\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">watt-32</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">watt-32d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <MASM>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <ObjectFileName>$(OutDir)$(OutputName).obj</ObjectFileName>
+      <PreprocessorDefinitions>DOSX</PreprocessorDefinitions>
+      <GeneratePreprocessedSourceListing>false</GeneratePreprocessedSourceListing>
+      <AssembledCodeListingFile>
+      </AssembledCodeListingFile>
+    </MASM>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;WATT32_BUILD;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <OutputFile>..\..\..\bin\watt-32d.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>..\..\..\lib\wattcpvc_imp_d.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <MASM>
+      <AdditionalOptions>/Fl /coff</AdditionalOptions>
+      <PreprocessorDefinitions>DOSX</PreprocessorDefinitions>
+    </MASM>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\inc;..\..\..\..\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WATT32_BUILD;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+    </ClCompile>
+    <Link>
+      <OutputFile>..\..\..\bin\watt-32.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>..\..\..\lib\wattcpvc_imp.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\bsdname.c" />
+    <ClCompile Include="..\..\btree.c" />
+    <ClCompile Include="..\..\chksum.c" />
+    <ClCompile Include="..\..\country.c" />
+    <ClCompile Include="..\..\crc.c" />
+    <ClCompile Include="..\..\crit.c" />
+    <ClCompile Include="..\..\dynip.c" />
+    <ClCompile Include="..\..\echo.c" />
+    <ClCompile Include="..\..\fortify.c" />
+    <ClCompile Include="..\..\fsext.c" />
+    <ClCompile Include="..\..\getopt.c" />
+    <ClCompile Include="..\..\getput.c" />
+    <ClCompile Include="..\..\gettod.c" />
+    <ClCompile Include="..\..\highc.c" />
+    <ClCompile Include="..\..\idna.c" />
+    <ClCompile Include="..\..\ip4_frag.c" />
+    <ClCompile Include="..\..\ip4_in.c" />
+    <ClCompile Include="..\..\ip4_out.c" />
+    <ClCompile Include="..\..\ip6_in.c" />
+    <ClCompile Include="..\..\ip6_out.c" />
+    <ClCompile Include="..\..\language.c" />
+    <ClCompile Include="..\..\linkaddr.c" />
+    <ClCompile Include="..\..\loopback.c" />
+    <ClCompile Include="..\..\misc.c" />
+    <ClCompile Include="..\..\netaddr.c" />
+    <ClCompile Include="..\..\netback.c" />
+    <ClCompile Include="..\..\neterr.c" />
+    <ClCompile Include="..\..\nettime.c" />
+    <ClCompile Include="..\..\oldstuff.c" />
+    <ClCompile Include="..\..\packet32.c" />
+    <ClCompile Include="..\..\pcdns.c" />
+    <ClCompile Include="..\..\pcigmp.c" />
+    <ClCompile Include="..\..\pc_cbrk.c" />
+    <ClCompile Include="..\..\pcarp.c" />
+    <ClCompile Include="..\..\pcbootp.c" />
+    <ClCompile Include="..\..\pcbuf.c" />
+    <ClCompile Include="..\..\pcconfig.c" />
+    <ClCompile Include="..\..\pcdbug.c" />
+    <ClCompile Include="..\..\pcdhcp.c" />
+    <ClCompile Include="..\..\pcicmp.c" />
+    <ClCompile Include="..\..\pcicmp6.c" />
+    <ClCompile Include="..\..\pcintr.c" />
+    <ClCompile Include="..\..\pcping.c" />
+    <ClCompile Include="..\..\pcpkt.c" />
+    <ClCompile Include="..\..\pcpkt32.c" />
+    <ClCompile Include="..\..\pcqueue.c" />
+    <ClCompile Include="..\..\pcrarp.c" />
+    <ClCompile Include="..\..\pcrecv.c" />
+    <ClCompile Include="..\..\pcsarp.c" />
+    <ClCompile Include="..\..\pcsed.c" />
+    <ClCompile Include="..\..\pcslip.c" />
+    <ClCompile Include="..\..\pcstat.c" />
+    <ClCompile Include="..\..\pctcp.c" />
+    <ClCompile Include="..\..\ports.c" />
+    <ClCompile Include="..\..\powerpak.c" />
+    <ClCompile Include="..\..\ppp.c" />
+    <ClCompile Include="..\..\pppoe.c" />
+    <ClCompile Include="..\..\printk.c" />
+    <ClCompile Include="..\..\profile.c" />
+    <ClCompile Include="..\..\punycode.c" />
+    <ClCompile Include="..\..\qmsg.c" />
+    <ClCompile Include="..\..\rs232.c" />
+    <ClCompile Include="..\..\settod.c" />
+    <ClCompile Include="..\..\sock_dbu.c" />
+    <ClCompile Include="..\..\sock_in.c" />
+    <ClCompile Include="..\..\sock_ini.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="..\..\sock_io.c" />
+    <ClCompile Include="..\..\sock_prn.c" />
+    <ClCompile Include="..\..\sock_scn.c" />
+    <ClCompile Include="..\..\sock_sel.c" />
+    <ClCompile Include="..\..\split.c" />
+    <ClCompile Include="..\..\stkwalk.cpp" />
+    <ClCompile Include="..\..\strings.c" />
+    <ClCompile Include="..\..\swsvpkt.c" />
+    <ClCompile Include="..\..\syslog.c" />
+    <ClCompile Include="..\..\syslog2.c" />
+    <ClCompile Include="..\..\tcp_fsm.c" />
+    <ClCompile Include="..\..\tcp_md5.c" />
+    <ClCompile Include="..\..\teredo64.c" />
+    <ClCompile Include="..\..\tftp.c" />
+    <ClCompile Include="..\..\timer.c" />
+    <ClCompile Include="..\..\version.c" />
+    <ClCompile Include="..\..\wattcp.c" />
+    <ClCompile Include="..\..\wdpmi.c" />
+    <ClCompile Include="..\..\winadinf.c" />
+    <ClCompile Include="..\..\winmisc.c" />
+    <ClCompile Include="..\..\winpkt.c" />
+    <ClCompile Include="..\..\x32vm.c" />
+    <ClCompile Include="..\..\zadler32.c" />
+    <ClCompile Include="..\..\zcompres.c" />
+    <ClCompile Include="..\..\zcrc32.c" />
+    <ClCompile Include="..\..\zdeflate.c" />
+    <ClCompile Include="..\..\zgzio.c" />
+    <ClCompile Include="..\..\zinfback.c" />
+    <ClCompile Include="..\..\zinffast.c" />
+    <ClCompile Include="..\..\zinflate.c" />
+    <ClCompile Include="..\..\zinftree.c" />
+    <ClCompile Include="..\..\ztrees.c" />
+    <ClCompile Include="..\..\zuncompr.c" />
+    <ClCompile Include="..\..\zutil.c" />
+    <ClCompile Include="..\..\accept.c" />
+    <ClCompile Include="..\..\bind.c" />
+    <ClCompile Include="..\..\bsddbug.c" />
+    <ClCompile Include="..\..\close.c" />
+    <ClCompile Include="..\..\connect.c" />
+    <ClCompile Include="..\..\fcntl.c" />
+    <ClCompile Include="..\..\get_ai.c" />
+    <ClCompile Include="..\..\get_ip.c" />
+    <ClCompile Include="..\..\get_ni.c" />
+    <ClCompile Include="..\..\get_xbyr.c" />
+    <ClCompile Include="..\..\geteth.c" />
+    <ClCompile Include="..\..\gethost.c" />
+    <ClCompile Include="..\..\gethost6.c" />
+    <ClCompile Include="..\..\getname.c" />
+    <ClCompile Include="..\..\getnet.c" />
+    <ClCompile Include="..\..\getprot.c" />
+    <ClCompile Include="..\..\getserv.c" />
+    <ClCompile Include="..\..\ioctl.c" />
+    <ClCompile Include="..\..\listen.c" />
+    <ClCompile Include="..\..\nsapaddr.c" />
+    <ClCompile Include="..\..\poll.c" />
+    <ClCompile Include="..\..\presaddr.c" />
+    <ClCompile Include="..\..\receive.c" />
+    <ClCompile Include="..\..\select.c" />
+    <ClCompile Include="..\..\shutdown.c" />
+    <ClCompile Include="..\..\signal.c" />
+    <ClCompile Include="..\..\socket.c" />
+    <ClCompile Include="..\..\sockopt.c" />
+    <ClCompile Include="..\..\stream.c" />
+    <ClCompile Include="..\..\transmit.c" />
+    <ClCompile Include="..\..\lookup.c" />
+    <ClCompile Include="..\..\res_comp.c" />
+    <ClCompile Include="..\..\res_data.c" />
+    <ClCompile Include="..\..\res_debu.c" />
+    <ClCompile Include="..\..\res_init.c" />
+    <ClCompile Include="..\..\res_loc.c" />
+    <ClCompile Include="..\..\res_mkqu.c" />
+    <ClCompile Include="..\..\res_quer.c" />
+    <ClCompile Include="..\..\res_send.c" />
+    <ClCompile Include="..\..\udp_rev.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <flex Include="..\..\language.l" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\..\chksum0.asm">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)chksum0.obj</ObjectFileName>
+      <GeneratePreprocessedSourceListing Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GeneratePreprocessedSourceListing>
+      <AssembledCodeListingFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)chksum0.lst</AssembledCodeListingFile>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)chksum0.obj</ObjectFileName>
+      <GeneratePreprocessedSourceListing Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GeneratePreprocessedSourceListing>
+      <AssembledCodeListingFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)chksum0.lst</AssembledCodeListingFile>
+      <ListAllAvailableInformation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ListAllAvailableInformation>
+      <NoLogo Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</NoLogo>
+      <AddFirstPassListing Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</AddFirstPassListing>
+    </MASM>
+    <MASM Include="..\..\cpumodel.asm">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)cpumodel.obj</ObjectFileName>
+      <GeneratePreprocessedSourceListing Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GeneratePreprocessedSourceListing>
+      <AssembledCodeListingFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)cpumodel.lst</AssembledCodeListingFile>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)cpumodel.obj</ObjectFileName>
+      <GeneratePreprocessedSourceListing Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</GeneratePreprocessedSourceListing>
+      <AssembledCodeListingFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)cpumodel.lst</AssembledCodeListingFile>
+      <ListAllAvailableInformation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ListAllAvailableInformation>
+      <AddFirstPassListing Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</AddFirstPassListing>
+    </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\inc\err.h" />
+    <ClInclude Include="..\..\..\inc\netdb.h" />
+    <ClInclude Include="..\..\..\inc\resolv.h" />
+    <ClInclude Include="..\..\..\inc\syslog.h" />
+    <ClInclude Include="..\..\..\inc\tcp.h" />
+    <ClInclude Include="..\..\..\inc\sys\cdefs.h" />
+    <ClInclude Include="..\..\..\inc\sys\errno.h" />
+    <ClInclude Include="..\..\..\inc\sys\ioctl.h" />
+    <ClInclude Include="..\..\..\inc\sys\mbuf.h" />
+    <ClInclude Include="..\..\..\inc\sys\pack_off.h" />
+    <ClInclude Include="..\..\..\inc\sys\pack_on.h" />
+    <ClInclude Include="..\..\..\inc\sys\param.h" />
+    <ClInclude Include="..\..\..\inc\sys\poll.h" />
+    <ClInclude Include="..\..\..\inc\sys\queue.h" />
+    <ClInclude Include="..\..\..\inc\sys\select.h" />
+    <ClInclude Include="..\..\..\inc\sys\so_ioctl.h" />
+    <ClInclude Include="..\..\..\inc\sys\socket.h" />
+    <ClInclude Include="..\..\..\inc\sys\swap.h" />
+    <ClInclude Include="..\..\..\inc\sys\syslog.h" />
+    <ClInclude Include="..\..\..\inc\sys\uio.h" />
+    <ClInclude Include="..\..\..\inc\sys\w32api.h" />
+    <ClInclude Include="..\..\..\inc\sys\werrno.h" />
+    <ClInclude Include="..\..\..\inc\sys\wtime.h" />
+    <ClInclude Include="..\..\..\inc\sys\wtypes.h" />
+    <ClInclude Include="..\..\..\inc\arpa\ftp.h" />
+    <ClInclude Include="..\..\..\inc\arpa\inet.h" />
+    <ClInclude Include="..\..\..\inc\arpa\nameser.h" />
+    <ClInclude Include="..\..\..\inc\arpa\telnet.h" />
+    <ClInclude Include="..\..\..\inc\arpa\tftp.h" />
+    <ClInclude Include="..\..\..\inc\net\bpf.h" />
+    <ClInclude Include="..\..\..\inc\net\bpfdesc.h" />
+    <ClInclude Include="..\..\..\inc\net\ethertyp.h" />
+    <ClInclude Include="..\..\..\inc\net\if.h" />
+    <ClInclude Include="..\..\..\inc\net\if_arc.h" />
+    <ClInclude Include="..\..\..\inc\net\if_arp.h" />
+    <ClInclude Include="..\..\..\inc\net\if_atm.h" />
+    <ClInclude Include="..\..\..\inc\net\if_dl.h" />
+    <ClInclude Include="..\..\..\inc\net\if_ether.h" />
+    <ClInclude Include="..\..\..\inc\net\if_fddi.h" />
+    <ClInclude Include="..\..\..\inc\net\if_llc.h" />
+    <ClInclude Include="..\..\..\inc\net\if_media.h" />
+    <ClInclude Include="..\..\..\inc\net\if_packe.h" />
+    <ClInclude Include="..\..\..\inc\net\if_ppp.h" />
+    <ClInclude Include="..\..\..\inc\net\if_pppva.h" />
+    <ClInclude Include="..\..\..\inc\net\if_slvar.h" />
+    <ClInclude Include="..\..\..\inc\net\if_strip.h" />
+    <ClInclude Include="..\..\..\inc\net\if_tun.h" />
+    <ClInclude Include="..\..\..\inc\net\if_types.h" />
+    <ClInclude Include="..\..\..\inc\net\netisr.h" />
+    <ClInclude Include="..\..\..\inc\net\pfil.h" />
+    <ClInclude Include="..\..\..\inc\net\ppp-comp.h" />
+    <ClInclude Include="..\..\..\inc\net\ppp_defs.h" />
+    <ClInclude Include="..\..\..\inc\net\radix.h" />
+    <ClInclude Include="..\..\..\inc\net\raw_cb.h" />
+    <ClInclude Include="..\..\..\inc\net\route.h" />
+    <ClInclude Include="..\..\..\inc\net\slcompre.h" />
+    <ClInclude Include="..\..\..\inc\net\slip.h" />
+    <ClInclude Include="..\..\..\inc\netinet\icmp6.h" />
+    <ClInclude Include="..\..\..\inc\netinet\icmp_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet\if_ether.h" />
+    <ClInclude Include="..\..\..\inc\netinet\if_fddi.h" />
+    <ClInclude Include="..\..\..\inc\netinet\igmp.h" />
+    <ClInclude Include="..\..\..\inc\netinet\igmp_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet\in.h" />
+    <ClInclude Include="..\..\..\inc\netinet\in_pcb.h" />
+    <ClInclude Include="..\..\..\inc\netinet\in_systm.h" />
+    <ClInclude Include="..\..\..\inc\netinet\in_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet\ip.h" />
+    <ClInclude Include="..\..\..\inc\netinet\ip6.h" />
+    <ClInclude Include="..\..\..\inc\netinet\ip_fw.h" />
+    <ClInclude Include="..\..\..\inc\netinet\ip_icmp.h" />
+    <ClInclude Include="..\..\..\inc\netinet\ip_mrout.h" />
+    <ClInclude Include="..\..\..\inc\netinet\ip_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet\ipv6.h" />
+    <ClInclude Include="..\..\..\inc\netinet\tcp.h" />
+    <ClInclude Include="..\..\..\inc\netinet\tcp_debu.h" />
+    <ClInclude Include="..\..\..\inc\netinet\tcp_fsm.h" />
+    <ClInclude Include="..\..\..\inc\netinet\tcp_scor.h" />
+    <ClInclude Include="..\..\..\inc\netinet\tcp_seq.h" />
+    <ClInclude Include="..\..\..\inc\netinet\tcp_time.h" />
+    <ClInclude Include="..\..\..\inc\netinet\tcp_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet\tcpip.h" />
+    <ClInclude Include="..\..\..\inc\netinet\udp.h" />
+    <ClInclude Include="..\..\..\inc\netinet\udp_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ah.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ah6.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\esp.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\esp6.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\esp_rijn.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\in6.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\in6_gif.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\in6_ifat.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\in6_pcb.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\in6_pref.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\in6_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ip6.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ip6_ecn.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ip6_fw.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ip6_mrou.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ip6_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ip6proto.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ipcomp.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ipcomp6.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ipsec.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\ipsec6.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\mld6_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\nd6.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\pim6.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\pim6_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\raw_ip6.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\scope6_v.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\tcp6_var.h" />
+    <ClInclude Include="..\..\..\inc\netinet6\udp6_var.h" />
+    <ClInclude Include="..\..\..\inc\protocol\dumprest.h" />
+    <ClInclude Include="..\..\..\inc\protocol\routed.h" />
+    <ClInclude Include="..\..\..\inc\protocol\rwhod.h" />
+    <ClInclude Include="..\..\..\inc\protocol\talkd.h" />
+    <ClInclude Include="..\..\..\inc\protocol\timed.h" />
+    <ClInclude Include="..\..\..\inc\rpc\auth.h" />
+    <ClInclude Include="..\..\..\inc\rpc\auth_des.h" />
+    <ClInclude Include="..\..\..\inc\rpc\auth_uni.h" />
+    <ClInclude Include="..\..\..\inc\rpc\clnt.h" />
+    <ClInclude Include="..\..\..\inc\rpc\key_prot.h" />
+    <ClInclude Include="..\..\..\inc\rpc\pmap_cln.h" />
+    <ClInclude Include="..\..\..\inc\rpc\pmap_pro.h" />
+    <ClInclude Include="..\..\..\inc\rpc\pmap_rmt.h" />
+    <ClInclude Include="..\..\..\inc\rpc\rpc.h" />
+    <ClInclude Include="..\..\..\inc\rpc\rpc_msg.h" />
+    <ClInclude Include="..\..\..\inc\rpc\svc.h" />
+    <ClInclude Include="..\..\..\inc\rpc\svc_auth.h" />
+    <ClInclude Include="..\..\..\inc\rpc\types.h" />
+    <ClInclude Include="..\..\..\inc\rpc\xdr.h" />
+    <ClInclude Include="..\..\..\inc\rpcsvc\yp_prot.h" />
+    <ClInclude Include="..\..\..\inc\rpcsvc\ypclnt.h" />
+    <ClInclude Include="..\..\..\INC\w32-fakes\winsock.h" />
+    <ClInclude Include="..\..\..\INC\w32-fakes\winsock2.h" />
+    <ClInclude Include="..\..\..\INC\w32-fakes\ws2tcpip.h" />
+    <ClInclude Include="..\..\asmpkt.h" />
+    <ClInclude Include="..\..\btrace.h" />
+    <ClInclude Include="..\..\btree.h" />
+    <ClInclude Include="..\..\chksum.h" />
+    <ClInclude Include="..\..\config.h" />
+    <ClInclude Include="..\..\copyrigh.h" />
+    <ClInclude Include="..\..\cpumodel.h" />
+    <ClInclude Include="..\..\dynip.h" />
+    <ClInclude Include="..\..\fortify.h" />
+    <ClInclude Include="..\..\gettod.h" />
+    <ClInclude Include="..\..\iconv\cp1046.h" />
+    <ClInclude Include="..\..\iconv\cp1124.h" />
+    <ClInclude Include="..\..\iconv\cp1125.h" />
+    <ClInclude Include="..\..\iconv\cp1129.h" />
+    <ClInclude Include="..\..\iconv\cp1133.h" />
+    <ClInclude Include="..\..\iconv\cp1161.h" />
+    <ClInclude Include="..\..\iconv\cp1162.h" />
+    <ClInclude Include="..\..\iconv\cp1163.h" />
+    <ClInclude Include="..\..\iconv\cp1250.h" />
+    <ClInclude Include="..\..\iconv\cp1251.h" />
+    <ClInclude Include="..\..\iconv\cp1252.h" />
+    <ClInclude Include="..\..\iconv\cp1253.h" />
+    <ClInclude Include="..\..\iconv\cp1254.h" />
+    <ClInclude Include="..\..\iconv\cp1255.h" />
+    <ClInclude Include="..\..\iconv\cp1256.h" />
+    <ClInclude Include="..\..\iconv\cp1257.h" />
+    <ClInclude Include="..\..\iconv\cp1258.h" />
+    <ClInclude Include="..\..\iconv\cp437.h" />
+    <ClInclude Include="..\..\iconv\cp737.h" />
+    <ClInclude Include="..\..\iconv\cp775.h" />
+    <ClInclude Include="..\..\iconv\cp850.h" />
+    <ClInclude Include="..\..\iconv\cp852.h" />
+    <ClInclude Include="..\..\iconv\cp853.h" />
+    <ClInclude Include="..\..\iconv\cp855.h" />
+    <ClInclude Include="..\..\iconv\cp856.h" />
+    <ClInclude Include="..\..\iconv\cp857.h" />
+    <ClInclude Include="..\..\iconv\cp858.h" />
+    <ClInclude Include="..\..\iconv\cp860.h" />
+    <ClInclude Include="..\..\iconv\cp861.h" />
+    <ClInclude Include="..\..\iconv\cp862.h" />
+    <ClInclude Include="..\..\iconv\cp863.h" />
+    <ClInclude Include="..\..\iconv\cp864.h" />
+    <ClInclude Include="..\..\iconv\cp865.h" />
+    <ClInclude Include="..\..\iconv\cp866.h" />
+    <ClInclude Include="..\..\iconv\cp869.h" />
+    <ClInclude Include="..\..\iconv\cp874.h" />
+    <ClInclude Include="..\..\iconv\cp922.h" />
+    <ClInclude Include="..\..\iconv\cp932.h" />
+    <ClInclude Include="..\..\iconv\cp932ext.h" />
+    <ClInclude Include="..\..\iconv\cp943.h" />
+    <ClInclude Include="..\..\iconv\cp949.h" />
+    <ClInclude Include="..\..\iconv\cp950.h" />
+    <ClInclude Include="..\..\iconv\cp950ext.h" />
+    <ClInclude Include="..\..\idna.h" />
+    <ClInclude Include="..\..\ioport.h" />
+    <ClInclude Include="..\..\language.h" />
+    <ClInclude Include="..\..\loopback.h" />
+    <ClInclude Include="..\..\misc.h" />
+    <ClInclude Include="..\..\netaddr.h" />
+    <ClInclude Include="..\..\nochkstk.h" />
+    <ClInclude Include="..\..\ntddndis.h" />
+    <ClInclude Include="..\..\packet32.h" />
+    <ClInclude Include="..\..\pkt_stub.h" />
+    <ClInclude Include="..\..\powerpak.h" />
+    <ClInclude Include="..\..\ppp.h" />
+    <ClInclude Include="..\..\pppoe.h" />
+    <ClInclude Include="..\..\printk.h" />
+    <ClInclude Include="..\..\profile.h" />
+    <ClInclude Include="..\..\punycode.h" />
+    <ClInclude Include="..\..\register.h" />
+    <ClInclude Include="..\..\rs232.h" />
+    <ClInclude Include="..\..\sock_ini.h" />
+    <ClInclude Include="..\..\split.h" />
+    <ClInclude Include="..\..\stkwalk.h" />
+    <ClInclude Include="..\..\strings.h" />
+    <ClInclude Include="..\..\swsvpkt.h" />
+    <ClInclude Include="..\..\target.h" />
+    <ClInclude Include="..\..\tcp_md5.h" />
+    <ClInclude Include="..\..\teredo64.h" />
+    <ClInclude Include="..\..\tftp.h" />
+    <ClInclude Include="..\..\timer.h" />
+    <ClInclude Include="..\..\ufortify.h" />
+    <ClInclude Include="..\..\wattcp.h" />
+    <ClInclude Include="..\..\wdpmi.h" />
+    <ClInclude Include="..\..\winadinf.h" />
+    <ClInclude Include="..\..\winpkt.h" />
+    <ClInclude Include="..\..\zcrc32.h" />
+    <ClInclude Include="..\..\zdeflate.h" />
+    <ClInclude Include="..\..\zinffast.h" />
+    <ClInclude Include="..\..\zinffixed.h" />
+    <ClInclude Include="..\..\zinflate.h" />
+    <ClInclude Include="..\..\zinftree.h" />
+    <ClInclude Include="..\..\ztrees.h" />
+    <ClInclude Include="..\..\zzconf.h" />
+    <ClInclude Include="..\..\zlib.h" />
+    <ClInclude Include="..\..\zutil.h" />
+    <ClInclude Include="..\..\echo.h" />
+    <ClInclude Include="..\..\getopt.h" />
+    <ClInclude Include="..\..\settod.h" />
+    <ClInclude Include="..\..\socket.h" />
+    <ClInclude Include="..\..\syslog2.h" />
+    <ClInclude Include="..\..\bsddbug.h" />
+    <ClInclude Include="..\..\bsdname.h" />
+    <ClInclude Include="..\..\ip4_frag.h" />
+    <ClInclude Include="..\..\ip4_in.h" />
+    <ClInclude Include="..\..\ip4_out.h" />
+    <ClInclude Include="..\..\ip6_in.h" />
+    <ClInclude Include="..\..\ip6_out.h" />
+    <ClInclude Include="..\..\pcarp.h" />
+    <ClInclude Include="..\..\pcbootp.h" />
+    <ClInclude Include="..\..\pcbuf.h" />
+    <ClInclude Include="..\..\pcconfig.h" />
+    <ClInclude Include="..\..\pcdbug.h" />
+    <ClInclude Include="..\..\pcdhcp.h" />
+    <ClInclude Include="..\..\pcicmp.h" />
+    <ClInclude Include="..\..\pcicmp6.h" />
+    <ClInclude Include="..\..\pcmulti.h" />
+    <ClInclude Include="..\..\pcping.h" />
+    <ClInclude Include="..\..\pcpkt.h" />
+    <ClInclude Include="..\..\pcpkt32.h" />
+    <ClInclude Include="..\..\pcqueue.h" />
+    <ClInclude Include="..\..\pcrarp.h" />
+    <ClInclude Include="..\..\pcrecv.h" />
+    <ClInclude Include="..\..\pcsarp.h" />
+    <ClInclude Include="..\..\pcsed.h" />
+    <ClInclude Include="..\..\pcslip.h" />
+    <ClInclude Include="..\..\pcstat.h" />
+    <ClInclude Include="..\..\pctcp.h" />
+    <ClInclude Include="..\..\get_xby.h" />
+    <ClInclude Include="..\..\resolver.h" />
+    <ClInclude Include="..\..\udp_dom.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\inc\sys\borlandc.err" />
+    <None Include="..\..\..\inc\sys\digmars.err" />
+    <None Include="..\..\..\inc\sys\djgpp.err" />
+    <None Include="..\..\..\inc\sys\highc.err" />
+    <None Include="..\..\..\inc\sys\ladsoft.err" />
+    <None Include="..\..\..\inc\sys\lcc.err" />
+    <None Include="..\..\..\inc\sys\mingw32.err" />
+    <None Include="..\..\..\inc\sys\pellesc.err" />
+    <None Include="..\..\..\inc\sys\quickc.err" />
+    <None Include="..\..\..\inc\sys\turboc.err" />
+    <None Include="..\..\..\inc\sys\visualc.err" />
+    <None Include="..\..\..\inc\sys\watcom.err" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Watt-32.rc">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/DDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+    <!-- <Import Project="..\flex.targets" /> -->
+  </ImportGroup>
+</Project>

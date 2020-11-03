@@ -99,7 +99,7 @@ $(MUJS)/build/release/libmujs.a:
 	$(MAKE) -C $(MUJS) build/release/libmujs.a
 
 $(ALLEGRO)/lib/djgpp/liballeg.a:
-	cd $(ALLEGRO) && ./xmake.sh lib
+	cd $(ALLEGRO) && bash ./xmake.sh lib
 
 $(WATT32)/lib/libwatt.a:
 	DJ_PREFIX=$(DJGPP) $(MAKE) -C $(WATT32)/src -f DJGPP.MAK
@@ -153,7 +153,7 @@ jsclean:
 	$(MAKE) -C $(MUJS) clean
 
 alclean:
-	cd $(ALLEGRO) && ./xmake.sh clean
+	cd $(ALLEGRO) && .bash /xmake.sh clean
 
 wattclean:
 	$(MAKE) -C $(WATT32)/src -f DJGPP.MAK clean

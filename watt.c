@@ -39,7 +39,7 @@ extern int _watt_do_exit; /* in sock_ini.h, but not in public headers. */
  *
  * @param J VM state.
  */
-static void watt_ip_debug(js_State *J) { watt_pushipaddr(J, watt_toipaddr(J, 1)); }
+static void f_IpDebug(js_State *J) { watt_pushipaddr(J, watt_toipaddr(J, 1)); }
 #endif
 
 /**
@@ -48,7 +48,7 @@ static void watt_ip_debug(js_State *J) { watt_pushipaddr(J, watt_toipaddr(J, 1))
  *
  * @param J VM state.
  */
-static void watt_GetLocalIpAddress(js_State *J) { watt_pushipaddr(J, _gethostid()); }
+static void f_GetLocalIpAddress(js_State *J) { watt_pushipaddr(J, _gethostid()); }
 
 /**
  * @brief get the netmask.
@@ -56,7 +56,7 @@ static void watt_GetLocalIpAddress(js_State *J) { watt_pushipaddr(J, _gethostid(
  *
  * @param J VM state.
  */
-static void watt_GetNetworkMask(js_State *J) { watt_pushipaddr(J, sin_mask); }
+static void f_GetNetworkMask(js_State *J) { watt_pushipaddr(J, sin_mask); }
 
 /**
  * @brief resolve an IP address using DNS.
@@ -64,7 +64,7 @@ static void watt_GetNetworkMask(js_State *J) { watt_pushipaddr(J, sin_mask); }
  *
  * @param J VM state.
  */
-static void watt_resolve(js_State *J) {
+static void f_Resolve(js_State *J) {
     const char *host = js_tostring(J, 1);
     DWORD ip = resolve(host);
     if (ip) {
@@ -80,7 +80,7 @@ static void watt_resolve(js_State *J) {
  *
  * @param J VM state.
  */
-static void watt_resolve_ip(js_State *J) {
+static void f_ResolveIp(js_State *J) {
     char buffer[WATT_NAME_BUFFER_SIZE];
 
     DWORD ip = watt_toipaddr(J, 1);
@@ -101,7 +101,7 @@ static void watt_resolve_ip(js_State *J) {
  *
  * @param J VM state.
  */
-static void watt_GetHostname(js_State *J) {
+static void f_GetHostname(js_State *J) {
     char buffer[WATT_NAME_BUFFER_SIZE];
     gethostname(buffer, sizeof(buffer));
     js_pushstring(J, buffer);
@@ -113,7 +113,7 @@ static void watt_GetHostname(js_State *J) {
  *
  * @param J VM state.
  */
-static void watt_GetDomainname(js_State *J) {
+static void f_GetDomainname(js_State *J) {
     char buffer[WATT_NAME_BUFFER_SIZE];
     getdomainname(buffer, sizeof(buffer));
     js_pushstring(J, buffer);
@@ -152,15 +152,15 @@ void init_watt(js_State *J) {
     }
 
     // functions
-    FUNCDEF(J, watt_GetLocalIpAddress, "GetLocalIpAddress", 0);
-    FUNCDEF(J, watt_GetNetworkMask, "GetNetworkMask", 0);
-    FUNCDEF(J, watt_GetHostname, "GetHostname", 0);
-    FUNCDEF(J, watt_GetDomainname, "GetDomainname", 0);
-    FUNCDEF(J, watt_resolve, "Resolve", 1);
-    FUNCDEF(J, watt_resolve_ip, "ResolveIp", 1);
+    NFUNCDEF(J, GetLocalIpAddress, 0);
+    NFUNCDEF(J, GetNetworkMask, 0);
+    NFUNCDEF(J, GetHostname, 0);
+    NFUNCDEF(J, GetDomainname, 0);
+    NFUNCDEF(J, Resolve, 1);
+    NFUNCDEF(J, ResolveIp, 1);
 
 #ifdef DEBUG_ENABLED
-    FUNCDEF(J, watt_ip_debug, "IpDebug", 1);
+    NFUNCDEF(J, IpDebug, 1);
 #endif
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);

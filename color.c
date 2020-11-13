@@ -54,7 +54,7 @@ static void f_Color(js_State *J) {
  *
  * @param J VM state.
  */
-static void f_getRed(js_State *J) { js_pushnumber(J, getr(js_toint32(J, 1))); }
+static void f_GetRed(js_State *J) { js_pushnumber(J, getr(js_toint32(J, 1))); }
 
 /**
  * @brief get the green part of a color.
@@ -62,7 +62,7 @@ static void f_getRed(js_State *J) { js_pushnumber(J, getr(js_toint32(J, 1))); }
  *
  * @param J VM state.
  */
-static void f_getGreen(js_State *J) { js_pushnumber(J, getg(js_toint32(J, 1))); }
+static void f_GetGreen(js_State *J) { js_pushnumber(J, getg(js_toint32(J, 1))); }
 
 /**
  * @brief get the blue part of a color.
@@ -70,7 +70,7 @@ static void f_getGreen(js_State *J) { js_pushnumber(J, getg(js_toint32(J, 1))); 
  *
  * @param J VM state.
  */
-static void f_getBlue(js_State *J) { js_pushnumber(J, getb(js_toint32(J, 1))); }
+static void f_GetBlue(js_State *J) { js_pushnumber(J, getb(js_toint32(J, 1))); }
 
 /**
  * @brief get the blue part of a color.
@@ -78,7 +78,7 @@ static void f_getBlue(js_State *J) { js_pushnumber(J, getb(js_toint32(J, 1))); }
  *
  * @param J VM state.
  */
-static void f_getAlpha(js_State *J) { js_pushnumber(J, geta(js_toint32(J, 1))); }
+static void f_GetAlpha(js_State *J) { js_pushnumber(J, geta(js_toint32(J, 1))); }
 
 /***********************
 ** exported functions **
@@ -91,11 +91,11 @@ static void f_getAlpha(js_State *J) { js_pushnumber(J, geta(js_toint32(J, 1))); 
 void init_color(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
 
-    FUNCDEF(J, f_Color, "Color", 4);
-    FUNCDEF(J, f_getRed, "GetRed", 1);
-    FUNCDEF(J, f_getGreen, "GetGreen", 1);
-    FUNCDEF(J, f_getBlue, "GetBlue", 1);
-    FUNCDEF(J, f_getAlpha, "GetAlpha", 1);
+    NFUNCDEF(J, Color, 4);
+    NFUNCDEF(J, GetRed, 1);
+    NFUNCDEF(J, GetGreen, 1);
+    NFUNCDEF(J, GetBlue, 1);
+    NFUNCDEF(J, GetAlpha, 1);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

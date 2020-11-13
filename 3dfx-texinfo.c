@@ -268,7 +268,7 @@ static void Texinfo_DownloadMipMap(js_State *J) {
  *
  * @param J VM state.
  */
-static void Texinfo_TexMemRequired(js_State *J) {
+static void Texinfo_MemRequired(js_State *J) {
     TlTexture *ti = js_touserdata(J, 0, TAG_TEXINFO);
     FxU32 evenOdd = js_toint32(J, 1);
 
@@ -297,7 +297,7 @@ static void Texinfo_MarkUnused(js_State *J) {
  *
  * @param J VM state.
  */
-static void Texinfo_TexSource(js_State *J) {
+static void Texinfo_Source(js_State *J) {
     TlTexture *ti = js_touserdata(J, 0, TAG_TEXINFO);
     FxU32 evenOdd = js_toint32(J, 1);
 
@@ -322,13 +322,12 @@ void init_texinfo(js_State *J) {
 
     js_newobject(J);
     {
-        PROTDEF(J, Texinfo_DownloadMipMap, TAG_TEXINFO, "DownloadMipMap", 3);
-        PROTDEF(J, Texinfo_MarkUnused, TAG_TEXINFO, "MarkUnused", 0);
-        PROTDEF(J, Texinfo_TexSource, TAG_TEXINFO, "Source", 1);
-        PROTDEF(J, Texinfo_TexMemRequired, TAG_TEXINFO, "MemRequired", 1);
+        NPROTDEF(J, Texinfo, DownloadMipMap, 3);
+        NPROTDEF(J, Texinfo, MarkUnused, 0);
+        NPROTDEF(J, Texinfo, Source, 1);
+        NPROTDEF(J, Texinfo, MemRequired, 1);
     }
-    js_newcconstructor(J, new_Texinfo, new_Texinfo, TAG_TEXINFO, 1);
-    js_defglobal(J, TAG_TEXINFO, JS_DONTENUM);
+    CTORDEF(J, new_Texinfo, TAG_TEXINFO, 1);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

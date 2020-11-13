@@ -8,6 +8,7 @@ Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
     -s             : No wave sound.
     -f             : No FM sound.
     -a             : Disable alpha (speeds up rendering).
+    -x             : Allow raw disk write (CAUTION!)
 
 ## Editor keys
     F1        : Open/Close help
@@ -41,24 +42,32 @@ Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
 
     The logfile can be truncated by pressing DEL in the log viewer.
 
+## Scripts and resources
+Scripts, as well as resources can either be stored in the file system or in ZIP files. To load data from a zip file the format is <ZIP filename>=<ZIP entry name> (e.g. data.zip=mypic.bmp). DOjS can be started with a script, a script in a ZIP file or no parameters. If the script was loaded from a ZIP file the running script can obtain resources from the same ZIP file by using ZipPrefix() to obtain paths refering to that ZIP. If the script was not started from a ZIP ZipPrefix() just passes through the file name (thus loading the file from HDD). If no arameters are supplied DOjS will first try to load <name of the EXE>.ZIP=MAIN.JS and then JSBOOT.ZIP=MAIN.JS.
+Examples:
+* DOJS.EXE -r script.js will start script.js from the HDD, ZipPrefix("pic.bmp") will yield pic.bmp.
+* DOJS.EXE -r data.zip=script.js will start script.js from the ZIP file data.zip, ZipPrefix("pic.bmp") will yield data.zip=pic.bmp.
+* HURTZ.EXE DOjS was renamed to HURTZ.EXE. It will start MAIN.JS from the ZIP file HURTZ.ZIP, ZipPrefix("pic.bmp") will yield HURTZ.ZIP=pic.bmp.
+* DOJS.EXE The script was added to JSBOOT.ZIP. DOjS will start MAIN.JS from the ZIP file JSBOOT.ZIP, ZipPrefix("pic.bmp") will yield JSBOOT.ZIP=pic.bmp.
+
 # JS API description
 A very minimal API documentation.
 
 ## Script format
-Scripts need to provide three functions: `Setup()`, `Loop()` and `Input()`. Scripts are loaded and executed top-own. After that `Setup()` is called once and then `Loop()` repeatedly. `Input()` is called whenever mouse of keyboard input happens.
+Scripts need to provide three functions: Setup(), Loop() and Input(). Scripts are loaded and executed top-own. After that Setup() is called once and then Loop() repeatedly. Input() is called whenever mouse of keyboard input happens.
 
 ### Setup()
 This function is called once at startup. It can initialize variables, setup hardware, etc.
 
 ### Loop()
-This function is called after setup repeatedly until `Stop()` is called. After calling `Stop()` the program ends when `Loop()` exits.
+This function is called after setup repeatedly until Stop() is called. After calling Stop() the program ends when Loop() exits.
 
 ### Input(event: {x:number, y:number, flags:number, buttons:number, key:number, kbstat:number, dtime:number})
-This function is called whenever mouse/keyboard input happens. The parameter is an event object with the following fields: `{x:number, y:number, flags:number, buttons:number, key:number, kbstat:number, dtime:number}`. The definitions for the `flags` and `key` field can be found in `jsboot/func.js`.
+This function is called whenever mouse/keyboard input happens. The parameter is an event object with the following fields: {x:number, y:number, flags:number, buttons:number, key:number, kbstat:number, dtime:number}. The definitions for the flags and key field can be found in jsboot/func.js.
 
 ## File
 ### f = new File(filename:string, mode:string)
-Open a file, for file modes see `jsboot/file.js`. Files can only either be read or written, never both. Writing to a closed file throws an exception.
+Open a file, for file modes see jsboot/file.js. Files can only either be read or written, never both. Writing to a closed file throws an exception.
 
 ### f.ReadByte():number
 ### f.ReadBytes():number[]
@@ -77,7 +86,7 @@ Close the file.
 Get file size.
 
 ## Color
-See `jsboot/color.js` for predefined EGA colors. Use `NO_COLOR` for the transparent color.
+See jsboot/color.js for predefined EGA colors. Use NO_COLOR for the transparent color.
 
 ### Color(red:number, green:number, blue:number[, alpha:number]):number
 Create a RGBA color.
@@ -135,7 +144,7 @@ get the color of an image pixel.
 Save Bitmap to file.
 
 ## Font
-See `jsboot/font.js` for direction and alignment values.
+See jsboot/font.js for direction and alignment values.
 
 ### f = new Font(filename:string)
 Load a .FNT file for GRX.
@@ -252,7 +261,7 @@ draw a circle.
 draw an ellipse.
 
 ### CircleArc(x:number, y:number, r:number, start:number, end:number, style:number, c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
-Draw a circle arc. Returns an object with coordinates of the drawn arc: `{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}`.
+Draw a circle arc. Returns an object with coordinates of the drawn arc: {"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}.
 
 ### CustomLine(x1:number, y1:number, x2:number, y2:number, w:number, c:Color)
 draw a line with given width.
@@ -264,7 +273,7 @@ draw a circle with given width.
 draw an ellipse with given width.
 
 ### CustomCircleArc(x:number, y:number, r:number, start:number, end:number, style:number, w:number, c:Color):{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}
-Draw a circle arc with given width. Returns an object with coordinates of the drawn arc: `{"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}`.
+Draw a circle arc with given width. Returns an object with coordinates of the drawn arc: {"centerX":XXX,"centerY":XXX,"endX":XXX,"endY":XXX,"startX":XXX,"startY":XXX}.
 
 ### FilledBox(x1:number, y1:number, x2:number, y2:number, c:Color)
 draw a filled box.
@@ -317,13 +326,13 @@ move mouse cursor
 
 ## Other functions/properties
 ### SOUND_AVAILABLE: boolean
-`true` if WAV sound is available.
+true if WAV sound is available.
 
 ### MOUSE_AVAILABLE: boolean
-`true` if mouse is available.
+true if mouse is available.
 
 ### IPX_AVAILABLE: boolean
-`true` if networking is available.
+true if networking is available.
 
 ### global: object
 The global context.
@@ -332,13 +341,13 @@ The global context.
 The command line parameters including script name.
 
 ### Print(a, ...)
-Write data to `JSLOG.TXT` logfile.
+Write data to JSLOG.TXT logfile.
 
 ### Println(a, ...)
-Write data to `JSLOG.TXT` logfile.
+Write data to JSLOG.TXT logfile.
 
 ### Stop()
-DOjS will exit after the current call to `Loop()`.
+DOjS will exit after the current call to Loop().
 
 ### Sleep(ms:number)
 Sleep for the given number of ms.
@@ -349,35 +358,51 @@ Get ms timestamp.
 ### Read(filename:string):string
 Load the contents of a file into a string.
 
+### ReadZIP(filename:string, entry:string):string
+Load the contents of a ZIP file entry into a string.
+
 ### List(dname:string):[f1:string, f1:string, ...]
 Get directory listing.
 
 ### Stat(name:string):{"atime":string,"blksize":number,"ctime":string,"drive":string,"is_blockdev":bool,"is_chardev":bool,"is_directory":bool,"is_regular":bool,"mtime":string,"nlink":number,"size":number}
 Get information about a file/directory.
 
+### MakeDir(name:string)
+Create directory.
+
+### RmFile(name:string)
+### RmDir(name:string)
+Delete file/directory.
+
+### Rename(from:string, to:string)
+Rename file/directory.
+
 ### MemoryInfo():{"used":XXX, "available":XXX}
 Get memory statistics.
 
 ### Gc(info:boolean)
-Run garbage collector, print statistics to logfile if `info==true`.
+Run garbage collector, print statistics to logfile if info==true.
 
 ### SetFramerate(rate:number)
-Set maximum frame rate. If `Loop()` takes longer than `1/rate` seconds then the framerate will not be reached.
+Set maximum frame rate. If Loop() takes longer than 1/rate seconds then the framerate will not be reached.
 
 ### GetFramerate():number
 Current frame rate.
 
 ### SetExitKey(key:number)
-Change the exit key from ESCAPE to any other keycode from `jsboot/func.js`.
+Change the exit key from ESCAPE to any other keycode from jsboot/func.js.
 
 ### CharCode(c:string)
-Can be used to obtain the key code for `SetExitKey()` for a character, e.g. `SetExitKey(CharCode('q'))`.
+Can be used to obtain the key code for SetExitKey() for a character, e.g. SetExitKey(CharCode('q')).
 
 ### Require(filename:string):module
 Used to load a module. The functions exported from this module can be accessed using the returned value.
 
 ### Include(filename:string)
 Used to load a module. The functions exported from this module will be put into the global context.
+
+### ZipPrefix(fname:string):string
+Prefix a filename with the ZIP file the started script came from.
 
 ### RandomInt(min:number, max:number):number
 Get random integer between min and max.
@@ -398,8 +423,17 @@ Write byte/word/long to given IO-port.
 ### InPortLong(port:number):number
 Read byte/word/long from given IO-port.
 
+### BytesToString(data:number[]):string
+Convert byte array to ASCII string. The string is terminated at the first NULL byte or at array length (whichever comes first).
+
+### StringToBytes(string):number[]
+Convert ASCII string to byte array.
+
+### NamedFunction(func_param, func_src, func_source_filename):function
+This works like Function(), but it only takes one parameter and the source of the parsed string can be provided.
+
 ## IPX networking
-DOjS supports IPX networking. Node addresses are arrays of 6 numbers between 0-255. Default socket number and broadcast address definitions can be found in `jsboot/ipx.js`.
+DOjS supports IPX networking. Node addresses are arrays of 6 numbers between 0-255. Default socket number and broadcast address definitions can be found in jsboot/ipx.js.
 
 ### IpxSocketOpen(num:number)
 Open an IPX socket.
@@ -450,7 +484,7 @@ Draw 3d triangles, using vertices.
 Draw 3d quads using vertex.
 
 ### Clip3D(type:POLYTYPE, min_z:number, max_z:number, v:V3D[])
-Clips the polygon given in `v'.
+Clips the polygon given in v'.
 
 ## ZBuffer
 ### zbuf = new ZBuffer()
@@ -625,3 +659,53 @@ return data as string (blocks until 'len' was read).
 
 ### socket.ReadBytes(len:number):number[]
 return data as array of numbers (blocks until 'len' was read).
+
+## ZIP Files
+### zip = new Zip(filename:string, mode:string, [compression:number])
+Open a ZIP.
+
+### zip.Close()
+Close the zip.
+
+### zip.NumEntries():number
+Get number of entries in ZIP
+
+### zip.GetEntries():Array
+Get entry listing.
+[
+  [name, is_directory, size, crc32],
+  ...
+]
+
+### zip.AddFile(entry_path:string, hdd_path:string)
+Add file to ZIP.
+
+### zip.ExtractFile(entry_path:string, hdd_path:string)
+Extract file from ZIP.
+
+### zip.ReadBytes(entry_name:string):number[]
+Return the bytes from the zip entry as number array.
+
+### zip.WriteBytes(entry_name:string, data:number[])
+Write a bytes to a zip entry.
+
+## raw disk access
+RawWrite() only works when DOjS was started with "-x"
+
+### GetNumberOfFDD():number
+get number of FDDs
+
+### GetNumberOfHDD():number
+get number of HDDs
+
+### GetDiskStatus():number
+query the disk status
+
+### GetRawSectorSize(drive:number):number
+get number of sectors for a drive.
+
+### RawRead(disk:number, sector:number):number[]
+read a sector from a disk.
+
+### RawWrite(disk:number, sector:number, data:number[])
+write a sector to disk

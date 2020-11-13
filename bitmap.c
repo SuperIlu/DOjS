@@ -20,18 +20,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "bitmap.h"
+
+#include <allegro.h>
+#include <loadpng.h>
 #include <mujs.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <allegro.h>
-#include <loadpng.h>
-
 #include "3dfx-glide.h"
 #include "DOjS.h"
-#include "bitmap.h"
 #include "color.h"
 #include "util.h"
+#include "zipfile.h"
 
 #ifdef LFB_3DFX
 #include <glide.h>
@@ -144,10 +145,37 @@ static void new_Bitmap(js_State *J) {
         // new Bitmap("filename")
         fname = js_tostring(J, 1);
 
-        bm = load_bitmap(fname, NULL);
-        if (!bm) {
-            js_error(J, "Can't load image '%s'", fname);
-            return;
+        char *delim = strchr(fname, ZIP_DELIM);
+
+        if (!delim) {
+            bm = load_bitmap(fname, NULL);
+            if (!bm) {
+                js_error(J, "Can't load image '%s'", fname);
+                return;
+            }
+        } else {
+            PACKFILE *pf = open_zipfile1(fname);
+            if (!pf) {
+                js_error(J, "Can't load image '%s'", fname);
+                return;
+            }
+            if (stricmp("bmp", ut_getFilenameExt(fname)) == 0) {
+                bm = load_bmp_pf(pf, NULL);
+            } else if (stricmp("tga", ut_getFilenameExt(fname)) == 0) {
+                bm = load_tga_pf(pf, NULL);
+            } else if (stricmp("pcx", ut_getFilenameExt(fname)) == 0) {
+                bm = load_pcx_pf(pf, NULL);
+            } else if (stricmp("png", ut_getFilenameExt(fname)) == 0) {
+                bm = load_png_pf(pf, NULL);
+            } else {
+                bm = NULL;
+            }
+            pack_fclose(pf);
+
+            if (!bm) {
+                js_error(J, "Can't load image '%s'", fname);
+                return;
+            }
         }
     } else if (js_isarray(J, 1) && js_isnumber(J, 2) && js_isnumber(J, 3)) {
         // new Bitmap(data[], width, height)
@@ -159,11 +187,12 @@ static void new_Bitmap(js_State *J) {
             JS_ENOMEM(J);
             return;
         }
+        clear_bitmap(bm);
         int arr_len = js_getlength(J, 1);
         int len = arr_len < w * h ? arr_len : w * h;
         for (int i = 0; i < len; i++) {
             js_getindex(J, 1, i);
-            putpixel(bm, i % w, i / h, js_toint32(J, -1));
+            putpixel(bm, i % w, i / w, js_touint32(J, -1));
             js_pop(J, 1);
         }
     } else {
@@ -251,6 +280,8 @@ static void Bitmap_FxDrawLfb(js_State *J) {
         JS_ENOMEM(J);
         return;
     }
+
+    // TODO: buffer conversion!
 
     /* Create Source Bitmap to be copied to framebuffer */
     for (int y = 0; y < bm->h; y++) {
@@ -383,21 +414,20 @@ void init_bitmap(js_State *J) {
     // define the Bitmap() object
     js_newobject(J);
     {
-        PROTDEF(J, Bitmap_Draw, TAG_BITMAP, "Draw", 2);
-        PROTDEF(J, Bitmap_DrawAdvanced, TAG_BITMAP, "DrawAdvanced", 8);
-        PROTDEF(J, Bitmap_Clear, TAG_BITMAP, "Clear", 0);
-        PROTDEF(J, Bitmap_DrawTrans, TAG_BITMAP, "DrawTrans", 2);
-        PROTDEF(J, Bitmap_GetPixel, TAG_BITMAP, "GetPixel", 2);
-        PROTDEF(J, Bitmap_SaveBmpImage, TAG_BITMAP, "SaveBmpImage", 1);
-        PROTDEF(J, Bitmap_SavePcxImage, TAG_BITMAP, "SavePcxImage", 1);
-        PROTDEF(J, Bitmap_SaveTgaImage, TAG_BITMAP, "SaveTgaImage", 1);
-        PROTDEF(J, Bitmap_SavePngImage, TAG_BITMAP, "SavePngImage", 1);
+        NPROTDEF(J, Bitmap, Draw, 2);
+        NPROTDEF(J, Bitmap, DrawAdvanced, 8);
+        NPROTDEF(J, Bitmap, Clear, 0);
+        NPROTDEF(J, Bitmap, DrawTrans, 2);
+        NPROTDEF(J, Bitmap, GetPixel, 2);
+        NPROTDEF(J, Bitmap, SaveBmpImage, 1);
+        NPROTDEF(J, Bitmap, SavePcxImage, 1);
+        NPROTDEF(J, Bitmap, SaveTgaImage, 1);
+        NPROTDEF(J, Bitmap, SavePngImage, 1);
 #ifdef LFB_3DFX
-        PROTDEF(J, Bitmap_FxDrawLfb, TAG_BITMAP, "FxDrawLfb", 4);
+        NPROTDEF(J, Bitmap, FxDrawLfb, 4);
 #endif
     }
-    js_newcconstructor(J, new_Bitmap, new_Bitmap, TAG_BITMAP, 5);
-    js_defglobal(J, TAG_BITMAP, JS_DONTENUM);
+    CTORDEF(J, new_Bitmap, TAG_BITMAP, 5);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

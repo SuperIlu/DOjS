@@ -4,19 +4,19 @@
 
 	Copyright (c) the p5.js contributors and Andre Seidelt <superilu@yahoo.com>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -25,16 +25,16 @@
  * @module p5compat
  */
 
-Include('jsboot/p5const.js');
-Include('jsboot/p5color.js');
-Include('jsboot/p5env.js');
-Include('jsboot/p5input.js');
-Include('jsboot/p5math.js');
-Include('jsboot/p5shape.js');
-Include('jsboot/p5typo.js');
-Include('jsboot/p5util.js');
-Include('jsboot/p5vect.js');
-Include('jsboot/p5trans.js');
+Include('p5const');
+Include('p5color');
+Include('p5env');
+Include('p5input');
+Include('p5math');
+Include('p5shape');
+Include('p5typo');
+Include('p5util');
+Include('p5vect');
+Include('p5trans');
 
 exports._loop = true;
 exports._lastButtons = 0;

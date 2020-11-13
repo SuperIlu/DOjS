@@ -38,12 +38,14 @@ SOFTWARE.
 #include "edit.h"
 #include "lines.h"
 #include "util.h"
+#include "zip.h"
+#include "zipfile.h"
 
 /************
 ** defines **
 ************/
-#define EDI_TEMPLATE BOOT_DIR "template.txt"  //!< filename for template file
-#define EDI_HELPFILE BOOT_DIR "help.txt"      //!< filename for help file
+#define EDI_TEMPLATE JSBOOT_DIR "template.txt"  //!< filename for template file
+#define EDI_HELPFILE JSBOOT_DIR "help.txt"      //!< filename for help file
 
 #define EDI_CNP_SIZE 4096  //!< initial size of Copy&Paste buffer
 
@@ -816,7 +818,7 @@ static char* edi_get_context(edi_t* edi) {
         end++;
     }
 
-    if (start == end) {
+    if (start >= end) {
         return NULL;
     }
 
@@ -1038,13 +1040,21 @@ static edi_exit_t edi_loop(edi_t* edi) {
                 break;
 
             case K_F1:  // show help
-                dia_show_file(edi, EDI_HELPFILE, &last_help_pos, false, NULL);
+                if (ut_file_exists(JSBOOT_ZIP)) {
+                    dia_show_file(edi, JSBOOT_ZIP ZIP_DELIM_STR EDI_HELPFILE, &last_help_pos, false, NULL);
+                } else {
+                    dia_show_file(edi, EDI_HELPFILE, &last_help_pos, false, NULL);
+                }
                 break;
 
             case K_Shift_F1:  // context help
             {
                 char* ctx = edi_get_context(edi);
-                dia_show_file(edi, EDI_HELPFILE, &last_help_pos, false, ctx);
+                if (ut_file_exists(JSBOOT_ZIP)) {
+                    dia_show_file(edi, JSBOOT_ZIP ZIP_DELIM_STR EDI_HELPFILE, &last_help_pos, false, ctx);
+                } else {
+                    dia_show_file(edi, EDI_HELPFILE, &last_help_pos, false, ctx);
+                }
                 if (ctx) {
                     free(ctx);
                 }
@@ -1180,30 +1190,48 @@ void edi_clear_selection(edi_t* edi) {
  * @return a code describing why the editor was quit.
  */
 edi_exit_t edi_edit(char* fname, bool highres) {
-    check_file_t exists = ut_check_file(fname);
-    if (exists == CF_ERROR) {
-        perror("Error accessing file");
-        return EDI_ERROR;
-    }
-
     edi_t* edi = edi_init(fname, highres);
-    if (exists == CF_YES) {
+    if (ut_file_exists(fname)) {
         char* error = edi_load(edi, fname);
         if (error) {
             fputs(error, stderr);
             return EDI_ERROR;
         }
     } else {
-        // load template
-        char* error = edi_load(edi, EDI_TEMPLATE);
-        if (error) {
-            fputs(error, stderr);
-            return EDI_ERROR;
-        }
+        if (ut_file_exists(JSBOOT_ZIP)) {
+            // extract template to new file
+            struct zip_t* zip = zip_open(JSBOOT_ZIP, 0, 'r');
+            if (!zip) {
+                fputs("Can't load template", stderr);
+                return EDI_ERROR;
+            }
+            if (zip_entry_open(zip, EDI_TEMPLATE) != 0) {
+                fputs("Can't load template", stderr);
+                return EDI_ERROR;
+            }
+            if (zip_entry_fread(zip, fname) != 0) {
+                fputs("Can't load template", stderr);
+                return EDI_ERROR;
+            }
+            zip_entry_close(zip);
+            zip_close(zip);
+            char* error = edi_load(edi, fname);
+            if (error) {
+                fputs(error, stderr);
+                return EDI_ERROR;
+            }
+        } else {
+            // load template from "jsboot/"
+            char* error = edi_load(edi, EDI_TEMPLATE);
+            if (error) {
+                fputs(error, stderr);
+                return EDI_ERROR;
+            }
 
-        // replace template name with command line name again and mark as changed
+            // replace template name with command line name again and mark as changed
+            edi->name = fname;
+        }
         edi->changed = true;
-        edi->name = fname;
         edi->msg = "New file: Template loaded!";
     }
     edi_redraw(edi);

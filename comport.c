@@ -491,20 +491,19 @@ void init_comport(js_State *J) {
 
     js_newobject(J);
     {
-        PROTDEF(J, Com_Close, TAG_COM, "Close", 0);
-        PROTDEF(J, Com_FlushInput, TAG_COM, "FlushInput", 0);
-        PROTDEF(J, Com_FlushOutput, TAG_COM, "FlushOutput", 0);
-        PROTDEF(J, Com_IsOutputEmpty, TAG_COM, "IsOutputEmpty", 0);
-        PROTDEF(J, Com_IsOutputFull, TAG_COM, "IsOutputFull", 0);
-        PROTDEF(J, Com_WriteByte, TAG_COM, "WriteByte", 1);
-        PROTDEF(J, Com_WriteString, TAG_COM, "WriteString", 1);
-        PROTDEF(J, Com_IsInputEmpty, TAG_COM, "IsInputEmpty", 0);
-        PROTDEF(J, Com_IsInputFull, TAG_COM, "IsInputFull", 0);
-        PROTDEF(J, Com_ReadByte, TAG_COM, "ReadByte", 0);
-        PROTDEF(J, Com_ReadBuffer, TAG_COM, "ReadBuffer", 0);
+        NPROTDEF(J, Com, Close, 0);
+        NPROTDEF(J, Com, FlushInput, 0);
+        NPROTDEF(J, Com, FlushOutput, 0);
+        NPROTDEF(J, Com, IsOutputEmpty, 0);
+        NPROTDEF(J, Com, IsOutputFull, 0);
+        NPROTDEF(J, Com, WriteByte, 1);
+        NPROTDEF(J, Com, WriteString, 1);
+        NPROTDEF(J, Com, IsInputEmpty, 0);
+        NPROTDEF(J, Com, IsInputFull, 0);
+        NPROTDEF(J, Com, ReadByte, 0);
+        NPROTDEF(J, Com, ReadBuffer, 0);
     }
-    js_newcconstructor(J, new_Com, new_Com, TAG_COM, 8);
-    js_defglobal(J, TAG_COM, JS_DONTENUM);
+    CTORDEF(J, new_Com, TAG_COM, 8);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

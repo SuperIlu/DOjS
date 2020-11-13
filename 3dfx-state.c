@@ -84,9 +84,8 @@ void init_fxstate(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
 
     js_newobject(J);
-    { PROTDEF(J, FxState_Set, TAG_FXSTATE, "Set", 0); }
-    js_newcconstructor(J, new_FxState, new_FxState, TAG_FXSTATE, 0);
-    js_defglobal(J, TAG_FXSTATE, JS_DONTENUM);
+    { NPROTDEF(J, FxState, Set, 0); }
+    CTORDEF(J, new_FxState, TAG_FXSTATE, 0);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

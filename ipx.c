@@ -540,7 +540,7 @@ static bool ipx_convertAddress(js_State *J, int idx, node_address_t addr) {
  *
  * @param J the JS context.
  */
-static void ipx_IpxSocketOpen(js_State *J) {
+static void f_IpxSocketOpen(js_State *J) {
     if (DOjS.ipx_available) {
         if (!socket) {
             socket = js_toint16(J, 1);
@@ -561,7 +561,7 @@ static void ipx_IpxSocketOpen(js_State *J) {
  *
  * @param J the JS context.
  */
-static void ipx_IpxSocketClose(js_State *J) {
+static void f_IpxSocketClose(js_State *J) {
     if (socket && DOjS.ipx_available) {
         Jonipx_Close();
     }
@@ -574,7 +574,7 @@ static void ipx_IpxSocketClose(js_State *J) {
  *
  * @param J the JS context.
  */
-static void ipx_IpxSend(js_State *J) {
+static void f_IpxSend(js_State *J) {
     if (socket) {
         const char *str = js_tostring(J, 1);
 
@@ -607,7 +607,7 @@ static void ipx_IpxSend(js_State *J) {
  *
  * @param J the JS context.
  */
-static void ipx_IpxCheckPacket(js_State *J) {
+static void f_IpxCheckPacket(js_State *J) {
     if (socket) {
         js_pushboolean(J, Jonipx_Packet_Ready());
     } else {
@@ -622,7 +622,7 @@ static void ipx_IpxCheckPacket(js_State *J) {
  *
  * @param J the JS context.
  */
-static void ipx_IpxGetPacket(js_State *J) {
+static void f_IpxGetPacket(js_State *J) {
     if (socket) {
         if (Jonipx_Packet_Ready()) {
             game_packet_t packet;
@@ -654,7 +654,7 @@ static void ipx_IpxGetPacket(js_State *J) {
  *
  * @param J the JS context.
  */
-static void ipx_IpxGetLocalAddress(js_State *J) {
+static void f_IpxGetLocalAddress(js_State *J) {
     if (socket) {
         js_newarray(J);
         for (int i = 0; i < ADDRESS_SIZE; i++) {
@@ -674,12 +674,12 @@ static void ipx_IpxGetLocalAddress(js_State *J) {
 void init_ipx(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
 
-    FUNCDEF(J, ipx_IpxSocketOpen, "IpxSocketOpen", 1);
-    FUNCDEF(J, ipx_IpxSocketClose, "IpxSocketClose", 0);
-    FUNCDEF(J, ipx_IpxSend, "IpxSend", 2);
-    FUNCDEF(J, ipx_IpxCheckPacket, "IpxCheckPacket", 0);
-    FUNCDEF(J, ipx_IpxGetPacket, "IpxGetPacket", 0);
-    FUNCDEF(J, ipx_IpxGetLocalAddress, "IpxGetLocalAddress", 0);
+    NFUNCDEF(J, IpxSocketOpen, 1);
+    NFUNCDEF(J, IpxSocketClose, 0);
+    NFUNCDEF(J, IpxSend, 2);
+    NFUNCDEF(J, IpxCheckPacket, 0);
+    NFUNCDEF(J, IpxGetPacket, 0);
+    NFUNCDEF(J, IpxGetLocalAddress, 0);
 
     // Check to see if IPX is present
     if (Allocate_Dos_Buffers() && Init_IPX()) {

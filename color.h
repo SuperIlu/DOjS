@@ -28,8 +28,8 @@ SOFTWARE.
 /************
 ** defines **
 ************/
-#define JSINC_COLOR BOOT_DIR "color.js"  //!< boot script for color subsystem
-#define TAG_COLOR "Color"                //!< class name for Color()
+#define JSINC_COLOR JSBOOT_DIR "color.js"  //!< boot script for color subsystem
+#define TAG_COLOR "Color"                  //!< class name for Color()
 
 /***********************
 ** exported functions **

@@ -32,16 +32,25 @@ function Setup() {
 	i3 = new Bitmap("examples/glow.pcx");
 	i6 = new Bitmap("examples/3dfx.png");
 
+	// var dat = [];
+	// for (var x = 0; x < 255; x++) {
+	// 	for (var y = 0; y < 255; y++) {
+	// 		dat.push(0xFF000000 | (x << 8) | y);
+	// 	}
+	// }
+
+	// i4 = new Bitmap(dat, 255, 255);
+
 	var dat = [];
-	for (var x = 0; x < 255; x++) {
-		for (var y = 0; y < 255; y++) {
-			dat.push(0xFF000000 | (x << 8) | y);
+	for (var y = 0; y < 32; y++) {
+		for (var x = 0; x < 256; x++) {
+			dat.push(0x0000FF | ((y * 8) << 8) | x << 24);
 		}
 	}
 
-	i4 = new Bitmap(dat, 255, 255);
+	i4 = new Bitmap(dat, 256, 32);
 
-	img = null;
+	img = i4;
 	cnt = 0;
 }
 

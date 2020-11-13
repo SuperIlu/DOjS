@@ -21,9 +21,13 @@ SOFTWARE.
 */
 
 #include "sound.h"
+
 #include <allegro.h>
 #include <mujs.h>
+
 #include "DOjS.h"
+#include "util.h"
+#include "zipfile.h"
 
 /**************
 ** Variables **
@@ -54,13 +58,37 @@ static void Sample_Finalize(js_State *J, void *data) {
  * @param J VM state.
  */
 static void new_Sample(js_State *J) {
+    SAMPLE *snd = NULL;
     NEW_OBJECT_PREP(J);
     const char *fname = js_tostring(J, 1);
 
-    SAMPLE *snd = load_sample(fname);
-    if (!snd) {
-        js_error(J, "Can't load sample '%s': %s", fname, allegro_error);
-        return;
+    char *delim = strchr(fname, ZIP_DELIM);
+
+    if (!delim) {
+        snd = load_sample(fname);
+        if (!snd) {
+            js_error(J, "Can't load sample '%s': %s", fname, allegro_error);
+            return;
+        }
+    } else {
+        PACKFILE *pf = open_zipfile1(fname);
+        if (!pf) {
+            js_error(J, "Can't load sample '%s'", fname);
+            return;
+        }
+        if (stricmp("voc", ut_getFilenameExt(fname)) == 0) {
+            snd = load_voc_pf(pf);
+        } else if (stricmp("wav", ut_getFilenameExt(fname)) == 0) {
+            snd = load_wav_pf(pf);
+        } else {
+            snd = NULL;
+        }
+        pack_fclose(pf);
+
+        if (!snd) {
+            js_error(J, "Can't load sample '%s'", fname);
+            return;
+        }
     }
 
     js_currentfunction(J);
@@ -90,7 +118,7 @@ static void new_Sample(js_State *J) {
  *
  * @param J VM state.
  */
-static void Sample_play(js_State *J) {
+static void Sample_Play(js_State *J) {
     if (DOjS.sound_available) {
         SAMPLE *snd = js_touserdata(J, 0, TAG_SAMPLE);
 
@@ -115,7 +143,7 @@ static void Sample_play(js_State *J) {
  *
  * @param J VM state.
  */
-static void Sample_stop(js_State *J) {
+static void Sample_Stop(js_State *J) {
     if (DOjS.sound_available) {
         SAMPLE *snd = js_touserdata(J, 0, TAG_SAMPLE);
         stop_sample(snd);
@@ -128,7 +156,7 @@ static void Sample_stop(js_State *J) {
  *
  * @param J VM state.
  */
-static void Sample_get(js_State *J) {
+static void Sample_Get(js_State *J) {
     SAMPLE *snd = js_touserdata(J, 0, TAG_SAMPLE);
     unsigned int idx = js_touint32(J, 1);
 
@@ -175,7 +203,7 @@ static void Sample_get(js_State *J) {
  *
  * @param J VM state.
  */
-static void snd_get_pos(js_State *J) {
+static void f_VoiceGetPosition(js_State *J) {
     int voc = js_touint32(J, 1);
     js_pushnumber(J, voice_get_position(voc));
 }
@@ -191,7 +219,7 @@ static void snd_recorder() { snd_data_available = true; }
  *
  * @param J VM state.
  */
-static void snd_input_source(js_State *J) {
+static void f_SoundInputSource(js_State *J) {
     if (DOjS.sndin_available) {
         int src = js_toint16(J, 1);
         if (set_sound_input_source(src) < 0) {
@@ -207,7 +235,7 @@ static void snd_input_source(js_State *J) {
  *
  * @param J VM state.
  */
-static void snd_start_input(js_State *J) {
+static void f_SoundStartInput(js_State *J) {
     if (DOjS.sndin_available) {
         int freq = js_toint16(J, 1);
         int bits = js_toint16(J, 2);
@@ -247,7 +275,7 @@ static void snd_start_input(js_State *J) {
  *
  * @param J VM state.
  */
-static void snd_stop_input(js_State *J) {
+static void f_SoundStopInput(js_State *J) {
     if (DOjS.sndin_available) {
         stop_sound_input();
 
@@ -263,7 +291,7 @@ static void snd_stop_input(js_State *J) {
  *
  * @param J VM state.
  */
-static void snd_read_input(js_State *J) {
+static void f_ReadSoundInput(js_State *J) {
     if (DOjS.sndin_available && snd_sample_data && snd_data_available) {
         read_sound_input(snd_sample_data);
         snd_data_available = false;
@@ -334,12 +362,11 @@ void init_sound(js_State *J) {
 
     js_newobject(J);
     {
-        PROTDEF(J, Sample_play, TAG_SAMPLE, "Play", 0);
-        PROTDEF(J, Sample_stop, TAG_SAMPLE, "Stop", 1);
-        PROTDEF(J, Sample_get, TAG_SAMPLE, "Get", 1);
+        NPROTDEF(J, Sample, Play, 0);
+        NPROTDEF(J, Sample, Stop, 1);
+        NPROTDEF(J, Sample, Get, 1);
     }
-    js_newcconstructor(J, new_Sample, new_Sample, TAG_SAMPLE, 1);
-    js_defglobal(J, TAG_SAMPLE, JS_DONTENUM);
+    CTORDEF(J, new_Sample, TAG_SAMPLE, 1);
 
     // sound input
     DOjS.sndin_available = install_sound_input(DOjS.params.no_sound ? DIGI_NONE : DIGI_AUTODETECT, DOjS.params.no_fm ? MIDI_NONE : MIDI_AUTODETECT) == 0;
@@ -357,12 +384,12 @@ void init_sound(js_State *J) {
     PROPDEF_B(J, ((cap & 16) != 0), "SNDIN_16BIT");              // do we have 16bit input?
     PROPDEF_B(J, get_sound_input_cap_stereo(), "SNDIN_STEREO");  // do we have stereo input?
 
-    FUNCDEF(J, snd_get_pos, "VoiceGetPosition", 1);
+    NFUNCDEF(J, VoiceGetPosition, 1);
 
-    FUNCDEF(J, snd_input_source, "SoundInputSource", 1);
-    FUNCDEF(J, snd_start_input, "SoundStartInput", 3);
-    FUNCDEF(J, snd_stop_input, "SoundStopInput", 0);
-    FUNCDEF(J, snd_read_input, "ReadSoundInput", 0);
+    NFUNCDEF(J, SoundInputSource, 1);
+    NFUNCDEF(J, SoundStartInput, 3);
+    NFUNCDEF(J, SoundStopInput, 0);
+    NFUNCDEF(J, ReadSoundInput, 0);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
@@ -373,7 +400,7 @@ void init_sound(js_State *J) {
 void shutdown_sound() {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
     if (DOjS.sound_available) {
-        snd_stop_input(NULL);
+        f_SoundStopInput(NULL);
     }
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

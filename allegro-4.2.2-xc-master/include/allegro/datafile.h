@@ -97,6 +97,9 @@ AL_FUNC(struct BITMAP *, load_pcx_pf, (PACKFILE *f, struct RGB *pal));
 AL_FUNC(struct BITMAP *, load_tga, (AL_CONST char *filename, struct RGB *pal));
 AL_FUNC(struct BITMAP *, load_tga_pf, (PACKFILE *f, struct RGB *pal));
 
+AL_FUNC(FONT *, load_grx_font_pf, (PACKFILE *f, RGB *pal, void *param));
+AL_FUNC(MIDI *, load_midi_pf, (PACKFILE *f));
+
 AL_FUNC(int, save_bitmap, (AL_CONST char *filename, struct BITMAP *bmp, AL_CONST struct RGB *pal));
 AL_FUNC(int, save_bmp, (AL_CONST char *filename, struct BITMAP *bmp, AL_CONST struct RGB *pal));
 AL_FUNC(int, save_bmp_pf, (PACKFILE *f, struct BITMAP *bmp, AL_CONST struct RGB *pal));

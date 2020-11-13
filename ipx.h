@@ -32,7 +32,7 @@
 #define ADDRESS_SIZE 6
 #define IPX_DELAY 3 /* Amount we delay between sending packets */
 
-#define JSINC_IPX BOOT_DIR "ipx.js"  //!< boot script for ipx subsystem
+#define JSINC_IPX JSBOOT_DIR "ipx.js"  //!< boot script for ipx subsystem
 
 /*************
 ** typedefs **

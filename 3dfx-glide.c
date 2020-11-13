@@ -55,7 +55,7 @@ typedef struct fx_vertex {
  *
  * @param v the vertex.
  */
-static void fx_print_vertex(fx_vertex_t *v) {
+static void f_fxPrintVertex(fx_vertex_t *v) {
     DEBUG("  v = {");
     for (int i = 0; i < fx_vertex_size; i++) {
         if (i != 0) {
@@ -112,7 +112,7 @@ static bool fx_get_vertex(js_State *J, int idx, fx_vertex_t *v) {
  *
  * @param J VM state.
  */
-static void fx_init(js_State *J) {
+static void f_fxInit(js_State *J) {
     grGlideInit();
     grSstSelect(0);
     fx_context = grSstWinOpen(0, GR_RESOLUTION_640x480, GR_REFRESH_60Hz, GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
@@ -155,7 +155,7 @@ static void fx_init(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_vertex_layout(js_State *J) {
+static void f_fxVertexLayout(js_State *J) {
     if (js_isarray(J, 1)) {
         int len = js_getlength(J, 1);
         for (int i = 0; i < len; i++) {
@@ -208,7 +208,7 @@ static void fx_vertex_layout(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_reset_vertex_layout(js_State *J) {
+static void f_fxResetVertexLayout(js_State *J) {
     grReset(GR_VERTEX_PARAMETER);
     fx_vertex_size = 0;
 }
@@ -218,12 +218,12 @@ static void fx_reset_vertex_layout(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_get_vertex_size(js_State *J) { js_pushnumber(J, fx_vertex_size); }
+static void f_fxGetVertexSize(js_State *J) { js_pushnumber(J, fx_vertex_size); }
 
 /**
  * @brief shutdown glide again.
  */
-static void fx_shutdown() {
+static void f_fxShutdown() {
     DOjS.glide_enabled = false;
     if (fx_context) {
         grSstWinClose(fx_context);
@@ -236,7 +236,7 @@ static void fx_shutdown() {
  *
  * @param J VM state.
  */
-static void fx_draw_point(js_State *J) {
+static void f_fxDrawPoint(js_State *J) {
     fx_vertex_t v1;
     if (fx_get_vertex(J, 1, &v1)) {
         grDrawPoint(&v1);
@@ -248,7 +248,7 @@ static void fx_draw_point(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_draw_line(js_State *J) {
+static void f_fxDrawLine(js_State *J) {
     fx_vertex_t v1, v2;
     if (fx_get_vertex(J, 1, &v1) && fx_get_vertex(J, 2, &v2)) {
         grDrawLine(&v1, &v2);
@@ -260,7 +260,7 @@ static void fx_draw_line(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_draw_triangle(js_State *J) {
+static void f_fxDrawTriangle(js_State *J) {
     fx_vertex_t v1, v2, v3;
     if (fx_get_vertex(J, 1, &v1) && fx_get_vertex(J, 2, &v2) && fx_get_vertex(J, 3, &v3)) {
         grDrawTriangle(&v1, &v2, &v3);
@@ -272,7 +272,7 @@ static void fx_draw_triangle(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_aa_draw_triangle(js_State *J) {
+static void f_fxAADrawTriangle(js_State *J) {
     fx_vertex_t v1, v2, v3;
     if (fx_get_vertex(J, 1, &v1) && fx_get_vertex(J, 2, &v2) && fx_get_vertex(J, 3, &v3)) {
         grAADrawTriangle(&v1, &v2, &v3, js_toboolean(J, 4), js_toboolean(J, 5), js_toboolean(J, 6));
@@ -284,7 +284,7 @@ static void fx_aa_draw_triangle(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_draw_vertex_array(js_State *J) {
+static void f_fxDrawVertexArray(js_State *J) {
     FxU32 mode = js_toint32(J, 1);
     if (js_isarray(J, 2)) {
         int len = js_getlength(J, 2);
@@ -311,7 +311,7 @@ static void fx_draw_vertex_array(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_fog_table_index_to_w(js_State *J) {
+static void f_fxFogTableIndexToW(js_State *J) {
     FxI32 nFog;
     grGet(GR_FOG_TABLE_ENTRIES, 4, &nFog);
     js_newarray(J);
@@ -326,7 +326,7 @@ static void fx_fog_table_index_to_w(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_fog_table(js_State *J) {
+static void f_fxFogTable(js_State *J) {
     FxI32 nFog;
     grGet(GR_FOG_TABLE_ENTRIES, 4, &nFog);
     if (js_isarray(J, 1) && (js_getlength(J, 1) >= nFog)) {
@@ -352,7 +352,7 @@ static void fx_fog_table(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_fog_generate_exp(js_State *J) {
+static void f_fxFogGenerateExp(js_State *J) {
     FxI32 nFog;
     grGet(GR_FOG_TABLE_ENTRIES, 4, &nFog);
 
@@ -380,7 +380,7 @@ static void fx_fog_generate_exp(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_fog_generate_exp2(js_State *J) {
+static void f_fxFogGenerateExp2(js_State *J) {
     FxI32 nFog;
     grGet(GR_FOG_TABLE_ENTRIES, 4, &nFog);
 
@@ -406,7 +406,7 @@ static void fx_fog_generate_exp2(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_fog_generate_linear(js_State *J) {
+static void f_fxFogGenerateLinear(js_State *J) {
     FxI32 nFog;
     grGet(GR_FOG_TABLE_ENTRIES, 4, &nFog);
 
@@ -432,187 +432,187 @@ static void fx_fog_generate_linear(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_buffer_swap(js_State *J) { grBufferSwap(js_toint32(J, 1)); }
+static void f_fxBufferSwap(js_State *J) { grBufferSwap(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_buffer_clear(js_State *J) { grBufferClear(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3)); }
+static void f_fxBufferClear(js_State *J) { grBufferClear(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_clip_window(js_State *J) { grClipWindow(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3), js_touint32(J, 4)); }
+static void f_fxClipWindow(js_State *J) { grClipWindow(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3), js_touint32(J, 4)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_constant_color_value(js_State *J) { grConstantColorValue(js_toint32(J, 1)); }
+static void f_fxConstantColorValue(js_State *J) { grConstantColorValue(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_cull_mode(js_State *J) { grCullMode(js_toint32(J, 1)); }
+static void f_fxCullMode(js_State *J) { grCullMode(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_alpha_blend_function(js_State *J) { grAlphaBlendFunction(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3), js_touint32(J, 4)); }
+static void f_fxAlphaBlendFunction(js_State *J) { grAlphaBlendFunction(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3), js_touint32(J, 4)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_alpha_combine(js_State *J) { grAlphaCombine(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3), js_touint32(J, 4), js_toboolean(J, 5)); }
+static void f_fxAlphaCombine(js_State *J) { grAlphaCombine(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3), js_touint32(J, 4), js_toboolean(J, 5)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_color_combine(js_State *J) { grColorCombine(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3), js_touint32(J, 4), js_toboolean(J, 5)); }
+static void f_fxColorCombine(js_State *J) { grColorCombine(js_touint32(J, 1), js_touint32(J, 2), js_touint32(J, 3), js_touint32(J, 4), js_toboolean(J, 5)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_color_mask(js_State *J) { grColorMask(js_toboolean(J, 1), js_toboolean(J, 2)); }
+static void f_fxColorMask(js_State *J) { grColorMask(js_toboolean(J, 1), js_toboolean(J, 2)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_depth_mask(js_State *J) { grDepthMask(js_toboolean(J, 1)); }
+static void f_fxDepthMask(js_State *J) { grDepthMask(js_toboolean(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_enable(js_State *J) { grEnable(js_toint32(J, 1)); }
+static void f_fxEnable(js_State *J) { grEnable(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_disable(js_State *J) { grDisable(js_toint32(J, 1)); }
+static void f_fxDisable(js_State *J) { grDisable(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_disable_all_effects(js_State *J) { grDisableAllEffects(); }
+static void f_fxDisableAllEffects(js_State *J) { grDisableAllEffects(); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_dither_mode(js_State *J) { grDitherMode(js_toint32(J, 1)); }
+static void f_fxDitherMode(js_State *J) { grDitherMode(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_alpha_controls_lighting(js_State *J) { grAlphaControlsITRGBLighting(js_toboolean(J, 1)); }
+static void f_fxAlphaControlsITRGBLighting(js_State *J) { grAlphaControlsITRGBLighting(js_toboolean(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_gamma_correction_rgb(js_State *J) { guGammaCorrectionRGB(js_tonumber(J, 1), js_tonumber(J, 2), js_tonumber(J, 3)); }
+static void f_fxGammaCorrectionRGB(js_State *J) { guGammaCorrectionRGB(js_tonumber(J, 1), js_tonumber(J, 2), js_tonumber(J, 3)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_depth_range(js_State *J) { grDepthRange(js_tonumber(J, 1), js_tonumber(J, 2)); }
+static void f_fxDepthRange(js_State *J) { grDepthRange(js_tonumber(J, 1), js_tonumber(J, 2)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_depth_buffer_mode(js_State *J) { grDepthBufferMode(js_toint32(J, 1)); }
+static void f_fxDepthBufferMode(js_State *J) { grDepthBufferMode(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_depth_buffer_function(js_State *J) { grDepthBufferFunction(js_toint32(J, 1)); }
+static void f_fxDepthBufferFunction(js_State *J) { grDepthBufferFunction(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_depth_bias_level(js_State *J) { grDepthBiasLevel(js_toint32(J, 1)); }
+static void f_fxDepthBiasLevel(js_State *J) { grDepthBiasLevel(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_fog_mode(js_State *J) { grFogMode(js_toint32(J, 1)); }
+static void f_fxFogMode(js_State *J) { grFogMode(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_fog_color_value(js_State *J) { grFogColorValue(js_toint32(J, 1)); }
+static void f_fxFogColorValue(js_State *J) { grFogColorValue(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_chromakey_mode(js_State *J) { grChromakeyMode(js_toboolean(J, 1) ? GR_CHROMAKEY_ENABLE : GR_CHROMAKEY_DISABLE); }
+static void f_fxChromakeyMode(js_State *J) { grChromakeyMode(js_toboolean(J, 1) ? GR_CHROMAKEY_ENABLE : GR_CHROMAKEY_DISABLE); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_chromakey_value(js_State *J) { grChromakeyValue(js_toint32(J, 1)); }
+static void f_fxChromakeyValue(js_State *J) { grChromakeyValue(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_alpha_test_mode(js_State *J) { grAlphaTestFunction(js_toint32(J, 1)); }
+static void f_fxAlphaTestFunction(js_State *J) { grAlphaTestFunction(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_alpha_test_reference_value(js_State *J) { grAlphaTestReferenceValue(js_toint16(J, 1)); }
+static void f_fxAlphaTestReferenceValue(js_State *J) { grAlphaTestReferenceValue(js_toint16(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_tex_filter_mode(js_State *J) { grTexFilterMode(js_toint32(J, 1), js_toint32(J, 2), js_toint32(J, 3)); }
+static void f_fxTexFilterMode(js_State *J) { grTexFilterMode(js_toint32(J, 1), js_toint32(J, 2), js_toint32(J, 3)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_tex_clamp_mode(js_State *J) { grTexClampMode(js_toint32(J, 1), js_toint32(J, 2), js_toint32(J, 3)); }
+static void f_fxTexClampMode(js_State *J) { grTexClampMode(js_toint32(J, 1), js_toint32(J, 2), js_toint32(J, 3)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_tex_mip_map_mode(js_State *J) { grTexMipMapMode(js_toint32(J, 1), js_toint32(J, 2), js_toboolean(J, 3)); }
+static void f_fxTexMipMapMode(js_State *J) { grTexMipMapMode(js_toint32(J, 1), js_toint32(J, 2), js_toboolean(J, 3)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_tex_lod_bias_value(js_State *J) { grTexLodBiasValue(js_toint32(J, 1), js_tonumber(J, 2)); }
+static void f_fxTexLodBiasValue(js_State *J) { grTexLodBiasValue(js_toint32(J, 1), js_tonumber(J, 2)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_tex_combine(js_State *J) {
+static void f_fxTexCombine(js_State *J) {
     grTexCombine(js_toint32(J, 1), js_tonumber(J, 2), js_tonumber(J, 3), js_tonumber(J, 4), js_tonumber(J, 5), js_toboolean(J, 6), js_toboolean(J, 7));
 }
 /**
@@ -620,67 +620,67 @@ static void fx_tex_combine(js_State *J) {
  *
  * @param J VM state.
  */
-static void fx_tex_detail_control(js_State *J) { grTexDetailControl(js_toint32(J, 1), js_toint32(J, 2), js_toint16(J, 3), js_tonumber(J, 4)); }
+static void f_fxTexDetailControl(js_State *J) { grTexDetailControl(js_toint32(J, 1), js_toint32(J, 2), js_toint16(J, 3), js_tonumber(J, 4)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_tex_ncc_table(js_State *J) { grTexNCCTable(js_toint32(J, 1)); }
+static void f_fxTexNCCTable(js_State *J) { grTexNCCTable(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_origin(js_State *J) { grSstOrigin(js_toint32(J, 1)); }
+static void f_fxOrigin(js_State *J) { grSstOrigin(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_render_buffer(js_State *J) { grRenderBuffer(js_toint32(J, 1)); }
+static void f_fxRenderBuffer(js_State *J) { grRenderBuffer(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_flush(js_State *J) { grFlush(); }
+static void f_fxFlush(js_State *J) { grFlush(); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_finish(js_State *J) { grFinish(); }
+static void f_fxFinish(js_State *J) { grFinish(); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_splash(js_State *J) { grSplash(js_tonumber(J, 1), js_tonumber(J, 2), js_tonumber(J, 3), js_tonumber(J, 4), js_toint32(J, 5)); }
+static void f_fxSplash(js_State *J) { grSplash(js_tonumber(J, 1), js_tonumber(J, 2), js_tonumber(J, 3), js_tonumber(J, 4), js_toint32(J, 5)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_viewport(js_State *J) { grViewport(js_tonumber(J, 1), js_tonumber(J, 2), js_tonumber(J, 3), js_tonumber(J, 4)); }
+static void f_fxViewport(js_State *J) { grViewport(js_tonumber(J, 1), js_tonumber(J, 2), js_tonumber(J, 3), js_tonumber(J, 4)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_tex_calc_mem_required(js_State *J) { js_pushnumber(J, grTexCalcMemRequired(js_toint32(J, 1), js_toint32(J, 2), js_toint32(J, 3), js_toint32(J, 4))); }
+static void f_fxTexCalcMemRequired(js_State *J) { js_pushnumber(J, grTexCalcMemRequired(js_toint32(J, 1), js_toint32(J, 2), js_toint32(J, 3), js_toint32(J, 4))); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_tex_min_address(js_State *J) { js_pushnumber(J, grTexMinAddress(js_toint32(J, 1))); }
+static void f_fxTexMinAddress(js_State *J) { js_pushnumber(J, grTexMinAddress(js_toint32(J, 1))); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_tex_max_address(js_State *J) { js_pushnumber(J, grTexMaxAddress(js_toint32(J, 1))); }
+static void f_fxTexMaxAddress(js_State *J) { js_pushnumber(J, grTexMaxAddress(js_toint32(J, 1))); }
 
 /**
  * @brief get a single value from grGet().
@@ -723,87 +723,87 @@ static void fx_get_multiple(js_State *J, FxU32 pname, int num_vals) {
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_num_boards(js_State *J) { fx_get_single(J, GR_NUM_BOARDS); }
+static void f_fxGetNumBoards(js_State *J) { fx_get_single(J, GR_NUM_BOARDS); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_num_fb(js_State *J) { fx_get_single(J, GR_NUM_FB); }
+static void f_fxGetNumFb(js_State *J) { fx_get_single(J, GR_NUM_FB); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_num_tmu(js_State *J) { fx_get_single(J, GR_NUM_TMU); }
+static void f_fxGetNumTmu(js_State *J) { fx_get_single(J, GR_NUM_TMU); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_bits_depth(js_State *J) { fx_get_single(J, GR_BITS_DEPTH); }
+static void f_fxGetBitsDepth(js_State *J) { fx_get_single(J, GR_BITS_DEPTH); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_fog_table_entries(js_State *J) { fx_get_single(J, GR_FOG_TABLE_ENTRIES); }
+static void f_fxGetFogTableEntries(js_State *J) { fx_get_single(J, GR_FOG_TABLE_ENTRIES); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_gamma_table_entries(js_State *J) { fx_get_single(J, GR_GAMMA_TABLE_ENTRIES); }
+static void f_fxGetGammaTableEntries(js_State *J) { fx_get_single(J, GR_GAMMA_TABLE_ENTRIES); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_is_busy(js_State *J) { fx_get_single(J, GR_IS_BUSY); }
+static void f_fxIsBusy(js_State *J) { fx_get_single(J, GR_IS_BUSY); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_memory_fb(js_State *J) { fx_get_single(J, GR_MEMORY_FB); }
+static void f_fxGetMemoryFb(js_State *J) { fx_get_single(J, GR_MEMORY_FB); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_memory_tmu(js_State *J) { fx_get_single(J, GR_MEMORY_TMU); }
+static void f_fxGetMemoryTmu(js_State *J) { fx_get_single(J, GR_MEMORY_TMU); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_memory_uma(js_State *J) { fx_get_single(J, GR_MEMORY_UMA); }
+static void f_fxGetMemoryUma(js_State *J) { fx_get_single(J, GR_MEMORY_UMA); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_max_texture_size(js_State *J) { fx_get_single(J, GR_MAX_TEXTURE_SIZE); }
+static void f_fxGetMaxTextureSize(js_State *J) { fx_get_single(J, GR_MAX_TEXTURE_SIZE); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_max_texture_aspect_ratio(js_State *J) { fx_get_single(J, GR_MAX_TEXTURE_ASPECT_RATIO); }
+static void f_fxGetMaxTextureAspectRatio(js_State *J) { fx_get_single(J, GR_MAX_TEXTURE_ASPECT_RATIO); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_num_pending_buffer_swaps(js_State *J) { fx_get_single(J, GR_PENDING_BUFFERSWAPS); }
+static void f_fxGetNumPendingBufferSwaps(js_State *J) { fx_get_single(J, GR_PENDING_BUFFERSWAPS); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_revision_fb(js_State *J) { fx_get_single(J, GR_REVISION_FB); }
+static void f_fxGetRevisionFb(js_State *J) { fx_get_single(J, GR_REVISION_FB); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_revision_tmu(js_State *J) { fx_get_single(J, GR_REVISION_TMU); }
+static void f_fxGetRevisionTmu(js_State *J) { fx_get_single(J, GR_REVISION_TMU); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_zdepth_min_max(js_State *J) { fx_get_multiple(J, GR_ZDEPTH_MIN_MAX, 2); }
+static void f_fxGetZDepthMinMax(js_State *J) { fx_get_multiple(J, GR_ZDEPTH_MIN_MAX, 2); }
 /**
  * @brief grGet()
  * @param J VM state.
  */
-static void fx_get_wdepth_min_max(js_State *J) { fx_get_multiple(J, GR_WDEPTH_MIN_MAX, 2); }
+static void f_fxGetWDepthMinMax(js_State *J) { fx_get_multiple(J, GR_WDEPTH_MIN_MAX, 2); }
 
 #ifdef LFB_3DFX
 /**
@@ -811,13 +811,13 @@ static void fx_get_wdepth_min_max(js_State *J) { fx_get_multiple(J, GR_WDEPTH_MI
  *
  * @param J VM state.
  */
-static void fx_lfb_constant_alpha(js_State *J) { grLfbConstantAlpha(js_toint32(J, 1)); }
+static void f_fxLfbConstantAlpha(js_State *J) { grLfbConstantAlpha(js_toint32(J, 1)); }
 /**
  * @brief wrapper
  *
  * @param J VM state.
  */
-static void fx_lfb_constant_depth(js_State *J) { grLfbConstantDepth(js_toint32(J, 1)); }
+static void f_fxLfbConstantDepth(js_State *J) { grLfbConstantDepth(js_toint32(J, 1)); }
 #endif
 
 /***********************
@@ -834,93 +834,93 @@ void init_3dfx(js_State *J) {
     PROPDEF_N(J, WIDTH_3DFX, "FX_WIDTH");
     PROPDEF_N(J, HEIGHT_3DFX, "FX_HEIGHT");
 
-    FUNCDEF(J, fx_init, "fxInit", 0);
-    FUNCDEF(J, fx_shutdown, "fxShutdown", 0);
-    FUNCDEF(J, fx_splash, "fxSplash", 5);
-    FUNCDEF(J, fx_flush, "fxFlush", 0);
-    FUNCDEF(J, fx_reset_vertex_layout, "fxResetVertexLayout", 0);
-    FUNCDEF(J, fx_vertex_layout, "fxVertexLayout", 1);
-    FUNCDEF(J, fx_get_vertex_size, "fxGetVertexSize", 0);
-    FUNCDEF(J, fx_finish, "fxFinish", 0);
-    FUNCDEF(J, fx_buffer_swap, "fxBufferSwap", 1);
-    FUNCDEF(J, fx_buffer_clear, "fxBufferClear", 3);
-    FUNCDEF(J, fx_clip_window, "fxClipWindow", 4);
-    FUNCDEF(J, fx_draw_point, "fxDrawPoint", 1);
-    FUNCDEF(J, fx_draw_line, "fxDrawLine", 2);
-    FUNCDEF(J, fx_draw_triangle, "fxDrawTriangle", 3);
-    FUNCDEF(J, fx_constant_color_value, "fxConstantColorValue", 1);
-    FUNCDEF(J, fx_cull_mode, "fxCullMode", 1);
-    FUNCDEF(J, fx_alpha_blend_function, "fxAlphaBlendFunction", 4);
-    FUNCDEF(J, fx_alpha_combine, "fxAlphaCombine", 5);
-    FUNCDEF(J, fx_color_combine, "fxColorCombine", 5);
-    FUNCDEF(J, fx_color_mask, "fxColorMask", 2);
-    FUNCDEF(J, fx_depth_mask, "fxDepthMask", 1);
-    FUNCDEF(J, fx_draw_vertex_array, "fxDrawVertexArray", 2);
-    FUNCDEF(J, fx_enable, "fxEnable", 1);
-    FUNCDEF(J, fx_disable, "fxDisable", 1);
-    FUNCDEF(J, fx_disable_all_effects, "fxDisableAllEffects", 0);
-    FUNCDEF(J, fx_aa_draw_triangle, "fxAADrawTriangle", 6);
-    FUNCDEF(J, fx_dither_mode, "fxDitherMode", 1);
-    FUNCDEF(J, fx_alpha_controls_lighting, "fxAlphaControlsITRGBLighting", 1);
-    FUNCDEF(J, fx_gamma_correction_rgb, "fxGammaCorrectionRGB", 3);
-    FUNCDEF(J, fx_origin, "fxOrigin", 1);
-    FUNCDEF(J, fx_render_buffer, "fxRenderBuffer", 1);
-    FUNCDEF(J, fx_viewport, "fxViewport", 4);
+    NFUNCDEF(J, fxInit, 0);
+    NFUNCDEF(J, fxShutdown, 0);
+    NFUNCDEF(J, fxSplash, 5);
+    NFUNCDEF(J, fxFlush, 0);
+    NFUNCDEF(J, fxResetVertexLayout, 0);
+    NFUNCDEF(J, fxVertexLayout, 1);
+    NFUNCDEF(J, fxGetVertexSize, 0);
+    NFUNCDEF(J, fxFinish, 0);
+    NFUNCDEF(J, fxBufferSwap, 1);
+    NFUNCDEF(J, fxBufferClear, 3);
+    NFUNCDEF(J, fxClipWindow, 4);
+    NFUNCDEF(J, fxDrawPoint, 1);
+    NFUNCDEF(J, fxDrawLine, 2);
+    NFUNCDEF(J, fxDrawTriangle, 3);
+    NFUNCDEF(J, fxConstantColorValue, 1);
+    NFUNCDEF(J, fxCullMode, 1);
+    NFUNCDEF(J, fxAlphaBlendFunction, 4);
+    NFUNCDEF(J, fxAlphaCombine, 5);
+    NFUNCDEF(J, fxColorCombine, 5);
+    NFUNCDEF(J, fxColorMask, 2);
+    NFUNCDEF(J, fxDepthMask, 1);
+    NFUNCDEF(J, fxDrawVertexArray, 2);
+    NFUNCDEF(J, fxEnable, 1);
+    NFUNCDEF(J, fxDisable, 1);
+    NFUNCDEF(J, fxDisableAllEffects, 0);
+    NFUNCDEF(J, fxAADrawTriangle, 6);
+    NFUNCDEF(J, fxDitherMode, 1);
+    NFUNCDEF(J, fxAlphaControlsITRGBLighting, 1);
+    NFUNCDEF(J, fxGammaCorrectionRGB, 3);
+    NFUNCDEF(J, fxOrigin, 1);
+    NFUNCDEF(J, fxRenderBuffer, 1);
+    NFUNCDEF(J, fxViewport, 4);
 
-    FUNCDEF(J, fx_depth_buffer_mode, "fxDepthBufferMode", 1);
-    FUNCDEF(J, fx_depth_buffer_function, "fxDepthBufferFunction", 1);
-    FUNCDEF(J, fx_depth_bias_level, "fxDepthBiasLevel", 1);
-    FUNCDEF(J, fx_depth_range, "fxDepthRange", 2);
+    NFUNCDEF(J, fxDepthBufferMode, 1);
+    NFUNCDEF(J, fxDepthBufferFunction, 1);
+    NFUNCDEF(J, fxDepthBiasLevel, 1);
+    NFUNCDEF(J, fxDepthRange, 2);
 
-    FUNCDEF(J, fx_fog_mode, "fxFogMode", 1);
-    FUNCDEF(J, fx_fog_color_value, "fxFogColorValue", 1);
-    FUNCDEF(J, fx_fog_table_index_to_w, "fxFogTableIndexToW", 0);
-    FUNCDEF(J, fx_fog_table, "fxFogTable", 1);
-    FUNCDEF(J, fx_fog_generate_exp, "fxFogGenerateExp", 1);
-    FUNCDEF(J, fx_fog_generate_exp2, "fxFogGenerateExp2", 1);
-    FUNCDEF(J, fx_fog_generate_linear, "fxFogGenerateLinear", 2);
+    NFUNCDEF(J, fxFogMode, 1);
+    NFUNCDEF(J, fxFogColorValue, 1);
+    NFUNCDEF(J, fxFogTableIndexToW, 0);
+    NFUNCDEF(J, fxFogTable, 1);
+    NFUNCDEF(J, fxFogGenerateExp, 1);
+    NFUNCDEF(J, fxFogGenerateExp2, 1);
+    NFUNCDEF(J, fxFogGenerateLinear, 2);
 
-    FUNCDEF(J, fx_chromakey_mode, "fxChromakeyMode", 1);
-    FUNCDEF(J, fx_chromakey_value, "fxChromakeyValue", 1);
+    NFUNCDEF(J, fxChromakeyMode, 1);
+    NFUNCDEF(J, fxChromakeyValue, 1);
 
-    FUNCDEF(J, fx_alpha_test_mode, "fxAlphaTestFunction", 1);
-    FUNCDEF(J, fx_alpha_test_reference_value, "fxAlphaTestReferenceValue", 1);
+    NFUNCDEF(J, fxAlphaTestFunction, 1);
+    NFUNCDEF(J, fxAlphaTestReferenceValue, 1);
 
-    FUNCDEF(J, fx_tex_filter_mode, "fxTexFilterMode", 3);
-    FUNCDEF(J, fx_tex_clamp_mode, "fxTexClampMode", 3);
-    FUNCDEF(J, fx_tex_mip_map_mode, "fxTexMipMapMode", 3);
-    FUNCDEF(J, fx_tex_lod_bias_value, "fxTexLodBiasValue", 2);
-    FUNCDEF(J, fx_tex_combine, "fxTexCombine", 7);
-    FUNCDEF(J, fx_tex_detail_control, "fxTexDetailControl", 4);
-    FUNCDEF(J, fx_tex_ncc_table, "fxTexNCCTable", 1);
+    NFUNCDEF(J, fxTexFilterMode, 3);
+    NFUNCDEF(J, fxTexClampMode, 3);
+    NFUNCDEF(J, fxTexMipMapMode, 3);
+    NFUNCDEF(J, fxTexLodBiasValue, 2);
+    NFUNCDEF(J, fxTexCombine, 7);
+    NFUNCDEF(J, fxTexDetailControl, 4);
+    NFUNCDEF(J, fxTexNCCTable, 1);
 
-    FUNCDEF(J, fx_tex_calc_mem_required, "fxTexCalcMemRequired", 4);
-    FUNCDEF(J, fx_tex_min_address, "fxTexMinAddress", 1);
-    FUNCDEF(J, fx_tex_max_address, "fxTexMaxAddress", 1);
+    NFUNCDEF(J, fxTexCalcMemRequired, 4);
+    NFUNCDEF(J, fxTexMinAddress, 1);
+    NFUNCDEF(J, fxTexMaxAddress, 1);
 
     // GrGet() values
-    FUNCDEF(J, fx_get_zdepth_min_max, "fxGetZDepthMinMax", 0);
-    FUNCDEF(J, fx_get_wdepth_min_max, "fxGetWDepthMinMax", 0);
+    NFUNCDEF(J, fxGetZDepthMinMax, 0);
+    NFUNCDEF(J, fxGetWDepthMinMax, 0);
 
-    FUNCDEF(J, fx_get_bits_depth, "fxGetBitsDepth", 0);
-    FUNCDEF(J, fx_get_fog_table_entries, "fxGetFogTableEntries", 0);
-    FUNCDEF(J, fx_get_gamma_table_entries, "fxGetGammaTableEntries", 0);
-    FUNCDEF(J, fx_get_is_busy, "fxIsBusy", 0);
-    FUNCDEF(J, fx_get_memory_fb, "fxGetMemoryFb", 0);
-    FUNCDEF(J, fx_get_memory_tmu, "fxGetMemoryTMU", 0);
-    FUNCDEF(J, fx_get_memory_uma, "fxGetMemoryUma", 0);
-    FUNCDEF(J, fx_get_max_texture_size, "fxGetMaxTextureSize", 0);
-    FUNCDEF(J, fx_get_max_texture_aspect_ratio, "fxGetMaxTextureAspectRatio", 0);
-    FUNCDEF(J, fx_get_num_boards, "fxGetNumBoards", 0);
-    FUNCDEF(J, fx_get_num_fb, "fxGetNumFb", 0);
-    FUNCDEF(J, fx_get_num_tmu, "fxGetNumTmu", 0);
-    FUNCDEF(J, fx_get_num_pending_buffer_swaps, "fxGetNumPendingBufferSwaps", 0);
-    FUNCDEF(J, fx_get_revision_fb, "fxGetRevisionFb", 0);
-    FUNCDEF(J, fx_get_revision_tmu, "fxGetRevisionTmu", 0);
+    NFUNCDEF(J, fxGetBitsDepth, 0);
+    NFUNCDEF(J, fxGetFogTableEntries, 0);
+    NFUNCDEF(J, fxGetGammaTableEntries, 0);
+    NFUNCDEF(J, fxIsBusy, 0);
+    NFUNCDEF(J, fxGetMemoryFb, 0);
+    NFUNCDEF(J, fxGetMemoryTmu, 0);
+    NFUNCDEF(J, fxGetMemoryUma, 0);
+    NFUNCDEF(J, fxGetMaxTextureSize, 0);
+    NFUNCDEF(J, fxGetMaxTextureAspectRatio, 0);
+    NFUNCDEF(J, fxGetNumBoards, 0);
+    NFUNCDEF(J, fxGetNumFb, 0);
+    NFUNCDEF(J, fxGetNumTmu, 0);
+    NFUNCDEF(J, fxGetNumPendingBufferSwaps, 0);
+    NFUNCDEF(J, fxGetRevisionFb, 0);
+    NFUNCDEF(J, fxGetRevisionTmu, 0);
 
 #ifdef LFB_3DFX
-    FUNCDEF(J, fx_lfb_constant_alpha, "fxLfbConstantAlpha", 1);
-    FUNCDEF(J, fx_lfb_constant_depth, "fxLfbConstantDepth", 1);
+    NFUNCDEF(J, fxLfbConstantAlpha, 1);
+    NFUNCDEF(J, fxLfbConstantDepth, 1);
 #endif
 
     FxI32 num;
@@ -936,6 +936,6 @@ void init_3dfx(js_State *J) {
  */
 void shutdown_3dfx() {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
-    fx_shutdown();
+    f_fxShutdown();
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

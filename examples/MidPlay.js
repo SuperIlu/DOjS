@@ -34,7 +34,7 @@ var currentFile = null;
 */
 function Setup() {
 	MouseShowCursor(false);
-	dirFont = new Font("jsboot/fonts/cour16b.fnt");
+	dirFont = new Font(JSBOOTPATH + "fonts/cour16b.fnt");
 
 	PLAYBOX_HEIGHT = dirFont.height * 3 + 2 * MSG_BORDER;
 	MSGBOX_HEIGHT = dirFont.height + 2 * MSG_BORDER;

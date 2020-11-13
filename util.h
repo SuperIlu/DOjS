@@ -25,16 +25,12 @@ SOFTWARE.
 
 #include "DOjS.h"
 
-/*************
-** typedefs **
-*************/
-//! return values of ut_check_file()
-typedef enum { CF_YES, CF_NO, CF_ERROR } check_file_t;
-
 /***********************
 ** exported functions **
 ***********************/
-extern check_file_t ut_check_file(char *fname);
 extern bool ut_endsWith(const char *str, const char *suffix);
+extern const char *ut_getFilenameExt(const char *filename);
+extern bool ut_file_exists(const char *filename);
+extern bool ut_read_file(const char *fname, void **buf, size_t *size);
 
 #endif  // __UTIL_H__

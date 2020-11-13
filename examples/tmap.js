@@ -29,7 +29,7 @@ var fnt;
  * load font and read dir tree.
  */
 function setup() {
-	fnt = new Font("jsboot\\fonts\\pc6x8.fnt");
+	fnt = new Font(JSBOOTPATH + "fonts/pc6x8.fnt");
 	var cur = Stat('.');
 	tree = buildTree("c:", "");
 }

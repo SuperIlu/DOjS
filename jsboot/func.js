@@ -41,6 +41,21 @@ DEBUG = false;
 REMOTE_DEBUG = false;
 
 /**
+ * @property {string} ZIP_DELIM delimiter between ZIP filename and entry name.
+ */
+ZIP_DELIM = "=";
+
+/**
+ * @property {number} RAW_HDD_FLAG index for HDDs when using raw disk functions.
+ */
+RAW_HDD_FLAG = 0x80;
+
+/**
+ * @property {number} RAW_BLOCKSIZE size of sectors when reading/writing raw disks.
+ */
+RAW_BLOCKSIZE = 512;
+
+/**
  * print javascript debug output if DEBUG is true.
  * 
  * @param {string} str the message to print.
@@ -73,7 +88,38 @@ function Info(str) {
 }
 
 /**
- * import a module.
+ * try a specific filename which can ba a plain file or a ZIP-file entry. Throws an Exception if the file cant be read.
+ * 
+ * @param {string} name module name.
+ * @param {string} fname the file name to try.
+ * 
+ * @returns the imported module.
+ */
+function RequireFile(name, fname) {
+	var content;
+	if (fname.indexOf(ZIP_DELIM) != -1) {
+		var parts = fname.split(ZIP_DELIM);
+		var zname = parts[0];
+		var ename = parts[1];
+		Debug("Require(zip) " + zname + " -> " + ename);
+
+		content = ReadZIP(zname, ename);
+	} else {
+		content = Read(fname);
+	}
+	var exports = {};
+	Require._cache[name] = exports;
+	NamedFunction('exports', content, name)(exports);
+	return exports;
+}
+
+/**
+ * import a module. DOjS modules must put all exported symbols into an object called 'exports'.
+ * @example
+ * exports.myVar = 0;               // will be exported
+ * exports.myFunc = function() {};  // will also be exported
+ * var localVar;                    // will only be accessible in the module
+ * function localFunction() {};     // will also only be accessible in the module
  * @param {string} name module file name.
  * @returns the imported module.
  */
@@ -84,25 +130,26 @@ function Require(name) {
 		return Require._cache[name];
 	}
 
-	var names = [name, name + '.JS', 'JSBOOT/' + name, 'JSBOOT/' + name + '.JS'];
+	var names = [
+		name,
+		name + '.js',
+		'jsboot.zip=jsboot/' + name,
+		'jsboot.zip=jsboot/' + name + '.js',
+		'jsboot/' + name,
+		'jsboot/' + name + '.js'
+	];
 	Debug("Require(names) " + JSON.stringify(names));
 
 	for (var i = 0; i < names.length; i++) {
 		var n = names[i];
 		Debug("Require() Trying '" + n + "'");
-		var content;
 		try {
-			content = Read(n);
+			return RequireFile(name, n);
 		} catch (e) {
-			Debug("Require() " + n + " Not found");
+			Debug("RequireFile() " + n + " Not found" + e);
 			continue;
 		}
-		var exports = {};
-		Require._cache[name] = exports;
-		Function('exports', content)(exports);
-		return exports;
-	};
-
+	}
 
 	throw 'Could not load "' + name + '"';
 }
@@ -110,7 +157,7 @@ Require._cache = Object.create(null);
 
 /**
  * include a module. The exported functions are copied into global scope.
- * 
+ * @see {@link Require}
  * @param {string} name module file name.
  */
 function Include(name) {
@@ -130,6 +177,22 @@ Error.prototype.toString = function () {
 };
 
 /**
+ * prefix a filename with the ZIP file the started script came from. The filename is not modified if the script was not loaded from a ZIP file.
+ * 
+ * @param {string} fname file name.
+ * 
+ * @returns {string} a ZIP-filename if the running script was loaded from a ZIP file or the passed filename.
+ */
+function ZipPrefix(fname) {
+	if (ARGS[0].indexOf(ZIP_DELIM) != -1) {
+		var parts = ARGS[0].split(ZIP_DELIM);
+		return parts[0] + ZIP_DELIM + fname;
+	} else {
+		return fname;
+	}
+}
+
+/**
  * print startup info with screen details.
  */
 function StartupInfo() {
@@ -142,6 +205,7 @@ function StartupInfo() {
 	Info("Command line args: " + JSON.stringify(ARGS));
 	Info("SerialPorts: " + JSON.stringify(GetSerialPorts().map(function (e) { return "0x" + e.toString(16) })));
 	Info("ParallelPorts: " + JSON.stringify(GetParallelPorts().map(function (e) { return "0x" + e.toString(16) })));
+	Info("FDD: " + GetNumberOfFDD() + ", HDD: " + GetNumberOfHDD());
 
 	if (DEBUG) {
 		var funcs = [];
@@ -221,6 +285,85 @@ if (!String.prototype.endsWith) {
 		return this.substring(this_len - search.length, this_len) === search;
 	};
 }
+
+/**
+ * create stop watch for benchmarking
+ */
+function StopWatch() {
+	this.Reset();
+};
+/**
+ * start stopwatch.
+ */
+StopWatch.prototype.Start = function () {
+	this.start = MsecTime();
+	this.stop = null;
+};
+/**
+ * stop stopwatch.
+ */
+StopWatch.prototype.Stop = function () {
+	this.stop = MsecTime();
+	if (!this.start) {
+		this.Reset();
+		throw "StopWatch.Stop() called before StopWatch.Start()!"
+	}
+};
+/**
+ * reset stopwatch.
+ */
+StopWatch.prototype.Reset = function () {
+	this.start = null;
+	this.stop = null;
+};
+/**
+ * get runtime in ms.
+ * @returns {number} runtime in ms.
+ */
+StopWatch.prototype.ResultMs = function () {
+	if (!this.start || !this.stop) {
+		throw "start or end time missing!";
+	}
+	return this.stop - this.start;
+};
+/**
+* convert result to a readable string.
+* 
+* @param {string} [name] name of the measured value.
+*
+* @returns {string} a string describing the runtime.
+*/
+StopWatch.prototype.Result = function (name) {
+	var total = this.ResultMs();
+
+	var ret = "Runtime is ";
+	if (name) {
+		ret = "Runtime for '" + name + "' is ";
+	}
+
+
+	var msecs = Math.floor(total % 1000);
+	var secs = Math.floor((total / 1000) % 60);
+	var mins = Math.floor((total / 1000 / 60));
+
+	if (mins) {
+		ret += mins + "m ";
+	}
+	if (secs) {
+		ret += secs + "s ";
+	}
+	ret += msecs + "ms";
+
+	return ret;
+};
+/**
+ * print result as a readable string.
+ * 
+ * @param {string} [name] name of the measured value.
+ */
+StopWatch.prototype.Print = function (name) {
+	Println(this.Result(name));
+};
 
 /**
  * Write the given value to io-port 80h to be displayed by a POST card.

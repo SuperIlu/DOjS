@@ -28,7 +28,7 @@ SOFTWARE.
 /************
 ** defines **
 ************/
-#define JSINC_GFX BOOT_DIR "gfx.js"  //!< boot script for grx subsystem
+#define JSINC_GFX JSBOOT_DIR "gfx.js"  //!< boot script for grx subsystem
 
 /***********************
 ** exported functions **

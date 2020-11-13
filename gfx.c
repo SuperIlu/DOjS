@@ -709,7 +709,7 @@ static void f_DrawArray(js_State *J) {
     int len = arr_len < w * h ? arr_len : w * h;
     for (int i = 0; i < len; i++) {
         js_getindex(J, 1, i);
-        putpixel(DOjS.current_bm, x + (i % w), y + (i / h), js_toint32(J, -1));
+        putpixel(DOjS.current_bm, x + (i % w), y + (i / w), js_touint32(J, -1));
         js_pop(J, 1);
     }
 }
@@ -730,41 +730,41 @@ void init_gfx(js_State *J) {
     js_setglobal(J, "global");
 
     // define global functions
-    FUNCDEF(J, f_SetRenderBitmap, "SetRenderBitmap", 1);
-    FUNCDEF(J, f_GetScreenMode, "GetScreenMode", 0);
-    FUNCDEF(J, f_SizeX, "SizeX", 0);
-    FUNCDEF(J, f_SizeY, "SizeY", 0);
+    NFUNCDEF(J, SetRenderBitmap, 1);
+    NFUNCDEF(J, GetScreenMode, 0);
+    NFUNCDEF(J, SizeX, 0);
+    NFUNCDEF(J, SizeY, 0);
 
-    FUNCDEF(J, f_ClearScreen, "ClearScreen", 1);
-    FUNCDEF(J, f_TextXY, "TextXY", 5);
+    NFUNCDEF(J, ClearScreen, 1);
+    NFUNCDEF(J, TextXY, 5);
 
-    FUNCDEF(J, f_Plot, "Plot", 3);
-    FUNCDEF(J, f_Line, "Line", 5);
-    FUNCDEF(J, f_CustomLine, "CustomLine", 6);
-    FUNCDEF(J, f_Box, "Box", 5);
-    FUNCDEF(J, f_Circle, "Circle", 4);
-    FUNCDEF(J, f_CustomCircle, "CustomCircle", 5);
-    FUNCDEF(J, f_Ellipse, "Ellipse", 5);
-    FUNCDEF(J, f_CustomEllipse, "CustomEllipse", 6);
-    FUNCDEF(J, f_CircleArc, "CircleArc", 7);
-    FUNCDEF(J, f_CustomCircleArc, "CustomCircleArc", 8);
+    NFUNCDEF(J, Plot, 3);
+    NFUNCDEF(J, Line, 5);
+    NFUNCDEF(J, CustomLine, 6);
+    NFUNCDEF(J, Box, 5);
+    NFUNCDEF(J, Circle, 4);
+    NFUNCDEF(J, CustomCircle, 5);
+    NFUNCDEF(J, Ellipse, 5);
+    NFUNCDEF(J, CustomEllipse, 6);
+    NFUNCDEF(J, CircleArc, 7);
+    NFUNCDEF(J, CustomCircleArc, 8);
 
-    FUNCDEF(J, f_FilledBox, "FilledBox", 5);
-    FUNCDEF(J, f_FilledCircle, "FilledCircle", 4);
-    FUNCDEF(J, f_FilledEllipse, "FilledEllipse", 5);
-    FUNCDEF(J, f_FilledPolygon, "FilledPolygon", 2);
+    NFUNCDEF(J, FilledBox, 5);
+    NFUNCDEF(J, FilledCircle, 4);
+    NFUNCDEF(J, FilledEllipse, 5);
+    NFUNCDEF(J, FilledPolygon, 2);
 
-    FUNCDEF(J, f_FloodFill, "FloodFill", 4);
+    NFUNCDEF(J, FloodFill, 4);
 
-    FUNCDEF(J, f_SaveBmpImage, "SaveBmpImage", 1);
-    FUNCDEF(J, f_SavePcxImage, "SavePcxImage", 1);
-    FUNCDEF(J, f_SaveTgaImage, "SaveTgaImage", 1);
-    FUNCDEF(J, f_SavePngImage, "SavePngImage", 1);
+    NFUNCDEF(J, SaveBmpImage, 1);
+    NFUNCDEF(J, SavePcxImage, 1);
+    NFUNCDEF(J, SaveTgaImage, 1);
+    NFUNCDEF(J, SavePngImage, 1);
 
-    FUNCDEF(J, f_GetPixel, "GetPixel", 2);
-    FUNCDEF(J, f_DrawArray, "DrawArray", 5);
+    NFUNCDEF(J, GetPixel, 2);
+    NFUNCDEF(J, DrawArray, 5);
 
-    FUNCDEF(J, f_TransparencyEnabled, "TransparencyEnabled", 2);
+    NFUNCDEF(J, TransparencyEnabled, 2);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

@@ -340,18 +340,17 @@ void init_file(js_State *J) {
 
     js_newobject(J);
     {
-        PROTDEF(J, File_ReadByte, TAG_FILE, "ReadByte", 0);
-        PROTDEF(J, File_ReadBytes, TAG_FILE, "ReadBytes", 0);
-        PROTDEF(J, File_ReadLine, TAG_FILE, "ReadLine", 0);
-        PROTDEF(J, File_Close, TAG_FILE, "Close", 0);
-        PROTDEF(J, File_WriteByte, TAG_FILE, "WriteByte", 1);
-        PROTDEF(J, File_WriteBytes, TAG_FILE, "WriteBytes", 1);
-        PROTDEF(J, File_WriteLine, TAG_FILE, "WriteLine", 1);
-        PROTDEF(J, File_WriteString, TAG_FILE, "WriteString", 1);
-        PROTDEF(J, File_GetSize, TAG_FILE, "GetSize", 0);
+        NPROTDEF(J, File, ReadByte, 0);
+        NPROTDEF(J, File, ReadBytes, 0);
+        NPROTDEF(J, File, ReadLine, 0);
+        NPROTDEF(J, File, Close, 0);
+        NPROTDEF(J, File, WriteByte, 1);
+        NPROTDEF(J, File, WriteBytes, 1);
+        NPROTDEF(J, File, WriteLine, 1);
+        NPROTDEF(J, File, WriteString, 1);
+        NPROTDEF(J, File, GetSize, 0);
     }
-    js_newcconstructor(J, new_File, new_File, TAG_FILE, 2);
-    js_defglobal(J, TAG_FILE, JS_DONTENUM);
+    CTORDEF(J, new_File, TAG_FILE, 2);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

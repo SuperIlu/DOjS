@@ -26,6 +26,7 @@ SOFTWARE.
 #include <mujs.h>
 
 #include "DOjS.h"
+#include "zipfile.h"
 
 /*********************
 ** static functions **
@@ -48,12 +49,28 @@ static void Midi_Finalize(js_State *J, void *data) {
  */
 static void new_Midi(js_State *J) {
     NEW_OBJECT_PREP(J);
+    MIDI *midi;
     const char *fname = js_tostring(J, 1);
 
-    MIDI *midi = load_midi(fname);
-    if (!midi) {
-        js_error(J, "Can't load midi '%s'", fname);
-        return;
+    char *delim = strchr(fname, ZIP_DELIM);
+
+    if (!delim) {
+        midi = load_midi(fname);
+        if (!midi) {
+            js_error(J, "Can't load midi '%s'", fname);
+            return;
+        }
+    } else {
+        PACKFILE *pf = open_zipfile1(fname);
+        if (!pf) {
+            js_error(J, "Can't load midi '%s'", fname);
+            return;
+        }
+        midi = load_midi_pf(pf);  // PACKFILE is closed by this function!
+        if (!midi) {
+            js_error(J, "Can't load midi '%s'", allegro_error);
+            return;
+        }
     }
 
     js_currentfunction(J);
@@ -74,7 +91,7 @@ static void new_Midi(js_State *J) {
  *
  * @param J VM state.
  */
-static void mid_Play(js_State *J) {
+static void Midi_Play(js_State *J) {
     if (DOjS.midi_available) {
         MIDI *midi = js_touserdata(J, 0, TAG_MIDI);
         bool loop = js_toboolean(J, 1);
@@ -85,11 +102,11 @@ static void mid_Play(js_State *J) {
 
 /**
  * @brief check if midi is still playing.
- * midi.IsPlaying():boolean
+ * MidiIsPlaying():boolean
  *
  * @param J VM state.
  */
-static void mid_IsPlaying(js_State *J) {
+static void f_MidiIsPlaying(js_State *J) {
     if (DOjS.midi_available) {
         js_pushboolean(J, midi_pos >= 0);
     } else {
@@ -102,7 +119,7 @@ static void mid_IsPlaying(js_State *J) {
  *
  * @param J VM state.
  */
-static void mid_Stop(js_State *J) {
+static void f_MidiStop(js_State *J) {
     if (DOjS.midi_available) {
         stop_midi();
     }
@@ -113,7 +130,7 @@ static void mid_Stop(js_State *J) {
  *
  * @param J VM state.
  */
-static void mid_Pause(js_State *J) {
+static void f_MidiPause(js_State *J) {
     if (DOjS.midi_available) {
         midi_pause();
     }
@@ -124,7 +141,7 @@ static void mid_Pause(js_State *J) {
  *
  * @param J VM state.
  */
-static void mid_Resume(js_State *J) {
+static void f_MidiResume(js_State *J) {
     if (DOjS.midi_available) {
         midi_resume();
     }
@@ -135,7 +152,7 @@ static void mid_Resume(js_State *J) {
  *
  * @param J VM state.
  */
-static void mid_GetTime(js_State *J) {
+static void f_MidiGetTime(js_State *J) {
     if (DOjS.midi_available) {
         js_pushnumber(J, midi_time);
     } else {
@@ -148,7 +165,7 @@ static void mid_GetTime(js_State *J) {
  *
  * @param J VM state.
  */
-static void mid_GetPos(js_State *J) {
+static void f_MidiGetPos(js_State *J) {
     if (DOjS.midi_available) {
         js_pushnumber(J, midi_pos);
     } else {
@@ -161,7 +178,7 @@ static void mid_GetPos(js_State *J) {
  *
  * @param J VM state.
  */
-static void mid_Out(js_State *J) {
+static void f_MidiOut(js_State *J) {
     if (DOjS.midi_available) {
         if (!js_isarray(J, 1)) {
             JS_ENOARR(J);
@@ -197,18 +214,17 @@ void init_midi(js_State *J) {
 
     PROPDEF_B(J, DOjS.midi_available, "MIDI_AVAILABLE");
 
-    FUNCDEF(J, mid_IsPlaying, "MidiIsPlaying", 0);
-    FUNCDEF(J, mid_Stop, "MidiStop", 0);
-    FUNCDEF(J, mid_Pause, "MidiPause", 0);
-    FUNCDEF(J, mid_Resume, "MidiResume", 0);
-    FUNCDEF(J, mid_Out, "MidiOut", 1);
-    FUNCDEF(J, mid_GetTime, "MidiGetTime", 0);
-    FUNCDEF(J, mid_GetPos, "MidiGetPos", 0);
+    NFUNCDEF(J, MidiIsPlaying, 0);
+    NFUNCDEF(J, MidiStop, 0);
+    NFUNCDEF(J, MidiPause, 0);
+    NFUNCDEF(J, MidiResume, 0);
+    NFUNCDEF(J, MidiOut, 1);
+    NFUNCDEF(J, MidiGetTime, 0);
+    NFUNCDEF(J, MidiGetPos, 0);
 
     js_newobject(J);
-    { PROTDEF(J, mid_Play, TAG_MIDI, "Play", 1); }
-    js_newcconstructor(J, new_Midi, new_Midi, TAG_MIDI, 1);
-    js_defglobal(J, TAG_MIDI, JS_DONTENUM);
+    { NPROTDEF(J, Midi, Play, 1); }
+    CTORDEF(J, new_Midi, TAG_MIDI, 1);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

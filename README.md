@@ -46,6 +46,7 @@ The following hardware/functions are available:
 * LPT or parallel port access (bi-directional)
 * COM or serial port access
 * IPX and TCP/IP networking
+* ZIP file access
 
 ## A minimal script
 You can find the following example in `examples/exampl.js`:
@@ -155,7 +156,7 @@ Checkout DOjS from Github:
 git clone https://github.com/SuperIlu/DOjS.git
 ```
 
-Open the Makefile in a text editor and change the path to DJGPP according to your installation.
+Open the `Makefile` and `3dfx/texus/Makefile` in a text editor and change the path to DJGPP according to your installation.
 If you used Windows-Tools to check out DOjS from git you may need to fix the newlines of the shell scripts by using `make fixnewlines`.
 
 Now you are ready to compile DOjS with `make clean all`. This might take some time as the dependencies are quite a large.
@@ -168,6 +169,18 @@ In order to compile DOjS you need Glide3 includes and binaries. The ones include
 See the [changelog](/CHANGELOG.md) for the projects history.
 
 # Planed work
+* Error popup in the editor.
+* TCP/IP remote logging/debugging.
+* Add ZIP file functions (e.g. https://libzip.org/users/ or https://github.com/kuba--/zip).
+    * Implement 3df file loading from ZIP
+* Make FreeDOS package.
+* Replace PNG loading with http://alpng.sourceforge.net/ to reduce DOjS size
+* Implement HTTP client by using cURL or similar (https://www.watt-32.net/misc/)
+    * look into HTTPS
+* add/implement some more math functions
+    * https://mathjs.org/
+    * https://github.com/evanw/lightgl.js
+* Try to speed up `ReadBytes()` and `WriteBytes()` by not using JS arrays
 * Fix bugs!
 * Anything fun...
 
@@ -181,8 +194,9 @@ MuJS is released under **ISC license**. See *COPYING* in the MuJS folder for det
 ## Allegro
 Allegro 4 is released under the **Giftware license** (https://liballeg.org/license.html).
 
-## GRX
+## GRX fonts
 The GRX fonts are under **MIT and other licenses**. See copying.grx in `LICENSE` for details.
+The converted fonts from the Linux Font Project are in the public domain.
 
 ## IPX and dosbuffer sub-system
 This code is taken from the game [Cylindrix](https://www.allegro.cc/depot/Cylindrix) by Hotwarez LLC, Goldtree Enterprises.
@@ -227,6 +241,9 @@ The examples are licensed under a [Creative Commons Attribution-NonCommercial-Sh
 ## loadpng
 [loadpng](https://tjaden.strangesoft.net/loadpng/) is placed in the public domain.
 
+## zip code
+[zip](https://github.com/kuba--/zip) is licensed by UNLICENSE
+
 ## WATTCP
 WATTCP - TCP/IP library routines
 
@@ -268,6 +285,7 @@ Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
     -s             : No wave sound.
     -f             : No FM sound.
     -a             : Disable alpha (speeds up rendering).
+    -x             : Allow raw disk write (CAUTION!)
 ```
 
 ## Editor keys
@@ -303,6 +321,14 @@ Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
 
     The logfile can be truncated by pressing DEL in the log viewer.
 ```
+
+## Scripts and resources
+Scripts, as well as resources can either be stored in the file system or in ZIP files. To load data from a zip file the format is `<ZIP filename>=<ZIP entry name>` (e.g. `data.zip=mypic.bmp`). DOjS can be started with a script, a script in a ZIP file or no parameters. If the script was loaded from a ZIP file the running script can obtain resources from the same ZIP file by using `ZipPrefix()` to obtain paths refering to that ZIP. If the script was not started from a ZIP `ZipPrefix()` just passes through the file name (thus loading the file from HDD). If no arameters are supplied DOjS will first try to load `<name of the EXE>.ZIP=MAIN.JS` and then `JSBOOT.ZIP=MAIN.JS`.
+Examples:
+* `DOJS.EXE -r script.js` will start `script.js` from the HDD, `ZipPrefix("pic.bmp")` will yield `pic.bmp`.
+* `DOJS.EXE -r data.zip=script.js` will start `script.js` from the ZIP file `data.zip`, `ZipPrefix("pic.bmp")` will yield `data.zip=pic.bmp`.
+* `HURTZ.EXE` DOjS was renamed to `HURTZ.EXE`. It will start `MAIN.JS` from the ZIP file `HURTZ.ZIP`, `ZipPrefix("pic.bmp")` will yield `HURTZ.ZIP=pic.bmp`.
+* `DOJS.EXE` The script was added to `JSBOOT.ZIP`. DOjS will start `MAIN.JS` from the ZIP file `JSBOOT.ZIP`, `ZipPrefix("pic.bmp")` will yield `JSBOOT.ZIP=pic.bmp`.
 
 ## API documentation
 You can find the full API doc in the [doc/html/](http://htmlpreview.github.io/?https://github.com/SuperIlu/DOjS/blob/master/doc/html/index.html) directory.

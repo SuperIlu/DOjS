@@ -34,6 +34,8 @@ SOFTWARE.
 #include "dialog.h"
 #include "edi_render.h"
 #include "edit.h"
+#include "zipfile.h"
+#include "util.h"
 
 /************
 ** defines **
@@ -309,57 +311,17 @@ bool dia_show_confirm(edi_t* edi, char* txt) {
 void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable, char* ctx) {
     edi->last_top = NULL;
 
-    char buff[1024];
-    FILE* file;
     char* file_data;
-    int tell_size, read_size;
+    size_t size;
+    if (!read_zipfile1(fname, (void**)&file_data, &size)) {
+        char buff[1024];
 
-    file = fopen(fname, "rb");
-    if (!file) {
-        snprintf(buff, sizeof(buff), "cannot open file '%s': %s", fname, strerror(errno));
-        dia_show_message(edi, buff);
-        return;
+        if (!ut_read_file(fname, (void**)&file_data, &size)) {
+            snprintf(buff, sizeof(buff), "cannot open file '%s': %s", fname, strerror(errno));
+            dia_show_message(edi, buff);
+            return;
+        }
     }
-
-    if (fseek(file, 0, SEEK_END) < 0) {
-        fclose(file);
-        snprintf(buff, sizeof(buff), "cannot seek in file '%s': %s", fname, strerror(errno));
-        dia_show_message(edi, buff);
-        return;
-    }
-
-    tell_size = ftell(file);
-    if (tell_size < 0) {
-        fclose(file);
-        snprintf(buff, sizeof(buff), "cannot tell in file '%s': %s", fname, strerror(errno));
-        dia_show_message(edi, buff);
-        return;
-    }
-
-    if (fseek(file, 0, SEEK_SET) < 0) {
-        fclose(file);
-        snprintf(buff, sizeof(buff), "cannot seek in file '%s': %s", fname, strerror(errno));
-        dia_show_message(edi, buff);
-        return;
-    }
-
-    file_data = malloc(tell_size + 1);
-    if (!file_data) {
-        fclose(file);
-        dia_show_message(edi, "out of memory");
-        return;
-    }
-
-    read_size = fread(file_data, 1, tell_size, file);
-    if (read_size != tell_size) {
-        free(file_data);
-        fclose(file);
-        snprintf(buff, sizeof(buff), "cannot read data from file '%s': %s", fname, strerror(errno));
-        dia_show_message(edi, buff);
-        return;
-    }
-    file_data[tell_size] = 0;
-    fclose(file);
 
     // check if pos is in range for file
     if (pos) {
@@ -367,7 +329,7 @@ void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable, char* ctx)
         if (ctx) {
             int ctx_len = strlen(ctx);
             int find_pos = 0;
-            while (find_pos + 5 + ctx_len < tell_size) {
+            while (find_pos + 5 + ctx_len < size) {
                 if (file_data[find_pos + 0] == '\n' && file_data[find_pos + 1] == '#' && file_data[find_pos + 2] == '#' && file_data[find_pos + 3] == '#' &&
                     file_data[find_pos + 4] == ' ' && memcmp(ctx, &file_data[find_pos + 5], ctx_len) == 0) {
                     *pos = find_pos;
@@ -377,7 +339,7 @@ void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable, char* ctx)
             }
         }
 
-        if (*pos > tell_size) {
+        if (*pos > size) {
             *pos = 0;
         }
     }
@@ -385,7 +347,7 @@ void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable, char* ctx)
     bool del = dia_show_text(edi, file_data, pos);
     free(file_data);
     if (deletable && del) {
-        file = fopen(fname, "w");
+        FILE* file = fopen(fname, "w");
         fflush(file);
         fclose(file);
     }

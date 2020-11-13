@@ -20,35 +20,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "util.h"
+
 #include <errno.h>
 #include <string.h>
-
-#include "util.h"
 
 /***********************
 ** exported functions **
 ***********************/
-/**
- * @brief check if the file exists.
- *
- * @param fname file name.
- *
- * @return check_file_t one of the enums.
- */
-check_file_t ut_check_file(char *fname) {
-    FILE *f = fopen(fname, "r");
-    if (f) {
-        fclose(f);
-        return CF_YES;
-    } else {
-        if (errno == ENOENT) {
-            return CF_NO;
-        } else {
-            return CF_ERROR;
-        }
-    }
-}
-
 /**
  * @brief check if string ends with suffix.
  *
@@ -64,4 +43,97 @@ bool ut_endsWith(const char *str, const char *suffix) {
     size_t lensuffix = strlen(suffix);
     if (lensuffix > lenstr) return false;
     return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
+}
+
+/**
+ * @brief extract the file extension.
+ *
+ * @param filename a filename.
+ *
+ * @return everything after the last "." or an empty string if the was no dot.
+ */
+const char *ut_getFilenameExt(const char *filename) {
+    const char *dot = strrchr(filename, '.');
+    if (!dot || dot == filename) return "";
+    return dot + 1;
+}
+
+/**
+ * @brief check if a file exists for reading.
+ *
+ * @param filename the name of the file.
+ * @return true if the file exists and can be opened for reading, else false.
+ */
+bool ut_file_exists(const char *filename) {
+    FILE *f = fopen(filename, "r");
+    if (f) {
+        fclose(f);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * @brief read a file into memory. The read file is always null terminated, but 'size' always represents the original file size.
+ *
+ * @param fname a filename.
+ * @param buf pointer to the read data. must be freed by caller.
+ * @param size the real file size (without terminating null byte)
+ *
+ * @return true if the file could be read, buf and size will return valid values
+ * @return false if an error occured, buf and size will be 0.
+ */
+bool ut_read_file(const char *fname, void **buf, size_t *size) {
+    FILE *f;
+    char *s;
+    int n, t;
+
+    *buf = NULL;
+    *size = 0;
+
+    f = fopen(fname, "rb");
+    if (!f) {
+        DEBUGF("Can't open file '%s': %s\n", fname, strerror(errno));
+        return false;
+    }
+
+    if (fseek(f, 0, SEEK_END) < 0) {
+        fclose(f);
+        DEBUGF("Can't seek in file '%s': %s\n", fname, strerror(errno));
+        return false;
+    }
+
+    n = ftell(f);
+    if (n < 0) {
+        fclose(f);
+        DEBUGF("Can't tell in file '%s': %s\n", fname, strerror(errno));
+        return false;
+    }
+
+    if (fseek(f, 0, SEEK_SET) < 0) {
+        fclose(f);
+        DEBUGF("Can't seek in file '%s': %s\n", fname, strerror(errno));
+        return false;
+    }
+
+    s = malloc(n + 1);
+    if (!s) {
+        fclose(f);
+        return false;
+    }
+
+    t = fread(s, 1, n, f);
+    if (t != n) {
+        free(s);
+        fclose(f);
+        DEBUGF("Can't read data from file '%s': %s\n", fname, strerror(errno));
+        return false;
+    }
+    s[n] = 0;
+    fclose(f);
+
+    *buf = s;
+    *size = n;
+    return true;
 }

@@ -28,8 +28,8 @@ SOFTWARE.
 /************
 ** defines **
 ************/
-#define JSINC_FILE BOOT_DIR "file.js"  //!< boot script for file subsystem
-#define TAG_FILE "File"                //!< class name for File()
+#define JSINC_FILE JSBOOT_DIR "file.js"  //!< boot script for file subsystem
+#define TAG_FILE "File"                  //!< class name for File()
 
 /***********************
 ** exported functions **

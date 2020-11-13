@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#include "font.h"
+
 #include <allegro.h>
 #include <mujs.h>
 #include <stdio.h>
@@ -28,7 +30,7 @@ SOFTWARE.
 
 #include "DOjS.h"
 #include "color.h"
-#include "font.h"
+#include "zipfile.h"
 
 /*********************
 ** static functions **
@@ -58,10 +60,25 @@ static void new_Font(js_State *J) {
     if (js_isdefined(J, 1)) {
         fname = js_tostring(J, 1);
 
-        f = load_font((char *)fname, NULL, NULL);
-        if (!f) {
-            js_error(J, "Can't load font '%s'", allegro_error);
-            return;
+        char *delim = strchr(fname, ZIP_DELIM);
+
+        if (!delim) {
+            f = load_font((char *)fname, NULL, NULL);
+            if (!f) {
+                js_error(J, "Can't load font '%s'", allegro_error);
+                return;
+            }
+        } else {
+            PACKFILE *pf = open_zipfile1(fname);
+            if (!pf) {
+                js_error(J, "Can't load font '%s'", fname);
+                return;
+            }
+            f = load_grx_font_pf(pf, NULL, NULL);  // PACKFILE is closed by this function!
+            if (!f) {
+                js_error(J, "Can't load font '%s'", allegro_error);
+                return;
+            }
         }
     } else {
         fname = "<<INTERNAL>>";
@@ -175,14 +192,13 @@ void init_font(js_State *J) {
 
     js_newobject(J);
     {
-        PROTDEF(J, Font_DrawStringLeft, TAG_FONT, "DrawStringLeft", 5);
-        PROTDEF(J, Font_DrawStringRight, TAG_FONT, "DrawStringRight", 5);
-        PROTDEF(J, Font_DrawStringCenter, TAG_FONT, "DrawStringCenter", 5);
-        PROTDEF(J, Font_StringWidth, TAG_FONT, "StringWidth", 1);
-        PROTDEF(J, Font_StringHeight, TAG_FONT, "StringHeight", 1);
+        NPROTDEF(J, Font, DrawStringLeft, 5);
+        NPROTDEF(J, Font, DrawStringRight, 5);
+        NPROTDEF(J, Font, DrawStringCenter, 5);
+        NPROTDEF(J, Font, StringWidth, 1);
+        NPROTDEF(J, Font, StringHeight, 1);
     }
-    js_newcconstructor(J, new_Font, new_Font, TAG_FONT, 1);
-    js_defglobal(J, TAG_FONT, JS_DONTENUM);
+    CTORDEF(J, new_Font, TAG_FONT, 1);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

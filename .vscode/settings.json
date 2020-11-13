@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "Makefile.unix": "makefile",
+        "DJGPP.MAK": "makefile",
+        "makefile.dojs": "makefile",
+        "Makefile.dojs": "makefile",
+        "makefile.dj": "makefile",
         "dojs.h": "c",
         "edit.h": "c",
         "cstdlib": "c",
@@ -13,10 +17,22 @@
         "conio.h": "c",
         "stddef.h": "c",
         "allegro.h": "c",
-        "keys.h": "c"
+        "keys.h": "c",
+        "fixed.h": "c",
+        "dirent.h": "c",
+        "math.h": "c",
+        "mujs.h": "c",
+        "glide.h": "c",
+        "3dfx.h": "c",
+        "*.tcc": "c",
+        "aintern.h": "c",
+        "base.h": "c",
+        "array": "c",
+        "utility": "c",
+        "sstream": "c"
     },
     "editor.formatOnSave": true,
     "editor.insertSpaces": false,
-    "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, ColumnLimit: 180, IndentWidth: 4 }",
+    "C_Cpp.clang_format_style": "{ BasedOnStyle: Google, ColumnLimit: 180, IndentWidth: 4, SortIncludes: false }",
     "javascript.suggest.autoImports": false
 }

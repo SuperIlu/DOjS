@@ -38,7 +38,7 @@ function fxInfo() {
 	Println("fxGetFogTableEntries=" + fxGetFogTableEntries());
 	Println("fxGetGammaTableEntries=" + fxGetGammaTableEntries());
 	Println("fxGetMemoryFb=" + fxGetMemoryFb());
-	Println("fxGetMemoryTMU=" + fxGetMemoryTMU());
+	Println("fxGetMemoryTmu=" + fxGetMemoryTmu());
 	Println("fxGetMemoryUma=" + fxGetMemoryUma());
 	Println("fxGetMaxTextureSize=" + fxGetMaxTextureSize());
 	Println("fxGetMaxTextureAspectRatio=" + fxGetMaxTextureAspectRatio());

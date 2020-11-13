@@ -572,28 +572,27 @@ void init_socket(js_State *J) {
 
     js_newobject(J);
     {
-        PROTDEF(J, Socket_Close, TAG_SOCKET, "Close", 0);
-        PROTDEF(J, Socket_Mode, TAG_SOCKET, "Mode", 0);
-        PROTDEF(J, Socket_WaitFlush, TAG_SOCKET, "WaitFlush", 0);
-        PROTDEF(J, Socket_Flush, TAG_SOCKET, "Flush", 0);
-        PROTDEF(J, Socket_NoFlush, TAG_SOCKET, "NoFlush", 0);
-        PROTDEF(J, Socket_FlushNext, TAG_SOCKET, "FlushNext", 0);
-        PROTDEF(J, Socket_DataReady, TAG_SOCKET, "DataReady", 0);
-        PROTDEF(J, Socket_Established, TAG_SOCKET, "Established", 0);
-        PROTDEF(J, Socket_ReadByte, TAG_SOCKET, "ReadByte", 0);
-        PROTDEF(J, Socket_ReadBytes, TAG_SOCKET, "ReadByte", 0);
-        PROTDEF(J, Socket_ReadLine, TAG_SOCKET, "ReadLine", 0);
-        PROTDEF(J, Socket_GetLocalPort, TAG_SOCKET, "GetLocalPort", 0);
-        PROTDEF(J, Socket_GetRemotePort, TAG_SOCKET, "GetRemotePort", 0);
-        PROTDEF(J, Socket_GetRemoteHost, TAG_SOCKET, "GetRemoteHost", 0);
-        PROTDEF(J, Socket_WriteByte, TAG_SOCKET, "WriteByte", 1);
-        PROTDEF(J, Socket_WriteBytes, TAG_SOCKET, "WriteBytes", 1);
-        PROTDEF(J, Socket_WaitInput, TAG_SOCKET, "WaitInput", 1);
-        PROTDEF(J, Socket_ReadString, TAG_SOCKET, "ReadString", 1);
-        PROTDEF(J, Socket_WriteString, TAG_SOCKET, "WriteString", 1);
+        NPROTDEF(J, Socket, Close, 0);
+        NPROTDEF(J, Socket, Mode, 0);
+        NPROTDEF(J, Socket, WaitFlush, 0);
+        NPROTDEF(J, Socket, Flush, 0);
+        NPROTDEF(J, Socket, NoFlush, 0);
+        NPROTDEF(J, Socket, FlushNext, 0);
+        NPROTDEF(J, Socket, DataReady, 0);
+        NPROTDEF(J, Socket, Established, 0);
+        NPROTDEF(J, Socket, ReadByte, 0);
+        NPROTDEF(J, Socket, ReadBytes, 0);
+        NPROTDEF(J, Socket, ReadLine, 0);
+        NPROTDEF(J, Socket, GetLocalPort, 0);
+        NPROTDEF(J, Socket, GetRemotePort, 0);
+        NPROTDEF(J, Socket, GetRemoteHost, 0);
+        NPROTDEF(J, Socket, WriteByte, 1);
+        NPROTDEF(J, Socket, WriteBytes, 1);
+        NPROTDEF(J, Socket, WaitInput, 1);
+        NPROTDEF(J, Socket, ReadString, 1);
+        NPROTDEF(J, Socket, WriteString, 1);
     }
-    js_newcconstructor(J, new_Socket, new_Socket, TAG_SOCKET, 3);
-    js_defglobal(J, TAG_SOCKET, JS_DONTENUM);
+    CTORDEF(J, new_Socket, TAG_SOCKET, 3);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

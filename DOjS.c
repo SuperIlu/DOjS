@@ -36,8 +36,6 @@ SOFTWARE.
 #include "bitmap.h"
 #include "color.h"
 #include "comport.h"
-#include "watt.h"
-#include "socket.h"
 #include "edit.h"
 #include "file.h"
 #include "font.h"
@@ -46,11 +44,17 @@ SOFTWARE.
 #include "ipx.h"
 #include "joystick.h"
 #include "midiplay.h"
+#include "socket.h"
 #include "sound.h"
 #include "util.h"
+#include "watt.h"
 #include "zbuffer.h"
+#include "zip.h"
+#include "zipfile.h"
+#include "lowlevel.h"
 
-#define TICK_DELAY 10
+#define TICK_DELAY 10  //!< system tick handler interval in ms
+#define AUTOSTART_FILE "=MAIN.JS"
 
 /**************
 ** Variables **
@@ -85,6 +89,7 @@ static void usage() {
     fputs("    -s             : No wave sound.\n", stderr);
     fputs("    -f             : No FM sound.\n", stderr);
     fputs("    -a             : Disable alpha (speeds up rendering).\n", stderr);
+    fputs("    -x             : Allow raw disk write (CAUTION!)\n", stderr);
     fputs("\n", stderr);
     fputs("This is DOjS " DOSJS_VERSION_STR "\n", stderr);
     fputs("(c) 2019-2020 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
@@ -152,11 +157,11 @@ static bool callInput(js_State *J) {
 
     if (keypressed()) {
         key = readkey();
+        ret = ((key >> 8) == DOjS.exit_key);
     } else {
         key = -1;
+        ret = FALSE;
     }
-
-    ret = ((key >> 8) == DOjS.exit_key);
 
     // do not call JS if nothing changed
     if (key == -1 && last_mouse_x == mouse_x && last_mouse_y == mouse_y && last_mouse_b == mouse_b) {
@@ -225,6 +230,153 @@ static unsigned long my_blender(unsigned long src, unsigned long dest, unsigned 
 }
 
 /**
+ * @brief load and parse a javascript file from ZIP.
+ *
+ * @param J VM state.
+ * @param fname fname, ZIP-files using ZIP_DELIM.
+ */
+static void dojs_loadfile_zip(js_State *J, const char *fname) {
+    char *s, *p;
+    size_t n;
+
+    if (!read_zipfile1(fname, (void **)&s, &n)) {
+        js_error(J, "cannot open file '%s'", fname);
+        return;
+    }
+
+    if (js_try(J)) {
+        free(s);
+        js_throw(J);
+    }
+
+    /* skip first line if it starts with "#!" */
+    p = s;
+    if (p[0] == '#' && p[1] == '!') {
+        p += 2;
+        while (*p && *p != '\n') ++p;
+    }
+
+    DEBUGF("Parsing ZIP entry '%s'\n", fname);
+
+    js_loadstring(J, fname, p);
+
+    free(s);
+    js_endtry(J);
+}
+
+/**
+ * @brief load and parse a file from filesystem or ZIP.
+ *
+ * @param J VM state.
+ * @param fname filename, ZIP-files using ZIP_DELIM.
+ *
+ * @return int TRUE if successfull, FALSE if not.
+ */
+static int dojs_do_file(js_State *J, const char *fname) {
+    char *delim = strchr(fname, ZIP_DELIM);
+    if (!delim) {
+        DEBUGF("Parsing plain file '%s'\n", fname);
+        return js_dofile(J, fname);
+    } else {
+        if (js_try(J)) {
+            js_report(J, js_trystring(J, -1, "Error"));
+            js_pop(J, 1);
+            return 1;
+        }
+        dojs_loadfile_zip(J, fname);
+        js_pushundefined(J);
+        js_call(J, 0);
+        js_pop(J, 1);
+        js_endtry(J);
+        return 0;
+    }
+}
+
+/**
+ * @brief load all system include JS files either from ZIP (if found) or from file system.
+ *
+ * @param J VM state.
+ */
+static void dojs_load_jsboot(js_State *J) {
+    if (ut_file_exists(JSBOOT_ZIP)) {
+        DEBUG("JSBOOT.ZIP found, using archive\n");
+        PROPDEF_S(J, JSBOOT_ZIP ZIP_DELIM_STR JSBOOT_DIR, JSBOOT_VAR);
+        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_FUNC);
+        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_COLOR);
+        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_FILE);
+        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_IPX);
+        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_A3D);
+        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_3DFX);
+        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_SOCKET);
+    } else {
+        DEBUG("JSBOOT.ZIP NOT found, using plain files\n");
+        PROPDEF_S(J, JSBOOT_DIR, JSBOOT_VAR);
+        dojs_do_file(J, JSINC_FUNC);
+        dojs_do_file(J, JSINC_COLOR);
+        dojs_do_file(J, JSINC_FILE);
+        dojs_do_file(J, JSINC_IPX);
+        dojs_do_file(J, JSINC_A3D);
+        dojs_do_file(J, JSINC_3DFX);
+        dojs_do_file(J, JSINC_SOCKET);
+    }
+}
+
+#ifdef MEMDEBUG
+/**
+ * @brief debugging version of js_alloc()
+ *
+ * @param actx context (unused).
+ * @param ptr pointer for remalloc()/free()
+ * @param size realloc()/malloc() size, 0 for free().
+ *
+ * @return void* (re)allocated memory
+ */
+static void *dojs_alloc(void *actx, void *ptr, int size) {
+    void *ret = NULL;
+    if (size == 0) {
+        free(ptr);
+        ret = NULL;
+        DEBUGF("DBG FREE(0x%p, %d) := 0x%p\n", ptr, size, ret);
+    } else if (!ptr) {
+        DOjS.num_allocs++;
+        ret = malloc((size_t)size);
+        DEBUGF("DBG MALL(0x%p, %d) := 0x%p\n", ptr, size, ret);
+        // if (!ret) {
+        //     LOGF("MALLOC failed");
+        //     exit(1);
+        // }
+    } else {
+        DOjS.num_allocs++;
+        ret = realloc(ptr, (size_t)size);
+        DEBUGF("DBG   RE(0x%p, %d) := 0x%p\n", ptr, size, ret);
+        // if (!ret) {
+        //     LOGF("REALLOC failed");
+        //     exit(1);
+        // }
+    }
+    return ret;
+}
+#else
+/**
+ * @brief debugging version of js_alloc()
+ *
+ * @param actx context (unused).
+ * @param ptr pointer for remalloc()/free()
+ * @param size realloc()/malloc() size, 0 for free().
+ *
+ * @return void* (re)allocated memory
+ */
+static void *dojs_alloc(void *actx, void *ptr, int size) {
+    if (size == 0) {
+        free(ptr);
+        return NULL;
+    }
+    DOjS.num_allocs++;
+    return realloc(ptr, (size_t)size);
+}
+#endif
+
+/**
  * @brief run the given script.
  *
  * @param argc number of parameters.
@@ -242,7 +394,8 @@ static void run_script(int argc, char **argv, int args) {
 #endif
 
     // create VM
-    J = js_newstate(NULL, NULL, 0);
+    DOjS.num_allocs = 0;
+    J = js_newstate(dojs_alloc, NULL, 0);
     js_atpanic(J, Panic);
     js_setreport(J, Report);
 
@@ -278,6 +431,7 @@ static void run_script(int argc, char **argv, int args) {
     init_midi(J);
     init_ipx(J);
     init_funcs(J, argc, argv, args);  // must be called after initalizing the booleans above!
+    init_lowlevel(J);
     init_gfx(J);
     init_color(J);
     init_bitmap(J);
@@ -292,6 +446,7 @@ static void run_script(int argc, char **argv, int args) {
     init_comport(J);
     init_watt(J);
     init_socket(J);
+    init_zipfile(J);
 
     // create canvas
     bool screenSuccess = true;
@@ -328,18 +483,14 @@ static void run_script(int argc, char **argv, int args) {
         DOjS.transparency_available = !DOjS.params.no_alpha;
         update_transparency();
 
+        DEBUGF("GFX_Capabilities=%08X\n", gfx_capabilities);
+
         // do some more init from JS
-        js_dofile(J, JSINC_FUNC);
-        js_dofile(J, JSINC_COLOR);
-        js_dofile(J, JSINC_FILE);
-        js_dofile(J, JSINC_IPX);
-        js_dofile(J, JSINC_A3D);
-        js_dofile(J, JSINC_3DFX);
-        js_dofile(J, JSINC_SOCKET);
+        dojs_load_jsboot(J);
 
         // load main file
         DOjS.lastError = NULL;
-        if (js_dofile(J, DOjS.params.script) == 0) {
+        if (dojs_do_file(J, DOjS.params.script) == 0) {
             // call setup()
             DOjS.keep_running = true;
             DOjS.wanted_frame_rate = 30;
@@ -347,6 +498,14 @@ static void run_script(int argc, char **argv, int args) {
                 // call loop() until someone calls Stop()
                 while (DOjS.keep_running) {
                     long start = DOjS.sys_ticks;
+                    if (DOjS.num_allocs > 1000) {
+#ifdef MEMDEBUG
+                        js_gc(J, 1);
+#else
+                        js_gc(J, 0);
+#endif
+                        DOjS.num_allocs = 0;
+                    }
                     tick_socket();
                     if (!callGlobal(J, CB_LOOP)) {
                         if (!DOjS.lastError) {
@@ -394,6 +553,8 @@ static void run_script(int argc, char **argv, int args) {
     shutdown_ipx();
     shutdown_3dfx();
     shutdown_comport();
+    js_gc(J, 0);
+    js_freestate(J);
     fclose(DOjS.logfile);
     allegro_exit();
     textmode(C80);
@@ -435,10 +596,11 @@ int main(int argc, char **argv) {
     DOjS.params.no_alpha = false;
     DOjS.params.width = 640;
     DOjS.params.bpp = 32;
+    DOjS.params.raw_write = false;
     int opt;
 
     // check parameters
-    while ((opt = getopt(argc, argv, "lrsfahw:b:")) != -1) {
+    while ((opt = getopt(argc, argv, "xlrsfahw:b:")) != -1) {
         switch (opt) {
             case 'w':
                 DOjS.params.width = atoi(optarg);
@@ -461,6 +623,9 @@ int main(int argc, char **argv) {
             case 'a':
                 DOjS.params.no_alpha = true;
                 break;
+            case 'x':
+                DOjS.params.raw_write = true;
+                break;
             case 'h':
             default: /* '?' */
                 usage();
@@ -469,21 +634,63 @@ int main(int argc, char **argv) {
     }
 
     if (optind >= argc) {
-        fprintf(stderr, "Script name missing.\n");
-        usage();
-        exit(EXIT_FAILURE);
+        // no script name supplied, try autostart with xxx.EXE->xxx.ZIP and JSBOOT.ZIP
+        int autostart_len = strlen(argv[0]);
+        char *autostart_zip = malloc(autostart_len + 1);
+        if (!autostart_zip) {
+            fprintf(stderr, "Out of memory.\n\n");
+            exit(EXIT_FAILURE);
+        }
+        strcpy(autostart_zip, argv[0]);
+        autostart_zip[autostart_len - 3] = 'Z';
+        autostart_zip[autostart_len - 2] = 'I';
+        autostart_zip[autostart_len - 1] = 'P';
+        autostart_zip[autostart_len] = 0;
+        // try autostart
+        char *autostart_script = malloc(autostart_len + 1 + strlen(AUTOSTART_FILE));
+        if (!autostart_script) {
+            fprintf(stderr, "Out of memory.\n\n");
+            exit(EXIT_FAILURE);
+        }
+        strcpy(autostart_script, autostart_zip);
+        strcat(autostart_script, AUTOSTART_FILE);
+        free(autostart_zip);
+        if (check_zipfile1(autostart_script)) {
+            // we found a ZIP file with the name of the EXE and it has a MAIN.JS
+            DOjS.params.script = autostart_script;
+            DOjS.params.run = true;
+        } else if (check_zipfile1(JSBOOT_ZIP AUTOSTART_FILE)) {
+            // we found MAIN.JS inside JSBOOT.ZIP
+            DOjS.params.script = JSBOOT_ZIP AUTOSTART_FILE;
+            DOjS.params.run = true;
+        }
     } else {
+        // script is normal command line parameters
         DOjS.params.script = argv[optind];
     }
 
-    if (DOjS.params.width != 640 && DOjS.params.width != 320) {
-        fprintf(stderr, "Screen width must be 640 or 320 pixel, not %d.\n", DOjS.params.width);
+    // check if the above yielded a script name and if the combination is valid
+    if (!DOjS.params.script) {
+        fprintf(stderr, "Script name missing.\n\n");
+        usage();
+        exit(EXIT_FAILURE);
+    }
+    if (!DOjS.params.run && strchr(DOjS.params.script, ZIP_DELIM)) {
+        fprintf(stderr, "ZIP-Scripts are only supported with option '-r'.\n\n");
         usage();
         exit(EXIT_FAILURE);
     }
 
+    // check screen size parameters
+    if (DOjS.params.width != 640 && DOjS.params.width != 320) {
+        fprintf(stderr, "Screen width must be 640 or 320 pixel, not %d.\n\n", DOjS.params.width);
+        usage();
+        exit(EXIT_FAILURE);
+    }
+
+    // check bpp parameters
     if (DOjS.params.bpp != 8 && DOjS.params.bpp != 16 && DOjS.params.bpp != 24 && DOjS.params.bpp != 32) {
-        fprintf(stderr, "Bits per pixel must be 8, 16, 24 or 32 pixel, not %d.\n", DOjS.params.bpp);
+        fprintf(stderr, "Bits per pixel must be 8, 16, 24 or 32 pixel, not %d.\n\n", DOjS.params.bpp);
         usage();
         exit(EXIT_FAILURE);
     }

@@ -1,3 +1,22 @@
+# Version 1.3.0 (The ZIPpy serving)  / Nov 13, 2020
+* Added ZIP file access through `Zip()` class
+* Added `StringToBytes()` and `BytesToString()`
+* Added file name to stack trace for files loaded by `Include()` and `Require()`
+* Added loading of images, fonts, samples, midi files and scripts from ZIP files
+* `JSBOOT/` can now be replaced by `JSBOOT.ZIP`
+* Added autostart feature for ZIP files
+* Added more fonts from Linux Font Project
+* Fixed crash in context help
+* Added `ReadZIP()`, `Rename()`, `MakeDir()`, `RmDir()` and `RmFile()`
+* Internal cleanup and removed some duplicate code
+* Fixed bug in `DrawArray()` and new `Bitmap()`
+* Fixed memory allocation bug where CWSDPMI and MuJS started to use virtual memory because of missing GCs.
+* Added raw disk access through `RawRead()` and `RawWrite()` (and other functions)
+* Fixed problems with the Makefile and filenames which only happened for fresh checkouts on case sensitive file systems.
+* Updated build instructions
+* Fixed `ReadBytes()` in `socket.c`
+* Renamed `fxGetMemoryTMU()` to `fxGetMemoryTmu()`
+
 # Version 1.2.1 (Bugfix)  / Oct 8, 2020
 * Fixed crash in Voodoo detection which only happens on plain DOSBox.
 

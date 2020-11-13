@@ -16,16 +16,17 @@ WATT32=watt32-2.2dev.rel.11/
 ZLIB=zlib-1.2.11
 PNG=lpng1636
 LOADPNG=loadpng-1.5
+KUBAZIP=zip
 
-INCLUDES=-I$(MUJS) -I$(ALLEGRO)/include -I$(GLIDE)/v1/include -I$(DZCOMMDIR)/include -I$(WATT32)/inc -I$(ZLIB) -I$(PNG) -I$(LOADPNG)
+INCLUDES=-I$(MUJS) -I$(ALLEGRO)/include -I$(GLIDE)/v1/include -I$(DZCOMMDIR)/include -I$(WATT32)/inc -I$(ZLIB) -I$(PNG) -I$(LOADPNG) -I$(KUBAZIP)/src
 LIBS=-lalleg -lmujs -lm -lemu -lglide3i -ldzcom -lwatt -lpng -lz
 
-CDEF=-DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED 
+CDEF=-DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED #-DMEMDEBUG 
 CFLAGS=-MMD -Wall -std=gnu99 -O2 -march=i386 -mtune=i586 -ffast-math $(INCLUDES) -fgnu89-inline -Wmissing-prototypes $(CDEF)
 LDFLAGS=-L$(MUJS)/build/release -L$(ALLEGRO)/lib/djgpp -L$(GLIDE)/v1/lib -L$(DZCOMMDIR)/lib/djgpp -L$(WATT32)/lib -L$(ZLIB) -L$(PNG)
 
 EXE=DOJS.EXE
-ZIP=dojs.zip
+RELZIP=dojs.zip
 
 BUILDDIR=build
 
@@ -41,38 +42,41 @@ RANLIB=$(DJGPP)/$(CROSS_PLATFORM)ranlib
 export
 
 PARTS= \
-	$(BUILDDIR)/loadpng/regpng.o \
-	$(BUILDDIR)/loadpng/loadpng.o \
-	$(BUILDDIR)/loadpng/savepng.o \
-	$(BUILDDIR)/watt.o \
-	$(BUILDDIR)/socket.o \
-	$(BUILDDIR)/comport.o \
-	$(BUILDDIR)/dosbuff.o \
-	$(BUILDDIR)/ipx.o \
-	$(BUILDDIR)/edit.o \
-	$(BUILDDIR)/edi_render.o \
-	$(BUILDDIR)/dialog.o \
-	$(BUILDDIR)/lines.o \
-	$(BUILDDIR)/syntax.o \
-	$(BUILDDIR)/file.o \
-	$(BUILDDIR)/midiplay.o \
+	$(BUILDDIR)/3dfx-glide.o \
+	$(BUILDDIR)/3dfx-state.o \
+	$(BUILDDIR)/3dfx-texinfo.o \
+	$(BUILDDIR)/a3d.o \
 	$(BUILDDIR)/bitmap.o \
 	$(BUILDDIR)/color.o \
-	$(BUILDDIR)/font.o \
+	$(BUILDDIR)/comport.o \
+	$(BUILDDIR)/dialog.o \
 	$(BUILDDIR)/DOjS.o \
-	$(BUILDDIR)/funcs.o \
-	$(BUILDDIR)/gfx.o \
-	$(BUILDDIR)/sound.o \
-	$(BUILDDIR)/util.o \
-	$(BUILDDIR)/a3d.o \
-	$(BUILDDIR)/zbuffer.o \
-	$(BUILDDIR)/joystick.o \
+	$(BUILDDIR)/dosbuff.o \
 	$(BUILDDIR)/dxe.o \
-	$(BUILDDIR)/3dfx-texinfo.o \
-	$(BUILDDIR)/3dfx-state.o \
-	$(BUILDDIR)/3dfx-glide.o
+	$(BUILDDIR)/edi_render.o \
+	$(BUILDDIR)/edit.o \
+	$(BUILDDIR)/file.o \
+	$(BUILDDIR)/font.o \
+	$(BUILDDIR)/funcs.o \
+	$(BUILDDIR)/lowlevel.o \
+	$(BUILDDIR)/gfx.o \
+	$(BUILDDIR)/ipx.o \
+	$(BUILDDIR)/joystick.o \
+	$(BUILDDIR)/lines.o \
+	$(BUILDDIR)/loadpng/loadpng.o \
+	$(BUILDDIR)/loadpng/regpng.o \
+	$(BUILDDIR)/loadpng/savepng.o \
+	$(BUILDDIR)/midiplay.o \
+	$(BUILDDIR)/socket.o \
+	$(BUILDDIR)/sound.o \
+	$(BUILDDIR)/syntax.o \
+	$(BUILDDIR)/util.o \
+	$(BUILDDIR)/watt.o \
+	$(BUILDDIR)/zbuffer.o \
+	$(BUILDDIR)/zip/src/zip.o \
+	$(BUILDDIR)/zipfile.o
 
-all: init libmujs liballegro dzcomm libwatt32 libz libpng TEXUS.EXE $(EXE)
+all: init libmujs liballegro dzcomm libwatt32 libz libpng TEXUS.EXE $(EXE) JSBOOT.ZIP
 
 libmujs: $(MUJS)/build/release/libmujs.a
 
@@ -114,20 +118,30 @@ $(BUILDDIR)/%.o: %.c Makefile
 $(BUILDDIR)/loadpng/%.o: $(LOADPNG)/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(BUILDDIR)/zip/src/%.o: $(KUBAZIP)/src/%.c Makefile
+	$(CC) $(CFLAGS) -c $< -o $@
+
+JSBOOT.ZIP: $(shell find jsboot/ -type f)
+	rm -f $@
+	zip -9 -r $@ jsboot/
+
 TEXUS.EXE:
 	$(MAKE) -C $(TEXUS) clean all
 	cp $(TEXUS)/TEXUS.EXE .
 
 zip: all doc
-	rm -f $(ZIP)
+	rm -f $(RELZIP)
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	zip -9 -v -r $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE
+	#zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md jsboot/ examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE
+	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE
 
 devzip: all doc
-	rm -f $(ZIP)
-	#zip -9 -v -r $(EXE) WATTCP.CFG CWSDPMI.EXE jsboot/ examples/ $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE tests/
-	zip -9 -v -r $(EXE) WATTCP.CFG tests/*.js jsboot/*.js examples/*.js examples/*.bmp examples/index.htm examples/DOjSt.png
-	scp $(ZIP) smbshare@192.168.2.8:/sata/c64
+	rm -f $(RELZIP)
+	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
+	#zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG CWSDPMI.EXE jsboot/ examples/ $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE tests/
+	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md JSBOOT.ZIP examples/*.js tests/*.js $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE
+	#zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG tests/*.js jsboot/*.js examples/*.js examples/*.bmp examples/index.htm examples/DOjSt.png
+	scp $(RELZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:
 	rm -rf $(DOCDIR)
@@ -135,13 +149,13 @@ doc:
 	cd doc && jsdoc -c jsdoc.conf.json -d ../$(DOCDIR)
 
 init:
-	mkdir -p $(BUILDDIR) $(BUILDDIR)/loadpng
+	mkdir -p $(BUILDDIR) $(BUILDDIR)/loadpng $(BUILDDIR)/zip/src
 	# make sure compile time is always updated
 	rm -f $(BUILDDIR)/DOjS.o
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) DOjS.exe $(ZIP) JSLOG.TXT TEXUS.EXE GLIDE3X.DXE
+	rm -f $(EXE) DOjS.exe $(ZIP) JSLOG.TXT TEXUS.EXE GLIDE3X.DXE JSBOOT.ZIP synC.txt synJ.txt syn.txt
 
 distclean: clean alclean jsclean dzclean wattclean zclean pngclean
 	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT GLIDE3X.DXE
@@ -153,7 +167,7 @@ jsclean:
 	$(MAKE) -C $(MUJS) clean
 
 alclean:
-	cd $(ALLEGRO) && .bash /xmake.sh clean
+	cd $(ALLEGRO) && bash ./xmake.sh clean
 
 wattclean:
 	$(MAKE) -C $(WATT32)/src -f DJGPP.MAK clean
@@ -195,7 +209,12 @@ syntaxM:
 	grep PROTDEF  *.c | cut -d "," -f 4 | sed s/^\ \"/\"\./ >synC.txt
 	cat synC.txt | awk '{ print length, "EDI_SYNTAX(RED," $$0 "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
 
-.PHONY: clean distclean init doc
+syntaxP:
+	rm -f synC.txt syn.txt
+	grep js_defproperty  *.c | cut -d "," -f 3 | sed s/^\ \"/\"\./ >synC.txt
+	cat synC.txt | awk '{ print length, "EDI_SYNTAX(YELLOW," $$0 "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
+
+.PHONY: clean distclean init doc INT13.EXE
 
 DEPS := $(wildcard $(BUILDDIR)/*.d)
 ifneq ($(DEPS),)

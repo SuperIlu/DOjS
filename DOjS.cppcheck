@@ -18,5 +18,11 @@
         <path name="watt32-2.2dev.rel.11/"/>
         <path name="glide3x/texus/"/>
         <path name="mujs-1.0.5/"/>
+        <path name="loadpng-1.5/"/>
+        <path name="lpng1636/"/>
+        <path name="mujs-1.0.7/"/>
+        <path name="zip/"/>
+        <path name="zlib-1.2.11/"/>
+        <path name="cylindrix/"/>
     </exclude>
 </project>

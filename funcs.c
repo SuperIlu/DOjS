@@ -22,25 +22,17 @@ SOFTWARE.
 
 #include "funcs.h"
 
-#include <allegro.h>
-#include <bios.h>
 #include <dirent.h>
-#include <dpmi.h>
-#include <errno.h>
-#include <go32.h>
 #include <mujs.h>
-#include <pc.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/farptr.h>
 #include <sys/stat.h>
-#include <time.h>
 
-#include "DOjS.h"
-#include "color.h"
 #include "util.h"
 #include "socket.h"
+#include "zipfile.h"
+#include "jsi.h"
+#include "jsparse.h"
+#include "jscompile.h"
 
 /*********************
 ** static functions **
@@ -53,54 +45,37 @@ SOFTWARE.
  */
 static void f_Read(js_State *J) {
     const char *fname = js_tostring(J, 1);
-    FILE *f;
     char *s;
-    int n, t;
+    size_t n;
 
-    f = fopen(fname, "rb");
-    if (!f) {
-        js_error(J, "Can't open file '%s': %s", fname, strerror(errno));
-        return;
-    }
-
-    if (fseek(f, 0, SEEK_END) < 0) {
-        fclose(f);
-        js_error(J, "Can't seek in file '%s': %s", fname, strerror(errno));
-        return;
-    }
-
-    n = ftell(f);
-    if (n < 0) {
-        fclose(f);
-        js_error(J, "Can't tell in file '%s': %s", fname, strerror(errno));
-        return;
-    }
-
-    if (fseek(f, 0, SEEK_SET) < 0) {
-        fclose(f);
-        js_error(J, "Can't seek in file '%s': %s", fname, strerror(errno));
-        return;
-    }
-
-    s = malloc(n + 1);
-    if (!s) {
-        fclose(f);
-        JS_ENOMEM(J);
-        return;
-    }
-
-    t = fread(s, 1, n, f);
-    if (t != n) {
+    if (ut_read_file(fname, (void **)&s, &n)) {
+        js_pushstring(J, s);
         free(s);
-        fclose(f);
+    } else {
         js_error(J, "Can't read data from file '%s': %s", fname, strerror(errno));
         return;
     }
-    s[n] = 0;
+}
 
-    js_pushstring(J, s);
-    free(s);
-    fclose(f);
+/**
+ * @brief read a whole file as string.
+ * Read(fname:string, entry_name:string):string
+ *
+ * @param J the JS context.
+ */
+static void f_ReadZIP(js_State *J) {
+    const char *zname = js_tostring(J, 1);
+    const char *ename = js_tostring(J, 2);
+
+    char *buf = NULL;
+    size_t esize;
+    if (read_zipfile2(zname, ename, (void **)&buf, &esize)) {
+        js_pushstring(J, buf);
+        free(buf);
+    } else {
+        js_error(J, "Can't open ZIP '%s' = '%s'", zname, ename);
+        return;
+    }
 }
 
 /**
@@ -127,6 +102,92 @@ static void f_List(js_State *J) {
     }
 
     closedir(dir);
+}
+
+/**
+ * @brief RmFile(name:string)
+ *
+ * @param J the JS context.
+ */
+static void f_RmFile(js_State *J) {
+    const char *file = js_tostring(J, 1);
+
+    if (!file) {
+        js_error(J, "No filename");
+        return;
+    }
+
+    int ret = unlink(file);
+    if (ret != 0) {
+        js_error(J, "Could not delete file: %s", strerror(errno));
+        return;
+    }
+}
+
+/**
+ * @brief RmDir(name:string)
+ *
+ * @param J the JS context.
+ */
+static void f_RmDir(js_State *J) {
+    const char *dir = js_tostring(J, 1);
+
+    if (!dir) {
+        js_error(J, "No dirname");
+        return;
+    }
+
+    int ret = rmdir(dir);
+    if (ret != 0) {
+        js_error(J, "Could not delete directory: %s", strerror(errno));
+        return;
+    }
+}
+
+/**
+ * @brief MakeDir(name:string)
+ *
+ * @param J the JS context.
+ */
+static void f_MakeDir(js_State *J) {
+    const char *dir = js_tostring(J, 1);
+
+    if (!dir) {
+        js_error(J, "No dirname");
+        return;
+    }
+
+    int ret = mkdir(dir, 0);
+    if (ret != 0) {
+        js_error(J, "Could not create directory: %s", strerror(errno));
+        return;
+    }
+}
+
+/**
+ * @brief Rename(from:string, to:string)
+ *
+ * @param J the JS context.
+ */
+static void f_Rename(js_State *J) {
+    const char *from = js_tostring(J, 1);
+    const char *to = js_tostring(J, 2);
+
+    if (!from) {
+        js_error(J, "No source filename");
+        return;
+    }
+
+    if (!to) {
+        js_error(J, "No destination filename");
+        return;
+    }
+
+    int ret = rename(from, to);
+    if (ret != 0) {
+        js_error(J, "Could not rename file: %s", strerror(errno));
+        return;
+    }
 }
 
 /**
@@ -427,80 +488,90 @@ static void f_System(js_State *J) {
     js_pushnumber(J, ret);
 }
 
-static void f_OutPortByte(js_State *J) { outportb(js_toint16(J, 1), js_toint16(J, 2) & 0xFF); }
-static void f_OutPortWord(js_State *J) { outportw(js_toint16(J, 1), js_toint16(J, 2)); }
-static void f_OutPortLong(js_State *J) { outportl(js_toint16(J, 1), js_toint32(J, 2)); }
-
-static void f_InPortByte(js_State *J) { js_pushnumber(J, inportb(js_toint16(J, 1)) & 0xFF); }
-static void f_InPortWord(js_State *J) { js_pushnumber(J, inportw(js_toint16(J, 1)) & 0xFFFF); }
-static void f_InPortLong(js_State *J) { js_pushnumber(J, inportl(js_toint16(J, 1))); }
-
 /**
- * @brief get a list of parallel port addresses from BIOS
+ * convert byte array to string.
+ * BytesToString(data:number[]):string
  *
  * @param J VM state.
  */
-static void f_GetParallelPorts(js_State *J) {
-    unsigned long ptraddr = 0x0408;  // Base Address: segment is zero
-    int idx = 0;
+static void f_BytesToString(js_State *J) {
+    if (js_isarray(J, 1)) {
+        int len = js_getlength(J, 1);
 
-    js_newarray(J);
-    for (int j = 0; j < 3; j++) {
-        unsigned int port = _farpeekw(_dos_ds, ptraddr);
-        ptraddr += 2;
-        if (port) {
-            js_pushnumber(J, port);
-            js_setindex(J, -2, idx);
-            idx++;
+        char *data = malloc(len + 1);
+        if (!data) {
+            JS_ENOMEM(J);
+            return;
         }
+
+        for (int i = 0; i < len; i++) {
+            js_getindex(J, 1, i);
+            data[i] = (char)js_toint16(J, -1);
+            js_pop(J, 1);
+        }
+        data[len] = 0;
+        js_pushstring(J, data);
+
+        free(data);
+    } else {
+        JS_ENOARR(J);
     }
 }
 
 /**
- * @brief get a list of serial port addresses from BIOS
+ * convert string to byte array.
+ * StringToBytes(string):number[]
  *
  * @param J VM state.
  */
-static void f_GetSerialPorts(js_State *J) {
-    unsigned long ptraddr = 0x0400;  // Base Address: segment is zero
-    int idx = 0;
-
+static void f_StringToBytes(js_State *J) {
+    const char *data = js_tostring(J, 1);
     js_newarray(J);
-    for (int j = 0; j < 3; j++) {
-        unsigned int port = _farpeekw(_dos_ds, ptraddr);
-        ptraddr += 2;
-        if (port) {
-            js_pushnumber(J, port);
-            js_setindex(J, -2, idx);
-            idx++;
-        }
+
+    int idx = 0;
+    while (data[idx]) {
+        js_pushnumber(J, data[idx]);
+        js_setindex(J, -2, idx);
+        idx++;
     }
 }
 
 /**
- * reset lpt port
- * @param J VM state.
+ * @brief parse string and run it as function.
+ * This works like Function(), but it only takes one parameter and the source of the parsed string can be provided.
+ * NamedFunction(func_param, func_src, func_source_filename):function
+ *
+ * @param J
  */
-static void f_LPTReset(js_State *J) { biosprint(1, 0, js_toint16(J, 1)); }
+static void f_NamedFunction(js_State *J) {
+    js_Buffer *sb = NULL;
+    const char *body, *fname;
+    js_Ast *parse;
+    js_Function *fun;
 
-/**
- * send data to lpt port
- * @param J VM state.
- */
-static void f_LPTSend(js_State *J) {
-    int port = js_toint16(J, 1);
-    const char *data = js_tostring(J, 2);
-
-    while (*data) {
-        biosprint(0, *data++, port);
+    if (js_try(J)) {
+        js_free(J, sb);
+        jsP_freeparse(J);
+        js_throw(J);
     }
-}
 
-/**
- * get status of lpt port
- * @param J VM state.
- */
-static void f_LPTStatus(js_State *J) { js_pushnumber(J, biosprint(2, 0, js_toint16(J, 1))); }
+    js_puts(J, &sb, js_tostring(J, 1));
+    js_putc(J, &sb, ')');
+    js_putc(J, &sb, 0);
+
+    /* body */
+    body = js_isdefined(J, 2) ? js_tostring(J, 2) : "";
+    fname = js_isdefined(J, 3) ? js_tostring(J, 3) : "[string]";
+
+    parse = jsP_parsefunction(J, fname, sb ? sb->s : NULL, body);
+    fun = jsC_compilefunction(J, parse);
+
+    js_endtry(J);
+    js_free(J, sb);
+    jsP_freeparse(J);
+
+    js_newfunction(J, fun, J->GE);
+}
 
 /***********************
 ** exported functions **
@@ -533,39 +604,36 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     js_setglobal(J, "ARGS");
 
     // define global functions
-    FUNCDEF(J, f_Read, "Read", 1);
-    FUNCDEF(J, f_List, "List", 1);
-    FUNCDEF(J, f_Stat, "Stat", 1);
-    FUNCDEF(J, f_Print, "Print", 0);
-    FUNCDEF(J, f_Println, "Println", 0);
-    FUNCDEF(J, f_Stop, "Stop", 0);
-    FUNCDEF(J, f_Gc, "Gc", 1);
-    FUNCDEF(J, f_MemoryInfo, "MemoryInfo", 0);
-    FUNCDEF(J, f_Sleep, "Sleep", 1);
-    FUNCDEF(J, f_MsecTime, "MsecTime", 0);
-    FUNCDEF(J, f_SetFramerate, "SetFramerate", 1);
-    FUNCDEF(J, f_GetFramerate, "GetFramerate", 0);
+    NFUNCDEF(J, Read, 1);
+    NFUNCDEF(J, ReadZIP, 2);
+    NFUNCDEF(J, List, 1);
+    NFUNCDEF(J, Stat, 1);
+    NFUNCDEF(J, RmDir, 1);
+    NFUNCDEF(J, RmFile, 1);
+    NFUNCDEF(J, Rename, 2);
+    NFUNCDEF(J, MakeDir, 1);
+    NFUNCDEF(J, System, 2);
 
-    FUNCDEF(J, f_MouseSetSpeed, "MouseSetSpeed", 2);
-    FUNCDEF(J, f_MouseSetLimits, "MouseSetLimits", 4);
-    FUNCDEF(J, f_MouseWarp, "MouseWarp", 2);
-    FUNCDEF(J, f_MouseShowCursor, "MouseShowCursor", 1);
-    FUNCDEF(J, f_MouseSetCursorMode, "MouseSetCursorMode", 1);
+    NFUNCDEF(J, Print, 0);
+    NFUNCDEF(J, Println, 0);
+    NFUNCDEF(J, Stop, 0);
+    NFUNCDEF(J, Gc, 1);
+    NFUNCDEF(J, MemoryInfo, 0);
+    NFUNCDEF(J, Sleep, 1);
+    NFUNCDEF(J, MsecTime, 0);
+    NFUNCDEF(J, SetFramerate, 1);
+    NFUNCDEF(J, GetFramerate, 0);
+    NFUNCDEF(J, StringToBytes, 1);
+    NFUNCDEF(J, BytesToString, 1);
+    NFUNCDEF(J, NamedFunction, 3);
 
-    FUNCDEF(J, f_SetExitKey, "SetExitKey", 1);
+    NFUNCDEF(J, MouseSetSpeed, 2);
+    NFUNCDEF(J, MouseSetLimits, 4);
+    NFUNCDEF(J, MouseWarp, 2);
+    NFUNCDEF(J, MouseShowCursor, 1);
+    NFUNCDEF(J, MouseSetCursorMode, 1);
 
-    FUNCDEF(J, f_System, "System", 2);
-    FUNCDEF(J, f_OutPortByte, "OutPortByte", 2);
-    FUNCDEF(J, f_OutPortWord, "OutPortWord", 2);
-    FUNCDEF(J, f_OutPortLong, "OutPortLong", 2);
-    FUNCDEF(J, f_InPortByte, "InPortByte", 1);
-    FUNCDEF(J, f_InPortWord, "InPortWord", 1);
-    FUNCDEF(J, f_InPortLong, "InPortLong", 1);
-    FUNCDEF(J, f_GetParallelPorts, "GetParallelPorts", 0);
-    FUNCDEF(J, f_GetSerialPorts, "GetSerialPorts", 0);
-    FUNCDEF(J, f_LPTReset, "_LPTReset", 1);
-    FUNCDEF(J, f_LPTSend, "_LPTSend", 2);
-    FUNCDEF(J, f_LPTStatus, "_LPTStatus", 1);
+    NFUNCDEF(J, SetExitKey, 1);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

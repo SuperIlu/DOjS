@@ -20,11 +20,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+var fCount = 0;
+
 /*
 ** This function is called once when the script is started.
 */
 function Setup() {
-	SetFramerate(30);
+	SetFramerate(10);
 }
 
 /*
@@ -32,13 +34,24 @@ function Setup() {
 */
 function Loop() {
 	ClearScreen(EGA.BLACK);
+
 	FilledPolygon(
 		[
-			[100, 100],
-			[200, 100],
-			[200, 200],
-			[100, 200]
+			[20 + mX(), 20 + mY()],
+			[40 + mX(), 20 + mY()],
+			[40 + mX(), 40 + mY()],
+			[60 + mX(), 40 + mY()],
+			[60 + mX(), 60 + mY()],
+			[20 + mX(), 60 + mY()]
 		], EGA.GREEN);
+}
+
+function mX() {
+	return Math.floor(Math.random() * 21) - 10 + SizeX() / 2;
+}
+
+function mY() {
+	return Math.floor(Math.random() * 21) - 10 + SizeY() / 2;
 }
 
 /*

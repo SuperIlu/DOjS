@@ -4,6 +4,7 @@
 			"internal.js",
 			"objects.js",
 			"classes.js",
+			"../jsboot/quadtree.js",
 			"../jsboot/socket.js",
 			"../jsboot/3dfx.js",
 			"../jsboot/func.js",
@@ -26,10 +27,27 @@
 		"excludePattern": ""
 	},
 	"opts": {
+		"readme": "../README.md",
+		"search": true,
 		"template": "/usr/local/lib/node_modules/better-docs"
 	},
 	"templates": {
-		"name": "DOjS V1.2.0",
-		"footerText": "https://github.com/SuperIlu/DOjS -- https://twitter.com/dec_hl"
+		"default": {
+			"outputSourceFiles": false
+		},
+		"better-docs": {
+			"name": "DOjS V1.3.0",
+			"hideGenerator": true,
+			"navLinks": [
+				{
+					"label": "Github",
+					"href": "https://github.com/SuperIlu/DOjS"
+				},
+				{
+					"label": "itch.io",
+					"href": "https://superilu.itch.io/dojs"
+				}
+			]
+		}
 	}
 }

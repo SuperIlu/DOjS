@@ -28,8 +28,8 @@ SOFTWARE.
 /************
 ** defines **
 ************/
-#define JSINC_SOCKET BOOT_DIR "socket.js"  //!< boot script for socket subsystem
-#define TAG_SOCKET "WattSocket"            //!< class name for Socket()
+#define JSINC_SOCKET JSBOOT_DIR "socket.js"  //!< boot script for socket subsystem
+#define TAG_SOCKET "WattSocket"              //!< class name for Socket()
 
 /***********************
 ** exported functions **

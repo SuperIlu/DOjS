@@ -28,7 +28,7 @@ SOFTWARE.
 /************
 ** defines **
 ************/
-#define JSINC_FUNC BOOT_DIR "func.js"  //!< boot script for grx subsystem
+#define JSINC_FUNC JSBOOT_DIR "func.js"  //!< boot script for grx subsystem
 
 #define SYS_FLAG_MOUSE 0x01
 #define SYS_FLAG_SOUND 0x02

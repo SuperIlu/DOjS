@@ -117,11 +117,10 @@ void init_zbuffer(js_State *J) {
 
     js_newobject(J);
     {
-        PROTDEF(J, ZBuffer_Set, TAG_ZBUFFER, "Set", 0);
-        PROTDEF(J, ZBuffer_Clear, TAG_ZBUFFER, "Clear", 1);
+        NPROTDEF(J, ZBuffer, Set, 0);
+        NPROTDEF(J, ZBuffer, Clear, 1);
     }
-    js_newcconstructor(J, new_ZBuffer, new_ZBuffer, TAG_ZBUFFER, 2);
-    js_defglobal(J, TAG_ZBUFFER, JS_DONTENUM);
+    CTORDEF(J, new_ZBuffer, TAG_ZBUFFER, 2);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

@@ -6,7 +6,10 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/allegro-4.2.2-xc-master/include/**"
             ],
-            "defines": [],
+            "defines": [
+                "LFB_3DFX",
+                "EDI_FAST"
+            ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",
             "cppStandard": "c++17",

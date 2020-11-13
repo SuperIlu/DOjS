@@ -15,7 +15,7 @@ function Setup() {
     state = 1;
     fontCount = 0;
 
-    fnt = new Font("jsboot/fonts/luct38.fnt");
+    fnt = new Font(JSBOOTPATH + "fonts/luct38.fnt");
     fntW = fnt.maxwidth;
     fntH = fnt.height;
 

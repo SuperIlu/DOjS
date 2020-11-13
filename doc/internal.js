@@ -514,12 +514,47 @@ function MsecTime() { }
 function Read(filename) { }
 
 /**
+ * Load the contents of a ZIP file entry into a string. Throws exception if loading fails.
+ * @param {string} filename name of file to read.
+ * @param {string} entryname name of entry in the ZIP file to read.
+ * @returns {string} the contents of the file.
+ * @throws Throws an error if reading fails.
+ */
+function ReadZIP(filename, entryname) { }
+
+/**
  * Get directory listing.
  * @param {string} dname name of directory to list.
  * @returns {string[]} array of entry names.
  * @throws Throws an error if listing fails.
  */
 function List(dname) { }
+
+/**
+ * rename file/directory.
+ * @param {string} from old name
+ * @param {string} to new name
+ */
+function Rename(from, to) { }
+
+/**
+ * remove a directory (must be empty).
+ * @param {string} name path/name of the directory.
+ */
+function RmDir(name) { }
+
+/**
+ * remove a file.
+ * @param {string} name path/name of the file.
+ */
+function RmFile(name) { }
+
+/**
+ * make a directory.
+ * @param {string} name path/name of the new directory
+ */
+function MkDir(name) { }
+
 
 /**
  * Get information about a file / directory.
@@ -621,6 +656,30 @@ function GetParallelPorts() { }
  */
 function GetSerialPorts() { }
 
+/**
+ * Convert byte array to ASCII string. The string is terminated at the first NULL byte or at array length (whichever comes first).
+ * 
+ * @param {number[]} data array of numbers.
+ * @returns {string} a string.
+ */
+function BytesToString(data) { }
+
+/**
+ * Convert ASCII string to byte array.
+ * 
+ * @param {string} str string to convert.
+ * @returns {number[]} array of numbers.
+ */
+function StringToBytes(str) { }
+
+/**
+ * parse a string into a function. Works like Function() by a source file name can be provided.
+ * 
+ * @param {string} p name of the single parameter.
+ * @param {string} s the source of the function.
+ * @param {string} [f] an optional filename where the source came from.
+ */
+function NamedFunction(p, s, f) { }
 
 /** @module color */
 
@@ -1326,7 +1385,7 @@ function fxGetMemoryFb() { }
 /**
  * @returns {number} The total number of bytes per Texelfx chip if a non-UMA configuration is used, else FXFALSE. In non-UMA configurations, the total usable texture memory is GR_MEMORY_TMU * GR_NUM_TMU.
  */
-function fxGetMemoryTMU() { }
+function fxGetMemoryTmu() { }
 /**
  * @returns {number} The total number of bytes if a UMA configuration, else 0.
  */

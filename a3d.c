@@ -309,21 +309,21 @@ static void f_Clip3D(js_State *J) {
  *
  * @param J VM state.
  */
-static void f_RenderScene(js_State *J) { render_scene(); }
+static void f__RenderScene(js_State *J) { render_scene(); }
 
 /**
  * @brief Deallocate memory previously allocated by create_scene. Use this to avoid memory leaks in your program.
  *
  * @param J VM state.
  */
-static void f_DestroyScene(js_State *J) { destroy_scene(); }
+static void f__DestroyScene(js_State *J) { destroy_scene(); }
 
 /**
  * @brief Initializes a scene. The bitmap is the bitmap you will eventually render on.
  *
  * @param J VM state.
  */
-static void f_ClearScene(js_State *J) { clear_scene(DOjS.current_bm); }
+static void f__ClearScene(js_State *J) { clear_scene(DOjS.current_bm); }
 
 /**
  * @brief Allocates memory for a scene, `nedge' and `npoly' are your estimates of how many edges and how many polygons you will render (you cannot get over the limit specified
@@ -331,7 +331,7 @@ static void f_ClearScene(js_State *J) { clear_scene(DOjS.current_bm); }
  *
  * @param J VM state.
  */
-static void f_CreateScene(js_State *J) {
+static void f__CreateScene(js_State *J) {
     int nedge = js_toint16(J, 1);
     int npoly = js_toint16(J, 2);
 
@@ -361,7 +361,7 @@ static void f_SetSceneGap(js_State *J) { scene_gap = (float)js_tonumber(J, 1); }
  *
  * @param J VM state.
  */
-static void f_ScenePolygon3D(js_State *J) {
+static void f__ScenePolygon3D(js_State *J) {
     int type = js_toint16(J, 1);
     BITMAP *texture = bitmap_or_null(J, 2);
 
@@ -681,7 +681,7 @@ static void f_PerspProject(js_State *J) {
  *
  * @param J VM state.
  */
-static void f_SetProjectionViewport(js_State *J) {
+static void f__SetProjectionViewport(js_State *J) {
     int x = js_toint32(J, 1);
     int y = js_toint32(J, 2);
     int w = js_toint32(J, 3);
@@ -735,34 +735,34 @@ void init_a3d(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
 
     // scene based rendering
-    FUNCDEF(J, f_ScenePolygon3D, "_ScenePolygon3D", 3);
-    FUNCDEF(J, f_RenderScene, "_RenderScene", 0);
-    FUNCDEF(J, f_DestroyScene, "_DestroyScene", 0);
-    FUNCDEF(J, f_ClearScene, "_ClearScene", 0);
-    FUNCDEF(J, f_CreateScene, "_CreateScene", 2);
-    FUNCDEF(J, f_SetSceneGap, "SetSceneGap", 1);
+    NFUNCDEF(J, _ScenePolygon3D, 3);
+    NFUNCDEF(J, _RenderScene, 0);
+    NFUNCDEF(J, _DestroyScene, 0);
+    NFUNCDEF(J, _ClearScene, 0);
+    NFUNCDEF(J, _CreateScene, 2);
+    NFUNCDEF(J, SetSceneGap, 1);
 
     // direct rendering
-    FUNCDEF(J, f_Polygon3D, "Polygon3D", 3);
-    FUNCDEF(J, f_Triangle3D, "Triangle3D", 5);
-    FUNCDEF(J, f_Quad3D, "Quad3D", 6);
-    FUNCDEF(J, f_Clip3D, "Clip3D", 4);
+    NFUNCDEF(J, Polygon3D, 3);
+    NFUNCDEF(J, Triangle3D, 5);
+    NFUNCDEF(J, Quad3D, 6);
+    NFUNCDEF(J, Clip3D, 4);
 
 #ifdef DEBUG_ENABLED
-    FUNCDEF(J, f_VDebug, "VDebug", 1);
+    NFUNCDEF(J, VDebug, 1);
 #endif
 
     // non JS 3D-math
-    FUNCDEF(J, f_GetRotationMatrix, "GetRotationMatrix", 3);
-    FUNCDEF(J, f_GetTransformationMatrix, "GetTransformationMatrix", 7);
-    FUNCDEF(J, f_GetXRotateMatrix, "GetXRotateMatrix", 1);
-    FUNCDEF(J, f_GetYRotateMatrix, "GetYRotateMatrix", 1);
-    FUNCDEF(J, f_GetZRotateMatrix, "GetZRotateMatrix", 1);
-    FUNCDEF(J, f_MatrixMul, "MatrixMul", 2);
-    FUNCDEF(J, f_ApplyMatrix, "ApplyMatrix", 2);
-    FUNCDEF(J, f_PerspProject, "PerspProject", 2);
-    FUNCDEF(J, f_SetProjectionViewport, "_SetProjectionViewport", 4);
-    FUNCDEF(J, f_PolygonZNormal, "PolygonZNormal", 3);
+    NFUNCDEF(J, GetRotationMatrix, 3);
+    NFUNCDEF(J, GetTransformationMatrix, 7);
+    NFUNCDEF(J, GetXRotateMatrix, 1);
+    NFUNCDEF(J, GetYRotateMatrix, 1);
+    NFUNCDEF(J, GetZRotateMatrix, 1);
+    NFUNCDEF(J, MatrixMul, 2);
+    NFUNCDEF(J, ApplyMatrix, 2);
+    NFUNCDEF(J, PerspProject, 2);
+    NFUNCDEF(J, _SetProjectionViewport, 4);
+    NFUNCDEF(J, PolygonZNormal, 3);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

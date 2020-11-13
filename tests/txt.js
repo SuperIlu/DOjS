@@ -26,7 +26,7 @@ SOFTWARE.
 function Setup() {
 	SetFramerate(30);
 
-	f = new Font("jsboot/fonts/tms18.fnt");
+	f = new Font(JSBOOTPATH + "fonts/tms18.fnt");
 }
 
 /*

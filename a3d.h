@@ -28,7 +28,7 @@ SOFTWARE.
 /************
 ** defines **
 ************/
-#define JSINC_A3D BOOT_DIR "a3d.js"  //!< boot script for a3d subsystem
+#define JSINC_A3D JSBOOT_DIR "a3d.js"  //!< boot script for a3d subsystem
 
 /***********************
 ** exported functions **

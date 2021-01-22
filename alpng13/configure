@@ -1,0 +1,13 @@
+#! /bin/sh
+if [ $# = 0 ]; then
+	cp makefiles/makefile.linux0 makefile
+	echo "AllegroPNG standalone configured"
+elif [ $1 = zlib ]; then
+	cp makefiles/makefile.linux1 makefile
+	echo "AllegroPNG using zlib configured"
+elif [ $1 = crypto++ ]; then
+	cp makefiles/makefile.linux2 makefile
+	echo "AllegroPNG using Crypto++ configured"
+else
+	echo "Wrong parameter. Read readme.txt for usage information"
+fi

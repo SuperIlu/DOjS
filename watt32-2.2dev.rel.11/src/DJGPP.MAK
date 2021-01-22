@@ -147,7 +147,7 @@ else
   BIN_PREFIX = $(DJ_PREFIX)/i586-pc-msdosdjgpp-
 endif
 
-CFLAGS = -Os -g -I. -I../inc -W -Wall -Wno-strict-aliasing -DWATT32_BUILD \
+CFLAGS = -Os -fomit-frame-pointer -g -I. -I../inc -W -Wall -Wno-strict-aliasing -DWATT32_BUILD \
        # -fno-strength-reduce -ffast-math \
        # -ffunction-sections -fomit-frame-pointer -gcoff
 

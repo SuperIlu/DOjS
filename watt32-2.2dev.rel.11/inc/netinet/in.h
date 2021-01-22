@@ -147,6 +147,8 @@ struct in_addr {
        u_int32_t s_addr;
      };
 
+typedef u_int32_t in_addr_t;
+
 /*
  *  For IPv6 from RFC2133
  */

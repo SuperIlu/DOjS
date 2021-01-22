@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,8 @@ SOFTWARE.
 #include <mujs.h>
 #include <stdio.h>
 #include <sys/stat.h>
+#include <sys/dxe.h>
+#include <dlfcn.h>
 
 #include "util.h"
 #include "socket.h"
@@ -573,6 +575,129 @@ static void f_NamedFunction(js_State *J) {
     js_newfunction(J, fun, J->GE);
 }
 
+/**
+ * @brief callback function when a symbol can't be found during library loading.
+ * This does reporting only and will not provide a fallback implementation.
+ *
+ * @param symname name of the missing function
+ * @return void* allways NULL.
+ */
+static void *dxe_res(const char *symname) {
+    LOGF("%s: undefined symbol in dynamic module\n", symname);
+    return NULL;
+}
+
+#define LL_BUFFER_SIZE 2014
+
+/**
+ * @brief load a native library from disk, call it's init function and  register it in the list of loaded libraries.
+ *
+ * @param J VM state.
+ */
+static void f_LoadLibrary(js_State *J) {
+    int needed;
+    char mod_name[LL_BUFFER_SIZE];
+    char init_name[LL_BUFFER_SIZE];
+    char shutdown_name[LL_BUFFER_SIZE];
+
+    // sanity check
+    if (!js_isdefined(J, 1) || !js_isstring(J, 1)) {
+        js_error(J, "library name string expected");
+        return;
+    }
+    const char *modname = js_tostring(J, 1);
+
+    // bail out if this is already loaded
+    if (dojs_check_library(J, modname, true)) {
+        DEBUGF("%s is already loaded!", modname);
+        return;
+    }
+
+    // set resolver error function
+    _dlsymresolver = dxe_res;
+
+    // generate string with <module>.dxe
+    needed = snprintf(mod_name, sizeof(mod_name), "%s.dxe", modname);
+    if (needed >= sizeof(mod_name)) {
+        js_error(J, "Can't build DXE file name: %s", modname);
+        return;
+    }
+
+    // try to open module
+    void *mod = dlopen(mod_name, RTLD_GLOBAL);
+    if (!mod) {
+        js_error(J, "%s: Error loading %s: %s\n", modname, mod_name, dlerror());
+        return;
+    }
+
+    // generate string with init_<module>
+    needed = snprintf(init_name, sizeof(init_name), "_init_%s", modname);
+    if (needed >= sizeof(init_name)) {
+        js_error(J, "Can't build init function name: %s", modname);
+        return;
+    }
+
+    // cast return value to init function pointer
+    union {
+        void *from;
+        void (*to)(js_State *J);
+    } func_ptr_cast_init;
+    func_ptr_cast_init.from = dlsym(mod, init_name);
+    void (*mod_init)(js_State * J) = func_ptr_cast_init.to;
+
+    // check for valid pointer
+    if (!func_ptr_cast_init.from) {
+        js_error(J, "%s: Error resolving %s: %s\n", modname, init_name, dlerror());
+        dlclose(mod);
+        return;
+    }
+
+    // call module init
+    mod_init(J);
+
+    //////
+    // now we try to find the optional shutdown() function to register that for exit
+
+    // generate string with shutdown_<module>
+    needed = snprintf(shutdown_name, sizeof(shutdown_name), "_shutdown_%s", modname);
+    if (needed >= sizeof(shutdown_name)) {
+        return;
+    }
+
+    // cast return value to init function pointer
+    union {
+        void *from;
+        void (*to)(void);
+    } func_ptr_cast_shutdown;
+    func_ptr_cast_shutdown.from = dlsym(mod, shutdown_name);
+    void (*mod_shutdown)(void) = func_ptr_cast_shutdown.to;
+
+    // register library
+    if (!dojs_register_library(modname, mod, mod_init, mod_shutdown)) {
+        js_error(J, "Out of memory while registering native library. System will be unstable now!");
+        return;
+    }
+}
+
+/**
+ * @brief get an array with the names of loaded libraries.
+ *
+ * @param J VM state.
+ */
+static void f_GetLoadedLibraries(js_State *J) {
+    js_newarray(J);
+    if (DOjS.loaded_libraries) {
+        library_t *chain = DOjS.loaded_libraries;
+        int idx = 0;
+        while (chain) {
+            js_pushstring(J, chain->name);
+            js_setindex(J, -2, idx);
+            idx++;
+            chain = chain->next;
+        }
+    }
+}
+
 /***********************
 ** exported functions **
 ***********************/
@@ -634,6 +759,9 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     NFUNCDEF(J, MouseSetCursorMode, 1);
 
     NFUNCDEF(J, SetExitKey, 1);
+
+    NFUNCDEF(J, LoadLibrary, 1);
+    NFUNCDEF(J, GetLoadedLibraries, 0);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

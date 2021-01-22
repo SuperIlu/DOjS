@@ -1,0 +1,96 @@
+/*
+MIT License
+
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+LoadLibrary("curl");
+
+/*
+** This function is called once when the script is started.
+*/
+function Setup() {
+	SetFramerate(1);
+
+	// try simple HTTP-GET
+	var get = new Curl();
+	var resp = get.DoRequest("http://192.168.2.98:8080/basic_test");
+	assert("basic test", resp[2], 200);
+	assert("basic test", resp[0].ToString(), "Basic OK");
+
+	// fail 404
+	var resp = get.DoRequest("http://192.168.2.98:8080/NOTFOUND");
+	assert("fail 404", resp[2], 404);
+
+	// add a header-field
+	get.AddHeader("Foo: Bar");
+	var resp = get.DoRequest("http://192.168.2.98:8080/header_test");
+	assert("header test", resp[2], 200);
+	assert("header test", resp[0].ToString(), "Header OK: Bar");
+
+	// try get with parameters
+	var get = new Curl();
+	var resp = get.DoRequest("http://192.168.2.98:8080/get_test?foo=bar");
+	assert("post test", resp[2], 200);
+	assert("post test", resp[0].ToString(), "Get OK: {'foo': 'bar'}");
+
+	// try simple post
+	var POST_TST_STR = "foo=976765crcvrf(&*^&^78tyug65%$ytfTYr(TGUih";
+	var post = new Curl();
+	post.SetPost("foo=" + urlencode(POST_TST_STR));
+	var resp = post.DoRequest("http://192.168.2.98:8080/post_test");
+	assert("post test", resp[2], 200);
+	assert("post test", resp[0].ToString(), "Post OK: {'foo': '" + POST_TST_STR + "'}");
+
+	// try simple https
+	var https = new Curl();
+	var resp = https.DoRequest("https://curl.se");
+	assert("HTTPS test", resp[2], 200);
+	Println(resp[1].ToString());
+
+	var https = new Curl();
+	var resp = https.DoRequest("https://www.heise.de");
+	assert("HTTPS test", resp[2], 200);
+	Println(resp[1].ToString());
+
+	var https = new Curl();
+	var resp = https.DoRequest("https://www.shdon.com/");
+	assert("HTTPS test", resp[2], 200);
+	Println(resp[1].ToString());
+
+	Stop();
+}
+
+/*
+** This function is repeatedly until ESC is pressed or Stop() is called.
+*/
+function Loop() {
+}
+
+function assert(txt, ist, soll) {
+	if (ist != soll) {
+		throw txt + ": result was '" + ist + "' but should be '" + soll + "'";
+	}
+}
+
+/*
+** This function is called on any input.
+*/
+function Input(event) {
+}

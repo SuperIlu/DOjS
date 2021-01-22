@@ -1,3 +1,14 @@
+# Version 1.4.0 (The curly conglomerate)  / Jan 22, 2021
+* Replaced loadpng+libpng by alpng to reduce EXE size.
+* Added fast integer array class `IntArray`
+* Added `ReadInts()` and `WriteInts()` to `File`, `Zip` and `Socket` to speed up data IO.
+* Improved type checking for parameters.
+* Added cURL and OpenSSL support.
+* FIXED: memory leak in editor
+* FIXED: editor crashed when deleting selected text
+* Added loadable module support during runtime
+* IPX, PNG, Allegro3D, COMPort and cURL are loadable modules now
+
 # Version 1.3.0 (The ZIPpy serving)  / Nov 13, 2020
 * Added ZIP file access through `Zip()` class
 * Added `StringToBytes()` and `BytesToString()`

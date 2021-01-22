@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,5 +32,6 @@ extern bool ut_endsWith(const char *str, const char *suffix);
 extern const char *ut_getFilenameExt(const char *filename);
 extern bool ut_file_exists(const char *filename);
 extern bool ut_read_file(const char *fname, void **buf, size_t *size);
+extern char *ut_clone_string(const char *str);
 
 #endif  // __UTIL_H__

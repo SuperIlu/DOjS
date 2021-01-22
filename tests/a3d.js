@@ -1,3 +1,5 @@
+LoadLibrary("al3d");
+
 /*
 ** This function is called once when the script is started.
 */

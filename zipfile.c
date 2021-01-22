@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ SOFTWARE.
 
 #include "DOjS.h"
 #include "zip.h"
+#include "intarray.h"
 
 /************
 ** defines **
@@ -294,6 +295,46 @@ static void Zip_ReadBytes(js_State *J) {
 }
 
 /**
+ * @brief return the bytes from the zip entry as IntArray.
+ * zip.ReadBytes(entry_name:string):IntArray
+ *
+ * @param J VM state.
+ */
+static void Zip_ReadInts(js_State *J) {
+    jszip_t *z = js_touserdata(J, 0, TAG_ZIP);
+    if (!z->zip) {
+        js_error(J, "ZIP was closed!");
+        return;
+    }
+
+    if (z->writeable) {
+        js_error(J, "ZIP was opened for writing!");
+        return;
+    } else {
+        uint8_t *buf = NULL;
+        size_t bufsize;
+
+        const char *zip_name = js_tostring(J, 1);
+
+        if (zip_entry_open(z->zip, zip_name) < 0) {
+            js_error(J, "Could not extract entry '%s' from ZIP (zip_entry_open)!", zip_name);
+            return;
+        }
+        if (zip_entry_read(z->zip, (void **)&buf, &bufsize) < 0) {
+            js_error(J, "Could not extract entry '%s' from ZIP (zip_entry_open)!", zip_name);
+            return;
+        }
+        if (zip_entry_close(z->zip) < 0) {
+            js_error(J, "Could not extract entry '%s' from ZIP (zip_entry_close)!", zip_name);
+            free(buf);
+            return;
+        }
+        IntArray_fromBytes(J, buf, bufsize);
+        free(buf);
+    }
+}
+
+/**
  * @brief write a bytes to a zip entry.
  * zip.WriteBytes(entry_name:string, data:number[])
  *
@@ -331,6 +372,59 @@ static void Zip_WriteBytes(js_State *J) {
                 js_pop(J, 1);
             }
             if (zip_entry_write(z->zip, data, len) < 0) {
+                js_error(J, "Could create '%s' in ZIP (zip_entry_write)!", zip_name);
+                free(data);
+                return;
+            }
+            if (zip_entry_close(z->zip) < 0) {
+                js_error(J, "Could create '%s' in ZIP (zip_entry_close)!", zip_name);
+                free(data);
+                return;
+            }
+
+            free(data);
+        } else {
+            JS_ENOARR(J);
+        }
+    }
+}
+
+/**
+ * @brief write a bytes to a zip entry.
+ * zip.WriteBytes(entry_name:string, data:IntArray)
+ *
+ * @param J VM state.
+ */
+static void Zip_WriteInts(js_State *J) {
+    jszip_t *z = js_touserdata(J, 0, TAG_ZIP);
+    if (!z->zip) {
+        js_error(J, "ZIP was closed!");
+        return;
+    }
+
+    if (!z->writeable) {
+        js_error(J, "ZIP was opened for reading!");
+        return;
+    } else {
+        if (js_isuserdata(J, 2, TAG_INT_ARRAY)) {
+            int_array_t *ia = js_touserdata(J, 2, TAG_INT_ARRAY);
+
+            const char *zip_name = js_tostring(J, 1);
+            if (zip_entry_open(z->zip, zip_name) < 0) {
+                js_error(J, "Could create '%s' in ZIP (zip_entry_open)!", zip_name);
+                return;
+            }
+
+            uint8_t *data = malloc(ia->size);
+            if (!data) {
+                JS_ENOMEM(J);
+                return;
+            }
+
+            for (int i = 0; i < ia->size; i++) {
+                data[i] = ia->data[i];
+            }
+            if (zip_entry_write(z->zip, data, ia->size) < 0) {
                 js_error(J, "Could create '%s' in ZIP (zip_entry_write)!", zip_name);
                 free(data);
                 return;
@@ -465,6 +559,8 @@ void init_zipfile(js_State *J) {
         NPROTDEF(J, Zip, ExtractFile, 2);
         NPROTDEF(J, Zip, WriteBytes, 2);
         NPROTDEF(J, Zip, ReadBytes, 1);
+        NPROTDEF(J, Zip, WriteInts, 2);
+        NPROTDEF(J, Zip, ReadInts, 1);
     }
     CTORDEF(J, new_Zip, TAG_ZIP, 3);
 

@@ -156,7 +156,7 @@ Checkout DOjS from Github:
 git clone https://github.com/SuperIlu/DOjS.git
 ```
 
-Open the `Makefile` and `3dfx/texus/Makefile` in a text editor and change the path to DJGPP according to your installation.
+Open the `Makefile` in a text editor and change the path to DJGPP according to your installation.
 If you used Windows-Tools to check out DOjS from git you may need to fix the newlines of the shell scripts by using `make fixnewlines`.
 
 Now you are ready to compile DOjS with `make clean all`. This might take some time as the dependencies are quite a large.
@@ -171,16 +171,13 @@ See the [changelog](/CHANGELOG.md) for the projects history.
 # Planed work
 * Error popup in the editor.
 * TCP/IP remote logging/debugging.
+* add loading of DXEs through JS.
 * Add ZIP file functions (e.g. https://libzip.org/users/ or https://github.com/kuba--/zip).
     * Implement 3df file loading from ZIP
 * Make FreeDOS package.
-* Replace PNG loading with http://alpng.sourceforge.net/ to reduce DOjS size
-* Implement HTTP client by using cURL or similar (https://www.watt-32.net/misc/)
-    * look into HTTPS
 * add/implement some more math functions
     * https://mathjs.org/
     * https://github.com/evanw/lightgl.js
-* Try to speed up `ReadBytes()` and `WriteBytes()` by not using JS arrays
 * Fix bugs!
 * Anything fun...
 
@@ -232,14 +229,31 @@ p5js is is released under **LGPL**.
 
 The examples are licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-## libpng
-[libpng](http://www.libpng.org/pub/png/libpng.html) is released under [PNG Reference Library License version 2](http://www.libpng.org/pub/png/src/libpng-LICENSE.txt)
-
 ## zlib
 [zlib](http://www.zlib.net/) is released under [zlib license](http://www.zlib.net/zlib_license.html).
 
-## loadpng
-[loadpng](https://tjaden.strangesoft.net/loadpng/) is placed in the public domain.
+## alpng
+Copyright (c) 2006 Michal Molhanec
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute
+it freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented;
+     you must not claim that you wrote the original software.
+     If you use this software in a product, an acknowledgment
+     in the product documentation would be appreciated but
+     is not required.
+
+  2. Altered source versions must be plainly marked as such,
+     and must not be misrepresented as being the original software.
+
+  3. This notice may not be removed or altered from any
+     source distribution.
 
 ## zip code
 [zip](https://github.com/kuba--/zip) is licensed by UNLICENSE
@@ -273,6 +287,13 @@ Portions of this code were written or enhanced by others and offerred
 to me for distribution in WATTCP under my copyright.  To my knowledge,
 all copyrights exercised are listed at the top of this file.  If this
 is incorrect, please contact me so I can rectify the situation.
+
+## cURL
+See LICENSE file.
+
+## OpenSSL
+The OpenSSL toolkit stays under a double license, i.e. both the conditions of
+the OpenSSL License and the original SSLeay license apply to the toolkit.
 
 # Usage
 ## Command line

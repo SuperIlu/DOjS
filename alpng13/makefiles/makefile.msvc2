@@ -1,0 +1,35 @@
+# AllegroPNG
+# MS Visual C++ with Crypto++
+
+SOURCES = src\alpng_save.c src\alpng_interlacing.c src\alpng_filereader.c src\alpng_drawer.c src\alpng_common.c src\alpng_filters.c src\quantization\octree.c src\wrappers\cryptopp_zlib.cpp
+
+OBJECTS = objects\alpng_save.obj objects\alpng_interlacing.obj objects\alpng_filereader.obj objects\alpng_drawer.obj objects\alpng_common.obj objects\alpng_filters.obj objects\octree.obj objects\cryptopp_zlib.obj
+
+all: alpng.lib ex01.exe
+
+alpng.lib: $(OBJECTS)
+	lib /nologo /out:alpng.lib $**
+
+{}.c{objects/}.obj:
+	cl $(CFLAGS) /nologo /MD /O2 /Isrc /c /DALPNG_ZLIB=2 /Fo$@ $<
+
+{src\}.c{objects/}.obj:
+	cl $(CFLAGS) /nologo /MD /O2 /Isrc /c /DALPNG_ZLIB=2 /Fo$@ $<
+
+{src\inflate\}.c{objects/}.obj:
+	cl $(CFLAGS) /nologo /MD /O2 /Isrc /c /DALPNG_ZLIB=2 /Fo$@ $<
+
+{src\wrappers\}.cpp{objects/}.obj:
+	cl $(CXXFLAGS) /nologo /EHsc /MD /O2 /Isrc /c /DALPNG_ZLIB=2 /Fo$@ $<
+
+{src\quantization\}.c{objects/}.obj:
+	cl $(CFLAGS) /nologo /MD /O2 /Isrc /c  /Fo$@ $<
+
+ex01.exe: objects\ex01.obj alpng.lib
+	link /nologo /libpath:. /out:$@ $** alleg.lib cryptlib.lib
+
+clean: 
+	del alpng.lib 2> nul
+	del ex01.exe 2> nul
+	del objects\*.obj 2> nul
+	del ex01.exe.manifest 2> nul

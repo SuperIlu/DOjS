@@ -1,3 +1,4 @@
+LoadLibrary("png");
 Include('p5');
 
 var pics;

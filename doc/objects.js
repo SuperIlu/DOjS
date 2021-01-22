@@ -163,3 +163,4 @@ class IpAddress { }
  * @type HTTPResult
  */
 class HTTPResult { }
+

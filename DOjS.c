@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,33 +25,33 @@ SOFTWARE.
 #include <conio.h>
 #include <glide.h>
 #include <jsi.h>
+#include <dos.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <strings.h>
+#include <dlfcn.h>
 
 #include "3dfx-glide.h"
 #include "3dfx-state.h"
 #include "3dfx-texinfo.h"
-#include "a3d.h"
 #include "bitmap.h"
 #include "color.h"
-#include "comport.h"
 #include "edit.h"
 #include "file.h"
 #include "font.h"
 #include "funcs.h"
 #include "gfx.h"
-#include "ipx.h"
 #include "joystick.h"
 #include "midiplay.h"
 #include "socket.h"
 #include "sound.h"
 #include "util.h"
 #include "watt.h"
-#include "zbuffer.h"
 #include "zip.h"
 #include "zipfile.h"
 #include "lowlevel.h"
+#include "intarray.h"
 
 #define TICK_DELAY 10  //!< system tick handler interval in ms
 #define AUTOSTART_FILE "=MAIN.JS"
@@ -92,7 +92,7 @@ static void usage() {
     fputs("    -x             : Allow raw disk write (CAUTION!)\n", stderr);
     fputs("\n", stderr);
     fputs("This is DOjS " DOSJS_VERSION_STR "\n", stderr);
-    fputs("(c) 2019-2020 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
+    fputs("(c) 2019-2021 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
     fputs("See LICENSE for detailed licensing information.\n", stderr);
     fputs("\n", stderr);
     exit(1);
@@ -265,34 +265,6 @@ static void dojs_loadfile_zip(js_State *J, const char *fname) {
 }
 
 /**
- * @brief load and parse a file from filesystem or ZIP.
- *
- * @param J VM state.
- * @param fname filename, ZIP-files using ZIP_DELIM.
- *
- * @return int TRUE if successfull, FALSE if not.
- */
-static int dojs_do_file(js_State *J, const char *fname) {
-    char *delim = strchr(fname, ZIP_DELIM);
-    if (!delim) {
-        DEBUGF("Parsing plain file '%s'\n", fname);
-        return js_dofile(J, fname);
-    } else {
-        if (js_try(J)) {
-            js_report(J, js_trystring(J, -1, "Error"));
-            js_pop(J, 1);
-            return 1;
-        }
-        dojs_loadfile_zip(J, fname);
-        js_pushundefined(J);
-        js_call(J, 0);
-        js_pop(J, 1);
-        js_endtry(J);
-        return 0;
-    }
-}
-
-/**
  * @brief load all system include JS files either from ZIP (if found) or from file system.
  *
  * @param J VM state.
@@ -304,8 +276,6 @@ static void dojs_load_jsboot(js_State *J) {
         dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_FUNC);
         dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_COLOR);
         dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_FILE);
-        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_IPX);
-        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_A3D);
         dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_3DFX);
         dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_SOCKET);
     } else {
@@ -314,8 +284,6 @@ static void dojs_load_jsboot(js_State *J) {
         dojs_do_file(J, JSINC_FUNC);
         dojs_do_file(J, JSINC_COLOR);
         dojs_do_file(J, JSINC_FILE);
-        dojs_do_file(J, JSINC_IPX);
-        dojs_do_file(J, JSINC_A3D);
         dojs_do_file(J, JSINC_3DFX);
         dojs_do_file(J, JSINC_SOCKET);
     }
@@ -377,6 +345,24 @@ static void *dojs_alloc(void *actx, void *ptr, int size) {
 #endif
 
 /**
+ * @brief call shutdown() on all registered libraries
+ */
+static void dojs_shutdown_libraries() {
+    if (DOjS.loaded_libraries) {
+        library_t *chain = DOjS.loaded_libraries;
+        while (chain) {
+            DEBUGF("%p: Library shutdown for %s. Shutdown function %p\n", chain, chain->name, chain->shutdown);
+
+            // call shutdown if any
+            if (chain->shutdown) {
+                chain->shutdown();
+            }
+            chain = chain->next;
+        }
+    }
+}
+
+/**
  * @brief run the given script.
  *
  * @param argc number of parameters.
@@ -385,6 +371,7 @@ static void *dojs_alloc(void *actx, void *ptr, int size) {
  */
 static void run_script(int argc, char **argv, int args) {
     js_State *J;
+
     // create logfile
     DOjS.logfile = fopen(LOGFILE, "a");
     setbuf(DOjS.logfile, 0);
@@ -393,8 +380,16 @@ static void run_script(int argc, char **argv, int args) {
     freopen("STDERR.DJS", "a", stderr);
 #endif
 
-    // create VM
+    // (re)init out DOjS struct
     DOjS.num_allocs = 0;
+    DOjS.exit_key = KEY_ESC;  // the exit key that will stop the script
+    DOjS.sys_ticks = 0;
+    DOjS.glide_enabled = false;
+    DOjS.mouse_available = false;
+    DOjS.mouse_visible = false;
+    DOjS.lastError = NULL;
+
+    // create VM
     J = js_newstate(dojs_alloc, NULL, 0);
     js_atpanic(J, Panic);
     js_setreport(J, Report);
@@ -402,13 +397,12 @@ static void run_script(int argc, char **argv, int args) {
     // write startup message
     LOG("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
     LOGF("DOjS %s (%s %s) starting with file %s\n", DOSJS_VERSION_STR, __DATE__, __TIME__, DOjS.params.script);
+    DEBUGF("Running on %s %d.%d\n", _os_flavor, _osmajor, _osminor);
 #ifdef DEBUG_ENABLED
     // ut_dumpVideoModes();
 #endif
 
     // detect hardware and initialize subsystems
-    DOjS.exit_key = KEY_ESC;  // the exit key that will stop the script
-    DOjS.sys_ticks = 0;
     allegro_init();
     install_timer();
     LOCK_VARIABLE(DOjS.sys_ticks);
@@ -423,13 +417,10 @@ static void run_script(int argc, char **argv, int args) {
         DOjS.mouse_visible = true;
     } else {
         LOGF("NO Mouse detected: %s\n", allegro_error);
-        DOjS.mouse_available = false;
     }
     PROPDEF_B(J, DOjS.mouse_available, "MOUSE_AVAILABLE");
-    DOjS.glide_enabled = false;
     init_sound(J);  // sound init must be before midi init!
     init_midi(J);
-    init_ipx(J);
     init_funcs(J, argc, argv, args);  // must be called after initalizing the booleans above!
     init_lowlevel(J);
     init_gfx(J);
@@ -437,16 +428,14 @@ static void run_script(int argc, char **argv, int args) {
     init_bitmap(J);
     init_font(J);
     init_file(J);
-    init_a3d(J);
-    init_zbuffer(J);
     init_3dfx(J);
     init_texinfo(J);
     init_fxstate(J);
     init_joystick(J);
-    init_comport(J);
     init_watt(J);
     init_socket(J);
     init_zipfile(J);
+    init_intarray(J);
 
     // create canvas
     bool screenSuccess = true;
@@ -481,7 +470,7 @@ static void run_script(int argc, char **argv, int args) {
         DOjS.render_bm = DOjS.current_bm = create_bitmap(SCREEN_W, SCREEN_H);
         clear_bitmap(DOjS.render_bm);
         DOjS.transparency_available = !DOjS.params.no_alpha;
-        update_transparency();
+        dojs_update_transparency();
 
         DEBUGF("GFX_Capabilities=%08X\n", gfx_capabilities);
 
@@ -489,7 +478,6 @@ static void run_script(int argc, char **argv, int args) {
         dojs_load_jsboot(J);
 
         // load main file
-        DOjS.lastError = NULL;
         if (dojs_do_file(J, DOjS.params.script) == 0) {
             // call setup()
             DOjS.keep_running = true;
@@ -547,14 +535,12 @@ static void run_script(int argc, char **argv, int args) {
         }
     }
     LOG("DOjS Shutdown...\n");
+    js_freestate(J);
+    dojs_shutdown_libraries();
     shutdown_midi();
     shutdown_sound();
     shutdown_joystick();
-    shutdown_ipx();
     shutdown_3dfx();
-    shutdown_comport();
-    js_gc(J, 0);
-    js_freestate(J);
     fclose(DOjS.logfile);
     allegro_exit();
     textmode(C80);
@@ -570,7 +556,104 @@ static void run_script(int argc, char **argv, int args) {
 /***********************
 ** exported functions **
 ***********************/
-void update_transparency() {
+/**
+ * @brief load and parse a file from filesystem or ZIP.
+ *
+ * @param J VM state.
+ * @param fname filename, ZIP-files using ZIP_DELIM.
+ *
+ * @return int TRUE if successfull, FALSE if not.
+ */
+int dojs_do_file(js_State *J, const char *fname) {
+    char *delim = strchr(fname, ZIP_DELIM);
+    if (!delim) {
+        DEBUGF("Parsing plain file '%s'\n", fname);
+        return js_dofile(J, fname);
+    } else {
+        if (js_try(J)) {
+            js_report(J, js_trystring(J, -1, "Error"));
+            js_pop(J, 1);
+            return 1;
+        }
+        dojs_loadfile_zip(J, fname);
+        js_pushundefined(J);
+        js_call(J, 0);
+        js_pop(J, 1);
+        js_endtry(J);
+        return 0;
+    }
+}
+
+/**
+ * @brief register a library.
+ *
+ * @param name pointer to a name. This function will make a copy of the string.
+ * @param handle the handle returned by dlopen().
+ * @param init the init function.
+ * @param shutdown function to be called for shutdown or NULL.
+ *
+ * @return true if registration succeeded, else false.
+ */
+bool dojs_register_library(const char *name, void *handle, void (*init)(js_State *J), void (*shutdown)(void)) {
+    DEBUGF("Registering library %s. Shutdown function %p\n", name, shutdown);
+
+    // get new entry
+    library_t *new_entry = calloc(1, sizeof(library_t));
+    if (!new_entry) {
+        LOGF("WARNING: Could not register shutdown hook for loaded library %s!", name);
+        return false;
+    }
+
+    // copy name
+    char *name_copy = malloc(strlen(name) + 1);
+    if (!name_copy) {
+        LOGF("WARNING: Could not register shutdown hook for loaded library %s!", name);
+        free(new_entry);
+        return false;
+    }
+    strcpy(name_copy, name);
+
+    // store values
+    new_entry->name = name_copy;
+    new_entry->handle = handle;
+    new_entry->init = init;
+    new_entry->shutdown = shutdown;
+    DEBUGF("%s: Created %p with init=%p and shutdown=%p\n", new_entry->name, new_entry, new_entry->init, new_entry->shutdown);
+
+    // insert at start of list
+    new_entry->next = DOjS.loaded_libraries;
+    DOjS.loaded_libraries = new_entry;
+    return true;
+}
+
+/**
+ * @brief check if a given library is already registered. Call init() if wanted
+ *
+ * @param J VM state.
+ * @param name name to search for.
+ * @param call_init true to call the init function, else false.
+ * @return true if the librari is already in the list, else false.
+ */
+bool dojs_check_library(js_State *J, const char *name, bool call_init) {
+    if (DOjS.loaded_libraries) {
+        library_t *chain = DOjS.loaded_libraries;
+        while (chain) {
+            if (strcmp(name, chain->name) == 0) {
+                DEBUGF("%s: Found %p\n", chain->name, chain);
+                if (call_init) {
+                    DEBUGF("%s: Calling %p\n", chain->name, chain->init);
+                    chain->init(J);
+                }
+                return true;
+            }
+
+            chain = chain->next;
+        }
+    }
+    return false;
+}
+
+void dojs_update_transparency() {
     if (DOjS.transparency_available) {
         set_blender_mode(my_blender, my_blender, my_blender, 0, 0, 0, 0);
         drawing_mode(DRAW_MODE_TRANS, DOjS.render_bm, 0, 0);
@@ -588,15 +671,10 @@ void update_transparency() {
  * @return int exit code.
  */
 int main(int argc, char **argv) {
-    DOjS.params.script = NULL;
-    DOjS.params.run = false;
-    DOjS.params.highres = false;
-    DOjS.params.no_sound = false;
-    DOjS.params.no_fm = false;
-    DOjS.params.no_alpha = false;
+    // initialize DOjS main structure
+    bzero(&DOjS, sizeof(DOjS));
     DOjS.params.width = 640;
     DOjS.params.bpp = 32;
-    DOjS.params.raw_write = false;
     int opt;
 
     // check parameters

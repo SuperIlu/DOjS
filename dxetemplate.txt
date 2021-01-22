@@ -1,0 +1,315 @@
+#include <allegro.h>
+#include <allegro/internal/aintern.h>
+#include <allegro/platform/aintdos.h>
+#include <assert.h>
+#include <bios.h>
+#include <conio.h>
+#include <ctype.h>
+#include <dirent.h>
+#include <dpmi.h>
+#include <go32.h>
+#include <io.h>
+#include <netdb.h>
+#include <pc.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <strings.h>
+#include <sys/exceptn.h>
+#include <sys/farptr.h>
+#include <sys/movedata.h>
+#include <sys/stat.h>
+#include <tcp.h>
+#include <termios.h>
+#include <time.h>
+#include <unistd.h>
+#include <zlib.h>
+
+#include "DOjS.h"
+#include "intarray.h"
+#include "util.h"
+#include "zipfile.h"
+
+// symbols without include file from libgcc
+extern BOOL _watt_do_exit;
+extern long __divdi3 (long A, long B);
+extern long __moddi3 (long A, long B);
+extern unsigned long __udivdi3 (unsigned long A, unsigned long B);
+extern unsigned long __udivmoddi4 (unsigned long A, unsigned long B, unsigned long *C);
+extern unsigned long __umoddi3 (unsigned long A, unsigned long B);
+
+// stdio/files
+close
+close_s
+closedir
+fclose
+fdopen
+feof
+ferror
+fflush
+fgetc
+fgets
+fileno
+fopen
+fprintf
+fputc
+fputs
+fread
+freeaddrinfo
+fseek
+fstat
+ftell
+fwrite
+getc
+getch
+lseek
+mkdir
+open
+opendir
+printf
+putc
+puts
+read
+read_s
+readdir
+rename
+rmdir
+snprintf
+sprintf
+sscanf
+stat
+strerror
+unlink
+vfprintf
+write
+
+// time
+clock
+delay
+gettimeofday
+gmtime
+localtime
+sleep
+strftime
+time
+
+// copy/move/strings
+atoi
+bzero
+memchr
+memcmp
+memcpy
+memmove
+memset
+strcasecmp
+strcat
+strchr
+strcmp
+strcpy
+strcspn
+strdup
+stricmp
+strlen
+strncasecmp
+strncmp
+strncpy
+strpbrk
+strrchr
+strspn
+strstr
+strtol
+strtoul
+
+// memory/system
+abort
+atexit
+calloc
+errno
+fcntl
+free
+getenv
+malloc
+qsort
+raise
+realloc
+signal
+
+// gcc/djgpp/lowlevel
+__divdi3
+__dj_assert
+__dj_ctype_flags
+__dj_ctype_tolower
+__dj_stderr
+__dj_stdin
+__dj_stdout
+__djgpp_ds_alias
+__dpmi_allocate_dos_memory
+__dpmi_free_dos_memory
+__dpmi_get_protected_mode_interrupt_vector
+__dpmi_int
+__dpmi_int
+__dpmi_set_protected_mode_interrupt_vector
+__dpmi_simulate_real_mode_interrupt
+__moddi3
+__udivdi3
+__udivmoddi4
+__umoddi3
+_farpeekb
+_farpeekw
+_get_dos_version
+_go32_dpmi_allocate_dos_memory
+_go32_dpmi_allocate_real_mode_callback_retf
+_go32_dpmi_lock_code
+_go32_dpmi_lock_data
+_go32_info_block
+_os_flavor
+_osmajor
+_osminor
+biosprint
+dosmemget
+dosmemput
+inportb
+inportl
+inportw
+outportb
+outportl
+outportw
+
+// allegro
+_bitmap_has_alpha
+_color_load_depth
+_fixup_loaded_bitmap
+_install_irq
+_persp_xoffset_f
+_persp_xscale_f
+_persp_yoffset_f
+_persp_yscale_f
+_remove_irq
+_rgb_a_shift_32
+_rgb_b_shift_15
+_rgb_b_shift_16
+_rgb_b_shift_24
+_rgb_b_shift_32
+_rgb_g_shift_15
+_rgb_g_shift_16
+_rgb_g_shift_24
+_rgb_g_shift_32
+_rgb_r_shift_15
+_rgb_r_shift_16
+_rgb_r_shift_24
+_rgb_r_shift_32
+_rgb_scale_5
+_rgb_scale_6
+_timer_installed
+allegro_error
+apply_matrix_f
+clear_scene
+clear_zbuffer
+clip3d_f
+create_bitmap_ex
+create_scene
+create_zbuffer
+destroy_bitmap
+destroy_scene
+destroy_zbuffer
+generate_332_palette
+get_palette
+get_rotation_matrix_f
+get_transformation_matrix_f
+get_x_rotate_matrix_f
+get_y_rotate_matrix_f
+get_z_rotate_matrix_f
+geta_depth
+getb_depth
+getg_depth
+getr_depth
+install_param_int
+install_timer
+matrix_mul_f
+pack_fclose
+pack_feof
+pack_ferror
+pack_fopen
+pack_fread
+pack_fseek
+pack_fwrite
+pack_getc
+pack_igetl
+pack_mgetl
+pack_mputl
+pack_putc
+register_bitmap_file_type
+register_datafile_object
+remove_param_int
+render_scene
+scene_gap
+scene_polygon3d_f
+select_palette
+set_projection_viewport
+set_zbuffer
+unselect_palette
+
+// zlib
+compress2
+compressBound
+inflate
+inflateEnd
+inflateInit_
+inflateInit2_
+uncompress
+zlibVersion
+
+// zipfile/DojS/util
+check_zipfile1
+check_zipfile2
+DOjS
+dojs_do_file
+read_zipfile1
+read_zipfile2
+ut_clone_string
+ut_file_exists
+
+// IntArray
+IntArray_create
+IntArray_destroy
+IntArray_fromStruct
+IntArray_push
+
+// watt32
+_watt_do_exit
+accept
+access
+basename
+bind
+chmod
+clearerr
+connect
+gai_strerror
+getaddrinfo
+getegid
+geteuid
+getgid
+gethostbyname
+getnameinfo
+getpid
+getsockname
+getsockopt
+getuid
+ioctlsocket
+isatty
+listen
+pathconf
+recv
+recvfrom
+select_s
+send
+sendto
+setbuf
+setmode
+setsockopt
+setvbuf
+shutdown
+socket
+tcgetattr
+tcsetattr
+watt_sock_init

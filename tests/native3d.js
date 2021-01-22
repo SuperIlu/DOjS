@@ -1,3 +1,5 @@
+LoadLibrary("al3d");
+
 var foo = 2;
 var cnt = 5;
 

@@ -6,6 +6,13 @@
 *.elf
 *.exe
 *.EXE
+*.dxe
+*.DXE
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
 
 # Libraries
 *.lib
@@ -17,16 +24,9 @@
 *.so.*
 *.dylib
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
 # dependencies
 *.d
+*.undef
 
 # other files
 edi.js
@@ -44,6 +44,7 @@ CWSDPMI.SWP
 stderr.txt
 stdout.txt
 miktest.c
+dexport.c
 
 # other dirs
 doc/html/
@@ -76,3 +77,43 @@ DOjS-cppcheck-build-dir/
 lpng1636/pnglibconf.h
 dzcomm/obj/djgpp/asmdef.s
 JSBOOT.ZIP
+cacert.pem
+curl-7.74.0/lib/curl_config.h
+openssl-1.1.1i/libcrypto.pc
+openssl-1.1.1i/libssl.pc
+openssl-1.1.1i/openssl.pc
+openssl-1.1.1i/crypto/buildinf.h
+openssl-1.1.1i/crypto/bf/bf-586.s
+openssl-1.1.1i/crypto/bn/bn-586.s
+openssl-1.1.1i/crypto/bn/co-586.s
+openssl-1.1.1i/crypto/bn/x86-gf2m.s
+openssl-1.1.1i/crypto/bn/x86-mont.s
+openssl-1.1.1i/crypto/camellia/cmll-x86.s
+openssl-1.1.1i/crypto/cast/cast-586.s
+openssl-1.1.1i/crypto/chacha/chacha-x86.s
+openssl-1.1.1i/crypto/des/crypt586.s
+openssl-1.1.1i/crypto/des/des-586.s
+openssl-1.1.1i/crypto/ec/ecp_nistz256-x86.s
+openssl-1.1.1i/crypto/md5/md5-586.s
+openssl-1.1.1i/crypto/modes/ghash-x86.s
+openssl-1.1.1i/crypto/poly1305/poly1305-x86.s
+openssl-1.1.1i/crypto/rc4/rc4-586.s
+openssl-1.1.1i/crypto/ripemd/rmd-586.s
+openssl-1.1.1i/crypto/sha/sha1-586.s
+openssl-1.1.1i/crypto/sha/sha256-586.s
+openssl-1.1.1i/crypto/sha/sha512-586.s
+openssl-1.1.1i/include/crypto/bn_conf.h
+openssl-1.1.1i/include/crypto/dso_conf.h
+openssl-1.1.1i/include/openssl/opensslconf.h
+5.BMP
+5.PCX
+5.PNG
+5.TGA
+SCR.BMP
+SCR.PCX
+SCR.PNG
+SCR.TGA
+TMP1.TMP
+TMP1.ZIP
+TMP2.TMP
+TMP2.ZIP

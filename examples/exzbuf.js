@@ -12,6 +12,7 @@
  *    other polygons due to per-polygon sorting, each pixel is drawn
  *    at the correct depth.
  */
+LoadLibrary("al3d");
 
 var cube1 =
 	[

@@ -27,6 +27,7 @@ typedef struct BITMAP_TYPE_INFO
 {
    char *ext;
    BITMAP *(*load)(AL_CONST char *filename, RGB *pal);
+   BITMAP *(*load_pf)(PACKFILE *f, RGB *pal);
    int (*save)(AL_CONST char *filename, BITMAP *bmp, AL_CONST RGB *pal);
    struct BITMAP_TYPE_INFO *next;
 } BITMAP_TYPE_INFO;
@@ -39,7 +40,7 @@ static BITMAP_TYPE_INFO *bitmap_type_list = NULL;
  *  Informs Allegro of a new image file type, telling it how to load and
  *  save files of this format (either function may be NULL).
  */
-void register_bitmap_file_type(AL_CONST char *ext, BITMAP *(*load)(AL_CONST char *filename, RGB *pal), int (*save)(AL_CONST char *filename, BITMAP *bmp, AL_CONST RGB *pal))
+void register_bitmap_file_type(AL_CONST char *ext, BITMAP *(*load)(AL_CONST char *filename, RGB *pal), int (*save)(AL_CONST char *filename, BITMAP *bmp, AL_CONST RGB *pal), BITMAP *(*load_pf)(PACKFILE *f, RGB *pal))
 {
    char tmp[32], *aext;
    BITMAP_TYPE_INFO *iter = bitmap_type_list;
@@ -56,6 +57,7 @@ void register_bitmap_file_type(AL_CONST char *ext, BITMAP *(*load)(AL_CONST char
 
    if (iter) {
       iter->load = load;
+      iter->load_pf = load_pf;
       iter->save = save;
       iter->ext = strdup(aext);
       iter->next = NULL;
@@ -79,6 +81,26 @@ BITMAP *load_bitmap(AL_CONST char *filename, RGB *pal)
       if (stricmp(iter->ext, aext) == 0) {
 	 if (iter->load)
 	    return iter->load(filename, pal);
+	 return NULL;
+      }
+   }
+
+   return NULL;
+}
+
+/* load_bitmap:
+ *  Loads a bitmap from disk.
+ */
+BITMAP *load_bitmap_pf(PACKFILE *f, RGB *pal, const char *aext)
+{
+   char tmp[32];
+   BITMAP_TYPE_INFO *iter;
+   ASSERT(f);
+
+   for (iter = bitmap_type_list; iter; iter = iter->next) {
+      if (stricmp(iter->ext, aext) == 0) {
+	 if (iter->load_pf)
+	    return iter->load_pf(f, pal);
 	 return NULL;
       }
    }
@@ -206,10 +228,10 @@ void _register_bitmap_file_type_init(void)
    _add_exit_func(register_bitmap_file_type_exit,
 		  "register_bitmap_file_type_exit");
 
-   register_bitmap_file_type(uconvert_ascii("bmp", buf), load_bmp, save_bmp);
-   register_bitmap_file_type(uconvert_ascii("lbm", buf), load_lbm, NULL);
-   register_bitmap_file_type(uconvert_ascii("pcx", buf), load_pcx, save_pcx);
-   register_bitmap_file_type(uconvert_ascii("tga", buf), load_tga, save_tga);
+   register_bitmap_file_type(uconvert_ascii("bmp", buf), load_bmp, save_bmp, load_bmp_pf);
+   register_bitmap_file_type(uconvert_ascii("lbm", buf), load_lbm, NULL, NULL);
+   register_bitmap_file_type(uconvert_ascii("pcx", buf), load_pcx, save_pcx, load_pcx_pf);
+   register_bitmap_file_type(uconvert_ascii("tga", buf), load_tga, save_tga, load_tga_pf);
 }
 
 

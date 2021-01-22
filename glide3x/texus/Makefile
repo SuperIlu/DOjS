@@ -1,7 +1,6 @@
 ###
 # TexUS makefile
 
-DJGPP=/home/ilu/djgpp/bin
 EXE=TEXUS.EXE
 CROSS_PLATFORM=i586-pc-msdosdjgpp-
 CC=$(DJGPP)/$(CROSS_PLATFORM)gcc

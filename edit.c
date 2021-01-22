@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -93,6 +93,28 @@ static char* edi_get_context(edi_t* edi);
 /*********************
 ** static functions **
 *********************/
+#ifdef DEBUG_ENABLED
+/**
+ * @brief dump current edi state
+ *
+ * @param edi the edi system to dump.
+ */
+void edi_dump(edi_t* edi) {
+    EDIF(
+        "\nDump\n"
+        "  width   = %d\n"
+        "  height  = %d\n"
+        "  x       = %d\n"
+        "  y       = %d\n"
+        "  num     = %d\n"
+        "  first   = %p\n"
+        "  current = %p\n"
+        "  top     = %p\n"
+        "  lasttop = %p\n",
+        edi->width, edi->height, edi->x, edi->y, edi->num, edi->first, edi->current, edi->top, edi->last_top);
+}
+#endif
+
 /**
  * @brief load file into edi at current line
  *
@@ -769,27 +791,29 @@ static void edi_do_del_sel(edi_t* edi) {
                 // move up until cursor is at line after selection start
                 while (edi->current != sLine->next) {
                     edi_do_up(edi);
-                    EDIF("UP cur=%p, sLine=%p, eLine=%p\n", edi->current, sLine, eLine);
+                    EDIF("UP cur=%p, sLine=%p, eLine=%p, top=%p [%s]\n", edi->current, sLine, eLine, edi->top, edi->current->txt);
                 }
             } else {
                 // move down once
                 edi_do_down(edi);
-                EDIF("DOWN cur=%p, sLine=%p, eLine=%p\n", edi->current, sLine, eLine);
+                EDIF("DOWN cur=%p, sLine=%p, eLine=%p, top=%p [%s]\n", edi->current, sLine, eLine, edi->top, edi->current->txt);
             }
 
             // now we are at the line after selection start, delete all lines until sLine is next to eLine
             while (sLine->next != eLine) {
+                EDIF("DEL cur=%p, sLine=%p, eLine=%p, top=%p [%s]\n", edi->current, sLine, eLine, edi->top, edi->current->txt);
                 edi_do_del_line(edi);
-                EDIF("DEL cur=%p, sLine=%p, eLine=%p\n", edi->current, sLine, eLine);
             }
             edi_do_up(edi);
             edi->x = cnp.startX;
+            EDIF("UP2 cur=%p, sLine=%p, eLine=%p, top=%p [%s]\n", edi->current, sLine, eLine, edi->top, edi->current->txt);
 
             // now lines are next to each other and cursor at start of selection
             int del_length = (sLine->length - cnp.startX) + cnp.endX + 1;
             for (int i = 0; i < del_length; i++) {
                 EDIF("Now at %d, '%s'\n", edi->x, sLine->txt);
                 edi_do_del(edi);
+                EDIF("DEL2 cur=%p, sLine=%p, eLine=%p, top=%p [%s]\n", edi->current, sLine, eLine, edi->top, edi->current->txt);
             }
         }
         edi_clear_selection(edi);

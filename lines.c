@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -96,6 +96,9 @@ void lin_shutdown(edi_t* edi) {
         lin_removeline(edi, l);
         l = next;
     }
+#ifdef EDI_FAST
+    free(edi->screen);
+#endif
     free(edi);
 }
 
@@ -215,8 +218,11 @@ void lin_removeline(edi_t* edi, line_t* l) {
             }
         }
 
-        if (l == edi->first) {  // fix up first line in list and on screen
+        // fix up first line in list and on screen
+        if (l == edi->first) {
             edi->first = edi->current;
+        }
+        if (l == edi->top) {
             edi->top = edi->current;
         }
 

@@ -215,10 +215,6 @@ int js_strictequal(js_State *J);
 int js_instanceof(js_State *J);
 const char *js_typeof(js_State *J, int idx);
 
-void js_repr(js_State *J, int idx);
-const char *js_torepr(js_State *J, int idx);
-const char *js_tryrepr(js_State *J, int idx, const char *error);
-
 #ifdef __cplusplus
 }
 #endif

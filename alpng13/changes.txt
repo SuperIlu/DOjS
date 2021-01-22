@@ -1,0 +1,16 @@
+1.3  2006-06-08
+[+] Official DJGPP support.
+[+] Added support for specifying window dimensions and better usage help
+    to the example program.
+[+] Small speed improvement in PNG loading.
+[+] Faster internal inflate.
+
+1.2  2006-04-20
+[+] Made the quantization much faster.
+[+] Added this changelog.
+
+1.1  2006-04-18
+[+] Added octree color quantization.
+
+1.0  2006-04-16
+[*] First public final release.

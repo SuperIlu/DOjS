@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,6 @@ SOFTWARE.
 #include "bitmap.h"
 
 #include <allegro.h>
-#include <loadpng.h>
 #include <mujs.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +48,7 @@ SOFTWARE.
 static void Bitmap_Finalize(js_State *J, void *data) {
     BITMAP *bm = (BITMAP *)data;
 
-    DEBUGF("finalize 0x%p\n", data);
+    DEBUGF("%s: finalize 0x%p\n", __PRETTY_FUNCTION__, data);
 
     // safeguard of someone GCs our current Bitmap
     if (DOjS.current_bm == bm) {
@@ -159,17 +158,7 @@ static void new_Bitmap(js_State *J) {
                 js_error(J, "Can't load image '%s'", fname);
                 return;
             }
-            if (stricmp("bmp", ut_getFilenameExt(fname)) == 0) {
-                bm = load_bmp_pf(pf, NULL);
-            } else if (stricmp("tga", ut_getFilenameExt(fname)) == 0) {
-                bm = load_tga_pf(pf, NULL);
-            } else if (stricmp("pcx", ut_getFilenameExt(fname)) == 0) {
-                bm = load_pcx_pf(pf, NULL);
-            } else if (stricmp("png", ut_getFilenameExt(fname)) == 0) {
-                bm = load_png_pf(pf, NULL);
-            } else {
-                bm = NULL;
-            }
+            bm = load_bitmap_pf(pf, NULL, ut_getFilenameExt(fname));
             pack_fclose(pf);
 
             if (!bm) {
@@ -206,13 +195,13 @@ static void new_Bitmap(js_State *J) {
 
     // add properties
     js_pushstring(J, fname);
-    js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTCONF);
 
     js_pushnumber(J, bm->w);
-    js_defproperty(J, -2, "width", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "width", JS_READONLY | JS_DONTCONF);
 
     js_pushnumber(J, bm->h);
-    js_defproperty(J, -2, "height", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "height", JS_READONLY | JS_DONTCONF);
 }
 
 /**
@@ -379,24 +368,6 @@ static void Bitmap_SaveTgaImage(js_State *J) {
     }
 }
 
-/**
- * @brief save Bitmap to file.
- * SavePngImage(fname:string)
- *
- * @param J the JS context.
- */
-static void Bitmap_SavePngImage(js_State *J) {
-    BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
-    const char *fname = js_tostring(J, 1);
-
-    PALETTE pal;
-    get_palette(pal);
-
-    if (save_png(fname, bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save Bitmap to PNG file '%s': %s", fname, allegro_error);
-    }
-}
-
 /***********************
 ** exported functions **
 ***********************/
@@ -407,9 +378,6 @@ static void Bitmap_SavePngImage(js_State *J) {
  */
 void init_bitmap(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
-
-    /* Make Allegro aware of PNG file format. */
-    register_png_file_type();
 
     // define the Bitmap() object
     js_newobject(J);
@@ -422,7 +390,6 @@ void init_bitmap(js_State *J) {
         NPROTDEF(J, Bitmap, SaveBmpImage, 1);
         NPROTDEF(J, Bitmap, SavePcxImage, 1);
         NPROTDEF(J, Bitmap, SaveTgaImage, 1);
-        NPROTDEF(J, Bitmap, SavePngImage, 1);
 #ifdef LFB_3DFX
         NPROTDEF(J, Bitmap, FxDrawLfb, 4);
 #endif

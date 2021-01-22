@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -149,6 +149,10 @@ typedef struct _cnp {
 /***********************
 ** exported functions **
 ***********************/
+#ifdef DEBUG_ENABLED
+void edi_dump(edi_t *edi);
+#endif
+
 extern edi_exit_t edi_edit(char *fname, bool highres);
 extern void edi_clear_selection(edi_t *edi);
 

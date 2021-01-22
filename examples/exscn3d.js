@@ -10,6 +10,7 @@
  *    rotating 3d cubes.
  *
  */
+LoadLibrary("al3d");
 
 var MAX_CUBES = 4;
 

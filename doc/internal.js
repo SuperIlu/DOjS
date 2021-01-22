@@ -54,6 +54,20 @@ DOJS_VERSION = 0.0;
 ARGS = [];
 
 /**
+ * Load and initialize a native library (DXE). Native libraries must reside in the directory jSH.EXE was started from!
+ * 
+ * @param {string} name the base name of the library (e.g. if the library is called "foo.dxe" on disk you need to call LoadLibrary("foo")).
+ */
+function LoadLibrary(name) { }
+
+/**
+ * Get a list of loaded native libraries.
+ * 
+ * @return {string[]} a list of loaded libraries.
+ */
+function GetLoadedLibraries() { }
+
+/**
  * IPX network functions.
  * 
  * @module ipx
@@ -421,6 +435,10 @@ function SaveTgaImage(fname) { }
 
 /**
  * Save current screen to PNG file.
+ * Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function!
+ * 
+ * @see LoadLibrary()
+ * 
  * @param {string} fname filename.
  */
 function SavePngImage(fname) { }
@@ -1473,3 +1491,58 @@ function Resolve(host) { }
  * @returns {string} The name of the host or an exception.
  */
 function ResolveIp(ip) { }
+
+/**
+ * @module rawdisk
+ * RawWrite() only works when DOjS was started with "-x"
+ */
+
+/**
+ * @returns {number} number of FDD found in system.
+ */
+function GetNumberOfFDD() { }
+
+/**
+ * @returns {number} number of HDD found in system.
+ */
+function GetNumberOfHDD() { }
+
+/**
+ * query the status if a given disk.
+ * 
+ * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
+ * 
+ * @returns {number} disk status.
+ * 
+ * @see http://www.ctyme.com/intr/rb-0606.htm
+ */
+function GetDiskStatus(disk) { }
+
+/**
+ * get number of (LBA) sectors for a drive.
+ * 
+ * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
+ * 
+ * @returns {number} number of sectors for that disk.
+ */
+function GetRawSectorSize(drive) { }
+
+/**
+ * read a disk sector.
+ * 
+ * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
+ * @param {number} sector number 0..GetRawSectorSize()
+ * 
+ * @returns {number[]} an array with 512 bytes.
+ */
+function RawRead(disk, sector) { }
+
+/**
+ * write a disk sector.
+ * RawWrite() only works when DOjS was started with "-x"
+ * 
+ * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
+ * @param {number} sector number 0..GetRawSectorSize()
+ * @param {number[]} data an array with 512 bytes.
+ */
+function RawWrite(disk, sector, data) { }

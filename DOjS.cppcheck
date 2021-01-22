@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="1">
     <builddir>DOjS-cppcheck-build-dir</builddir>
-    <platform>Unspecified</platform>
+    <platform>unix32</platform>
     <analyze-all-vs-configs>false</analyze-all-vs-configs>
     <check-headers>true</check-headers>
     <check-unused-templates>false</check-unused-templates>
@@ -18,11 +18,12 @@
         <path name="watt32-2.2dev.rel.11/"/>
         <path name="glide3x/texus/"/>
         <path name="mujs-1.0.5/"/>
-        <path name="loadpng-1.5/"/>
-        <path name="lpng1636/"/>
         <path name="mujs-1.0.7/"/>
         <path name="zip/"/>
         <path name="zlib-1.2.11/"/>
         <path name="cylindrix/"/>
+        <path name="alpng13/"/>
+        <path name="openssl-1.1.1i/"/>
+        <path name="curl-7.74.0/"/>
     </exclude>
 </project>

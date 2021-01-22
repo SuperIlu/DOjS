@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ SOFTWARE.
 
 #include "DOjS.h"
 #include "file.h"
+#include "intarray.h"
 
 /************
 ** defines **
@@ -90,11 +91,20 @@ static void new_File(js_State *J) {
     f->file = fopen(fname, mode);
     if (!f->file) {
         js_error(J, "cannot open file '%s': %s", fname, strerror(errno));
+        free(f);
+        return;
     }
 
     js_currentfunction(J);
     js_getproperty(J, -1, "prototype");
     js_newuserdata(J, TAG_FILE, f, File_Finalize);
+
+    // add properties
+    js_pushstring(J, fname);
+    js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTCONF);
+
+    js_pushstring(J, mode);
+    js_defproperty(J, -2, "mode", JS_READONLY | JS_DONTCONF);
 }
 
 /**
@@ -150,6 +160,42 @@ static void File_ReadBytes(js_State *J) {
             idx++;
             ch = getc(f->file);
         }
+    }
+}
+
+/**
+ * @brief return the remaining bytes from the file as IntArray.
+ * file.ReadInts():IntArray
+ *
+ * @param J VM state.
+ */
+static void File_ReadInts(js_State *J) {
+    file_t *f = js_touserdata(J, 0, TAG_FILE);
+    if (!f->file) {
+        js_error(J, "File was closed!");
+        return;
+    }
+
+    if (f->writeable) {
+        js_error(J, "File was opened for writing!");
+        return;
+    } else {
+        int_array_t *ia = IntArray_create();
+        if (!ia) {
+            JS_ENOMEM(J);
+            return;
+        }
+
+        int ch = getc(f->file);
+        while (ch != EOF) {
+            if (IntArray_push(ia, 0xFF & ch) < 0) {
+                IntArray_destroy(ia);
+                JS_ENOMEM(J);
+                return;
+            }
+            ch = getc(f->file);
+        }
+        IntArray_fromStruct(J, ia);
     }
 }
 
@@ -279,6 +325,37 @@ static void File_WriteBytes(js_State *J) {
 }
 
 /**
+ * @brief write a bytes to a file.
+ * file.WriteInts(data:IntArray)
+ *
+ * @param J VM state.
+ */
+static void File_WriteInts(js_State *J) {
+    file_t *f = js_touserdata(J, 0, TAG_FILE);
+    if (!f->file) {
+        js_error(J, "File was closed!");
+        return;
+    }
+
+    JS_CHECKTYPE(J, 1, TAG_INT_ARRAY);
+
+    if (!f->writeable) {
+        js_error(J, "File was opened for reading!");
+        return;
+    } else {
+        if (js_isuserdata(J, 1, TAG_INT_ARRAY)) {
+            int_array_t *ia = js_touserdata(J, 1, TAG_INT_ARRAY);
+
+            for (int i = 0; i < ia->size; i++) {
+                fputc(ia->data[i], f->file);
+            }
+        } else {
+            JS_ENOARR(J);
+        }
+    }
+}
+
+/**
  * @brief write a string (terminated by a NEWLINE) to a file.
  * file.WriteLine(txt:string)
  *
@@ -342,10 +419,12 @@ void init_file(js_State *J) {
     {
         NPROTDEF(J, File, ReadByte, 0);
         NPROTDEF(J, File, ReadBytes, 0);
+        NPROTDEF(J, File, ReadInts, 0);
         NPROTDEF(J, File, ReadLine, 0);
         NPROTDEF(J, File, Close, 0);
         NPROTDEF(J, File, WriteByte, 1);
         NPROTDEF(J, File, WriteBytes, 1);
+        NPROTDEF(J, File, WriteInts, 1);
         NPROTDEF(J, File, WriteLine, 1);
         NPROTDEF(J, File, WriteString, 1);
         NPROTDEF(J, File, GetSize, 0);

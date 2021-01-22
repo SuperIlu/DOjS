@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,23 @@ SOFTWARE.
 /***********************
 ** exported functions **
 ***********************/
+/**
+ * make a persistent copy of a string
+ *
+ * @param str the string to copy.
+ *
+ * @return a newly malloced() string or NULL if out of memory.
+ */
+char *ut_clone_string(const char *str) {
+    size_t len = strlen(str + 1);
+    char *ret = malloc(len);
+    if (!ret) {
+        return NULL;
+    }
+    strncpy(ret, str, len);
+    return ret;
+}
+
 /**
  * @brief check if string ends with suffix.
  *

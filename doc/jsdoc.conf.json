@@ -1,9 +1,21 @@
 {
 	"source": {
 		"include": [
+			"Bitmap.js",
+			"COMPort.js",
+			"Curl.js",
+			"File.js",
+			"Font.js",
+			"FxState.js",
+			"IntArray.js",
+			"Midi.js",
+			"Sample.js",
+			"Socket.js",
+			"TextInfo.js",
+			"ZBuffer.js",
+			"Zip.js",
 			"internal.js",
 			"objects.js",
-			"classes.js",
 			"../jsboot/quadtree.js",
 			"../jsboot/socket.js",
 			"../jsboot/3dfx.js",
@@ -36,7 +48,7 @@
 			"outputSourceFiles": false
 		},
 		"better-docs": {
-			"name": "DOjS V1.3.0",
+			"name": "DOjS V1.4.0",
 			"hideGenerator": true,
 			"navLinks": [
 				{

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -212,31 +212,31 @@ static void new_Texinfo(js_State *J) {
 
     // add properties
     js_pushstring(J, fname);
-    js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "filename", JS_READONLY | JS_DONTCONF);
 
     js_pushnumber(J, ti->info.largeLodLog2);
-    js_defproperty(J, -2, "largeLod", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "largeLod", JS_READONLY | JS_DONTCONF);
 
     js_pushnumber(J, ti->info.smallLodLog2);
-    js_defproperty(J, -2, "smallLod", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "smallLod", JS_READONLY | JS_DONTCONF);
 
     js_pushnumber(J, ti->info.aspectRatioLog2);
-    js_defproperty(J, -2, "aspectRatio", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "aspectRatio", JS_READONLY | JS_DONTCONF);
 
     js_pushnumber(J, ti->info.format);
-    js_defproperty(J, -2, "format", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "format", JS_READONLY | JS_DONTCONF);
 
     js_pushnumber(J, ti->tableType);
-    js_defproperty(J, -2, "tableType", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "tableType", JS_READONLY | JS_DONTCONF);
 
     js_pushnumber(J, ti->textureSize);
-    js_defproperty(J, -2, "textureSize", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "textureSize", JS_READONLY | JS_DONTCONF);
 
     js_pushnumber(J, ti->startAddress);
-    js_defproperty(J, -2, "address", JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "address", JS_DONTCONF);
 
     js_pushnumber(J, ti->tmu);
-    js_defproperty(J, -2, "tmu", JS_DONTENUM | JS_DONTCONF);
+    js_defproperty(J, -2, "tmu", JS_DONTCONF);
 }
 
 /**

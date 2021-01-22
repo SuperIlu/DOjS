@@ -1,0 +1,37 @@
+# AllegroPNG
+# MinGW with Crypto++
+
+SOURCES = src/alpng_save.c src/alpng_interlacing.c src/alpng_filereader.c src/alpng_drawer.c src/alpng_common.c src/alpng_filters.c src/quantization/octree.c src/wrappers/cryptopp_zlib.cpp
+
+OBJECTS = objects/alpng_save.o objects/alpng_interlacing.o objects/alpng_filereader.o objects/alpng_drawer.o objects/alpng_common.o objects/alpng_filters.o objects/octree.o objects/cryptopp_zlib.o
+
+.PHONY: all clean
+
+all: libalpng.a ex01.exe
+
+libalpng.a: $(OBJECTS)
+	ar crs libalpng.a $?
+
+objects/%.o: %.c
+	gcc $(CFLAGS) -O3 -Wall -Wextra -ansi -Isrc -c $< -o $@ -DALPNG_ZLIB=2
+
+objects/%.o: src/%.c
+	gcc $(CFLAGS) -O3 -Wall -Wextra -ansi -Isrc -c $< -o $@ -DALPNG_ZLIB=2
+
+objects/%.o: src/inflate/%.c
+	gcc $(CFLAGS) -O3 -Wall -Wextra -ansi -Isrc -c $< -o $@ -DALPNG_ZLIB=2
+
+objects/%.o: src/wrappers/%.cpp
+	g++ $(CXXFLAGS) -O3 -Isrc -c $< -o $@ -DALPNG_ZLIB=2
+
+objects/%.o: src/quantization/%.c
+	gcc $(CFLAGS) -O3 -Wall -Wextra -ansi -Isrc -c $< -o $@ 
+
+ex01.exe: objects/ex01.o libalpng.a
+	gcc $(LDFLAGS) -mwindows -s -O3 -Wall -Wextra -ansi $^ -o $@ -Isrc -L. -lalleg -lcryptopp -lstdc++
+
+
+clean: 
+	del libalpng.a 2> nul
+	del ex01.exe 2> nul
+	del objects\*.o 2> nul

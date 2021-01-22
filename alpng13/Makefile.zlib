@@ -1,0 +1,34 @@
+# AllegroPNG
+# DJGPP with zlib
+###
+# Makefile originally by Michal Molhanec. Modified to work with DOjS by Andre Seidelt.
+CFLAGS=-MMD -Wall -std=gnu99 -O2 -march=i386 -mtune=i586 -ffast-math -fgnu89-inline -Wmissing-prototypes -I../$(ALLEGRO)/include -I../$(ZLIB) -Isrc
+
+SOURCES = src/alpng_save.c src/alpng_interlacing.c src/alpng_filereader.c src/alpng_drawer.c src/alpng_common.c src/alpng_filters.c src/quantization/octree.c src/wrappers/original_zlib.c
+
+OBJECTS = objects/alpng_save.o objects/alpng_interlacing.o objects/alpng_filereader.o objects/alpng_drawer.o objects/alpng_common.o objects/alpng_filters.o objects/octree.o objects/original_zlib.o
+
+.PHONY: all clean
+
+all: libalpng.a
+
+libalpng.a: $(OBJECTS)
+	$(AR) crs libalpng.a $?
+
+objects/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@ -DALPNG_ZLIB=1
+
+objects/%.o: src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ -DALPNG_ZLIB=1
+
+objects/%.o: src/inflate/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ -DALPNG_ZLIB=1
+
+objects/%.o: src/wrappers/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ -DALPNG_ZLIB=1
+
+objects/%.o: src/quantization/%.c
+	$(CC) $(CFLAGS) -c $< -o $@ 
+
+clean: 
+	rm -f libalpng.a objects/*.o

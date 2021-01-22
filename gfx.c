@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2020 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,6 @@ SOFTWARE.
 #include <string.h>
 #include <sys/stat.h>
 #include <time.h>
-#include <loadpng.h>
 
 #include "DOjS.h"
 #include "bitmap.h"
@@ -638,23 +637,6 @@ static void f_SaveTgaImage(js_State *J) {
 }
 
 /**
- * @brief save current screen to file.
- * SavePngImage(fname:string)
- *
- * @param J the JS context.
- */
-static void f_SavePngImage(js_State *J) {
-    const char *fname = js_tostring(J, 1);
-
-    PALETTE pal;
-    get_palette(pal);
-
-    if (save_png(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save screen to PNG file '%s': %s", fname, allegro_error);
-    }
-}
-
-/**
  * @brief get the color of an on-screen pixel.
  * GetPixel(x, y):Color
  *
@@ -674,7 +656,7 @@ static void f_GetPixel(js_State *J) {
  */
 static void f_TransparencyEnabled(js_State *J) {
     DOjS.transparency_available = js_toboolean(J, 1);
-    update_transparency();
+    dojs_update_transparency();
 }
 
 /**
@@ -688,6 +670,8 @@ static void f_SetRenderBitmap(js_State *J) {
         DOjS.current_bm = DOjS.render_bm;
         DEBUG("Restoring render_bm\n");
     } else {
+        JS_CHECKTYPE(J, 1, TAG_BITMAP);
+
         BITMAP *bm = js_touserdata(J, 1, TAG_BITMAP);
         DOjS.current_bm = bm;
         DEBUGF("Setting 0x%p\n", bm);
@@ -759,7 +743,6 @@ void init_gfx(js_State *J) {
     NFUNCDEF(J, SaveBmpImage, 1);
     NFUNCDEF(J, SavePcxImage, 1);
     NFUNCDEF(J, SaveTgaImage, 1);
-    NFUNCDEF(J, SavePngImage, 1);
 
     NFUNCDEF(J, GetPixel, 2);
     NFUNCDEF(J, DrawArray, 5);

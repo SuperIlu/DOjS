@@ -105,7 +105,7 @@ default: all
 # WATT_ROOT should be set during Watt-32 install.
 #
 WATT32_ROOT  = ../../watt32-2.2dev.rel.11
-OPENSSL_ROOT = ../../openssl-1.1.1i
+OPENSSL_ROOT = ../../openssl-1.1.1k
 ZLIB_ROOT    = ../../zlib-1.2.11
 LIBIDN_ROOT  = $(TOPDIR)/../IDN/libidn
 ARES_ROOT    = $(TOPDIR)/ares

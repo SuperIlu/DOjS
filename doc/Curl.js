@@ -1,5 +1,8 @@
 /**
  * Create a cURL instance for HTTP requests.
+ * 
+ * **Note: cURL module must be loaded by calling LoadLibrary("curl") before using!**
+ * 
  * @class
  */
 function Curl() { }

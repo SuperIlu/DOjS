@@ -37,8 +37,8 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 1.40          //!< version number
-#define DOSJS_VERSION_STR "V1.4.0"  //!< version number as string
+#define DOSJS_VERSION 1.50          //!< version number
+#define DOSJS_VERSION_STR "V1.5.0"  //!< version number as string
 
 #define JSBOOT_DIR "JSBOOT/"     //!< directory with boot files.
 #define JSBOOT_ZIP "JSBOOT.ZIP"  //!< filename for ZIP of JSBOOT

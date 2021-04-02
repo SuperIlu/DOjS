@@ -16,7 +16,7 @@ WATT32=watt32-2.2dev.rel.11/
 ZLIB=zlib-1.2.11
 KUBAZIP=zip
 ALPNG=alpng13
-OPENSSL=openssl-1.1.1i
+OPENSSL=openssl-1.1.1k
 CURL=curl-7.74.0
 
 # compiler
@@ -180,8 +180,8 @@ devzip: all doc
 	rm -f $(RELZIP)
 	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	cp openssl-1.1.1i/apps/openssl.exe .
-	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md JSBOOT.ZIP examples/*.js tests/*.js $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem openssl.exe *.DXE
+	cp $(OPENSSL)/apps/openssl.exe .
+	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md JSBOOT.ZIP examples/*.js tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem openssl.exe *.DXE
 	scp $(RELZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:

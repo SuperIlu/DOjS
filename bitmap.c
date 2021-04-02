@@ -132,7 +132,7 @@ static void new_Bitmap(js_State *J) {
 
         blit(DOjS.current_bm, bm, x, y, 0, 0, w, h);
     } else if (js_isnumber(J, 1) && js_isnumber(J, 2)) {
-        // new Bitmap(width, height)
+        // new Bitmap(width, height [, color])
         bm = create_bitmap_ex(32, js_tonumber(J, 1), js_tonumber(J, 2));
         if (!bm) {
             DEBUG("No Memory for Bitmap\n");
@@ -140,6 +140,11 @@ static void new_Bitmap(js_State *J) {
             return;
         }
         DEBUGF("new Bitmap 0x%p with data=%p\n", bm, bm->dat);
+
+        // clear with given color
+        if (js_isnumber(J, 3)) {
+            clear_to_color(bm, js_toint32(J, 3));
+        }
     } else if (js_isstring(J, 1)) {
         // new Bitmap("filename")
         fname = js_tostring(J, 1);

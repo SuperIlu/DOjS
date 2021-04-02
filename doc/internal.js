@@ -70,6 +70,8 @@ function GetLoadedLibraries() { }
 /**
  * IPX network functions.
  * 
+ * **Note: IPS module must be loaded by calling LoadLibrary("ipx") before using!**
+ * 
  * @module ipx
  */
 /**
@@ -435,7 +437,8 @@ function SaveTgaImage(fname) { }
 
 /**
  * Save current screen to PNG file.
- * Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function!
+ * 
+ * **Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function!**
  * 
  * @see LoadLibrary()
  * 
@@ -741,7 +744,9 @@ function GetBlue(c) { }
 function GetAlpha(c) { }
 
 /**
- * @module 3d
+ * **Note: al3d module must be loaded by calling LoadLibrary("al3d") before using!**
+ * 
+ * @module a3d
  */
 /**
  * This number (default value = 100.0) controls the behaviour of the z-sorting algorithm. When an edge is very close to another's polygon plane, there is an interval of uncertainty in which you cannot tell which object is visible (which z is smaller). This is due to cumulative numerical errors for edges that have undergone a lot of transformations and interpolations.<br/>
@@ -1493,8 +1498,8 @@ function Resolve(host) { }
 function ResolveIp(ip) { }
 
 /**
- * @module rawdisk
  * RawWrite() only works when DOjS was started with "-x"
+ * @module rawdisk
  */
 
 /**

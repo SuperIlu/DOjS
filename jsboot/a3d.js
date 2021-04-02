@@ -20,7 +20,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-/** @module a3d */
+/** 
+ * **Note: al3d module must be loaded by calling LoadLibrary("al3d") before using!**
+ * 
+ * @module a3d
+ */
 
 /**
  * polytype definition.

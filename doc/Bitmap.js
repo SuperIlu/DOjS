@@ -1,9 +1,10 @@
 /**
 * Load a BMP, TGA, PCX or PNG image.
-* Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function with PNG files!
+*
+* **Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function with PNG files!**
 * 
 * @see LoadLibrary()
-
+*
 * @constructor 
 * @param {string} filename name of the file.
 *//**
@@ -11,6 +12,7 @@
 * @constructor 
 * @param {number} width bitmap width.
 * @param {number} height bitmap width.
+* @param {number} [color] background color of the new bitmap.
 *//**
 * create Bitmap from integer array.
 * @constructor 
@@ -105,7 +107,8 @@ Bitmap.prototype.SavePcxImage = function (fname) { };
 Bitmap.prototype.SaveTgaImage = function (fname) { };
 /**
  * Save bitmap to PNG file.
- * Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function!
+ * 
+ * **Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function!**
  * 
  * @see LoadLibrary()
  * @param {string} fname filename.

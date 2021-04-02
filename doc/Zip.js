@@ -19,10 +19,10 @@ Zip.prototype.NumEntries = function () { };
 /**
  * get an array with the file entries in the ZIP.
  * 
- * @returns {*} an array containing the file entries of the ZIP in the following format:
+ * @returns {Object[]} an array containing the file entries of the ZIP in the following format:
  * @example
  * [
- *      [name:string, is_directory:bool, size:number, crc32:number],
+ *      {name:string, is_directory:bool, size:number, crc32:number},
  *      ...
  * ]
  */

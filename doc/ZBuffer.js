@@ -1,5 +1,8 @@
 /**
  * Create a ZBuffer. A ZBuffer must be set as current before using it.
+ * 
+ * **Note: al3d module must be loaded by calling LoadLibrary("al3d") before using!**
+ * 
  * @class
  * @param {Bitmap} bitmap the bitmap to draw to or null for the screen.
  */

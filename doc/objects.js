@@ -164,3 +164,44 @@ class IpAddress { }
  */
 class HTTPResult { }
 
+/**
+ * complex object containing the state information for all buttons and sticks.
+ * "-1" means "not available"
+ * @example
+{
+	"brand_str": "",
+	"cpu_clock": 55,
+	"cpu_clock_measure": 62,
+	"cpu_codename": "i486 DX-25/33",
+	"ext_family": 4,
+	"ext_model": 0,
+	"family": 4,
+	"features": [
+		"fpu"
+	],
+	"l1_data_assoc": -1,
+	"l1_data_cache": -1,
+	"l1_data_cacheline": -1,
+	"l1_instruction_assoc": -1,
+	"l1_instruction_cache": -1,
+	"l1_instruction_cacheline": -1,
+	"l2_assoc": -1,
+	"l2_cache": -1,
+	"l2_cacheline": -1,
+	"l3_assoc": -1,
+	"l3_cache": -1,
+	"l3_cacheline": -1,
+	"l4_assoc": -1,
+	"l4_cache": -1,
+	"l4_cacheline": -1,
+	"model": 0,
+	"num_cores": 1,
+	"num_logical_cpus": 1,
+	"sse_size": -1,
+	"stepping": 2,
+	"total_logical_cpus": 1,
+	"vendor": 0,
+	"vendor_str": "GenuineIntel"
+}
+ */
+class CpuInfo { }

@@ -23,7 +23,7 @@
         <path name="zlib-1.2.11/"/>
         <path name="cylindrix/"/>
         <path name="alpng13/"/>
-        <path name="openssl-1.1.1i/"/>
+        <path name="openssl-1.1.1k/"/>
         <path name="curl-7.74.0/"/>
     </exclude>
 </project>

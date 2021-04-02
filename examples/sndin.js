@@ -24,7 +24,11 @@ SOFTWARE.
 ** This function is called once when the script is started.
 */
 function Setup() {
-	Println("available=" + SNDIN_AVAILABLE);
+	Println("SNDIN_AVAILABLE=" + SNDIN_AVAILABLE);
+	Println("SNDIN_8BIT=" + SNDIN_8BIT);
+	Println("SNDIN_16BIT=" + SNDIN_16BIT);
+	Println("SNDIN_STEREO=" + SNDIN_STEREO);
+
 	SoundInputSource(SOUND.Input.LINE);
 	SoundStartInput(2000, 8, true);
 }

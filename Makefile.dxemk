@@ -4,7 +4,7 @@ clean distclean:
 	rm -rf *.DXE *.d *.o *.undef
 
 %.o: %.c
-	$(CC) -o $@ -c $(CFLAGS) $<
+	$(CC) -o $@ -c $(CFLAGS) $(DXE_CFLAGS) $<
 
 %.DXE: %.o $(DXE_FILES)
 	$(DXE3GEN) -o $@ $^ $(DXE_LDFLAGS) -U -E _init_ -E _shutdown_ -V | tee $(basename $@).undef | sort

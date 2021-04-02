@@ -56,6 +56,16 @@ RAW_HDD_FLAG = 0x80;
 RAW_BLOCKSIZE = 512;
 
 /**
+ * @property {number} Width screen width, alternative to calling SizeX()
+ */
+Width = SizeX();
+
+/**
+ * @property {number} Height screen height, alternative to calling SizeY()
+ */
+Height = SizeY();
+
+/**
  * print javascript debug output if DEBUG is true.
  * 
  * @param {string} str the message to print.
@@ -85,6 +95,15 @@ function _Debug(str) {
  */
 function Info(str) {
 	Println(">>>", str);
+}
+
+/**
+ * print an object as JSON to logfile.
+ * 
+ * @param {*} obj the object to print
+ */
+function Dump(obj) {
+	Println(JSON.stringify(obj));
 }
 
 /**
@@ -166,6 +185,14 @@ function Include(name) {
 		Debug("Include(toGlobal) " + key);
 		global[key] = e[key];
 	}
+}
+
+/**
+ * Alias for LoadLibrary().
+ * @see LoadLibrary()
+ */
+function LoadModule(name) {
+	LoadLibrary(name);
 }
 
 /**
@@ -364,6 +391,16 @@ StopWatch.prototype.Result = function (name) {
 StopWatch.prototype.Print = function (name) {
 	Println(this.Result(name));
 };
+
+/**
+ * get a random integer between [0..max[
+ * 
+ * @param {number} max max value to return (eclusive).
+ */
+function GetRandomInt(max) {
+	return Math.floor(Math.random() * Math.floor(max));
+}
+
 
 /**
  * Write the given value to io-port 80h to be displayed by a POST card.

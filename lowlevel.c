@@ -112,7 +112,7 @@ static void ll_dosput(const char *buff, int len) { dosmemput(buff, len, 16 * ll_
 static void ll_dosget(char *buff, int len) { dosmemget(16 * ll_dos_segment, len, buff); }
 
 /**
- * @brief get drive number from JS withs anity checks
+ * @brief get drive number from JS with sanity checks
  *
  * @param J VM state.
  * @param idx stack index
@@ -136,7 +136,7 @@ static int ll_get_drive(js_State *J, int idx) {
         unsigned long ptraddr = 0x0410;  // Base Address: segment is zero
         unsigned int eq_list = _farpeekw(_dos_ds, ptraddr);
 
-        int num_fdd = (0x01 & (eq_list >> 7)) + 1;
+        int num_fdd = (0x01 & (eq_list >> 6)) + 1;
         if (drive > num_fdd) {
             js_error(J, "drive parameter exeeds number of FDD!");
             return -1;
@@ -181,7 +181,7 @@ static bool ll_int41_extensions_check(int drive) {
  * @brief determine number of sectors for drives without int13,4x extension
  *
  * @param drive drive number
- * @return uint32_t number of sectors
+ * @return uint32_t number of sectors or 0 for error
  */
 static uint32_t ll_int08_drive_parameters(int drive) {
     __dpmi_regs r;
@@ -193,7 +193,7 @@ static uint32_t ll_int08_drive_parameters(int drive) {
     int ret = __dpmi_int(LL_DISK_INT, &r);
     if (ret == 0) {
         if (r.x.flags & 1) { /* is carry flag set?  */
-            return false;
+            return 0;
         }
         uint16_t heads = r.h.dh + 1;
         uint16_t sectors = r.h.cl & 0x3F;
@@ -208,7 +208,7 @@ static uint32_t ll_int08_drive_parameters(int drive) {
  * @brief determine number of sectors for drives with int13,4x extension
  *
  * @param drive drive number
- * @return uint32_t number of sectors
+ * @return uint32_t number of sectors or 0 for error
  */
 static uint32_t ll_int48_extended_drive_parameters(int drive) {
     char buffer[LL_DOSMEMSIZE];
@@ -431,6 +431,7 @@ static bool ll_int43_extended_write(int drive, uint64_t lba, char *buff) {
     memcpy(&buffer[LL_INT13_42_SIZE], buff, LL_BLOCKSIZE);  // copy data behind struct
     ll_dosput(buffer, LL_DOSMEMSIZE);                       // copy everything to dosmem
     r.h.ah = 0x43;                                          // http://www.ctyme.com/intr/rb-0710.htm
+    r.h.al = 0;
     r.h.dl = drive;
     r.x.ds = ll_dos_segment;
     r.x.si = 0;

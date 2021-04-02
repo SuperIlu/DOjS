@@ -1,3 +1,17 @@
+# Version 1.5.0 (The neuronal necessity)  / April 2, 2021
+* Added SQLite module
+* Added module for training/running neuronal networks
+* Added libcpuid module
+* Added NanoSVG module
+* Added global variables `Width`/`Height`
+* Added single parameter version of `Color()`
+* Added `Console` and `EvalChain` classes.
+* Added perlin noise module
+* You can now create single color Bitmaps with `new Bitmap(width, height, color)`
+* FIXED: small fixes for raw disk access.
+* FIXED: p5js `arc()` function is now somewhat useable (was completely broken before).
+* FIXED: Updated openssl to 1.1.1k
+
 # Version 1.4.0 (The curly conglomerate)  / Jan 22, 2021
 * Replaced loadpng+libpng by alpng to reduce EXE size.
 * Added fast integer array class `IntArray`

@@ -670,7 +670,7 @@ static void f_IpxGetLocalAddress(js_State *J) {
 }
 
 /**
- * @brief initialize fm music subsystem.
+ * @brief initialize ipx subsystem.
  *
  * @param J VM state.
  */
@@ -705,7 +705,7 @@ void init_ipx(js_State *J) {
 }
 
 /**
- * @brief shutdown fm music subsystem.
+ * @brief shutdown ipx subsystem.
  */
 void shutdown_ipx() {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);

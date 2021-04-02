@@ -23,18 +23,12 @@
 */
 
 
-/**
-* A QuadTree implementation in JavaScript, a 2d spatial subdivision algorithm.
-* @see http://www.mikechambers.com/blog/2011/03/21/javascript-quadtree-implementation/
-* @module QuadTree
-**/
-
 /****************** QuadTree ****************/
 
 /**
-* QuadTree data structure.
-* @class QuadTree
-* @constructor
+* A QuadTree implementation in JavaScript, a 2d spatial subdivision algorithm.
+* @see http://www.mikechambers.com/blog/2011/03/21/javascript-quadtree-implementation/
+* @class
 * @param {Object} An object representing the bounds of the top level of the QuadTree. The object 
 * should contain the following properties : x, y, width, height
 * @param {Boolean} pointQuad Whether the QuadTree will contain points (true), or items with bounds 
@@ -52,7 +46,7 @@ function QuadTree(bounds, pointQuad, maxDepth, maxChildren) {
 	}
 
 	this.root = node;
-}
+};
 
 /**
 * The root node of the QuadTree which covers the entire area being segmented.
@@ -64,7 +58,6 @@ QuadTree.prototype.root = null;
 
 /**
 * Inserts an item into the QuadTree.
-* @method insert
 * @param {Object|Array} item The item or Array of items to be inserted into the QuadTree. The item should expose x, y 
 * properties that represents its position in 2D space.
 **/
@@ -83,7 +76,6 @@ QuadTree.prototype.insert = function (item) {
 
 /**
 * Clears all nodes and children from the QuadTree
-* @method clear
 **/
 QuadTree.prototype.clear = function () {
 	this.root.clear();
@@ -92,7 +84,6 @@ QuadTree.prototype.clear = function () {
 /**
 * Retrieves all items / points in the same node as the specified item / point. If the specified item
 * overlaps the bounds of a node, then all children in both nodes will be returned.
-* @method retrieve
 * @param {Object} item An object representing a 2D coordinate point (with x, y properties), or a shape
 * with dimensions (x, y, width, height) properties.
 **/

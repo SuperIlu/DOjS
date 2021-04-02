@@ -1,29 +1,36 @@
 {
 	"source": {
 		"include": [
+			// internal functions and objects
+			"internal.js",
+			"objects.js",
+			// all classes
 			"Bitmap.js",
 			"COMPort.js",
+			"CpuId.js",
 			"Curl.js",
 			"File.js",
 			"Font.js",
 			"FxState.js",
 			"IntArray.js",
 			"Midi.js",
+			"Neural.js",
+			"Noise.js",
 			"Sample.js",
 			"Socket.js",
+			"SQLite.js",
 			"TextInfo.js",
 			"ZBuffer.js",
 			"Zip.js",
-			"internal.js",
-			"objects.js",
-			"../jsboot/quadtree.js",
-			"../jsboot/socket.js",
+			// everything from jsboot
 			"../jsboot/3dfx.js",
-			"../jsboot/func.js",
-			"../jsboot/color.js",
-			"../jsboot/file.js",
-			"../jsboot/ipx.js",
 			"../jsboot/a3d.js",
+			"../jsboot/color.js",
+			"../jsboot/console.js",
+			"../jsboot/evchain.js",
+			"../jsboot/file.js",
+			"../jsboot/func.js",
+			"../jsboot/ipx.js",
 			"../jsboot/p5.js",
 			"../jsboot/p5color.js",
 			"../jsboot/p5const.js",
@@ -31,10 +38,12 @@
 			"../jsboot/p5input.js",
 			"../jsboot/p5math.js",
 			"../jsboot/p5shape.js",
+			"../jsboot/p5trans.js",
 			"../jsboot/p5typo.js",
 			"../jsboot/p5util.js",
-			"../jsboot/p5trans.js",
-			"../jsboot/p5vect.js"
+			"../jsboot/p5vect.js",
+			"../jsboot/quadtree.js",
+			"../jsboot/socket.js"
 		],
 		"excludePattern": ""
 	},
@@ -43,12 +52,15 @@
 		"search": true,
 		"template": "/usr/local/lib/node_modules/better-docs"
 	},
+	"plugins": [
+		"plugins/markdown"
+	],
 	"templates": {
 		"default": {
 			"outputSourceFiles": false
 		},
 		"better-docs": {
-			"name": "DOjS V1.4.0",
+			"name": "DOjS V1.5.0",
 			"hideGenerator": true,
 			"navLinks": [
 				{

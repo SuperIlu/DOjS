@@ -1,6 +1,10 @@
 /**
  * open a COM port.
  * 
+ * **Note: COMPort module must be loaded by calling LoadLibrary("comport") before using!**
+ * 
+ * @see LoadLibrary()
+ * 
  * @class
  * @param {number} port one of COM.PORT: COM1, COM2, COM3, COM4.
  * @param {number} baud one of COM.BAUD: B50, B75, B110, B134, B150, B200, B300, B600, B1200, B1800, B2400, B4800, B9600, B19200, B38400, B57600, B115200

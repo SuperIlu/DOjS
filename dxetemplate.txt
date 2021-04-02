@@ -9,6 +9,7 @@
 #include <dpmi.h>
 #include <go32.h>
 #include <io.h>
+#include <math.h>
 #include <netdb.h>
 #include <pc.h>
 #include <signal.h>
@@ -36,12 +37,15 @@ extern long __divdi3 (long A, long B);
 extern long __moddi3 (long A, long B);
 extern unsigned long __udivdi3 (unsigned long A, unsigned long B);
 extern unsigned long __udivmoddi4 (unsigned long A, unsigned long B, unsigned long *C);
+extern long __divmoddi4 (long A, long B, long *C);
 extern unsigned long __umoddi3 (unsigned long A, unsigned long B);
 
 // stdio/files
 close
 close_s
 closedir
+fchmod
+fchown
 fclose
 fdopen
 feof
@@ -56,22 +60,29 @@ fputc
 fputs
 fread
 freeaddrinfo
+fscanf
 fseek
 fstat
+fsync
 ftell
+ftruncate
 fwrite
 getc
 getch
+getcwd
 lseek
+lstat
 mkdir
 open
 opendir
+perror
 printf
 putc
 puts
 read
 read_s
 readdir
+readlink
 rename
 rmdir
 snprintf
@@ -80,7 +91,9 @@ sscanf
 stat
 strerror
 unlink
+utimes
 vfprintf
+vsnprintf
 write
 
 // time
@@ -118,6 +131,7 @@ strrchr
 strspn
 strstr
 strtol
+strtoll
 strtoul
 
 // memory/system
@@ -134,11 +148,19 @@ raise
 realloc
 signal
 
+// math/random
+__fpclassifyd
+rand
+srand
+pow
+
 // gcc/djgpp/lowlevel
 __divdi3
+__divmoddi4
 __dj_assert
 __dj_ctype_flags
 __dj_ctype_tolower
+__dj_huge_valf
 __dj_stderr
 __dj_stdin
 __dj_stdout
@@ -203,6 +225,7 @@ _rgb_scale_6
 _timer_installed
 allegro_error
 apply_matrix_f
+clear_bitmap
 clear_scene
 clear_zbuffer
 clip3d_f

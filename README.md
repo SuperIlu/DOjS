@@ -14,10 +14,22 @@ DOjS is pronounces like [doge](https://en.wikipedia.org/wiki/Doge_(meme)), but e
 
 DOjS was only possible due to the work of these people/projects:
 * [MuJS](https://mujs.com/) JavaScript interpreter
-* The [Allegro library](https://liballeg.org/)
+* The [Allegro library](https://liballeg.org/) and [Allegro XC](https://github.com/msikma/allegro-4.2.2-xc)
 * [DJGPP](http://www.delorie.com/djgpp/) from DJ Delorie and the [Linux compile scripts](https://github.com/andrewwutw/build-djgpp) by Andrew Wu.
 * The people that contributed to [p5js](https://p5js.org/).
 * The Glide source cleanup of [Ozkan Sezer](https://github.com/sezero/glide).
+* [AllegroPNG](http://alpng.sourceforge.net/) PNG loader for Allegro
+* [DZCOMM](http://dzcomm.sourceforge.net/) COM port library
+* [libcpuid](https://github.com/anrieff/libcpuid) for cpuid module
+* [curl](https://curl.se/) and [OpenSSL](https://www.openssl.org/) for curl module
+* [cylindrix](https://sourceforge.net/projects/cylindrix/) for IPX module
+* [nanosvg](https://github.com/memononen/nanosvg) for SVG loading
+* [noise](https://github.com/stegu/perlin-noise) for perlin noise generation
+* [genann](https://github.com/codeplea/genann) for neural network engine
+* [SQLite](https://www.sqlite.org/index.html) for sqlite module
+* [Watt32](https://www.watt-32.net/) for TCP/IP networking
+* [zip](https://github.com/kuba--/zip) for ZIP file access
+* [zlib](http://zlib.net/)
 
 You can find me on [Twitter](https://twitter.com/dec_hl) if you want...
 
@@ -171,7 +183,8 @@ See the [changelog](/CHANGELOG.md) for the projects history.
 # Planed work
 * Error popup in the editor.
 * TCP/IP remote logging/debugging.
-* add loading of DXEs through JS.
+* add FFT module
+* Use IntArray for DSP sampling
 * Add ZIP file functions (e.g. https://libzip.org/users/ or https://github.com/kuba--/zip).
     * Implement 3df file loading from ZIP
 * Make FreeDOS package.
@@ -182,6 +195,8 @@ See the [changelog](/CHANGELOG.md) for the projects history.
 * Anything fun...
 
 # Licenses
+See [LICENSE](LICENSE) file for all licenses.
+
 ## DOjS
 All code from me is released under **MIT license**.
 
@@ -256,44 +271,32 @@ it freely, subject to the following restrictions:
      source distribution.
 
 ## zip code
-[zip](https://github.com/kuba--/zip) is licensed by UNLICENSE
+See UNLICENSE in zip directory.
 
 ## WATTCP
-WATTCP - TCP/IP library routines
-
-Copyright (c) 1990, 1991, 1992, 1993 Erick Engelke
-
-Portions Copyright (c) 1993  Quentin Smart
-Portions Copyright (c) 1991  University of Waterloo
-Portions Copyright (c) 1990  National Center for Supercomputer Applications
-Portions Copyright (c) 1990  Clarkson University
-Portions Copyright (c) 1983, 1986, Imagen Corporation
-
-    This software is distributed in the hope that it will be useful,
-    but without any warranty; without even the implied warranty of
-    merchantability or fitness for a particular purpose.
-
-**RESTRICTIONS**
-You may freely use this library to produce programs which you may give
-away or sell in source format, or as compiled executables, or both.
-
-You may not sell this library or a portion thereof or distribute modified
-versions the library code in either source or OBJect or LIBrary format
-without written permission from the author.  The author still maintains
-copyright privileges and will assert the privileges of ownership for
-purposes of royalties such distributions.
-
-Portions of this code were written or enhanced by others and offerred
-to me for distribution in WATTCP under my copyright.  To my knowledge,
-all copyrights exercised are listed at the top of this file.  If this
-is incorrect, please contact me so I can rectify the situation.
-
-## cURL
-See LICENSE file.
+See manual.txt in watt32 directory.
 
 ## OpenSSL
 The OpenSSL toolkit stays under a double license, i.e. both the conditions of
 the OpenSSL License and the original SSLeay license apply to the toolkit.
+
+## cURL
+See COPYING in curl directory.
+
+## genann
+See LICENSE in neural.dxelib.
+
+## sqlite
+See LICENSE.md in sqlite.dxelib.
+
+## libcpuid
+See COPYING in cpuid.dxelib.
+
+## nanosvg
+See LICENSE.txt in nanosvg.dxelib.
+
+## noise
+See LICENSE.md in noise.dxelib.
 
 # Usage
 ## Command line

@@ -1,5 +1,5 @@
 # DOjS
-## A DOS JavaScript Canvas with sound.
+## A DOS JavaScript Canvas with sound (p5js compatible).
 [DOjS](https://github.com/SuperIlu/DOjS) is a JavaScript programming environment for systems running MS-DOS, [FreeDOS](http://freedos.org/) or any DOS based Windows (like 95, 98, ME).
 It features an integrated editor, graphics & sound output, mouse/keyboard/joystick input and more (see below).
 It was inspired by [Processing](https://processing.org/) which is described on [Wikipedia](https://en.wikipedia.org/wiki/Processing_(programming_language)) as:

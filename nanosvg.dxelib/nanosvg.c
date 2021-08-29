@@ -27,12 +27,14 @@ SOFTWARE.
 #include <string.h>
 #include <float.h>
 #include <math.h>
+
 #define NANOSVG_IMPLEMENTATION
 #include "nanosvg.h"
 #define NANOSVGRAST_IMPLEMENTATION
 #include "nanosvgrast.h"
 
 void init_nanosvg(js_State *J);
+float fminf(float x, float y);
 
 /**
  * @brief render SVG file to bitmap.
@@ -49,7 +51,7 @@ static void Bitmap_RenderSVG(js_State *J) {
 
     image = nsvgParseFromFile(fname, "px", 96.0f);
     if (image == NULL) {
-        js_error(J, "Could not open SVG image.\n");
+        js_error(J, "Could not open SVG image '%s'.", fname);
         nsvgDeleteRasterizer(rast);
         nsvgDelete(image);
         return;
@@ -64,7 +66,7 @@ static void Bitmap_RenderSVG(js_State *J) {
 
     rast = nsvgCreateRasterizer();
     if (rast == NULL) {
-        js_error(J, "Could not init rasterizer.\n");
+        js_error(J, "Could not init rasterizer.");
         nsvgDeleteRasterizer(rast);
         nsvgDelete(image);
         return;
@@ -74,7 +76,7 @@ static void Bitmap_RenderSVG(js_State *J) {
     int img_size = bm->w * bm->h * sizeof(uint32_t);
     img = malloc(img_size);
     if (img == NULL) {
-        printf("Could not alloc image buffer.\n");
+        printf("Could not alloc image buffer.");
         nsvgDeleteRasterizer(rast);
         nsvgDelete(image);
         return;

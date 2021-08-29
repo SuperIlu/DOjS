@@ -1,5 +1,5 @@
 # DOjS
-## A DOS JavaScript Canvas with sound (p5js compatible).
+## A DOS JavaScript Canvas with sound.
 [DOjS](https://github.com/SuperIlu/DOjS) is a JavaScript programming environment for systems running MS-DOS, [FreeDOS](http://freedos.org/) or any DOS based Windows (like 95, 98, ME).
 It features an integrated editor, graphics & sound output, mouse/keyboard/joystick input and more (see below).
 It was inspired by [Processing](https://processing.org/) which is described on [Wikipedia](https://en.wikipedia.org/wiki/Processing_(programming_language)) as:
@@ -30,6 +30,8 @@ DOjS was only possible due to the work of these people/projects:
 * [Watt32](https://www.watt-32.net/) for TCP/IP networking
 * [zip](https://github.com/kuba--/zip) for ZIP file access
 * [zlib](http://zlib.net/)
+* [nanojpeg](http://keyj.emphy.de/nanojpeg/) for SVG loading
+* [AnimatedGIF](https://github.com/bitbank2/AnimatedGIF/) for rendering GIF animations.
 
 You can find me on [Twitter](https://twitter.com/dec_hl) if you want...
 
@@ -42,7 +44,7 @@ If you run it on real hardware you need at least a **80386 with 4MB**. I recomme
 
 The following hardware/functions are available:
 * 8/16/24 and 32 bit 2D graphics. On 24/32bit display modes alpha channel transparency is available.
-* BMP, PCX, TGA and PNG image reading and writing
+* BMP, PCX, TGA and PNG image reading and writing, JPEG and SVG loading
 * GRX font loading and rendering
 * Keyboard input
 * Mouse input
@@ -177,17 +179,18 @@ Now you are ready to compile DOjS with `make clean all`. This might take some ti
 ## 3dfx/Glide3
 In order to compile DOjS you need Glide3 includes and binaries. The ones included with the DOjS sources were created using my [glide repository](https://github.com/SuperIlu/glide) on GitHub. 
 
+## GRX Fonts
+DOjS comes pre-bundled with all fonts included with GRX (files ending with ".FNT"). If you want/need additional fonts you can find a very simple tool to convert TTF/BDF fonts to GRX format [here](https://github.com/SuperIlu/GrxFntConv). Results may vary...
+
 # History
 See the [changelog](/CHANGELOG.md) for the projects history.
 
 # Planed work
-* Error popup in the editor.
+* Stack trace selector in the editor
 * TCP/IP remote logging/debugging.
 * add FFT module
-* Use IntArray for DSP sampling
 * Add ZIP file functions (e.g. https://libzip.org/users/ or https://github.com/kuba--/zip).
     * Implement 3df file loading from ZIP
-* Make FreeDOS package.
 * add/implement some more math functions
     * https://mathjs.org/
     * https://github.com/evanw/lightgl.js
@@ -297,6 +300,12 @@ See LICENSE.txt in nanosvg.dxelib.
 
 ## noise
 See LICENSE.md in noise.dxelib.
+
+## nanojpeg
+See nanojpeg.c in jpeg.dxelib.
+
+## nanojpeg
+See LICENSE in gifanim.dxelib.
 
 # Usage
 ## Command line

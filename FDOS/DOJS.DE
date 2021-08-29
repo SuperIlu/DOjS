@@ -1,0 +1,5 @@
+Begin3
+Language:       de, 858
+Description:    Eine Javascript Programmierumgebung fuer DOS
+Summary:        DOjS ist ein JavaScript canvas mit Sound support. DOjS laeuft in Dosbox und auf echter Hardware oder eine virtuellen Maschine mit MS-DOS, FreeDOS oder jedem DOS basierten Windows wie Win95/98/ME. Auf echter Hardware wird mindestens ein 386er Prozessor und 4 MiB RAM benoetig. Fuer ernsthafte Anwendugen empfehle ich einen Pentium (>= 100MHz) mit 32MiB RAM.
+End

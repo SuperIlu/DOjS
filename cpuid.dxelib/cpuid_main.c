@@ -347,19 +347,19 @@ int cpuid_serialize_raw_data(struct cpu_raw_data_t* data, const char* filename) 
 
     fprintf(f, "version=%s\n", VERSION);
     for (i = 0; i < MAX_CPUID_LEVEL; i++)
-        fprintf(f, "basic_cpuid[%d]=%08x %08x %08x %08x\n", i, data->basic_cpuid[i][EAX], data->basic_cpuid[i][EBX], data->basic_cpuid[i][ECX], data->basic_cpuid[i][EDX]);
+        fprintf(f, "basic_cpuid[%d]=%08lx %08lx %08lx %08lx\n", i, data->basic_cpuid[i][EAX], data->basic_cpuid[i][EBX], data->basic_cpuid[i][ECX], data->basic_cpuid[i][EDX]);
     for (i = 0; i < MAX_EXT_CPUID_LEVEL; i++)
-        fprintf(f, "ext_cpuid[%d]=%08x %08x %08x %08x\n", i, data->ext_cpuid[i][EAX], data->ext_cpuid[i][EBX], data->ext_cpuid[i][ECX], data->ext_cpuid[i][EDX]);
+        fprintf(f, "ext_cpuid[%d]=%08lx %08lx %08lx %08lx\n", i, data->ext_cpuid[i][EAX], data->ext_cpuid[i][EBX], data->ext_cpuid[i][ECX], data->ext_cpuid[i][EDX]);
     for (i = 0; i < MAX_INTELFN4_LEVEL; i++)
-        fprintf(f, "intel_fn4[%d]=%08x %08x %08x %08x\n", i, data->intel_fn4[i][EAX], data->intel_fn4[i][EBX], data->intel_fn4[i][ECX], data->intel_fn4[i][EDX]);
+        fprintf(f, "intel_fn4[%d]=%08lx %08lx %08lx %08lx\n", i, data->intel_fn4[i][EAX], data->intel_fn4[i][EBX], data->intel_fn4[i][ECX], data->intel_fn4[i][EDX]);
     for (i = 0; i < MAX_INTELFN11_LEVEL; i++)
-        fprintf(f, "intel_fn11[%d]=%08x %08x %08x %08x\n", i, data->intel_fn11[i][EAX], data->intel_fn11[i][EBX], data->intel_fn11[i][ECX], data->intel_fn11[i][EDX]);
+        fprintf(f, "intel_fn11[%d]=%08lx %08lx %08lx %08lx\n", i, data->intel_fn11[i][EAX], data->intel_fn11[i][EBX], data->intel_fn11[i][ECX], data->intel_fn11[i][EDX]);
     for (i = 0; i < MAX_INTELFN12H_LEVEL; i++)
-        fprintf(f, "intel_fn12h[%d]=%08x %08x %08x %08x\n", i, data->intel_fn12h[i][EAX], data->intel_fn12h[i][EBX], data->intel_fn12h[i][ECX], data->intel_fn12h[i][EDX]);
+        fprintf(f, "intel_fn12h[%d]=%08lx %08lx %08lx %08lx\n", i, data->intel_fn12h[i][EAX], data->intel_fn12h[i][EBX], data->intel_fn12h[i][ECX], data->intel_fn12h[i][EDX]);
     for (i = 0; i < MAX_INTELFN14H_LEVEL; i++)
-        fprintf(f, "intel_fn14h[%d]=%08x %08x %08x %08x\n", i, data->intel_fn14h[i][EAX], data->intel_fn14h[i][EBX], data->intel_fn14h[i][ECX], data->intel_fn14h[i][EDX]);
+        fprintf(f, "intel_fn14h[%d]=%08lx %08lx %08lx %08lx\n", i, data->intel_fn14h[i][EAX], data->intel_fn14h[i][EBX], data->intel_fn14h[i][ECX], data->intel_fn14h[i][EDX]);
     for (i = 0; i < MAX_AMDFN8000001DH_LEVEL; i++)
-        fprintf(f, "amd_fn8000001dh[%d]=%08x %08x %08x %08x\n", i, data->amd_fn8000001dh[i][EAX], data->amd_fn8000001dh[i][EBX], data->amd_fn8000001dh[i][ECX],
+        fprintf(f, "amd_fn8000001dh[%d]=%08lx %08lx %08lx %08lx\n", i, data->amd_fn8000001dh[i][EAX], data->amd_fn8000001dh[i][EBX], data->amd_fn8000001dh[i][ECX],
                 data->amd_fn8000001dh[i][EDX]);
 
     if (strcmp(filename, "")) fclose(f);

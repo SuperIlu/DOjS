@@ -48,18 +48,18 @@ IntArray.prototype.Pop = function () { };
  */
 IntArray.prototype.Shift = function () { };
 /**
- * convert IntArray to Javascript array.
- * @returns {number[]} the contents of the IntArray as Javascript array.
- */
-IntArray.prototype.ToArray = function () { };
-/**
- * convert the contents of the IntArray to a string.This simply interpretes each number in the IntArray as an ASCII character(no filtering of NULL bytes or non printable characters and no UTF - 8 conversion).
- * @returns {string} the contents of the IntArray as a string(as far as possible).
- */
-IntArray.prototype.ToString = function () { };
-/**
  * append the contents of the Javascript array to the IntArray.
  *
  * @param {number[]|string[]} data numbers will be used as given, string arrays will be intepreted as "characters" and only the first char is added to the IntArray. Strings will be added char by char.
  */
 IntArray.prototype.Append = function (data) { };
+/*
+ * convert the contents of the IntArray to a string. This simply interpretes each number in the IntArray as an ASCII character (no filtering of NULL bytes or non printable characters and no UTF - 8 conversion).
+ * @returns {string} the contents of the IntArray as a string (as far as possible).
+ */
+IntArray.prototype.ToString = function () { };
+/*
+* convert IntArray to Javascript array.
+* @returns {number[]} the contents of the IntArray as Javascript array.
+*/
+IntArray.prototype.ToArray = function () { };

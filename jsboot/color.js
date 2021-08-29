@@ -94,6 +94,39 @@ EGA = {
 NO_COLOR = -1;
 
 /**
+ * blend mode definitions for TransparencyEnabled()
+ * 
+ * @property {number} REPLACE no blending at all
+ * @property {number} ALPHA alpha blending
+ * @property {number} ADD add with saturation
+ * @property {number} DARKEST min() with alpha
+ * @property {number} LIGHTEST max() with alpha
+ * @property {number} DIFFERENCE difference always yielding a positive value
+ * @property {number} EXCLUSION like difference but less contrast
+ * @property {number} MULTIPLY multiplication
+ * @property {number} SCREEN inverted multiplication
+ * @property {number} OVERLAY A combination of multiply and screen
+ * @property {number} HARD_LIGHT inverted OVERLAY
+ * @property {number} DOGE divides the bottom layer by the inverted top layer
+ * @property {number} BURN inverted doge
+ */
+BLEND = {
+	REPLACE: 0,
+	ALPHA: 1,
+	ADD: 2,
+	DARKEST: 3,
+	LIGHTEST: 4,
+	DIFFERENCE: 5,
+	EXCLUSION: 6,
+	MULTIPLY: 7,
+	SCREEN: 8,
+	OVERLAY: 9,
+	HARD_LIGHT: 10,
+	DOGE: 11,
+	BURN: 12,
+};
+
+/**
  * Create Color() from HSB[A].
  * 
  * @param {number} h the hue [0..255].

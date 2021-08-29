@@ -1,7 +1,8 @@
 /**
 * Load a BMP, TGA, PCX or PNG image.
 *
-* **Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function with PNG files!**
+* **Note: PNG module must be loaded by calling LoadLibrary("png") before using this function with PNG files!**
+* **Note: JPEG module must be loaded by calling LoadLibrary("jpeg") before loading JPEG files!**
 * 
 * @see LoadLibrary()
 *
@@ -108,7 +109,7 @@ Bitmap.prototype.SaveTgaImage = function (fname) { };
 /**
  * Save bitmap to PNG file.
  * 
- * **Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function!**
+ * **Note: PNG module must be loaded by calling LoadLibrary("png") before using this function!**
  * 
  * @see LoadLibrary()
  * @param {string} fname filename.

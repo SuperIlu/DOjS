@@ -118,6 +118,7 @@ static void f_fxInit(js_State *J) {
     fx_context = grSstWinOpen(0, GR_RESOLUTION_640x480, GR_REFRESH_60Hz, GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 1);
     if (!fx_context) {
         js_error(J, "Can't initialize GLIDE3.");
+        return;
     }
     DOjS.glide_enabled = true;
     grErrorSetCallback(fx_error_callback);
@@ -820,6 +821,15 @@ static void f_fxLfbConstantAlpha(js_State *J) { grLfbConstantAlpha(js_toint32(J,
 static void f_fxLfbConstantDepth(js_State *J) { grLfbConstantDepth(js_toint32(J, 1)); }
 #endif
 
+/**
+ * @brief initialize glide.
+ *
+ * @param J VM state.
+ */
+static void f_dummy_fxInit(js_State *J) {
+    js_error(J, "GLIDE3X.DXE missing, please run one of the V_x.BAT scripts to get the driver matching your hardware! All 3dfx functions are disabled!");
+}
+
 /***********************
 ** exported functions **
 ***********************/
@@ -831,103 +841,113 @@ static void f_fxLfbConstantDepth(js_State *J) { grLfbConstantDepth(js_toint32(J,
 void init_3dfx(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
 
-    PROPDEF_N(J, WIDTH_3DFX, "FX_WIDTH");
-    PROPDEF_N(J, HEIGHT_3DFX, "FX_HEIGHT");
+    FILE *f = fopen("GLIDE3X.DXE", "r");
+    if (!f) {
+        LOG("GLIDE3X.DXE missing, please run one of the V_x.BAT scripts to get the driver matching your hardware! All 3dfx functions are disabled!");
 
-    NFUNCDEF(J, fxInit, 0);
-    NFUNCDEF(J, fxShutdown, 0);
-    NFUNCDEF(J, fxSplash, 5);
-    NFUNCDEF(J, fxFlush, 0);
-    NFUNCDEF(J, fxResetVertexLayout, 0);
-    NFUNCDEF(J, fxVertexLayout, 1);
-    NFUNCDEF(J, fxGetVertexSize, 0);
-    NFUNCDEF(J, fxFinish, 0);
-    NFUNCDEF(J, fxBufferSwap, 1);
-    NFUNCDEF(J, fxBufferClear, 3);
-    NFUNCDEF(J, fxClipWindow, 4);
-    NFUNCDEF(J, fxDrawPoint, 1);
-    NFUNCDEF(J, fxDrawLine, 2);
-    NFUNCDEF(J, fxDrawTriangle, 3);
-    NFUNCDEF(J, fxConstantColorValue, 1);
-    NFUNCDEF(J, fxCullMode, 1);
-    NFUNCDEF(J, fxAlphaBlendFunction, 4);
-    NFUNCDEF(J, fxAlphaCombine, 5);
-    NFUNCDEF(J, fxColorCombine, 5);
-    NFUNCDEF(J, fxColorMask, 2);
-    NFUNCDEF(J, fxDepthMask, 1);
-    NFUNCDEF(J, fxDrawVertexArray, 2);
-    NFUNCDEF(J, fxEnable, 1);
-    NFUNCDEF(J, fxDisable, 1);
-    NFUNCDEF(J, fxDisableAllEffects, 0);
-    NFUNCDEF(J, fxAADrawTriangle, 6);
-    NFUNCDEF(J, fxDitherMode, 1);
-    NFUNCDEF(J, fxAlphaControlsITRGBLighting, 1);
-    NFUNCDEF(J, fxGammaCorrectionRGB, 3);
-    NFUNCDEF(J, fxOrigin, 1);
-    NFUNCDEF(J, fxRenderBuffer, 1);
-    NFUNCDEF(J, fxViewport, 4);
+        js_newcfunction(J, f_dummy_fxInit, "fxInit", 0);
+        js_setglobal(J, "fxInit");
 
-    NFUNCDEF(J, fxDepthBufferMode, 1);
-    NFUNCDEF(J, fxDepthBufferFunction, 1);
-    NFUNCDEF(J, fxDepthBiasLevel, 1);
-    NFUNCDEF(J, fxDepthRange, 2);
+    } else {
+        fclose(f);
 
-    NFUNCDEF(J, fxFogMode, 1);
-    NFUNCDEF(J, fxFogColorValue, 1);
-    NFUNCDEF(J, fxFogTableIndexToW, 0);
-    NFUNCDEF(J, fxFogTable, 1);
-    NFUNCDEF(J, fxFogGenerateExp, 1);
-    NFUNCDEF(J, fxFogGenerateExp2, 1);
-    NFUNCDEF(J, fxFogGenerateLinear, 2);
+        PROPDEF_N(J, WIDTH_3DFX, "FX_WIDTH");
+        PROPDEF_N(J, HEIGHT_3DFX, "FX_HEIGHT");
 
-    NFUNCDEF(J, fxChromakeyMode, 1);
-    NFUNCDEF(J, fxChromakeyValue, 1);
+        NFUNCDEF(J, fxInit, 0);
+        NFUNCDEF(J, fxShutdown, 0);
+        NFUNCDEF(J, fxSplash, 5);
+        NFUNCDEF(J, fxFlush, 0);
+        NFUNCDEF(J, fxResetVertexLayout, 0);
+        NFUNCDEF(J, fxVertexLayout, 1);
+        NFUNCDEF(J, fxGetVertexSize, 0);
+        NFUNCDEF(J, fxFinish, 0);
+        NFUNCDEF(J, fxBufferSwap, 1);
+        NFUNCDEF(J, fxBufferClear, 3);
+        NFUNCDEF(J, fxClipWindow, 4);
+        NFUNCDEF(J, fxDrawPoint, 1);
+        NFUNCDEF(J, fxDrawLine, 2);
+        NFUNCDEF(J, fxDrawTriangle, 3);
+        NFUNCDEF(J, fxConstantColorValue, 1);
+        NFUNCDEF(J, fxCullMode, 1);
+        NFUNCDEF(J, fxAlphaBlendFunction, 4);
+        NFUNCDEF(J, fxAlphaCombine, 5);
+        NFUNCDEF(J, fxColorCombine, 5);
+        NFUNCDEF(J, fxColorMask, 2);
+        NFUNCDEF(J, fxDepthMask, 1);
+        NFUNCDEF(J, fxDrawVertexArray, 2);
+        NFUNCDEF(J, fxEnable, 1);
+        NFUNCDEF(J, fxDisable, 1);
+        NFUNCDEF(J, fxDisableAllEffects, 0);
+        NFUNCDEF(J, fxAADrawTriangle, 6);
+        NFUNCDEF(J, fxDitherMode, 1);
+        NFUNCDEF(J, fxAlphaControlsITRGBLighting, 1);
+        NFUNCDEF(J, fxGammaCorrectionRGB, 3);
+        NFUNCDEF(J, fxOrigin, 1);
+        NFUNCDEF(J, fxRenderBuffer, 1);
+        NFUNCDEF(J, fxViewport, 4);
 
-    NFUNCDEF(J, fxAlphaTestFunction, 1);
-    NFUNCDEF(J, fxAlphaTestReferenceValue, 1);
+        NFUNCDEF(J, fxDepthBufferMode, 1);
+        NFUNCDEF(J, fxDepthBufferFunction, 1);
+        NFUNCDEF(J, fxDepthBiasLevel, 1);
+        NFUNCDEF(J, fxDepthRange, 2);
 
-    NFUNCDEF(J, fxTexFilterMode, 3);
-    NFUNCDEF(J, fxTexClampMode, 3);
-    NFUNCDEF(J, fxTexMipMapMode, 3);
-    NFUNCDEF(J, fxTexLodBiasValue, 2);
-    NFUNCDEF(J, fxTexCombine, 7);
-    NFUNCDEF(J, fxTexDetailControl, 4);
-    NFUNCDEF(J, fxTexNCCTable, 1);
+        NFUNCDEF(J, fxFogMode, 1);
+        NFUNCDEF(J, fxFogColorValue, 1);
+        NFUNCDEF(J, fxFogTableIndexToW, 0);
+        NFUNCDEF(J, fxFogTable, 1);
+        NFUNCDEF(J, fxFogGenerateExp, 1);
+        NFUNCDEF(J, fxFogGenerateExp2, 1);
+        NFUNCDEF(J, fxFogGenerateLinear, 2);
 
-    NFUNCDEF(J, fxTexCalcMemRequired, 4);
-    NFUNCDEF(J, fxTexMinAddress, 1);
-    NFUNCDEF(J, fxTexMaxAddress, 1);
+        NFUNCDEF(J, fxChromakeyMode, 1);
+        NFUNCDEF(J, fxChromakeyValue, 1);
 
-    // GrGet() values
-    NFUNCDEF(J, fxGetZDepthMinMax, 0);
-    NFUNCDEF(J, fxGetWDepthMinMax, 0);
+        NFUNCDEF(J, fxAlphaTestFunction, 1);
+        NFUNCDEF(J, fxAlphaTestReferenceValue, 1);
 
-    NFUNCDEF(J, fxGetBitsDepth, 0);
-    NFUNCDEF(J, fxGetFogTableEntries, 0);
-    NFUNCDEF(J, fxGetGammaTableEntries, 0);
-    NFUNCDEF(J, fxIsBusy, 0);
-    NFUNCDEF(J, fxGetMemoryFb, 0);
-    NFUNCDEF(J, fxGetMemoryTmu, 0);
-    NFUNCDEF(J, fxGetMemoryUma, 0);
-    NFUNCDEF(J, fxGetMaxTextureSize, 0);
-    NFUNCDEF(J, fxGetMaxTextureAspectRatio, 0);
-    NFUNCDEF(J, fxGetNumBoards, 0);
-    NFUNCDEF(J, fxGetNumFb, 0);
-    NFUNCDEF(J, fxGetNumTmu, 0);
-    NFUNCDEF(J, fxGetNumPendingBufferSwaps, 0);
-    NFUNCDEF(J, fxGetRevisionFb, 0);
-    NFUNCDEF(J, fxGetRevisionTmu, 0);
+        NFUNCDEF(J, fxTexFilterMode, 3);
+        NFUNCDEF(J, fxTexClampMode, 3);
+        NFUNCDEF(J, fxTexMipMapMode, 3);
+        NFUNCDEF(J, fxTexLodBiasValue, 2);
+        NFUNCDEF(J, fxTexCombine, 7);
+        NFUNCDEF(J, fxTexDetailControl, 4);
+        NFUNCDEF(J, fxTexNCCTable, 1);
+
+        NFUNCDEF(J, fxTexCalcMemRequired, 4);
+        NFUNCDEF(J, fxTexMinAddress, 1);
+        NFUNCDEF(J, fxTexMaxAddress, 1);
+
+        // GrGet() values
+        NFUNCDEF(J, fxGetZDepthMinMax, 0);
+        NFUNCDEF(J, fxGetWDepthMinMax, 0);
+
+        NFUNCDEF(J, fxGetBitsDepth, 0);
+        NFUNCDEF(J, fxGetFogTableEntries, 0);
+        NFUNCDEF(J, fxGetGammaTableEntries, 0);
+        NFUNCDEF(J, fxIsBusy, 0);
+        NFUNCDEF(J, fxGetMemoryFb, 0);
+        NFUNCDEF(J, fxGetMemoryTmu, 0);
+        NFUNCDEF(J, fxGetMemoryUma, 0);
+        NFUNCDEF(J, fxGetMaxTextureSize, 0);
+        NFUNCDEF(J, fxGetMaxTextureAspectRatio, 0);
+        NFUNCDEF(J, fxGetNumBoards, 0);
+        NFUNCDEF(J, fxGetNumFb, 0);
+        NFUNCDEF(J, fxGetNumTmu, 0);
+        NFUNCDEF(J, fxGetNumPendingBufferSwaps, 0);
+        NFUNCDEF(J, fxGetRevisionFb, 0);
+        NFUNCDEF(J, fxGetRevisionTmu, 0);
 
 #ifdef LFB_3DFX
-    NFUNCDEF(J, fxLfbConstantAlpha, 1);
-    NFUNCDEF(J, fxLfbConstantDepth, 1);
+        NFUNCDEF(J, fxLfbConstantAlpha, 1);
+        NFUNCDEF(J, fxLfbConstantDepth, 1);
 #endif
 
-    FxI32 num;
-    if (grGet(GR_NUM_BOARDS, sizeof(num), &num)) {
-        LOGF("3dfx cards detected: %ld\n", num);
+        FxI32 num;
+        if (grGet(GR_NUM_BOARDS, sizeof(num), &num)) {
+            LOGF("3dfx cards detected: %ld\n", num);
+        }
     }
-
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
 

@@ -1,8 +1,8 @@
 /*
-	This file was derived from the p5.js source code at
-	https://github.com/processing/p5.js
+    This file was derived from the p5.js source code at
+    https://github.com/processing/p5.js
 
-	Copyright (c) the p5.js contributors and Andre Seidelt <superilu@yahoo.com>
+    Copyright (c) the p5.js contributors and Andre Seidelt <superilu@yahoo.com>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -58,3 +58,21 @@ exports.RADIUS = 'radius';
 exports.RGB = 'rgb';
 exports.HSB = 'hsb';
 exports.HSL = 'hsl';
+
+// blend modes
+exports.BLEND = 'source-over';
+exports.REMOVE = 'destination-out';
+exports.ADD = 'lighter';
+exports.DARKEST = 'darken';
+exports.LIGHTEST = 'lighten';
+exports.DIFFERENCE = 'difference';
+exports.SUBTRACT = 'subtract';
+exports.EXCLUSION = 'exclusion';
+exports.MULTIPLY = 'multiply';
+exports.SCREEN = 'screen';
+exports.REPLACE = 'copy';
+exports.OVERLAY = 'overlay';
+exports.HARD_LIGHT = 'hard-light';
+exports.SOFT_LIGHT = 'soft-light';
+exports.DODGE = 'color-dodge';
+exports.BURN = 'color-burn';

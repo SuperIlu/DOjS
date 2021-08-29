@@ -7,7 +7,8 @@ clean distclean:
 	$(CC) -o $@ -c $(CFLAGS) $(DXE_CFLAGS) $<
 
 %.DXE: %.o $(DXE_FILES)
-	$(DXE3GEN) -o $@ $^ $(DXE_LDFLAGS) -U -E _init_ -E _shutdown_ -V | tee $(basename $@).undef | sort
+	# $(DXE3GEN) -o $@ $^ $(DXE_LDFLAGS) -U -E _init_ -E _shutdown_ -V | tee $(basename $@).undef | sort
+	$(DXE3GEN) -o $@ $^ $(DXE_LDFLAGS) -U -E _init_ -E _shutdown_ -V > $(basename $@).undef
 	cp $@ ..
 
 check_exports: $(DXE_NAME) ../$(DXE_TEMPLATE)

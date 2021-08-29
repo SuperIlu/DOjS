@@ -52,9 +52,10 @@ static void IntArray_Finalize(js_State *J, void *data) {
 }
 
 /**
- * TODO: create IntArray from Javascript array and string
  * @brief create an IntArray
  * ia = new IntARray()
+ * ia = new IntARray(s:string)
+ * ia = new IntARray(ar:number[])
  *
  * @param J VM state.
  */
@@ -70,6 +71,7 @@ static void new_IntArray(js_State *J) {
     // copy data if anything is provided
     if (js_isdefined(J, 1)) {
         if (js_isstring(J, 1)) {
+            // create IntArray from characters of a string
             const char *str = js_tostring(J, 1);
             while (*str) {
                 if (IntArray_push(ia, 0xFF & (*str)) < 0) {
@@ -80,6 +82,7 @@ static void new_IntArray(js_State *J) {
                 str++;
             }
         } else if (js_isarray(J, 1)) {
+            // create IntArray from number[] or char[]
             int len = js_getlength(J, 1);
 
             for (int i = 0; i < len; i++) {

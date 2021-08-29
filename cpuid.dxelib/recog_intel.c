@@ -360,7 +360,7 @@ const struct match_entry_t cpudb_intel[] = {
 	{  6, 14,  9, -1, 158,  4,    -1,    -1, NC, CORE_|_I_|_7  ,     0, "Kaby Lake-G (Core i7)"    },
 	{  6, 14,  9, -1, 158,  4,    -1,    -1, NC, CORE_|_I_|_5  ,     0, "Kaby Lake-G (Core i5)"    },
 	{  6, 14, 10, -1, 142,  4,    -1,    -1, NC, CORE_|_I_|_7  ,     0, "Kaby Lake-R (Core i7)"    }, /* i7-8550U + i7-8650U */
-	{  6, 14, 10, -1, 142,  4,    -1,    -1, NC, CORE_|_I_|_5  ,     0, "Kaby Lake-R (Core i5)"    }, /* i5-8250U + i5-8350U /*
+	{  6, 14, 10, -1, 142,  4,    -1,    -1, NC, CORE_|_I_|_5  ,     0, "Kaby Lake-R (Core i5)"    }, /* i5-8250U + i5-8350U */
 
 	/* Coffee Lake CPUs (8th gen, 14nm): */
 	{  6, 14, 10, -1, 158,  8,    -1,    -1, NC, CORE_|_I_|_9  ,     0, "Coffee Lake (Core i9)"    },
@@ -404,6 +404,12 @@ const struct match_entry_t cpudb_intel[] = {
 	{  6, 14, -1, -1, 126,  4,    -1,    -1, NC, CORE_|_I_|_7  ,_10xxx, "Ice Lake (Core i7)"       },
 	{  6, 14, -1, -1, 126,  4,    -1,    -1, NC, CORE_|_I_|_5  ,_10xxx, "Ice Lake (Core i5)"       },
 	{  6, 14, -1, -1, 126,  2,    -1,    -1, NC, CORE_|_I_|_3  ,_10xxx, "Ice Lake (Core i3)"       },
+
+	/* Rocket Lake CPUs (11th gen, 14nm): */
+	{  6, 7, -1, -1, 167,  -1,    -1,    -1, NC, CORE_|_I_|_9  ,_11xxx, "Rocket Lake (Core i9)"    },
+	{  6, 7, -1, -1, 167,  -1,    -1,    -1, NC, CORE_|_I_|_7  ,_11xxx, "Rocket Lake (Core i7)"    },
+	{  6, 7, -1, -1, 167,  -1,    -1,    -1, NC, CORE_|_I_|_5  ,_11xxx, "Rocket Lake (Core i5)"    },
+	{  6, 7, -1, -1, 167,  -1,    -1,    -1, NC, CORE_|_I_|_3  ,_11xxx, "Rocket Lake (Core i3)"    },
 
 	/* Goldmont Plus CPUs (14nm) */
 	{  6, 10, -1, -1, 122,  4,    -1,    -1, NC, PENTIUM_      ,     0, "Gemini Lake (Pentium)"    },

@@ -52,6 +52,7 @@ SOFTWARE.
 #include "zipfile.h"
 #include "lowlevel.h"
 #include "intarray.h"
+#include "blender.h"
 
 #define TICK_DELAY 10  //!< system tick handler interval in ms
 #define AUTOSTART_FILE "=MAIN.JS"
@@ -90,12 +91,43 @@ static void usage() {
     fputs("    -f             : No FM sound.\n", stderr);
     fputs("    -a             : Disable alpha (speeds up rendering).\n", stderr);
     fputs("    -x             : Allow raw disk write (CAUTION!)\n", stderr);
+    fputs("    -n             : Disable JSLOG.TXT.\n", stderr);
+    fputs("    -j <file>      : Redirect JSLOG.TXT to <file>.\n", stderr);
     fputs("\n", stderr);
     fputs("This is DOjS " DOSJS_VERSION_STR "\n", stderr);
     fputs("(c) 2019-2021 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
     fputs("See LICENSE for detailed licensing information.\n", stderr);
     fputs("\n", stderr);
     exit(1);
+}
+
+/**
+ * @brief initialize last error function.
+ */
+static void init_last_error() { DOjS.lastError = NULL; }
+
+/**
+ * @brief free any memnory of the last error.
+ */
+static void clear_last_error() {
+    if (DOjS.lastError) {
+        free(DOjS.lastError);
+        DOjS.lastError = NULL;
+    }
+}
+
+/**
+ * @brief Set the last error. the string data is copied to malloc()ed RAM.
+ *
+ * @param err the last error string.
+ */
+static void set_last_error(const char *err) {
+    clear_last_error();
+
+    DOjS.lastError = calloc(1, strlen(err + 1));
+    if (DOjS.lastError) {
+        strcpy(DOjS.lastError, err);
+    }
 }
 
 /**
@@ -111,7 +143,7 @@ static void Panic(js_State *J) { LOGF("!!! PANIC in %s !!!\n", J->filename); }
  * @param J VM state.
  */
 static void Report(js_State *J, const char *message) {
-    DOjS.lastError = message;
+    set_last_error(message);
     LOGF("%s\n", message);
 }
 
@@ -128,7 +160,7 @@ static bool callGlobal(js_State *J, const char *name) {
     js_getglobal(J, name);
     js_pushnull(J);
     if (js_pcall(J, 0)) {
-        DOjS.lastError = js_trystring(J, -1, "Error");
+        set_last_error(js_trystring(J, -1, "Error"));
         LOGF("Error calling %s: %s\n", name, DOjS.lastError);
         return false;
     }
@@ -190,43 +222,12 @@ static bool callInput(js_State *J) {
         js_setproperty(J, -2, "ticks");
     }
     if (js_pcall(J, 1)) {
-        DOjS.lastError = js_trystring(J, -1, "Error");
+        set_last_error(js_trystring(J, -1, "Error"));
         LOGF("Error calling Input(): %s\n", DOjS.lastError);
     }
     js_pop(J, 1);
 
     return ret;
-}
-
-/**
- * @brief alpha calculation function used with transparent colors.
- * see https://www.gamedev.net/forums/topic/34688-alpha-blend-formula/
- *
- * @param src the new color with the alpha information.
- * @param dest the existing color in the BITMAP.
- * @param n ignored.
- * @return unsigned long the color to put into the BITMAP.
- */
-static unsigned long my_blender(unsigned long src, unsigned long dest, unsigned long n) {
-    int a = (src >> 24) & 0xFF;
-    if (a >= 254) {
-        return src;  // no alpha, just return new color
-    } else {
-        int r1 = (src >> 16) & 0xFF;
-        int g1 = (src >> 8) & 0xFF;
-        int b1 = src & 0xFF;
-
-        int r2 = (dest >> 16) & 0xFF;
-        int g2 = (dest >> 8) & 0xFF;
-        int b2 = dest & 0xFF;
-
-        unsigned long ret = 0xFF000000 |                                          // alpha
-                            (((((a * (r1 - r2)) >> 8) + r2) << 16) & 0xFF0000) |  // new r
-                            (((((a * (g1 - g2)) >> 8) + g2) << 8) & 0x00FF00) |   // new g
-                            ((((a * (b1 - b2)) >> 8) + b2) & 0x0000FF);           // new b
-        // DEBUGF("0x%08lX 0x%08lX 0x%08lX 0x%08lX\n", src, dest, n, ret);
-        return ret;
-    }
 }
 
 /**
@@ -373,8 +374,16 @@ static void run_script(int argc, char **argv, int args) {
     js_State *J;
 
     // create logfile
-    DOjS.logfile = fopen(LOGFILE, "a");
-    setbuf(DOjS.logfile, 0);
+    if (DOjS.logfile_name) {
+        DOjS.logfile = fopen(DOjS.logfile_name, "a");
+        if (!DOjS.logfile) {
+            fprintf(stderr, "Could not open/create logfile %s.\n", DOjS.logfile_name);
+            exit(1);
+        }
+        setbuf(DOjS.logfile, 0);
+    } else {
+        DOjS.logfile = NULL;
+    }
 #ifdef DEBUG_ENABLED
     freopen("STDOUT.DJS", "a", stdout);
     freopen("STDERR.DJS", "a", stderr);
@@ -387,7 +396,7 @@ static void run_script(int argc, char **argv, int args) {
     DOjS.glide_enabled = false;
     DOjS.mouse_available = false;
     DOjS.mouse_visible = false;
-    DOjS.lastError = NULL;
+    clear_last_error();
 
     // create VM
     J = js_newstate(dojs_alloc, NULL, 0);
@@ -441,14 +450,14 @@ static void run_script(int argc, char **argv, int args) {
     bool screenSuccess = true;
     while (true) {
         set_color_depth(DOjS.params.bpp);
-        if (DOjS.params.width == 640) {
-            if (set_gfx_mode(GFX_AUTODETECT, 640, 480, 0, 0) != 0) {
+        if (DOjS.params.width == DOJS_FULL_WIDTH) {
+            if (set_gfx_mode(GFX_AUTODETECT, DOJS_FULL_WIDTH, DOJS_FULL_HEIGHT, 0, 0) != 0) {
                 LOGF("Couldn't set a %d bit color resolution at 640x480: %s\n", DOjS.params.bpp, allegro_error);
             } else {
                 break;
             }
         } else {
-            if (set_gfx_mode(GFX_AUTODETECT, 320, 240, 0, 0) != 0) {
+            if (set_gfx_mode(GFX_AUTODETECT, DOJS_HALF_WIDTH, DOJS_HALF_HEIGHT, 0, 0) != 0) {
                 LOGF("Couldn't set a %d bit color resolution at 320x240: %s\n", DOjS.params.bpp, allegro_error);
             } else {
                 break;
@@ -469,7 +478,7 @@ static void run_script(int argc, char **argv, int args) {
     if (screenSuccess) {
         DOjS.render_bm = DOjS.current_bm = create_bitmap(SCREEN_W, SCREEN_H);
         clear_bitmap(DOjS.render_bm);
-        DOjS.transparency_available = !DOjS.params.no_alpha;
+        DOjS.transparency_available = DOjS.params.no_alpha ? BLEND_REPLACE : BLEND_ALPHA;
         dojs_update_transparency();
 
         DEBUGF("GFX_Capabilities=%08X\n", gfx_capabilities);
@@ -497,7 +506,7 @@ static void run_script(int argc, char **argv, int args) {
                     tick_socket();
                     if (!callGlobal(J, CB_LOOP)) {
                         if (!DOjS.lastError) {
-                            DOjS.lastError = "Loop() not found.";
+                            set_last_error("Loop() not found.");
                         }
                         break;
                     }
@@ -525,13 +534,13 @@ static void run_script(int argc, char **argv, int args) {
                 }
             } else {
                 if (!DOjS.lastError) {
-                    DOjS.lastError = "Setup() not found.";
+                    set_last_error("Setup() not found.");
                 }
             }
         }
     } else {
         if (!DOjS.lastError) {
-            DOjS.lastError = "Screen resolution and depth now available.";
+            set_last_error("Screen resolution and depth not available.");
         }
     }
     LOG("DOjS Shutdown...\n");
@@ -541,7 +550,9 @@ static void run_script(int argc, char **argv, int args) {
     shutdown_sound();
     shutdown_joystick();
     shutdown_3dfx();
-    fclose(DOjS.logfile);
+    if (DOjS.logfile) {
+        fclose(DOjS.logfile);
+    }
     allegro_exit();
     textmode(C80);
     if (DOjS.lastError) {
@@ -653,9 +664,58 @@ bool dojs_check_library(js_State *J, const char *name, bool call_init) {
     return false;
 }
 
+/**
+ * @brief set the active blender func from DOjS.transparency_available
+ */
 void dojs_update_transparency() {
-    if (DOjS.transparency_available) {
-        set_blender_mode(my_blender, my_blender, my_blender, 0, 0, 0, 0);
+    BLENDER_FUNC bfunc = NULL;
+    switch (DOjS.transparency_available) {
+        case BLEND_ALPHA:
+            bfunc = blender_alpha;
+            break;
+        case BLEND_ADD:
+            bfunc = blender_add;
+            break;
+        case BLEND_DARKEST:
+            bfunc = blender_darkest;
+            break;
+        case BLEND_LIGHTEST:
+            bfunc = blender_lightest;
+            break;
+        case BLEND_DIFFERENCE:
+            bfunc = blender_difference;
+            break;
+        case BLEND_EXCLUSION:
+            bfunc = blender_exclusion;
+            break;
+        case BLEND_MULTIPLY:
+            bfunc = blender_multiply;
+            break;
+        case BLEND_SCREEN:
+            bfunc = blender_screen;
+            break;
+        case BLEND_OVERLAY:
+            bfunc = blender_overlay;
+            break;
+        case BLEND_HARDLIGHT:
+            bfunc = blender_hardlight;
+            break;
+        case BLEND_DOGE:
+            bfunc = blender_doge;
+            break;
+        case BLEND_BURN:
+            bfunc = blender_burn;
+            break;
+        case BLEND_SUBSTRACT:
+            bfunc = blender_substract;
+            break;
+        default:
+            bfunc = NULL;
+            break;
+    }
+
+    if (bfunc) {
+        set_blender_mode(bfunc, bfunc, bfunc, 0, 0, 0, 0);
         drawing_mode(DRAW_MODE_TRANS, DOjS.render_bm, 0, 0);
     } else {
         drawing_mode(DRAW_MODE_SOLID, DOjS.render_bm, 0, 0);
@@ -673,12 +733,16 @@ void dojs_update_transparency() {
 int main(int argc, char **argv) {
     // initialize DOjS main structure
     bzero(&DOjS, sizeof(DOjS));
-    DOjS.params.width = 640;
+    DOjS.params.width = DOJS_FULL_WIDTH;
     DOjS.params.bpp = 32;
+    DOjS.do_logfile = true;
+    DOjS.logfile_name = LOGFILE;
+    init_last_error();
+
     int opt;
 
     // check parameters
-    while ((opt = getopt(argc, argv, "xlrsfahw:b:")) != -1) {
+    while ((opt = getopt(argc, argv, "nxlrsfahw:b:j:")) != -1) {
         switch (opt) {
             case 'w':
                 DOjS.params.width = atoi(optarg);
@@ -704,11 +768,22 @@ int main(int argc, char **argv) {
             case 'x':
                 DOjS.params.raw_write = true;
                 break;
+            case 'n':
+                DOjS.do_logfile = false;
+                break;
+            case 'j':
+                DOjS.logfile_name = optarg;
+                break;
             case 'h':
             default: /* '?' */
                 usage();
                 exit(EXIT_FAILURE);
         }
+    }
+
+    // 'n' takes preceedence over redirection
+    if (!DOjS.do_logfile) {
+        DOjS.logfile_name = NULL;
     }
 
     if (optind >= argc) {
@@ -760,7 +835,7 @@ int main(int argc, char **argv) {
     }
 
     // check screen size parameters
-    if (DOjS.params.width != 640 && DOjS.params.width != 320) {
+    if (DOjS.params.width != DOJS_FULL_WIDTH && DOjS.params.width != DOJS_HALF_WIDTH) {
         fprintf(stderr, "Screen width must be 640 or 320 pixel, not %d.\n\n", DOjS.params.width);
         usage();
         exit(EXIT_FAILURE);
@@ -779,7 +854,7 @@ int main(int argc, char **argv) {
     while (true) {
         edi_exit_t exit = EDI_KEEPRUNNING;
         if (!DOjS.params.run) {
-            exit = edi_edit(DOjS.params.script, DOjS.params.highres);
+            exit = edi_edit(DOjS.params.script, DOjS.params.highres, DOjS.lastError);
         } else {
             exit = EDI_RUNSCRIPT;
         }
@@ -792,6 +867,8 @@ int main(int argc, char **argv) {
             break;
         }
     }
+
+    clear_last_error();
 
     exit(0);
 }

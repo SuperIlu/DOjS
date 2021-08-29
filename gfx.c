@@ -650,12 +650,12 @@ static void f_GetPixel(js_State *J) {
 
 /**
  * @brief enable/disable transparency.
- * TransparencyEnabled(boolean)
+ * TransparencyEnabled(int)
  *
  * @param J the JS context.
  */
 static void f_TransparencyEnabled(js_State *J) {
-    DOjS.transparency_available = js_toboolean(J, 1);
+    DOjS.transparency_available = js_tointeger(J, 1);
     dojs_update_transparency();
 }
 

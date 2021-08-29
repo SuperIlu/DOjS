@@ -6,6 +6,9 @@
 DJGPP=/home/ilu/djgpp/bin
 #DJGPP=/home/ilu/djgpp473/bin
 
+# temp directory for building FreeDOS archive
+TMP=/tmp/FDOS
+
 MUJS=mujs-1.0.5
 ALLEGRO=allegro-4.2.2-xc-master
 GLIDE=glide3x
@@ -47,6 +50,7 @@ LDFLAGS  = \
 # output
 EXE      = DOJS.EXE
 RELZIP   = dojs.zip
+FDZIP    = $(shell pwd)/FreeDOS_dojs.zip
 
 # dirs/files
 BUILDDIR		= build
@@ -65,7 +69,10 @@ DXE3GEN = dxe3gen
 DXE3RES = dxe3res
 export
 
+MPARA=-j8
+
 PARTS= \
+	$(BUILDDIR)/blender.o \
 	$(BUILDDIR)/intarray.o \
 	$(BUILDDIR)/3dfx-glide.o \
 	$(BUILDDIR)/3dfx-state.o \
@@ -115,36 +122,37 @@ libopenssl: $(OPENSSL)/libssl.a
 libcurl: $(OPENSSL)/libssl.a $(ZLIB)/msdos/libz.a $(CURL)/libcurl.a
 
 $(CURL)/libcurl.a:
-	$(MAKE) -C $(CURL)/lib -f Makefile.dj
+	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.dj
 
 $(OPENSSL)/libssl.a: $(WATT32)/lib/libwatt.a
-	$(MAKE) -C $(OPENSSL) -f Makefile build_libs
-	$(MAKE) -C $(OPENSSL) -f Makefile apps/openssl.exe
+	$(MAKE) $(MPARA) -C $(OPENSSL) -f Makefile build_libs
+	$(MAKE) $(MPARA) -C $(OPENSSL) -f Makefile apps/openssl.exe
 
 $(ALPNG)/libalpng.a:
 	$(MAKE) -C $(ALPNG) -f Makefile.zlib
 
 $(ZLIB)/msdos/libz.a:
-	$(MAKE) -C $(ZLIB) -f Makefile.dojs
+	$(MAKE) $(MPARA) -C $(ZLIB) -f Makefile.dojs
 
 $(PNG)/scripts/libpng.a:
-	$(MAKE) -C $(PNG) -f makefile.dojs libpng.a
+	$(MAKE) $(MPARA) -C $(PNG) -f makefile.dojs libpng.a
 
 $(LIBDZCOMM):
 	$(MAKE) -C $(DZCOMMDIR) lib/djgpp/libdzcom.a
 
 $(MUJS)/build/release/libmujs.a:
-	$(MAKE) -C $(MUJS) build/release/libmujs.a
+	$(MAKE) $(MPARA) -C $(MUJS) build/release/libmujs.a
 
 $(ALLEGRO)/lib/djgpp/liballeg.a:
 	cd $(ALLEGRO) && bash ./xmake.sh lib
 
 $(WATT32)/lib/libwatt.a:
-	DJ_PREFIX=$(DJGPP) $(MAKE) -C $(WATT32)/src -f DJGPP.MAK
+	DJ_PREFIX=$(DJGPP) $(MAKE) $(MPARA) -C $(WATT32)/src -f DJGPP.MAK
 
 $(EXE): $(PARTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 	$(STRIP) $@
+	#rm -f DOJS.exe
 
 $(BUILDDIR)/%.o: %.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -171,17 +179,17 @@ TEXUS.EXE:
 
 zip: all doc
 	rm -f $(RELZIP)
-	rm dxetest.DXE dxetest2.DXE
+	rm -f dxetest.DXE dxetest2.DXE
 	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem *.DXE
+	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem *.DXE
 
-devzip: all doc
+devzip: all doc $(RELZIP)
 	rm -f $(RELZIP)
 	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
 	cp $(OPENSSL)/apps/openssl.exe .
-	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE README.md CHANGELOG.md JSBOOT.ZIP examples/*.js tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem openssl.exe *.DXE
+	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/*.js tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem openssl.exe *.DXE
 	scp $(RELZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:
@@ -196,13 +204,14 @@ init:
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) DOjS.exe $(ZIP) JSLOG.TXT TEXUS.EXE GLIDE3X.DXE JSBOOT.ZIP cacert.pem
+	rm -f $(EXE) DOJS.exe $(ZIP) JSLOG.TXT TEXUS.EXE GLIDE3X.DXE JSBOOT.ZIP cacert.pem
 	for dir in $(DXE_DIRS); do \
 		$(MAKE) -C $$dir -f Makefile $@; \
 	done
 
 distclean: clean alclean jsclean dzclean wattclean zclean apclean sslclean curlclean dxeclean
-	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.*
+	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.* openssl.exe
+	rm -rf $(GLIDE)/*/test $(GLIDE)/texus/*.exe $(GLIDE)/texus/*.EXE $(GLIDE)/texus/build
 
 dzclean:
 	$(MAKE) -C $(DZCOMMDIR) clean
@@ -230,6 +239,7 @@ sslclean:
 
 curlclean:
 	$(MAKE) -C $(CURL)/lib -f Makefile.dj clean
+	rm -f $(CURL)/lib/libcurl.a
 
 glideclean:
 	rm -rf glidedxe.c
@@ -266,7 +276,75 @@ syntaxP:
 	grep js_defproperty  *.c *.dxelib/*.c | cut -d "," -f 3 | sed s/^\ \"/\"\./ >synC.txt
 	cat synC.txt | awk '{ print length, "EDI_SYNTAX(YELLOW," $$0 "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
 
-.PHONY: clean distclean init doc INT13.EXE $(DXE_DIRS)
+fdos: zip
+	# clean and re-create  working directories
+	rm -rf $(TMP) $(FDZIP)
+	mkdir -p $(TMP)/APPINFO
+	mkdir -p $(TMP)/DEVEL/DOJS
+	mkdir -p $(TMP)/SOURCE/DOJS
+	mkdir -p $(TMP)/tmp
+	
+	# copy LSMs
+	cp FDOS/* $(TMP)/APPINFO
+
+	# copy glide DXEs
+	cp --parents $(GLIDE)/*/lib/glide3x.dxe $(TMP)/DEVEL/DOJS
+
+	# copy html-docs
+	cp -r --parents $(DOCDIR)/ $(TMP)/DEVEL/DOJS
+
+	# copy distribution files
+	cp -R \
+		$(EXE) \
+		WATTCP.CFG \
+		CWSDPMI.EXE \
+		LICENSE \
+		*.md \
+		JSBOOT.ZIP \
+		TEXUS.EXE \
+		cacert.pem \
+		examples/ \
+		V_*.BAT \
+		*.DXE \
+		$(TMP)/DEVEL/DOJS
+
+	# ZIP up files with long file names into LFNFILES.ZIP
+	(cd $(TMP)/DEVEL/DOJS && zip -9 -r LFNFILES.ZIP CHANGELOG.md doc/html && rm -rf CHANGELOG.md doc/)
+
+	# make clean and copy source files
+	make distclean
+	cp -R \
+		*.dxelib *.c *.h *.py *.md \
+		WATTCP.CFG \
+		CWSDPMI.EXE \
+		LICENSE \
+		Makefile \
+		Makefile.dxemk \
+		dxetemplate.txt \
+		V_*.BAT \
+		allegro-4.2.2-xc-master/ \
+		alpng13/ \
+		curl-7.74.0/ \
+		doc/ \
+		dzcomm/ \
+		examples/ \
+		glide3x/ \
+		jsboot/ \
+		mujs-1.0.5/ \
+		openssl-1.1.1k/ \
+		tests/ \
+		watt32-2.2dev.rel.11/ \
+		zip/ \
+		zlib-1.2.11/ \
+		$(TMP)/tmp
+	# zip up sources and remove tmp
+	(cd $(TMP)/tmp && zip -9 -r ../SOURCE/DOJS/SOURCES.ZIP * && rm -rf $(TMP)/tmp)
+
+	# ZIP up everything as DOS ZIP and clean afterwards
+	(cd $(TMP) && zip -k -9 -r $(FDZIP) *)
+	rm -rf $(TMP)
+
+.PHONY: clean distclean init doc zip fdos $(DXE_DIRS)
 
 DEPS := $(wildcard $(BUILDDIR)/*.d)
 ifneq ($(DEPS),)

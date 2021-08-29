@@ -170,7 +170,7 @@ function Require(name) {
 		}
 	}
 
-	throw 'Could not load "' + name + '"';
+	throw new Error('Could not load "' + name + '"');
 }
 Require._cache = Object.create(null);
 
@@ -333,7 +333,7 @@ StopWatch.prototype.Stop = function () {
 	this.stop = MsecTime();
 	if (!this.start) {
 		this.Reset();
-		throw "StopWatch.Stop() called before StopWatch.Start()!"
+		throw new Error("StopWatch.Stop() called before StopWatch.Start()!");
 	}
 };
 /**
@@ -349,7 +349,7 @@ StopWatch.prototype.Reset = function () {
  */
 StopWatch.prototype.ResultMs = function () {
 	if (!this.start || !this.stop) {
-		throw "start or end time missing!";
+		throw new Error("start or end time missing!");
 	}
 	return this.stop - this.start;
 };
@@ -433,7 +433,7 @@ var _lptPorts = GetParallelPorts();
  */
 function LPTRawData(port, data) {
 	if (port < 0 && ports >= _lptPorts.length) {
-		throw 'LPT port out of range';
+		throw new Error('LPT port out of range');
 	}
 	var addr = _lptPorts[port];
 
@@ -458,7 +458,7 @@ function LPTRawData(port, data) {
  */
 function LPTRawStatus(port) {
 	if (port < 0 && ports >= _lptPorts.length) {
-		throw 'LPT port out of range';
+		throw new Error('LPT port out of range');
 	}
 	var addr = _lptPorts[port];
 
@@ -475,7 +475,7 @@ function LPTRawStatus(port) {
  */
 function LPTRawControl(port, bits) {
 	if (port < 0 && ports >= _lptPorts.length) {
-		throw 'LPT port out of range';
+		throw new Error('LPT port out of range');
 	}
 	var addr = _lptPorts[port];
 
@@ -490,7 +490,7 @@ function LPTRawControl(port, bits) {
  */
 function LPTReset(port) {
 	if (port < 0 && ports >= _lptPorts.length) {
-		throw 'LPT port out of range';
+		throw new Error('LPT port out of range');
 	}
 	_LPTReset(port);
 }
@@ -504,7 +504,7 @@ function LPTReset(port) {
  */
 function LPTSend(port, data) {
 	if (port < 0 && ports >= _lptPorts.length) {
-		throw 'LPT port out of range';
+		throw new Error('LPT port out of range');
 	}
 	_LPTSend(port, data);
 }
@@ -517,7 +517,7 @@ function LPTSend(port, data) {
  */
 function LPTStatus(port) {
 	if (port < 0 && ports >= _lptPorts.length) {
-		throw 'LPT port out of range';
+		throw new Error('LPT port out of range');
 	}
 	return _LPTStatus(port);
 }

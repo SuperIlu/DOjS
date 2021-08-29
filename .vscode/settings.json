@@ -5,6 +5,7 @@
         "makefile.dojs": "makefile",
         "Makefile.dojs": "makefile",
         "makefile.dj": "makefile",
+        "common.dj": "makefile",
         "dojs.h": "c",
         "edit.h": "c",
         "cstdlib": "c",
@@ -29,7 +30,14 @@
         "base.h": "c",
         "array": "c",
         "utility": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "string": "c",
+        "istream": "c",
+        "ostream": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "internals.h": "c",
+        "animatedgif.h": "c"
     },
     "editor.formatOnSave": true,
     "editor.insertSpaces": false,

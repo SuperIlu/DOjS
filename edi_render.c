@@ -42,6 +42,8 @@ static bool edi_colcmp(const syntax_t* sy, char* txt, int remainder);
 ************/
 #define EDI_NUM_COMMANDS 10  //!< number of commands
 
+#define EDI_ERROR_PENDING "ErrMsg"  //!< string shown in command line when the last run had an error
+
 /********************
 ** local variables **
 ********************/
@@ -243,9 +245,16 @@ static void edi_draw_commands(edi_t* edi) {
             edi_cputs(edi, buff);
         }
 
-        edi_textbackground(BLUE);
-        edi_textcolor(LIGHTGREEN);
-        snprintf(buff, sizeof(buff), "%-6s", edi_f_keys[i]);
+        // highlight F7 in case of error
+        if ((i == 7) && edi->err_msg) {
+            edi_textbackground(RED);
+            edi_textcolor(YELLOW);
+            snprintf(buff, sizeof(buff), "%-6s", EDI_ERROR_PENDING);
+        } else {
+            edi_textbackground(BLUE);
+            edi_textcolor(LIGHTGREEN);
+            snprintf(buff, sizeof(buff), "%-6s", edi_f_keys[i]);
+        }
         edi_cputs(edi, buff);
     }
 }

@@ -4,19 +4,19 @@
 
 	Copyright (c) the p5.js contributors and Andre Seidelt <superilu@yahoo.com>
 
-    This library is free software; you can redistribute it and/or
-    modify it under the terms of the GNU Lesser General Public
-    License as published by the Free Software Foundation; either
-    version 2.1 of the License, or (at your option) any later version.
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
 
-    This library is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    Lesser General Public License for more details.
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
 
-    You should have received a copy of the GNU Lesser General Public
-    License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -86,7 +86,7 @@ exports.loadFont = function (name) {
  */
 exports.text = function (str, x, y) {
 	if (!_currentEnv._font) {
-		throw "No font set, use textFont() first.";
+		throw new Error("No font set, use textFont() first.");
 	}
 
 	switch (_currentEnv._txtAlignY) {
@@ -223,7 +223,7 @@ exports.textWidth = function (theText) {
 	if (_currentEnv._font) {
 		return _currentEnv._font.StringWidth(theText);
 	} else {
-		throw "No font set, use textFont() first.";
+		throw new Error("No font set, use textFont() first.");
 	}
 };
 
@@ -237,6 +237,6 @@ exports.textSize = function () {
 	if (_currentEnv._font) {
 		return _currentEnv._font.height;
 	} else {
-		throw "No font set, use textFont() first.";
+		throw new Error("No font set, use textFont() first.");
 	}
 };

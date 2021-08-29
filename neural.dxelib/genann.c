@@ -42,11 +42,11 @@
 
 #define LOOKUP_SIZE 4096
 
-double genann_act_hidden_indirect(const struct genann *ann, double a) {
+static double genann_act_hidden_indirect(const struct genann *ann, double a) {
     return ann->activation_hidden(ann, a);
 }
 
-double genann_act_output_indirect(const struct genann *ann, double a) {
+static double genann_act_output_indirect(const struct genann *ann, double a) {
     return ann->activation_output(ann, a);
 }
 

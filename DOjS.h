@@ -37,8 +37,8 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 1.50          //!< version number
-#define DOSJS_VERSION_STR "V1.5.0"  //!< version number as string
+#define DOSJS_VERSION 1.60          //!< version number
+#define DOSJS_VERSION_STR "V1.6.0"  //!< version number as string
 
 #define JSBOOT_DIR "JSBOOT/"     //!< directory with boot files.
 #define JSBOOT_ZIP "JSBOOT.ZIP"  //!< filename for ZIP of JSBOOT
@@ -50,6 +50,12 @@ SOFTWARE.
 #define JS_ENOMEM(j) js_error(j, "Out of memory")                     //!< use always the same message when memory runs out
 #define JS_ENOARR(j) js_error(j, "Array expected")                    //!< use always the same message when array expected
 #define JS_EIDX(j, idx) js_error(j, "Index out of bound (%ld)", idx)  //!< use always the same message when array index out of bound
+
+#define DOJS_FULL_WIDTH 640   //!< full screen width
+#define DOJS_FULL_HEIGHT 480  //!< full screen height
+
+#define DOJS_HALF_WIDTH 320   //!< half screen width
+#define DOJS_HALF_HEIGHT 240  //!< half screen height
 
 //! check if parameter has a certain usertype
 #define JS_CHECKTYPE(j, idx, type)            \
@@ -116,21 +122,21 @@ SOFTWARE.
 
 //! printf-style write info to logfile/console
 #define LOGF(str, ...)                                  \
-    {                                                   \
+    if (LOGSTREAM) {                                    \
         fprintf(LOGSTREAM, SYSINFO str, ##__VA_ARGS__); \
         fflush(LOGSTREAM);                              \
     }
 
 //! write info to logfile/console
 #define LOG(str)                       \
-    {                                  \
+    if (LOGSTREAM) {                   \
         fputs(SYSINFO str, LOGSTREAM); \
         fflush(LOGSTREAM);             \
     }
 
 //! write info to logfile/console
 #define LOGV(str)                  \
-    {                              \
+    if (LOGSTREAM) {               \
         fputs(SYSINFO, LOGSTREAM); \
         fputs(str, LOGSTREAM);     \
         fflush(LOGSTREAM);         \
@@ -139,7 +145,7 @@ SOFTWARE.
 #ifdef DEBUG_ENABLED
 //! printf-style debug message to logfile/console
 #define DEBUGF(str, ...)                                   \
-    {                                                      \
+    if (LOGSTREAM) {                                       \
         fprintf(LOGSTREAM, "[DEBUG] " str, ##__VA_ARGS__); \
         printf("[DEBUG] " str, ##__VA_ARGS__);             \
         fflush(LOGSTREAM);                                 \
@@ -148,7 +154,7 @@ SOFTWARE.
 
 //! print debug message to logfile/console
 #define DEBUG(str)                        \
-    {                                     \
+    if (LOGSTREAM) {                      \
         fputs("[DEBUG] " str, LOGSTREAM); \
         puts("[DEBUG] " str);             \
         fflush(LOGSTREAM);                \
@@ -164,6 +170,26 @@ SOFTWARE.
 #else
 #define NEW_OBJECT_PREP(j)
 #endif
+
+/**********
+** types **
+**********/
+typedef enum {
+    BLEND_REPLACE = 0,     // C=A
+    BLEND_ALPHA = 1,       // C = A*alpha + B
+    BLEND_ADD = 2,         // C = A+B
+    BLEND_DARKEST = 3,     // C = min(A, B)
+    BLEND_LIGHTEST = 4,    // C = max(A, B)
+    BLEND_DIFFERENCE = 5,  // C = ABS(A-B)
+    BLEND_EXCLUSION = 6,   // C := A+B - 2*A*B
+    BLEND_MULTIPLY = 7,    // C := A*B
+    BLEND_SCREEN = 8,      // C := 1 - (1-A)*(1-B)
+    BLEND_OVERLAY = 9,     // C := A<0.5 ? (2.0*A*B):(1.0-2.0*(1.0-A)*(1.0-B))
+    BLEND_HARDLIGHT = 10,  //
+    BLEND_DOGE = 11,       //
+    BLEND_BURN = 12,       //
+    BLEND_SUBSTRACT = 13,  // C := A+B-255
+} blend_mode_t;
 
 /************
 ** structs **
@@ -189,27 +215,29 @@ typedef struct {
 } cmd_params_t;
 
 typedef struct {
-    cmd_params_t params;               //!< command line parameters
-    bool joystick_available;           //!< indicates if a joystick is available
-    bool sound_available;              //!< indicates if WAV sound is available
-    bool midi_available;               //!< indicates if MIDI sound is available
-    bool sndin_available;              //!< indicates if sound recording is available
-    bool mouse_available;              //!< indicates if the mouse is available
-    bool ipx_available;                //!< indicates if ipx is available
-    bool mouse_visible;                //!< indicates if the cursor should be visible.
-    bool transparency_available;       //!< indicates if transparency is enabled.
-    bool glide_enabled;                //!< indicates if glide is active
-    float current_frame_rate;          //!< current frame rate
-    float wanted_frame_rate;           //!< wanted frame rate
-    bool keep_running;                 //!< indicates that the script should keep on running
-    int exit_key;                      //!< the exit key that will stop the script
-    BITMAP *current_bm;                //!< current bitmap that is rendered on
-    BITMAP *render_bm;                 //!< default render bitmap created at start
-    volatile unsigned long sys_ticks;  //!< tick counter
-    FILE *logfile;                     //!< file for log output.
-    const char *lastError;             //!< last error message generated by Report()
-    int num_allocs;                    //!< number of allocations for extra GC runs
-    library_t *loaded_libraries;       //!< linked list of loaded libraries
+    cmd_params_t params;                  //!< command line parameters
+    bool joystick_available;              //!< indicates if a joystick is available
+    bool sound_available;                 //!< indicates if WAV sound is available
+    bool midi_available;                  //!< indicates if MIDI sound is available
+    bool sndin_available;                 //!< indicates if sound recording is available
+    bool mouse_available;                 //!< indicates if the mouse is available
+    bool ipx_available;                   //!< indicates if ipx is available
+    bool mouse_visible;                   //!< indicates if the cursor should be visible.
+    blend_mode_t transparency_available;  //!< indicates blend mode
+    bool glide_enabled;                   //!< indicates if glide is active
+    bool do_logfile;                      //!< indicates if a logfile should be created
+    char *logfile_name;                   //!< name of the logfile
+    float current_frame_rate;             //!< current frame rate
+    float wanted_frame_rate;              //!< wanted frame rate
+    bool keep_running;                    //!< indicates that the script should keep on running
+    int exit_key;                         //!< the exit key that will stop the script
+    BITMAP *current_bm;                   //!< current bitmap that is rendered on
+    BITMAP *render_bm;                    //!< default render bitmap created at start
+    volatile unsigned long sys_ticks;     //!< tick counter
+    FILE *logfile;                        //!< file for log output.
+    char *lastError;                      //!< last error message generated by Report()
+    int num_allocs;                       //!< number of allocations for extra GC runs
+    library_t *loaded_libraries;          //!< linked list of loaded libraries
 } dojs_t;
 
 /*********************

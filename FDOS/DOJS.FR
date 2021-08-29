@@ -1,0 +1,6 @@
+Begin3
+Language:       fr, 850
+New:            *
+Description:    Une toile DOS JavaScript avec du son
+Summary:        DOjS est un canevas JavaScript avec prise en charge des sons WAV et MIDI. DOjS fonctionne dans Dosbox et sur du mat‚riel r‚el ou une machine virtuelle avec MS-DOS, FreeDOS ou n'importe quel Windows bas‚ sur DOS comme Windows 95/98/ME. Si vous l'ex‚cutez sur du mat‚riel r‚el, vous avez besoin d'au moins un 80386 avec 4 Mo. Je recommande une machine de classe Pentium (>= 100 MHz) avec au moins 32 Mo de RAM.
+End

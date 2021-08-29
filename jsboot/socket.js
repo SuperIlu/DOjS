@@ -116,7 +116,7 @@ function ServerSocket(host, lport) {
  */
 function http_get(url, head) {
 	if (!url.startsWith(HTTP_PREFIX)) {
-		throw "Protocol not supported";
+		throw new Error("Protocol not supported");
 	}
 
 	// remove protocol
@@ -277,7 +277,7 @@ function http_headers(res) {
 			if (l.length > 0) {
 				var colon = l.indexOf(":");
 				if (colon == -1) {
-					throw "Illegal header line found: " + l;
+					throw new Error("Illegal header line found: " + l);
 				}
 				var key = l.substring(0, colon);
 				var val = l.substring(colon + 2);
@@ -300,7 +300,7 @@ function http_headers(res) {
  */
 function CurlExtractHeaders(resp) {
 	if (!Array.isArray(resp) || resp.length != 3) {
-		throw "Parameter is no Curl() response array."
+		throw new Error("Parameter is no Curl() response array.");
 	}
 
 	var ret = {};
@@ -310,7 +310,7 @@ function CurlExtractHeaders(resp) {
 		if (l.length > 0) {
 			var colon = l.indexOf(":");
 			if (colon == -1) {
-				throw "Illegal header line found: " + l;
+				throw new Error("Illegal header line found: " + l);
 			}
 			var key = l.substring(0, colon).trim();
 			var val = l.substring(colon + 2).trim();

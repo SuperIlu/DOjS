@@ -1,3 +1,20 @@
+# Version 1.6.0 (Does it blend) / August, 28th, 2021
+* Added JPEG loading through `jpeg` module
+* Made `JSLOG.txt` optional and the filename can be changed as well
+* Updated libcpuid to v0.5.1
+* Removed many compiler warnings and streamlined the make output during build
+* Added basic GIF animations loading/rendering through `gifanim` module
+* Added `ReadSoundInputInts()` which returns the sampled data as `IntArray` (`ReadSoundInput()` uses Javascript arrays which are slower)
+* Improved CTRL-DEL, CTRL-BS handling with whitespaces
+* Added error popup to editor for displaying script errors
+* parallelized the build as far as possible
+* added Makefile target to create a FreeDOS distribution ZIP
+* Added different blend modes which are selected through `TransparencyEnabled()`
+* Added p5js API mapping from `blendMode()` to `TransparencyEnabled()`
+* Added QR-Code generator from https://github.com/kazuhikoarase/qrcode-generator, see examples/qrcode.js
+* Fixed/added some examples
+* Improved error handling for missing GLIDE3 drivers
+
 # Version 1.5.0 (The neuronal necessity)  / April 2, 2021
 * Added SQLite module
 * Added module for training/running neuronal networks

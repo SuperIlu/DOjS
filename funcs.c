@@ -259,15 +259,17 @@ static void f_Stat(js_State *J) {
  * @param J the JS context.
  */
 static void f_Println(js_State *J) {
-    int i, top = js_gettop(J);
-    for (i = 1; i < top; ++i) {
-        const char *s = js_tostring(J, i);
-        if (i > 1) {
-            putc(' ', LOGSTREAM);
+    if (LOGSTREAM) {
+        int i, top = js_gettop(J);
+        for (i = 1; i < top; ++i) {
+            const char *s = js_tostring(J, i);
+            if (i > 1) {
+                putc(' ', LOGSTREAM);
+            }
+            fputs(s, LOGSTREAM);
         }
-        fputs(s, LOGSTREAM);
+        putc('\n', LOGSTREAM);
     }
-    putc('\n', LOGSTREAM);
     js_pushundefined(J);
 }
 
@@ -278,13 +280,15 @@ static void f_Println(js_State *J) {
  * @param J the JS context.
  */
 static void f_Print(js_State *J) {
-    int i, top = js_gettop(J);
-    for (i = 1; i < top; ++i) {
-        const char *s = js_tostring(J, i);
-        if (i > 1) {
-            putc(' ', LOGSTREAM);
+    if (LOGSTREAM) {
+        int i, top = js_gettop(J);
+        for (i = 1; i < top; ++i) {
+            const char *s = js_tostring(J, i);
+            if (i > 1) {
+                putc(' ', LOGSTREAM);
+            }
+            fputs(s, LOGSTREAM);
         }
-        fputs(s, LOGSTREAM);
     }
     js_pushundefined(J);
 }
@@ -306,7 +310,6 @@ static void f_Stop(js_State *J) { DOjS.keep_running = false; }
 static void f_Gc(js_State *J) {
     bool report = js_toboolean(J, 1);
     js_gc(J, report);
-    DOjS.lastError = NULL;
 }
 
 /**

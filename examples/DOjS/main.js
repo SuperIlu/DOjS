@@ -22,6 +22,7 @@ SOFTWARE.
 
 LoadLibrary("png");
 Include('p5');
+LoadLibrary('curl');
 
 // presentation directory
 var PDIR = "examples/DOjS/";

@@ -69,6 +69,7 @@ exports.prepare = function () {
 	latStep = SizeY() / 180;
 	longStep = SizeX() / 360;
 	bgPic = new Bitmap("examples/Earth.bmp");
+	var get = new Curl();
 }
 
 exports.present = function () {
@@ -93,9 +94,9 @@ exports.present = function () {
 
 	if (frameCount % 10 == 0) {
 		try {
-			var http_res = http_get("http://www.n2yo.com/rest/v1/satellite/positions/25544/52.52437/13.41053/0/1/&apiKey=" + API_KEY);
-			if (http_ok(http_res)) {
-				data = JSON.parse(http_string_content(http_res));
+			var resp = get.DoRequest("https://api.n2yo.com/rest/v1/satellite/positions/25544/52.52437/13.41053/0/1/&apiKey=" + API_KEY);
+			if (resp[2] == 200) {
+				data = JSON.parse(resp[0].ToString());
 				currentX = mapLong(data.positions[0].satlongitude);
 				currentY = mapLat(data.positions[0].satlatitude);
 				trail.push([currentX, currentY]);

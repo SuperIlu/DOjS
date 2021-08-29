@@ -42,7 +42,7 @@ IPX = {
  */
 function IpxAddressToString(addr) {
 	if (addr.length != 6) {
-		throw "Node address length does not match";
+		throw new Error("Node address length does not match");
 	}
 
 	return addr[0].toString(16) + ":" +
@@ -62,7 +62,7 @@ function IpxAddressToString(addr) {
 function IpxStringToAddress(addr) {
 	var parts = addr.split(":");
 	if (parts.length != 6) {
-		throw "Node address length does not match";
+		throw new Error("Node address length does not match");
 	}
 
 	return [

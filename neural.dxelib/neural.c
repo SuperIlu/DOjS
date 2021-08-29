@@ -118,9 +118,12 @@ static void new_Neural(js_State *J) {
             return;
         }
     }
+
+#ifdef DEBUG_ENABLED
     DEBUGF("n->ann = %p\n", n->ann);
     const int size = sizeof(genann) + sizeof(double) * (n->ann->total_weights + n->ann->total_neurons + (n->ann->total_neurons - n->ann->inputs));
     DEBUGF("sizeof(n->ann) = %d\n", size);
+#endif
 
     // alloc buffers for train() and run()
     n->inputs = calloc(n->ann->inputs, sizeof(double));

@@ -21,6 +21,7 @@ SOFTWARE.
 */
 
 LoadLibrary("png");
+LoadLibrary("jpeg");
 
 /*
 ** This function is called once when the script is started.
@@ -33,6 +34,9 @@ function Setup() {
 	i2 = new Bitmap("examples/3dfx.tga");
 	i3 = new Bitmap("examples/glow.pcx");
 	i6 = new Bitmap("examples/3dfx.png");
+	i7 = new Bitmap("examples/3dfx_s.jpg");
+	i8 = new Bitmap("examples/3dfx.jpg");
+	i9 = new Bitmap("examples/3dfx_bw.jpg");
 
 	// var dat = [];
 	// for (var x = 0; x < 255; x++) {
@@ -112,6 +116,18 @@ function Input(e) {
 	}
 	if (CompareKey(e.key, '6')) {
 		img = i6;
+		Println(img.constructor.toString());
+	}
+	if (CompareKey(e.key, '7')) {
+		img = i7;
+		Println(img.constructor.toString());
+	}
+	if (CompareKey(e.key, '8')) {
+		img = i8;
+		Println(img.constructor.toString());
+	}
+	if (CompareKey(e.key, '9')) {
+		img = i9;
 		Println(img.constructor.toString());
 	}
 }

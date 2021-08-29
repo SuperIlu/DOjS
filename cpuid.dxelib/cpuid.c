@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "DOjS.h"
 
+void init_cpuid(js_State *J);
+
 /*********************
 ** static functions **
 *********************/
@@ -33,7 +35,6 @@ SOFTWARE.
  * @param J VM state.
  */
 static void f_CpuId(js_State *J) {
-    int readres;
     struct cpu_raw_data_t raw;
     struct cpu_id_t data;
 

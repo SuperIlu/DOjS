@@ -195,15 +195,42 @@ bool dia_ask_text(edi_t* edi, char buffer[DIA_ASK_SIZE], char* allowed, char* ms
 void dia_show_message(edi_t* edi, char* txt) {
     edi->last_top = NULL;
 
-    int w = strlen(txt) + 4;
+    int w = 0;
     int h = 3;
 
+    // calculate width and height by checking all lines
+    int line_length = 0;
+    int pos = 0;
+    while (txt[pos]) {
+        if (txt[pos] == '\n') {
+            w = max(4 + line_length, w);
+            line_length = 0;
+            h++;
+        } else if (txt[pos] == '\t') {
+            line_length += 2;
+        } else {
+            line_length++;
+        }
+        pos++;
+    }
+    w = max(4 + line_length, w);
+    w = min(w, edi->width - 2);
+    h = min(h, edi->height);
+
+    // set minimal width because of key-press message
     if (w < strlen(DIA_MESSAGE) + 4) {
         w = strlen(DIA_MESSAGE) + 4;
     }
 
     int startX = (edi->scr.screenwidth - w) / 2;
+    if (startX < 2) {
+        startX = 2;
+    }
+
     int startY = (edi->scr.screenheight - h) / 2;
+    if (startY < 2) {
+        startY = 2;
+    }
 
     // upper border
     edi_textbackground(RED);
@@ -215,17 +242,45 @@ void dia_show_message(edi_t* edi, char* txt) {
     }
     edi_putch(edi, EDI_UR_LINE);
 
-    edi_gotoxy(edi, startX, startY + 1);
+    int current_line = startY + 1;
+    edi_gotoxy(edi, startX, current_line);
     edi_putch(edi, EDI_V_LINE);
     edi_putch(edi, ' ');
-    edi_cputs(edi, txt);
-    edi_putch(edi, ' ');
+    int x = 2;
+    pos = 0;
+    while (txt[pos] && (current_line <= startY + h)) {
+        if ((txt[pos] == '\n') || (x > w - 2)) {
+            while (x < w - 1) {
+                edi_putch(edi, ' ');
+                x++;
+            }
+            edi_putch(edi, EDI_V_LINE);
+            current_line++;
+            x = 2;
+            edi_gotoxy(edi, startX, current_line);
+            EDIF("goto(%d, %d)\n", startX, current_line)
+            edi_putch(edi, EDI_V_LINE);
+            edi_putch(edi, ' ');
+        } else if (txt[pos] == '\t') {
+            edi_putch(edi, ' ');
+            edi_putch(edi, ' ');
+            x += 2;
+        } else {
+            edi_putch(edi, txt[pos]);
+            x++;
+        }
+        pos++;
+    }
+    while (x < w - 1) {
+        edi_putch(edi, ' ');
+        x++;
+    }
     edi_putch(edi, EDI_V_LINE);
 
     // lower border
-    edi_gotoxy(edi, startX, startY + 2);
+    edi_gotoxy(edi, startX, startY + h - 1);
     edi_putch(edi, EDI_LL_LINE);
-    int x = 1;
+    x = 1;
     while (x < (w - strlen(DIA_MESSAGE)) / 2) {
         edi_putch(edi, EDI_H_LINE);
         x++;

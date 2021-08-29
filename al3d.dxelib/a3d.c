@@ -383,6 +383,7 @@ static void f__ScenePolygon3D(js_State *J) {
  * @param J VM state.
  */
 static void f_VDebug(js_State *J) {
+    if (LOGSTREAM) {
     int vc = 0;
     V3D_f **vtx = v3d_array(J, 1, &vc);
     if (vtx) {
@@ -397,14 +398,17 @@ static void f_VDebug(js_State *J) {
 
     free_v3d(vtx, vc);
 }
+}
 
 static void print_matrix(MATRIX_f *m) {
+    if (LOGSTREAM) {
     fprintf(LOGSTREAM, "%s={\n", "matrix");
     for (int r = 0; r < 3; r++) {
         fprintf(LOGSTREAM, "  |%3.4f, %3.4f, %3.4f|\n", m->v[r][0], m->v[r][1], m->v[r][2]);
     }
     fprintf(LOGSTREAM, "  {%3.4f, %3.4f, %3.4f}\n}\n", m->t[0], m->t[1], m->t[2]);
     fflush(LOGSTREAM);
+    }
 }
 
 #endif

@@ -66,11 +66,16 @@ exports._shape = [];
  */
 exports.arc = function (x, y, w, h, start, end, style) {
 	if (w != h) {
-		throw "Only arcs with w==h are supported";
+		throw new Error("Only arcs with w==h are supported");
 	}
 
-	var nStart = (map(start, 0, TWO_PI, 256, 0) + 256) % 256;
-	var nEnd = (map(end, 0, TWO_PI, 256, 0) + 256) % 256;
+	if (_angleMode === RADIANS) {
+		var nStart = (map(start, 0, TWO_PI, 256, 0) + 256) % 256;
+		var nEnd = (map(end, 0, TWO_PI, 256, 0) + 256) % 256;
+	} else {
+		var nStart = (map(start, 0, 360, 256, 0) + 256) % 256;
+		var nEnd = (map(end, 0, 360, 256, 0) + 256) % 256;
+	}
 	var r = w / 2;
 
 	if (_currentEnv._stroke != NO_COLOR) {

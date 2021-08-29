@@ -393,6 +393,10 @@ static void edi_del_wordright(edi_t* edi) {
         while (isalnum(edi->current->txt[edi->x])) {
             edi_do_del(edi);
         }
+    } else if (isblank(edi->current->txt[edi->x])) {
+        while (isblank(edi->current->txt[edi->x])) {
+            edi_do_del(edi);
+        }
     } else {
         edi_do_del(edi);
     }
@@ -406,6 +410,10 @@ static void edi_del_wordright(edi_t* edi) {
 static void edi_del_wordleft(edi_t* edi) {
     if (edi->x > 0 && isalnum(edi->current->txt[edi->x - 1])) {
         while (edi->x > 0 && isalnum(edi->current->txt[edi->x - 1])) {
+            edi_do_bs(edi);
+        }
+    } else if (edi->x > 0 && isblank(edi->current->txt[edi->x - 1])) {
+        while (edi->x > 0 && isblank(edi->current->txt[edi->x - 1])) {
             edi_do_bs(edi);
         }
     } else {
@@ -1090,9 +1098,11 @@ static edi_exit_t edi_loop(edi_t* edi) {
 
             case K_Shift_F4:  // truncate logfile and run
             {
-                FILE* f = fopen(LOGFILE, "w");
-                fflush(f);
-                fclose(f);
+                if (DOjS.do_logfile) {
+                    FILE* f = fopen(DOjS.logfile_name, "w");
+                    fflush(f);
+                    fclose(f);
+                }
                 // FALLTHROUGH!
             }
             case K_F4:  // run script
@@ -1118,8 +1128,18 @@ static edi_exit_t edi_loop(edi_t* edi) {
                 edi_do_find(edi, find_buffer);
                 break;
 
+            case K_F8:  // show error
+                if (edi->err_msg) {
+                    dia_show_message(edi, edi->err_msg);
+                }
+                break;
+
             case K_F9:  // show log
-                dia_show_file(edi, LOGFILE, NULL, true, NULL);
+                if (DOjS.do_logfile) {
+                    dia_show_file(edi, DOjS.logfile_name, NULL, true, NULL);
+                } else {
+                    dia_show_message(edi, "Logfile disabled.");
+                }
                 break;
 
             case K_F10:  // exit
@@ -1210,11 +1230,13 @@ void edi_clear_selection(edi_t* edi) {
  *
  * @param fname name of the file.
  * @param highres TRUE to use 50line video mode.
+ * @param err_msg pointer to an error message to show or NULL for none.
  *
  * @return a code describing why the editor was quit.
  */
-edi_exit_t edi_edit(char* fname, bool highres) {
+edi_exit_t edi_edit(char* fname, bool highres, char* err_msg) {
     edi_t* edi = edi_init(fname, highres);
+    edi->err_msg = err_msg;
     if (ut_file_exists(fname)) {
         char* error = edi_load(edi, fname);
         if (error) {
@@ -1258,6 +1280,12 @@ edi_exit_t edi_edit(char* fname, bool highres) {
         edi->changed = true;
         edi->msg = "New file: Template loaded!";
     }
+
+    // copy error message to message to be displayed when nothing else is pending
+    if (edi->err_msg && !edi->msg) {
+        edi->msg = edi->err_msg;
+    }
+
     edi_redraw(edi);
     edi_exit_t exit = edi_loop(edi);
     edi_shutdown(edi);

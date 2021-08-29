@@ -178,6 +178,13 @@ function SoundStopInput() { }
 function ReadSoundInput() { }
 
 /**
+* get the actuall sound data as IntArray.
+* 
+* @returns {IntArray|IntArray[]} returns one or two IntArrays with sound data or null if no data available.
+*/
+function ReadSoundInputInts() { }
+
+/**
  * MIDI music functions. See {@link Midi} on how to load MIDI files.
  * 
  * @module midi
@@ -340,8 +347,8 @@ function CustomEllipse(x, y, xr, yr, w, c) { }
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
  * @param {number} r radius.
- * @param {number} start start angle in tenths of degrees.
- * @param {number} end end angle in tenths of degrees.
+ * @param {number} start start angle with 256 representing a full circle.
+ * @param {number} end end angle with 256 representing a full circle.
  * @param {*} style value from {@link ARC}.
  * @param {number} c color.
  * @returns {ArcInfo} detailed info about the drawn arc.
@@ -353,8 +360,8 @@ function CircleArc(x, y, r, start, end, style, c) { }
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
  * @param {number} r radius.
- * @param {number} start start angle in tenths of degrees.
- * @param {number} end end angle in tenths of degrees.
+ * @param {number} start start angle with 256 representing a full circle.
+ * @param {number} end end angle with 256 representing a full circle.
  * @param {*} style value from {@link ARC}.
  * @param {number} w line width.
  * @param {number} c color.
@@ -438,7 +445,7 @@ function SaveTgaImage(fname) { }
 /**
  * Save current screen to PNG file.
  * 
- * **Note: PNG module must be loaded by calling LoadLibrary("PNG") before using this function!**
+ * **Note: PNG module must be loaded by calling LoadLibrary("png") before using this function!**
  * 
  * @see LoadLibrary()
  * 
@@ -455,10 +462,11 @@ function SavePngImage(fname) { }
 function GetPixel(x, y) { }
 
 /**
- * Enable/disable the transparency when drawing.
- * @param {boolean} en true to enable transparency when drawing (might slow down drawing).
+ * Set the blend mode for drawing.
+ * @param {number} mode one of the blend modes, e.g. BLEND.ALPHA or BLEND.REPLACE.
+ * @see BLEND in the color module
  */
-function TransparencyEnabled(en) { }
+function TransparencyEnabled(mode) { }
 
 /**
  * @module other

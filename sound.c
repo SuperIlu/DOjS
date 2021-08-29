@@ -28,6 +28,7 @@ SOFTWARE.
 #include "DOjS.h"
 #include "util.h"
 #include "zipfile.h"
+#include "intarray.h"
 
 /**************
 ** Variables **
@@ -338,6 +339,97 @@ static void f_ReadSoundInput(js_State *J) {
     }
 }
 
+/**
+ * @brief get current sample buffer.
+ * ReadSoundInput(): IntArray or array[IntArray, IntArray]
+ *
+ * @param J VM state.
+ */
+static void f_ReadSoundInputInts(js_State *J) {
+    if (DOjS.sndin_available && snd_sample_data && snd_data_available) {
+        read_sound_input(snd_sample_data);
+        snd_data_available = false;
+        if (snd_stereo) {
+            // create JavaScript array for left/right channel
+            js_newarray(J);
+
+            // create left IntArray
+            int_array_t *ia = IntArray_create();
+            if (!ia) {
+                JS_ENOMEM(J);
+                return;
+            }
+            for (int i = 0; i < snd_buffer_size; i++) {
+                IA_TYPE val;
+                if (snd_16bit) {
+                    val = ((unsigned short *)snd_sample_data)[i * 2];
+                } else {
+                    val = ((unsigned char *)snd_sample_data)[i * 2];
+                }
+                if (IntArray_push(ia, val) < 0) {
+                    IntArray_destroy(ia);
+                    JS_ENOMEM(J);
+                    return;
+                }
+            }
+            // create JavaScript object and put into array
+            IntArray_fromStruct(J, ia);
+            js_setindex(J, -2, 0);
+
+            // create right IntArray
+            ia = IntArray_create();
+            if (!ia) {
+                JS_ENOMEM(J);
+                return;
+            }
+            for (int i = 0; i < snd_buffer_size; i++) {
+                IA_TYPE val;
+                if (snd_16bit) {
+                    val = ((unsigned short *)snd_sample_data)[i * 2 + 1];
+                } else {
+                    val = ((unsigned char *)snd_sample_data)[i * 2 + 1];
+                }
+                if (IntArray_push(ia, val) < 0) {
+                    IntArray_destroy(ia);
+                    JS_ENOMEM(J);
+                    return;
+                }
+            }
+            // create JavaScript object and put into array
+            IntArray_fromStruct(J, ia);
+            js_setindex(J, -2, 1);
+
+        } else {
+            // create IntArray
+            int_array_t *ia = IntArray_create();
+            if (!ia) {
+                JS_ENOMEM(J);
+                return;
+            }
+
+            // put values into it
+            for (int i = 0; i < snd_buffer_size; i++) {
+                IA_TYPE val;
+                if (snd_16bit) {
+                    val = ((unsigned short *)snd_sample_data)[i];
+                } else {
+                    val = ((unsigned char *)snd_sample_data)[i];
+                }
+                if (IntArray_push(ia, val) < 0) {
+                    IntArray_destroy(ia);
+                    JS_ENOMEM(J);
+                    return;
+                }
+            }
+
+            // create JavaScript object
+            IntArray_fromStruct(J, ia);
+        }
+    } else {
+        js_pushnull(J);
+    }
+}
+
 /***********************
 ** exported functions **
 ***********************/
@@ -390,6 +482,7 @@ void init_sound(js_State *J) {
     NFUNCDEF(J, SoundStartInput, 3);
     NFUNCDEF(J, SoundStopInput, 0);
     NFUNCDEF(J, ReadSoundInput, 0);
+    NFUNCDEF(J, ReadSoundInputInts, 0);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

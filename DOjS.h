@@ -37,8 +37,8 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 1.60          //!< version number
-#define DOSJS_VERSION_STR "V1.6.0"  //!< version number as string
+#define DOSJS_VERSION 1.61          //!< version number
+#define DOSJS_VERSION_STR "V1.6.1"  //!< version number as string
 
 #define JSBOOT_DIR "JSBOOT/"     //!< directory with boot files.
 #define JSBOOT_ZIP "JSBOOT.ZIP"  //!< filename for ZIP of JSBOOT
@@ -56,6 +56,8 @@ SOFTWARE.
 
 #define DOJS_HALF_WIDTH 320   //!< half screen width
 #define DOJS_HALF_HEIGHT 240  //!< half screen height
+
+#define TICK_DELAY 10  //!< system tick handler interval in ms
 
 //! check if parameter has a certain usertype
 #define JS_CHECKTYPE(j, idx, type)            \

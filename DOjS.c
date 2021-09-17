@@ -54,7 +54,6 @@ SOFTWARE.
 #include "intarray.h"
 #include "blender.h"
 
-#define TICK_DELAY 10  //!< system tick handler interval in ms
 #define AUTOSTART_FILE "=MAIN.JS"
 
 /**************
@@ -124,7 +123,7 @@ static void clear_last_error() {
 static void set_last_error(const char *err) {
     clear_last_error();
 
-    DOjS.lastError = calloc(1, strlen(err + 1));
+    DOjS.lastError = calloc(1, strlen(err) + 1);
     if (DOjS.lastError) {
         strcpy(DOjS.lastError, err);
     }

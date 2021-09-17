@@ -1,3 +1,6 @@
+# Version 1.6.1 (The corruption) / September 17th, 2021
+* Fixed memory corruption during javascript runtime exceptions.
+
 # Version 1.6.0 (Does it blend) / August, 28th, 2021
 * Added JPEG loading through `jpeg` module
 * Made `JSLOG.txt` optional and the filename can be changed as well

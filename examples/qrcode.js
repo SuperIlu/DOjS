@@ -19,51 +19,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+Include("qrcode");
 
-var USE_INT_ARRAY = true;
+var bm;
 
 /*
 ** This function is called once when the script is started.
 */
 function Setup() {
-	MouseShowCursor(false);
-	SoundInputSource(SOUND.Input.MIC);
-	SoundStartInput(2000, 8, true);
+	SetFramerate(30);
+	bm = MakeQR(320, 320, "https://github.com/SuperIlu/DOjS");
 }
 
 /*
 ** This function is repeatedly until ESC is pressed or Stop() is called.
 */
 function Loop() {
-	if (USE_INT_ARRAY) {
-		var snd = ReadSoundInputInts();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0].Get(i), EGA.RED);
-				lastX = i;
-				lastY = snd[0].Get(i);
-			}
-		}
-	} else {
-		var snd = ReadSoundInput();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0][i], EGA.RED);
-				lastX = i;
-				lastY = snd[0][i];
-			}
-		}
-	}
+	bm.Draw(0, 0);
+	Box(0, 0, bm.width, bm.height, EGA.RED);
 }
 
 /*
 ** This function is called on any input.
 */
-function Input(event) {
+function Input(e) {
 }

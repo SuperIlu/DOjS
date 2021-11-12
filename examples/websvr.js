@@ -19,33 +19,40 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+Include('p5');
+
 var svr = null;		// server socket
 var lines = [""];	// on screen logfile
 var max_lines;		// maximum number that fit on screen
 
+var current_sketch = null;
+
 /*
 ** This function is called once when the script is started.
 */
-function Setup() {
+function setup() {
 	SetFramerate(30);
 	MouseShowCursor(false);
 
 	max_lines = (SizeY() / 10) - 1;
+
+	print_msg("DOjS LiveConding Server ready...");
 }
 
 /*
 ** This function is repeatedly until ESC is pressed or Stop() is called.
 */
-function Loop() {
+function draw() {
 	web_server();
-	draw_log();
-}
-
-/**
- * This function is called on an input event.
- * @param {*} e an input event.
- */
-function Input(e) {
+	if (current_sketch) {
+		if (current_sketch.Loop) {
+			current_sketch.Loop();
+		} else if (current_sketch.draw) {
+			current_sketch.draw();
+		}
+	} else {
+		draw_log();
+	}
 }
 
 /**
@@ -105,20 +112,77 @@ function handle_request(con) {
 		}
 	}
 
+	Debug("REQ=" + JSON.stringify(req));
+
 	if (req.length > 0) {
-		if (req[0].startsWith("GET ")) {
+		if (req[0].startsWith("GET ") || req[0].startsWith("PUT ")) {
 			if (req[0].endsWith(" HTTP/1.0") || req[0].endsWith(" HTTP/1.1")) {
+				// extract URI part
 				var sIdx = req[0].indexOf(' ');
 				var p1 = req[0].substring(sIdx + 1);
 				var eIdx = p1.indexOf(' ');
 				var uri = p1.substring(0, eIdx);
 
-				if (uri.startsWith("/api/")) {
-					call_function(con, uri);
-				} else {
+				// put request, try to get data
+				if (req[0].startsWith("PUT ")) {
+					print_msg("<- PUT '" + uri + "'");
+
+					var headers = extract_headers(req);
+					Debug("HEAD=" + JSON.stringify(headers));
+					if (!headers) {
+						send_response(con, 400, "Bad Request - parsing headers");
+						return;
+					}
+					if (!headers['Content-Length']) {
+						send_response(con, 400, "Bad Request - header not found");
+						return;
+					}
+					con.WriteString("HTTP/1.1 100 Continue\n\n");
+					var numBytes = headers['Content-Length'];
+					print_msg("Awaiting " + numBytes + " bytes")
+					var data = con.ReadString(numBytes);
+
+					Debug("DATA=" + JSON.stringify(data));
+
 					var path = extract_path(uri);
-					print_msg("<- '" + path + "'");
-					send_file(con, path);
+
+					print_msg("Data received for " + uri + ", sending 200")
+
+					try {
+						current_sketch = eval_data(data, "XXX");
+					} catch (e) {
+						var l = (e + "").split('\n');
+						for (var i = 0; i < l.length; i++) {
+							print_err(l[i].replace('\t', '  '));
+						}
+						current_sketch = null;
+					}
+					send_response(con, 200, "HTTP PUT OK:" + JSON.stringify(current_sketch));
+
+					if (current_sketch) {
+						if (current_sketch.Setup) {
+							current_sketch.Setup();
+						} else if (current_sketch.setup) {
+							current_sketch.setup();
+						} else {
+							current_sketch = null;
+						}
+					}
+				} else {
+					if (uri.startsWith("/api/")) {
+						call_function(con, uri);
+					} else if (uri.startsWith("/livecode")) {
+						current_sketch = null;
+						send_response(con, 200, "HTTP GET OK");
+					} else if (uri.startsWith("/livelog")) {
+						FlushLog();
+						print_msg("Sending JSLOG.TXT")
+						send_file(con, "JSLOG.TXT");
+					} else {
+						var path = extract_path(uri);
+						print_msg("<- GET '" + path + "'");
+						send_file(con, path);
+					}
 				}
 			} else {
 				send_response(con, 505, "HTTP Version Not Supported");
@@ -129,6 +193,32 @@ function handle_request(con) {
 	} else {
 		send_response(con, 400, "request empty");
 	}
+}
+
+function eval_data(data, name) {
+	var exports = {};
+	NamedFunction('exports', data, name)(exports);
+	return exports;
+}
+
+function extract_headers(req) {
+	var ret = {
+		"__order__": []
+	};
+
+	for (var i = 1; i < req.length; i++) {
+		var sIdx = req[i].indexOf(': ');
+		if (sIdx === -1) {
+			Debug(req[i]);
+			return null; // error parsing
+		}
+		var key = req[i].substring(0, sIdx);
+		var val = req[i].substring(sIdx + 2);
+		ret["__order__"].push(key);
+		ret[key] = val;
+	}
+
+	return ret;
 }
 
 /**
@@ -245,7 +335,7 @@ function send_file(con, f) {
 			"Content-Length: " + size + "\n\n";
 		con.WriteString(resp);
 
-		print_msg("size=" + size);
+		print_msg("File size=" + size);
 
 		// send file content
 		var data = file.ReadBytes();

@@ -1,6 +1,7 @@
 /**
  * Open a file, for file modes see {@link FILE}. Files can only either be read or written, never both. Writing to a closed file throws an exception.
  * @class
+ * 
  * @param {string} filename the name of the file.
  * @param {FILE} mode READ, WRITE or APPEND.
  */

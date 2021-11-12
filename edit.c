@@ -1118,6 +1118,7 @@ static edi_exit_t edi_loop(edi_t* edi) {
                 }
                 break;
 
+            case K_Control_F:
             case K_F7:  // find
                 if (dia_ask_text(edi, find_buffer, NULL, "Search")) {
                     edi_do_find(edi, find_buffer);

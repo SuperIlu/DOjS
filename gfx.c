@@ -709,10 +709,6 @@ static void f_DrawArray(js_State *J) {
 void init_gfx(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
 
-    // define some global properties
-    js_pushglobal(J);
-    js_setglobal(J, "global");
-
     // define global functions
     NFUNCDEF(J, SetRenderBitmap, 1);
     NFUNCDEF(J, GetScreenMode, 0);

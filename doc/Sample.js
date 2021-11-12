@@ -13,22 +13,22 @@ function Sample(filename) {
 	 * Sound length.
 	 * @member {number}
 	 */
-	this.length = null;
+	this.length = 0;
 	/**
 	 * Sound frequency.
 	 * @member {number}
 	 */
-	this.frequency = null;
+	this.frequency = 0;
 	/**
 	 * Sound resolution.
 	 * @member {number}
 	 */
-	this.bits = null;
+	this.bits = 0;
 	/**
 	 * mono/stereo indicator.
 	 * @member {bool}
 	 */
-	this.stereo = null;
+	this.stereo = false;
 
 }
 /**

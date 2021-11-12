@@ -20,50 +20,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var USE_INT_ARRAY = true;
+#ifndef __FLIC_H__
+#define __FLIC_H__
 
-/*
-** This function is called once when the script is started.
-*/
-function Setup() {
-	MouseShowCursor(false);
-	SoundInputSource(SOUND.Input.MIC);
-	SoundStartInput(2000, 8, true);
-}
+#include <mujs.h>
+#include <stdbool.h>
 
-/*
-** This function is repeatedly until ESC is pressed or Stop() is called.
-*/
-function Loop() {
-	if (USE_INT_ARRAY) {
-		var snd = ReadSoundInputInts();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0].Get(i), EGA.RED);
-				lastX = i;
-				lastY = snd[0].Get(i);
-			}
-		}
-	} else {
-		var snd = ReadSoundInput();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0][i], EGA.RED);
-				lastX = i;
-				lastY = snd[0][i];
-			}
-		}
-	}
-}
+/************
+** defines **
+************/
 
-/*
-** This function is called on any input.
-*/
-function Input(event) {
-}
+/*********************
+** static functions **
+*********************/
+extern void init_flic(js_State *J);
+extern void shutdown_flic(void);
+
+#endif  // __FLIC_H__

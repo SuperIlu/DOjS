@@ -20,50 +20,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var USE_INT_ARRAY = true;
+LoadLibrary("rawplay");
 
-/*
-** This function is called once when the script is started.
-*/
 function Setup() {
 	MouseShowCursor(false);
-	SoundInputSource(SOUND.Input.MIC);
-	SoundStartInput(2000, 8, true);
+
+	m = new Rawplay("tests/sound.zip=sound.raw", 44100, 4096);
+	// m = new Rawplay("tests/sound.raw", 44100, 4096);
+
+	Println(m.filename);
+	Println(m.length);
+	Println(m.buffersize);
+	Println(m.samplerate);
+
+	SetFramerate(20);
 }
 
-/*
-** This function is repeatedly until ESC is pressed or Stop() is called.
-*/
 function Loop() {
-	if (USE_INT_ARRAY) {
-		var snd = ReadSoundInputInts();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0].Get(i), EGA.RED);
-				lastX = i;
-				lastY = snd[0].Get(i);
-			}
-		}
-	} else {
-		var snd = ReadSoundInput();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0][i], EGA.RED);
-				lastX = i;
-				lastY = snd[0][i];
-			}
-		}
-	}
+	m.Play(false, true);
+
+	FilledBox(10, 10, 10 + 300, 10 + 20, EGA.BLACK);
+	TextXY(10, 10, "" + m.CurrentSample(), EGA.RED, NO_COLOR);
 }
 
-/*
-** This function is called on any input.
-*/
-function Input(event) {
+function Input(e) {
 }

@@ -1,3 +1,5 @@
+// livedojs
+
 /*
 MIT License
 
@@ -20,50 +22,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var USE_INT_ARRAY = true;
-
-/*
-** This function is called once when the script is started.
-*/
-function Setup() {
-	MouseShowCursor(false);
-	SoundInputSource(SOUND.Input.MIC);
-	SoundStartInput(2000, 8, true);
+exports.Setup = function () {
+	ClearScreen(EGA.RED);
 }
 
-/*
-** This function is repeatedly until ESC is pressed or Stop() is called.
-*/
-function Loop() {
-	if (USE_INT_ARRAY) {
-		var snd = ReadSoundInputInts();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0].Get(i), EGA.RED);
-				lastX = i;
-				lastY = snd[0].Get(i);
-			}
-		}
-	} else {
-		var snd = ReadSoundInput();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0][i], EGA.RED);
-				lastX = i;
-				lastY = snd[0][i];
-			}
-		}
-	}
-}
+exports.Loop = function () {
+	var size = 20;
+	var x = RandomInt(0, Width - size);
+	var y = RandomInt(0, Height - size);
 
-/*
-** This function is called on any input.
-*/
-function Input(event) {
+	FilledBox(x, y, x + size, y + size,
+		Color(RandomInt(255), RandomInt(255), RandomInt(255), RandomInt(32, 196))
+	);
 }

@@ -40,6 +40,7 @@ SOFTWARE.
 #include "edit.h"
 #include "file.h"
 #include "font.h"
+#include "flic.h"
 #include "funcs.h"
 #include "gfx.h"
 #include "joystick.h"
@@ -444,6 +445,7 @@ static void run_script(int argc, char **argv, int args) {
     init_socket(J);
     init_zipfile(J);
     init_intarray(J);
+    init_flic(J);
 
     // create canvas
     bool screenSuccess = true;
@@ -545,6 +547,7 @@ static void run_script(int argc, char **argv, int args) {
     LOG("DOjS Shutdown...\n");
     js_freestate(J);
     dojs_shutdown_libraries();
+    shutdown_flic();
     shutdown_midi();
     shutdown_sound();
     shutdown_joystick();
@@ -718,6 +721,28 @@ void dojs_update_transparency() {
         drawing_mode(DRAW_MODE_TRANS, DOjS.render_bm, 0, 0);
     } else {
         drawing_mode(DRAW_MODE_SOLID, DOjS.render_bm, 0, 0);
+    }
+}
+
+/**
+ * @brief cloe and re-open logfile to flush() all data and make the logfile accessible from Javascript.
+ */
+void dojs_logflush() {
+    if (DOjS.logfile) {
+        // close current logfile
+        fclose(DOjS.logfile);
+
+        // recreate logfile
+        if (DOjS.logfile_name) {
+            DOjS.logfile = fopen(DOjS.logfile_name, "a");
+            if (!DOjS.logfile) {
+                fprintf(stderr, "Could not open/create logfile %s.\n", DOjS.logfile_name);
+                exit(1);
+            }
+            setbuf(DOjS.logfile, 0);
+        } else {
+            DOjS.logfile = NULL;
+        }
     }
 }
 

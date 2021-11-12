@@ -68,6 +68,11 @@ function LoadLibrary(name) { }
 function GetLoadedLibraries() { }
 
 /**
+ * Flushes, closes and re-opens the current logfile. This is useful if you want to read the current logfile contents from a runing program.
+ */
+function FlushLog() { }
+
+/**
  * IPX network functions.
  * 
  * **Note: IPS module must be loaded by calling LoadLibrary("ipx") before using!**
@@ -1559,3 +1564,40 @@ function RawRead(disk, sector) { }
  * @param {number[]} data an array with 512 bytes.
  */
 function RawWrite(disk, sector, data) { }
+
+/**
+ * @module flic
+ */
+
+/**
+ * @property {number} FLIC_WIDTH width of the currently open FLIC.
+ */
+FLIC_WIDTH = 0.0;
+
+/**
+ * @property {number} FLIC_HEIGHT height of the currently open FLIC.
+ */
+FLIC_HEIGHT = 0.0;
+
+/**
+ * Open a FLIC file. Only one FLIC can be open at a given time. FLIC files can NOT be read from ZIP files.
+ * 
+ * @param {string} fname file name to open.
+ */
+function FlicOpen(fname) { }
+
+/**
+ * close FLIC file.
+ */
+function FlicClose() { }
+
+/**
+ * Display the next frame from the currently open FLIC.
+ * 
+ * @param {number} x the top left point where the FLIC shall be rendered
+ * @param {number} y the top left point where the FLIC shall be rendered
+ * @param {boolean} loop true to loop the animation, false to only play it once.
+ * 
+ * @returns {number} if 'loop' is false this function returns '-1' after the last frame was decoded. In all other cases the current frame number is returned.
+ */
+function FlicPlay(x, y, loop) { }

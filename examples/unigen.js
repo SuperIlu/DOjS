@@ -32,10 +32,10 @@ function setup() {
 }
 
 function draw() {
-	//	blendMode(BLEND);
+	blendMode(BLEND);
 	background(0, 30);
 
-	//	blendMode(ADD);
+	blendMode(ADD);
 	for (var i = 0; i < stars.length; i++) {
 		stars[i].display();
 	}

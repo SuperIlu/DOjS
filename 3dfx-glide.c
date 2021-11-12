@@ -843,7 +843,7 @@ void init_3dfx(js_State *J) {
 
     FILE *f = fopen("GLIDE3X.DXE", "r");
     if (!f) {
-        LOG("GLIDE3X.DXE missing, please run one of the V_x.BAT scripts to get the driver matching your hardware! All 3dfx functions are disabled!");
+        LOG("GLIDE3X.DXE missing, please run one of the V_x.BAT scripts to get the driver matching your hardware! All 3dfx functions are disabled!\n");
 
         js_newcfunction(J, f_dummy_fxInit, "fxInit", 0);
         js_setglobal(J, "fxInit");

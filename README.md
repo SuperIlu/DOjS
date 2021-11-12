@@ -61,6 +61,7 @@ The following hardware/functions are available:
 * COM or serial port access
 * IPX and TCP/IP networking
 * ZIP file access
+* GIF-Animation, FLC/FLI, MPEG1 or OggVorbis playback
 
 ## A minimal script
 You can find the following example in `examples/exampl.js`:
@@ -176,11 +177,33 @@ If you used Windows-Tools to check out DOjS from git you may need to fix the new
 Now you are ready to compile DOjS with `make clean all`. This might take some time as the dependencies are quite a large.
 `make distclean` will clean dependencies as well. `make zip` will create the distribution ZIP and `make doc` will re-create the HTML help.
 
+# Notes
 ## 3dfx/Glide3
 In order to compile DOjS you need Glide3 includes and binaries. The ones included with the DOjS sources were created using my [glide repository](https://github.com/SuperIlu/glide) on GitHub. 
 
 ## GRX Fonts
 DOjS comes pre-bundled with all fonts included with GRX (files ending with ".FNT"). If you want/need additional fonts you can find a very simple tool to convert TTF/BDF fonts to GRX format [here](https://github.com/SuperIlu/GrxFntConv). Results may vary...
+
+## Live coding
+If you run DOjS on a computer with network interface and a matching packet driver you can (sort of) live code using the [VSCode](https://code.visualstudio.com/) extension in `vscode\livedojs-0.0.4.vsix`. You need to start `DOjS -r examples/websvr.js` and then set the IP address in VSCode using the command `DOjS: Set hostname`. Live coding sketches must look like below to work:
+```
+// livedojs
+exports.Setup = function () {
+}
+
+exports.Loop = function () {
+    ClearScreen(EGA.BLACK);
+
+    FilledBox(10, 10, 70, 20, EGA.GREEN);
+}
+```
+* The first line must be exactly `// livedojs`
+* The file must end with `.js`
+* Only `Setup()` and `Loop()` are available, `Input()` does not work.
+* p5js compatibility does not work, you must code using DOjS native API
+* If the hostname is set the sketch will be automatically be uploaded on save
+* The sketch can be uploaded using `DOjS: Upload sketch` manually
+* you can access the JSLOG.TXT of the running server by using `DOjS: get logfile`
 
 # History
 See the [changelog](/CHANGELOG.md) for the projects history.
@@ -196,6 +219,9 @@ See the [changelog](/CHANGELOG.md) for the projects history.
     * https://github.com/evanw/lightgl.js
 * Fix bugs!
 * Anything fun...
+    * http://www.speech.cs.cmu.edu/flite/
+    * http://speect.sourceforge.net/
+    * http://espeak.sourceforge.net/
 
 # Licenses
 See [LICENSE](LICENSE) file for all licenses.

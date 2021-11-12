@@ -1,3 +1,5 @@
+// livedojs
+
 /*
 MIT License
 
@@ -20,50 +22,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var USE_INT_ARRAY = true;
-
-/*
-** This function is called once when the script is started.
-*/
-function Setup() {
-	MouseShowCursor(false);
-	SoundInputSource(SOUND.Input.MIC);
-	SoundStartInput(2000, 8, true);
+exports.setup = function () {
+	m = width / 2;
+	background(0);
 }
 
-/*
-** This function is repeatedly until ESC is pressed or Stop() is called.
-*/
-function Loop() {
-	if (USE_INT_ARRAY) {
-		var snd = ReadSoundInputInts();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0].Get(i), EGA.RED);
-				lastX = i;
-				lastY = snd[0].Get(i);
-			}
-		}
-	} else {
-		var snd = ReadSoundInput();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0][i], EGA.RED);
-				lastX = i;
-				lastY = snd[0][i];
-			}
-		}
-	}
-}
+exports.draw = function () {
+	rectMode(CORNER);
+	noStroke();
+	fill(0, 0, 0, 8);
+	rect(0, 0, width, height);
 
-/*
-** This function is called on any input.
-*/
-function Input(event) {
+	fill(random(32, 224));
+
+	var h = random(5, 40);
+	var w = random(5, 110);
+	var p = random(0, height - h / 2);
+
+	stroke(255, 0, 0);
+	rectMode(CENTER);
+	rect(m, p, w, h);
+	line(m, 0, m, height);
 }

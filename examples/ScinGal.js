@@ -19,51 +19,57 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+Include('p5');
 
-var USE_INT_ARRAY = true;
+function setup() {
+	createCanvas(windowWidth, windowHeight);
+	angleMode(DEGREES);
 
-/*
-** This function is called once when the script is started.
-*/
-function Setup() {
-	MouseShowCursor(false);
-	SoundInputSource(SOUND.Input.MIC);
-	SoundStartInput(2000, 8, true);
+	frameRate(10);
+	noFill();
+
+	w2 = width / 2;
+	h2 = height / 2;
+	background(0);
 }
 
-/*
-** This function is repeatedly until ESC is pressed or Stop() is called.
-*/
-function Loop() {
-	if (USE_INT_ARRAY) {
-		var snd = ReadSoundInputInts();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0].Get(i), EGA.RED);
-				lastX = i;
-				lastY = snd[0].Get(i);
-			}
-		}
-	} else {
-		var snd = ReadSoundInput();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0][i], EGA.RED);
-				lastX = i;
-				lastY = snd[0][i];
-			}
-		}
+function draw() {
+	colorMode(RGB);
+	background(0, 8);
+	drawGalaxy(
+		random(width),
+		random(height),
+		random(width / 20, width / 40),
+		random(1.001, 1.002)
+	);
+}
+
+// c := center point
+// l := size
+// d := shrink factor
+function drawGalaxy(cX, cY, l, d) {
+	var angle = random(360);
+	while (l > 1) {
+		var r = rotatePoint(angle, cX, cY, cX + l, cY);
+
+		colorMode(HSB);
+		stroke(angle % 360, 100, 100);
+		point(r[0], r[1]);
+
+		angle++;
+		l /= d;
 	}
 }
 
-/*
-** This function is called on any input.
-*/
-function Input(event) {
+// c := center for rotation
+// p := point to rotate
+// a := angle
+function rotatePoint(a, cX, cY, pX, pY) {
+	var x = pX - cX;
+	var y = pY - cY;
+
+	var xR = x * cos(a) - y * sin(a);
+	var yR = y * cos(a) + x * sin(a);
+
+	return [xR + cX, yR + cY];
 }

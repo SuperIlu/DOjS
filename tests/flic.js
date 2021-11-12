@@ -20,50 +20,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var USE_INT_ARRAY = true;
-
-/*
-** This function is called once when the script is started.
-*/
 function Setup() {
-	MouseShowCursor(false);
-	SoundInputSource(SOUND.Input.MIC);
-	SoundStartInput(2000, 8, true);
+    MouseShowCursor(false);
+
+    //FlicOpen("tests/EMCONJ.FLC");
+    //FlicOpen("tests/EMCONJ1.FLI");
+    FlicOpen("tests/GASPRA.FLI");
+
+    Println(FLIC_WIDTH);
+    Println(FLIC_HEIGHT);
+
+    SetFramerate(30);
 }
 
-/*
-** This function is repeatedly until ESC is pressed or Stop() is called.
-*/
 function Loop() {
-	if (USE_INT_ARRAY) {
-		var snd = ReadSoundInputInts();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0].Get(i), EGA.RED);
-				lastX = i;
-				lastY = snd[0].Get(i);
-			}
-		}
-	} else {
-		var snd = ReadSoundInput();
-		if (snd) {
-			ClearScreen(EGA.BLACK);
-			var lastX = 0;
-			var lastY = 0;
-			for (var i = 0; i < SizeX(); i++) {
-				Line(lastX, lastY, i, snd[0][i], EGA.RED);
-				lastX = i;
-				lastY = snd[0][i];
-			}
-		}
-	}
+    //  ClearScreen(EGA.DARK_GRAY);
+    Println(FlicPlay(100, 100, true));
+    Box(100, 100, 100 + FLIC_WIDTH, 100 + FLIC_HEIGHT, EGA.RED);
 }
 
-/*
-** This function is called on any input.
-*/
-function Input(event) {
+function Input(e) {
 }

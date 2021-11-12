@@ -701,6 +701,13 @@ static void f_GetLoadedLibraries(js_State *J) {
     }
 }
 
+/**
+ * @brief flush logfile to disk
+ *
+ * @param J VM state.
+ */
+static void f_FlushLog(js_State *J) { dojs_logflush(); }
+
 /***********************
 ** exported functions **
 ***********************/
@@ -765,6 +772,8 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
 
     NFUNCDEF(J, LoadLibrary, 1);
     NFUNCDEF(J, GetLoadedLibraries, 0);
+
+    NFUNCDEF(J, FlushLog, 0);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

@@ -37,8 +37,8 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 1.61          //!< version number
-#define DOSJS_VERSION_STR "V1.6.1"  //!< version number as string
+#define DOSJS_VERSION 1.70          //!< version number
+#define DOSJS_VERSION_STR "V1.7.0"  //!< version number as string
 
 #define JSBOOT_DIR "JSBOOT/"     //!< directory with boot files.
 #define JSBOOT_ZIP "JSBOOT.ZIP"  //!< filename for ZIP of JSBOOT
@@ -254,5 +254,6 @@ extern void dojs_update_transparency(void);
 extern bool dojs_register_library(const char *name, void *handle, void (*init)(js_State *J), void (*shutdown)(void));
 extern bool dojs_check_library(js_State *J, const char *name, bool call_init);
 extern int dojs_do_file(js_State *J, const char *fname);
+extern void dojs_logflush(void);
 
 #endif  // __DOJS_H__

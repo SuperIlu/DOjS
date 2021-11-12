@@ -649,17 +649,20 @@ PACKFILE *open_zipfile1(const char *fname) {
  * @return false if an error occured, buf and size will be 0.
  */
 bool read_zipfile1(const char *fname, void **buf, size_t *size) {
+    *size = 0;
+    *buf = NULL;
+
     char *delim = strchr(fname, ZIP_DELIM);
 
     if (!delim) {
-        return NULL;
+        return false;
     }
 
     // get memory for a copy of the filename
     int flen = strlen(fname) + 1;
     char *zname = malloc(flen);
     if (!zname) {
-        return NULL;
+        return false;
     }
     memcpy(zname, fname, flen);
     int idx = delim - fname;
@@ -685,17 +688,16 @@ bool read_zipfile1(const char *fname, void **buf, size_t *size) {
  * @return false if an error occured, buf and size will be 0.
  */
 bool read_zipfile2(const char *zname, const char *ename, void **buf, size_t *size) {
+    *size = 0;
+    *buf = NULL;
+
     struct zip_t *zip = zip_open(zname, 0, 'r');
     if (!zip) {
-        *size = 0;
-        *buf = NULL;
         return false;
     }
 
     if (zip_entry_open(zip, ename) < 0) {
         zip_close(zip);
-        *size = 0;
-        *buf = NULL;
         return false;
     }
     *size = zip_entry_size(zip);

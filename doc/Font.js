@@ -13,7 +13,7 @@ function Font(filename) {
 	 * Font height
 	 * @member {number}
 	 */
-	this.height = null;
+	this.height = 0;
 }
 /**
  * Draw a left aligned string to the canvas.

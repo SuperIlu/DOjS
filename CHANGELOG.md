@@ -1,7 +1,16 @@
-# Version 1.6.1 (The corruption) / September 17th, 2021
+# Version 1.7.0 (The live animation) / November 12th, 2021
+* Added FLIC playback (video)
+* Added MPEG1 playback (audio/video) using plugin `mpeg1`.
+* Added Ogg Vorbis playback plugin `vorbis`.
+* Added `rawplay` plugin for raw 16 bit stereo audio data loaded from file system or ZIP.
+* Added CTRL-F for 'search' (same as F7)
+* Added live coding examples. Install the extension in the `vscode/` directory and run `DOjS -r examples\websvr.js`
+* Fixed missing newline in error message.
+
+# Version 1.6.1 (The calloc corruption) / September 17th, 2021
 * Fixed memory corruption during javascript runtime exceptions.
 
-# Version 1.6.0 (Does it blend) / August, 28th, 2021
+# Version 1.6.0 (Does it blend) / August 28th, 2021
 * Added JPEG loading through `jpeg` module
 * Made `JSLOG.txt` optional and the filename can be changed as well
 * Updated libcpuid to v0.5.1

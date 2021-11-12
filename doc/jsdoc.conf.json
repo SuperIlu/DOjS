@@ -15,12 +15,15 @@
 			"GifAnim.js",
 			"IntArray.js",
 			"Midi.js",
+			"Mpeg1.js",
 			"Neural.js",
 			"Noise.js",
+			"Rawplay.js",
 			"Sample.js",
 			"Socket.js",
 			"SQLite.js",
 			"TextInfo.js",
+			"Vorbis.js",
 			"ZBuffer.js",
 			"Zip.js",
 			// everything from jsboot
@@ -61,7 +64,7 @@
 			"outputSourceFiles": false
 		},
 		"better-docs": {
-			"name": "DOjS V1.6.0",
+			"name": "DOjS V1.7.0",
 			"hideGenerator": true,
 			"navLinks": [
 				{

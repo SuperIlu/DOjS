@@ -1,6 +1,7 @@
 /**
  * create new texture from 3df file or a Bitmap.
  * @class
+ * 
  * @param {(string|Bitmap)} src 3df file to load as texture or Bitmap to convert to texture
  */
 function TexInfo(src) {
@@ -13,43 +14,44 @@ function TexInfo(src) {
 	 * large LOD
 	 * @member {number}
 	 */
-	this.largeLod = null;
+	this.largeLod = 0;
 	/**
 	 * small LOD
 	 * @member {number}
 	 */
-	this.smallLod = null;
+	this.smallLod = 0;
 	/**
 	 * aspect ratio
 	 * @member {number}
 	 */
-	this.aspectRatio = null;
+	this.aspectRatio = 0;
 	/**
 	 * texture format
 	 * @member {number}
 	 */
-	this.format = null;
+	this.format = 0;
 	/**
 	 * table type
 	 * @member {number}
 	 */
-	this.tableType = null;
+	this.tableType = 0;
 	/**
 	 * size of texture
 	 * @member {number}
 	 */
-	this.textureSize = null;
+	this.textureSize = 0;
 	/**
 	 * texture mem address (if downloaded)
 	 * @member {number}
 	 */
-	this.address = null;
+	this.address = 0;
 	/**
 	 * TMU (if downloaded)
 	 * @member {number}
 	 */
-	this.tmu = null;
-}
+	this.tmu = 0;
+};
+
 /**
  * download the MIP map to texture memory.
  * @param {GR_TMU} tmu the TMU unit to download to.

@@ -39,13 +39,14 @@ function Bitmap(filename) {
 	 * Width in pixels
 	 * @member {number}
 	 */
-	this.width = null;
+	this.width = 0;
 	/**
 	 * Height in pixels
 	 * @member {number}
 	 */
-	this.height = null;
+	this.height = 0;
 };
+
 /**
  * Draw the image to the canvas at given coordinates.
  * @param {number} x position to draw to.

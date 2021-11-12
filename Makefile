@@ -86,6 +86,7 @@ PARTS= \
 	$(BUILDDIR)/edit.o \
 	$(BUILDDIR)/file.o \
 	$(BUILDDIR)/font.o \
+	$(BUILDDIR)/flic.o \
 	$(BUILDDIR)/funcs.o \
 	$(BUILDDIR)/lowlevel.o \
 	$(BUILDDIR)/gfx.o \
@@ -177,6 +178,10 @@ TEXUS.EXE:
 	$(MAKE) -C $(TEXUS) clean all
 	cp $(TEXUS)/TEXUS.EXE .
 
+exstream: liballegro
+	$(CC) $(CFLAGS) -c $(ALLEGRO)/examples/exstream.c -o exstream.o
+	$(CC) $(LDFLAGS) -o extream.exe exstream.o $(LIBS)
+
 zip: all doc
 	rm -f $(RELZIP)
 	rm -f dxetest.DXE dxetest2.DXE
@@ -184,12 +189,12 @@ zip: all doc
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
 	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem *.DXE
 
-devzip: all doc $(RELZIP)
+devzip: all doc
 	rm -f $(RELZIP)
 	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
 	cp $(OPENSSL)/apps/openssl.exe .
-	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/*.js tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem openssl.exe *.DXE
+	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg tests/*.mpg tests/*.ogg $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem openssl.exe *.DXE
 	scp $(RELZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:
@@ -204,7 +209,7 @@ init:
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) DOJS.exe $(ZIP) JSLOG.TXT TEXUS.EXE GLIDE3X.DXE JSBOOT.ZIP cacert.pem
+	rm -f $(EXE) DOJS.exe $(ZIP) JSLOG.TXT TEXUS.EXE GLIDE3X.DXE JSBOOT.ZIP cacert.pem W32DHCP.TMP
 	for dir in $(DXE_DIRS); do \
 		$(MAKE) -C $$dir -f Makefile $@; \
 	done
@@ -240,6 +245,9 @@ sslclean:
 curlclean:
 	$(MAKE) -C $(CURL)/lib -f Makefile.dj clean
 	rm -f $(CURL)/lib/libcurl.a
+
+muclean:
+	rm -f $(MUJS)/build/release/libmujs.a
 
 glideclean:
 	rm -rf glidedxe.c

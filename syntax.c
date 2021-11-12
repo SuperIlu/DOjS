@@ -299,6 +299,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "MatrixMul"),                     //
     EDI_SYNTAX(LIGHTRED, "LPTStatus"),                     //
     EDI_SYNTAX(LIGHTRED, "FloodFill"),                     //
+    EDI_SYNTAX(LIGHTRED, "FlicClose"),                     //
     EDI_SYNTAX(LIGHTRED, "FilledBox"),                     //
     EDI_SYNTAX(LIGHTRED, "DrawArray"),                     //
     EDI_SYNTAX(LIGHTRED, "CircleArc"),                     //
@@ -317,6 +318,9 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "GetPixel"),                      //
     EDI_SYNTAX(LIGHTRED, "GetGreen"),                      //
     EDI_SYNTAX(LIGHTRED, "GetAlpha"),                      //
+    EDI_SYNTAX(LIGHTRED, "FlushLog"),                      //
+    EDI_SYNTAX(LIGHTRED, "FlicPlay"),                      //
+    EDI_SYNTAX(LIGHTRED, "FlicOpen"),                      //
     EDI_SYNTAX(LIGHTRED, "CharCode"),                      //
     EDI_SYNTAX(LIGHTRED, "fxFlush"),                       //
     EDI_SYNTAX(LIGHTRED, "Resolve"),                       //
@@ -368,17 +372,26 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "Gc"),                            //
 
     // Classes
-    EDI_SYNTAX(LIGHTGREEN, "TexInfo"),  // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "COMPort"),  // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "ZBuffer"),  // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "FxState"),  // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "Sample"),   // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "Socket"),   // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "Bitmap"),   // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "Font"),     // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "File"),     // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "Midi"),     // .ctor()
-    EDI_SYNTAX(LIGHTGREEN, "Zip"),      // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "DoubleArray"),  // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "IntArray"),     // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "GIFAnim"),      // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "TexInfo"),      // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "COMPort"),      // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "ZBuffer"),      // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "FxState"),      // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Rawplay"),      // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Sample"),       // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Socket"),       // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Bitmap"),       // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "SQLite"),       // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Neural"),       // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "MPEG1"),        // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Font"),         // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "File"),         // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Curl"),         // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Midi"),         // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Zip"),          // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "Ogg"),          // .ctor()
 
     // Methods
     EDI_SYNTAX(RED, "SetCertificatePassword"),  //
@@ -396,6 +409,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "IsOutputEmpty"),           //
     EDI_SYNTAX(RED, "GetRemotePort"),           //
     EDI_SYNTAX(RED, "GetRemoteHost"),           //
+    EDI_SYNTAX(RED, "CurrentSample"),           //
     EDI_SYNTAX(RED, "StringHeight"),            //
     EDI_SYNTAX(RED, "SetUserAgent"),            //
     EDI_SYNTAX(RED, "SetSslVerify"),            //
@@ -418,6 +432,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "FlushOutput"),             //
     EDI_SYNTAX(RED, "ExtractFile"),             //
     EDI_SYNTAX(RED, "Established"),             //
+    EDI_SYNTAX(RED, "CurrentTime"),             //
     EDI_SYNTAX(RED, "WriteBytes"),              //
     EDI_SYNTAX(RED, "SetTimeout"),              //
     EDI_SYNTAX(RED, "SetReferer"),              //
@@ -452,6 +467,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "ReadLine"),                //
     EDI_SYNTAX(RED, "ReadInts"),                //
     EDI_SYNTAX(RED, "ReadByte"),                //
+    EDI_SYNTAX(RED, "HasEnded"),                //
     EDI_SYNTAX(RED, "GetPixel"),                //
     EDI_SYNTAX(RED, "ToArray"),                 //
     EDI_SYNTAX(RED, "SetPost"),                 //
@@ -462,6 +478,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "SetPut"),                  //
     EDI_SYNTAX(RED, "SetKey"),                  //
     EDI_SYNTAX(RED, "SetGet"),                  //
+    EDI_SYNTAX(RED, "Rewind"),                  //
     EDI_SYNTAX(RED, "Append"),                  //
     EDI_SYNTAX(RED, "Train"),                   //
     EDI_SYNTAX(RED, "Shift"),                   //
@@ -469,6 +486,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "Close"),                   //
     EDI_SYNTAX(RED, "Clear"),                   //
     EDI_SYNTAX(RED, "Stop"),                    //
+    EDI_SYNTAX(RED, "Seek"),                    //
     EDI_SYNTAX(RED, "Save"),                    //
     EDI_SYNTAX(RED, "Push"),                    //
     EDI_SYNTAX(RED, "Play"),                    //
@@ -482,13 +500,19 @@ const syntax_t edi_wordlist[] = {
 
     // members
     EDI_SYNTAX(YELLOW, ".hidden_layers"),  //
+    EDI_SYNTAX(YELLOW, ".maxframesize"),   //
     EDI_SYNTAX(YELLOW, ".SavePngImage"),   //
     EDI_SYNTAX(YELLOW, ".textureSize"),    //
     EDI_SYNTAX(YELLOW, ".aspectRatio"),    //
+    EDI_SYNTAX(YELLOW, ".samplerate"),     //
+    EDI_SYNTAX(YELLOW, ".numsamples"),     //
     EDI_SYNTAX(YELLOW, ".frameCount"),     //
+    EDI_SYNTAX(YELLOW, ".buffersize"),     //
     EDI_SYNTAX(YELLOW, ".alloc_size"),     //
     EDI_SYNTAX(YELLOW, ".tableType"),      //
+    EDI_SYNTAX(YELLOW, ".has_video"),      //
     EDI_SYNTAX(YELLOW, ".frequency"),      //
+    EDI_SYNTAX(YELLOW, ".framerate"),      //
     EDI_SYNTAX(YELLOW, ".RenderSVG"),      //
     EDI_SYNTAX(YELLOW, ".smallLod"),       //
     EDI_SYNTAX(YELLOW, ".minDelay"),       //
@@ -496,8 +520,11 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(YELLOW, ".largeLod"),       //
     EDI_SYNTAX(YELLOW, ".filename"),       //
     EDI_SYNTAX(YELLOW, ".duration"),       //
+    EDI_SYNTAX(YELLOW, ".comments"),       //
+    EDI_SYNTAX(YELLOW, ".channels"),       //
     EDI_SYNTAX(YELLOW, ".outputs"),        //
     EDI_SYNTAX(YELLOW, ".address"),        //
+    EDI_SYNTAX(YELLOW, ".vendor"),         //
     EDI_SYNTAX(YELLOW, ".stereo"),         //
     EDI_SYNTAX(YELLOW, ".server"),         //
     EDI_SYNTAX(YELLOW, ".length"),         //

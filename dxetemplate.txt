@@ -153,6 +153,9 @@ __fpclassifyd
 rand
 srand
 pow
+exp
+ldexp
+floor
 
 // gcc/djgpp/lowlevel
 __divdi3
@@ -232,6 +235,22 @@ clip3d_f
 create_bitmap_ex
 create_scene
 create_zbuffer
+create_sample
+play_sample
+destroy_sample
+stop_audio_stream
+free_audio_stream_buffer
+play_audio_stream
+get_audio_stream_buffer
+voice_set_pan
+deallocate_voice
+allocate_voice
+voice_set_volume
+voice_set_playmode
+voice_stop
+voice_start
+voice_get_position
+blit
 destroy_bitmap
 destroy_scene
 destroy_zbuffer
@@ -291,6 +310,7 @@ read_zipfile1
 read_zipfile2
 ut_clone_string
 ut_file_exists
+ut_read_file
 
 // IntArray
 IntArray_create

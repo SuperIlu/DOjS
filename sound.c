@@ -446,7 +446,8 @@ void init_sound(js_State *J) {
     if (!sound_ok) {
         LOGF("Sound output: %s\n", allegro_error);
     } else {
-        LOGF("Sound output: OK\n");
+        LOGF("Sound output: PCM[%s; %s; %d], FM[%s; %s; %d]\n", digi_driver->name, digi_driver->desc, digi_driver->max_voices, midi_driver->name, midi_driver->desc,
+             midi_driver->max_voices);
     }
     DOjS.midi_available = sound_ok && !DOjS.params.no_fm;
     DOjS.sound_available = sound_ok && !DOjS.params.no_sound;

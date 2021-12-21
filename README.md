@@ -74,7 +74,7 @@ function Setup() {
 }
 
 /*
-** This function is repeatedly until ESC is pressed or Stop() is called.
+** This function is repeated until ESC is pressed or Stop() is called.
 */
 function Loop() {
     ClearScreen(EGA.BLACK);

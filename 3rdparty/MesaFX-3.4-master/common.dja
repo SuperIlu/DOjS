@@ -1,0 +1,23 @@
+      CC = i586-pc-msdosdjgpp-gcc
+      LD = i586-pc-msdosdjgpp-gcc
+      AR = i586-pc-msdosdjgpp-ar
+      RM = rm
+
+  OFLAGS = -O3 -march=pentium
+  DFLAGS = -D__DOS__ -D__MSDOS32__ -D__AMESA__
+  WFLAGS = -Wall -Wno-uninitialized
+  CFLAGS = $(WFLAGS) $(OFLAGS) $(DFLAGS)
+  LFLAGS = -s
+
+  GL_LIB = $(LIBDIR)/libGL.a
+ GLU_LIB = $(LIBDIR)/libGLU.a
+GLUT_LIB = $(LIBDIR)/libGLUT.a
+    LIBS = $(GLUT_LIB) $(GLU_LIB) $(GL_LIB)
+ LIB_DEP = $(LIBS) -lalleg
+
+
+%.o: %.c
+	$(CC) -c -I. -I$(INCDIR) $(CFLAGS) $< -o $@
+
+%.exe: %.o $(LIBS)
+	$(LD) -L$(LIBDIR) $(LFLAGS) $< $(LIB_DEP) -o $@

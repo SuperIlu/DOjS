@@ -1,40 +1,53 @@
 ###
 # Makefile for cross compiling DOjS for FreeDOS/MS-DOS
 # All compilation was done with DJGPP 7.2.0 built from https://github.com/andrewwutw/build-djgpp
+# make sure the DJGPP toolchain is in your path (i586-pc-msdosdjgpp-XXX)!
 ###
-# enter the path to x-djgpp here
-DJGPP=/home/ilu/djgpp/bin
-#DJGPP=/home/ilu/djgpp473/bin
 
 # temp directory for building FreeDOS archive
 TMP=/tmp/FDOS
 
-MUJS=mujs-1.0.5
-ALLEGRO=allegro-4.2.2-xc-master
+THIRDPARTY	= 3rdparty/
+MUJS		= $(THIRDPARTY)/mujs-1.0.5
+ALLEGRO		= $(THIRDPARTY)/allegro-4.2.2-xc-master
+DZCOMMDIR	= $(THIRDPARTY)/dzcomm
+WATT32		= $(THIRDPARTY)/watt32-2.2dev.rel.11/
+ZLIB		= $(THIRDPARTY)/zlib-1.2.11
+KUBAZIP		= $(THIRDPARTY)/zip
+ALPNG		= $(THIRDPARTY)/alpng13
+OPENSSL		= $(THIRDPARTY)/openssl-1.1.1n
+CURL		= $(THIRDPARTY)/curl-7.80.0
+MESA3		= $(THIRDPARTY)/MesaFX-3.4-master
+
 GLIDE=glide3x
+GLIDESDK=$(GLIDE)/v1
 TEXUS=$(GLIDE)/texus
-DZCOMMDIR=dzcomm
-LIBDZCOMM=$(DZCOMMDIR)/lib/djgpp/libdzcom.a
-WATT32=watt32-2.2dev.rel.11/
-ZLIB=zlib-1.2.11
-KUBAZIP=zip
-ALPNG=alpng13
-OPENSSL=openssl-1.1.1k
-CURL=curl-7.74.0
+
+LIB_DZCOMM	= $(DZCOMMDIR)/lib/djgpp/libdzcom.a
+LIB_MUJS	= $(MUJS)/build/release/libmujs.a
+LIB_ALLEGRO	= $(ALLEGRO)/lib/djgpp/liballeg.a
+LIB_WATT	= $(WATT32)/lib/libwatt.a
+LIB_Z		= $(ZLIB)/msdos/libz.a
+LIB_ALPNG	= $(ALPNG)/libalpng.a
+LIB_SSL		= $(OPENSSL)/libssl.a
+LIB_CURL	= $(CURL)/libcurl.a
+LIB_MESA	= $(MESA3)/lib/libgl.a
+
 
 # compiler
 CDEF     = -DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED # -DMEMDEBUG 
 CFLAGS   = -MMD -Wall -std=gnu99 -O2 -march=i386 -mtune=i586 -ffast-math -fomit-frame-pointer $(INCLUDES) -fgnu89-inline -Wmissing-prototypes $(CDEF)
 INCLUDES = \
-	-I$(realpath .) \
+	-I$(realpath ./src) \
 	-I$(realpath $(MUJS)) \
 	-I$(realpath $(ALLEGRO))/include \
-	-I$(realpath $(GLIDE))/v1/include \
+	-I$(realpath $(GLIDESDK))/include \
 	-I$(realpath $(DZCOMMDIR))/include \
 	-I$(realpath $(WATT32))/inc \
 	-I$(realpath $(ZLIB)) \
 	-I$(realpath $(KUBAZIP))/src \
 	-I$(realpath $(ALPNG))/src \
+	-I$(realpath $(OPENSSL))/include \
 	-I$(realpath $(CURL))/include
 
 # linker
@@ -53,18 +66,20 @@ RELZIP   = dojs.zip
 FDZIP    = $(shell pwd)/FreeDOS_dojs.zip
 
 # dirs/files
+DOJSPATH		= $(realpath .)
 BUILDDIR		= build
 DOCDIR			= doc/html
 DXE_TEMPLATE	= dxetemplate.txt
-DXE_EXPORTS		= dexport.c
+DXE_EXPORTS		= src/dexport.c
 
-CROSS=$(DJGPP)/i586-pc-msdosdjgpp
+CROSS=i586-pc-msdosdjgpp
 CROSS_PLATFORM=i586-pc-msdosdjgpp-
-CC=$(DJGPP)/$(CROSS_PLATFORM)gcc
-AR=$(DJGPP)/$(CROSS_PLATFORM)ar
-LD=$(DJGPP)/$(CROSS_PLATFORM)ld
-STRIP=$(DJGPP)/$(CROSS_PLATFORM)strip
-RANLIB=$(DJGPP)/$(CROSS_PLATFORM)ranlib
+CC=$(CROSS_PLATFORM)gcc
+CXX=$(CROSS_PLATFORM)g++
+AR=$(CROSS_PLATFORM)ar
+LD=$(CROSS_PLATFORM)ld
+STRIP=$(CROSS_PLATFORM)strip
+RANLIB=$(CROSS_PLATFORM)ranlib
 DXE3GEN = dxe3gen
 DXE3RES = dxe3res
 export
@@ -102,60 +117,53 @@ PARTS= \
 	$(BUILDDIR)/zipfile.o \
 	$(BUILDDIR)/dexport.o
 
-DXE_DIRS := $(wildcard *.dxelib)
+DXE_DIRS := $(wildcard plugins/*.dxelib)
 
-all: init libmujs liballegro dzcomm libwatt32 libz alpng libcurl TEXUS.EXE $(EXE) $(DXE_DIRS) JSBOOT.ZIP
+all: init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3 TEXUS.EXE $(EXE) $(DXE_DIRS) JSBOOT.ZIP
 
-libmujs: $(MUJS)/build/release/libmujs.a
+mesa3: $(LIB_MESA)
+$(LIB_MESA):
+	$(MAKE) $(MPARA) -C $(MESA3) -f Makefile.dja
 
-liballegro: $(ALLEGRO)/lib/djgpp/liballeg.a
-
-dzcomm: $(LIBDZCOMM)
-
-libwatt32: $(WATT32)/lib/libwatt.a
-
-libz: $(ZLIB)/msdos/libz.a
-
-alpng: $(ALPNG)/libalpng.a
-
-libopenssl: $(OPENSSL)/libssl.a
-
-libcurl: $(OPENSSL)/libssl.a $(ZLIB)/msdos/libz.a $(CURL)/libcurl.a
-
-$(CURL)/libcurl.a:
+libcurl: $(LIB_CURL)
+$(LIB_CURL): $(LIB_SSL) $(LIB_Z)
 	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.dj
 
-$(OPENSSL)/libssl.a: $(WATT32)/lib/libwatt.a
+libopenssl: $(LIB_SSL)
+$(LIB_SSL): $(LIB_WATT)
 	$(MAKE) $(MPARA) -C $(OPENSSL) -f Makefile build_libs
 	$(MAKE) $(MPARA) -C $(OPENSSL) -f Makefile apps/openssl.exe
 
-$(ALPNG)/libalpng.a:
+alpng: $(LIB_ALPNG)
+$(LIB_ALPNG):
 	$(MAKE) -C $(ALPNG) -f Makefile.zlib
 
-$(ZLIB)/msdos/libz.a:
+libz: $(LIB_Z)
+$(LIB_Z):
 	$(MAKE) $(MPARA) -C $(ZLIB) -f Makefile.dojs
 
-$(PNG)/scripts/libpng.a:
-	$(MAKE) $(MPARA) -C $(PNG) -f makefile.dojs libpng.a
-
-$(LIBDZCOMM):
+dzcomm: $(LIB_DZCOMM)
+$(LIB_DZCOMM):
 	$(MAKE) -C $(DZCOMMDIR) lib/djgpp/libdzcom.a
 
-$(MUJS)/build/release/libmujs.a:
+libmujs: $(LIB_MUJS)
+$(LIB_MUJS):
 	$(MAKE) $(MPARA) -C $(MUJS) build/release/libmujs.a
 
-$(ALLEGRO)/lib/djgpp/liballeg.a:
+liballegro: $(LIB_ALLEGRO)
+$(LIB_ALLEGRO):
 	cd $(ALLEGRO) && bash ./xmake.sh lib
 
-$(WATT32)/lib/libwatt.a:
-	DJ_PREFIX=$(DJGPP) $(MAKE) $(MPARA) -C $(WATT32)/src -f DJGPP.MAK
+libwatt32: $(LIB_WATT)
+$(LIB_WATT):
+	DJ_PREFIX=$(dir $(shell which $(CC))) $(MAKE) $(MPARA) -C $(WATT32)/src -f DJGPP.MAK
 
 $(EXE): $(PARTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 	$(STRIP) $@
 	#rm -f DOJS.exe
 
-$(BUILDDIR)/%.o: %.c Makefile
+$(BUILDDIR)/%.o: src/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILDDIR)/loadpng/%.o: $(LOADPNG)/%.c Makefile
@@ -178,23 +186,19 @@ TEXUS.EXE:
 	$(MAKE) -C $(TEXUS) clean all
 	cp $(TEXUS)/TEXUS.EXE .
 
-exstream: liballegro
-	$(CC) $(CFLAGS) -c $(ALLEGRO)/examples/exstream.c -o exstream.o
-	$(CC) $(LDFLAGS) -o extream.exe exstream.o $(LIBS)
-
 zip: all doc
 	rm -f $(RELZIP)
 	rm -f dxetest.DXE dxetest2.DXE
 	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem *.DXE
+	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe DPM.BAT V_*.BAT TEXUS.EXE cacert.pem *.DXE
 
 devzip: all doc
 	rm -f $(RELZIP)
 	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
 	cp $(OPENSSL)/apps/openssl.exe .
-	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg tests/*.mpg tests/*.ogg $(GLIDE)/*/lib/glide3x.dxe V_*.BAT TEXUS.EXE cacert.pem openssl.exe *.DXE
+	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT TEXUS.EXE cacert.pem openssl.exe *.DXE
 	scp $(RELZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:
@@ -214,7 +218,7 @@ clean:
 		$(MAKE) -C $$dir -f Makefile $@; \
 	done
 
-distclean: clean alclean jsclean dzclean wattclean zclean apclean sslclean curlclean dxeclean
+distclean: clean alclean jsclean dzclean wattclean zclean apclean sslclean curlclean dxeclean mesa3clean
 	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.* openssl.exe
 	rm -rf $(GLIDE)/*/test $(GLIDE)/texus/*.exe $(GLIDE)/texus/*.EXE $(GLIDE)/texus/build
 
@@ -241,6 +245,9 @@ apclean:
 
 sslclean:
 	$(MAKE) -C $(OPENSSL) -f Makefile clean
+
+mesa3clean:
+	$(MAKE) -C $(MESA3) -f Makefile.dja realclean
 
 curlclean:
 	$(MAKE) -C $(CURL)/lib -f Makefile.dj clean
@@ -270,18 +277,18 @@ glidedxe.c:
 
 syntaxF:
 	rm -f synC.txt synJ.txt syn.txt
-	grep NFUNCDEF  *.c *.dxelib/*.c | cut -d "," -f 2 | tr -d "_ " | awk '{ print "\"" $$0 "\"" }' >synC.txt
+	grep NFUNCDEF  src/*.c plugins/*.dxelib/*.c | cut -d "," -f 2 | tr -d "_ " | awk '{ print "\"" $$0 "\"" }' >synC.txt
 	egrep "^function " jsboot/3dfx.js  jsboot/a3d.js  jsboot/color.js  jsboot/file.js  jsboot/func.js  jsboot/ipx.js | cut -d " " -f 2 | cut -d "(" -f 1 | tr -d "_ " | awk '{ print "\"" $$0 "\"" }' > synJ.txt
 	cat synC.txt synJ.txt | awk '{ print length, "EDI_SYNTAX(LIGHTRED," $$0 "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
 
 syntaxM:
 	rm -f synC.txt syn.txt
-	grep NPROTDEF  *.c *.dxelib/*.c | cut -d "," -f 3 | sed s/^\ \"/\"\./ | tr -d " " | awk '{ print "\"" $$0 "\"" }' >synC.txt
+	grep NPROTDEF  src/*.c plugins/*.dxelib/*.c | cut -d "," -f 3 | sed s/^\ \"/\"\./ | tr -d " " | awk '{ print "\"" $$0 "\"" }' >synC.txt
 	cat synC.txt | awk '{ print length, "EDI_SYNTAX(RED," $$0 "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
 
 syntaxP:
 	rm -f synC.txt syn.txt
-	grep js_defproperty  *.c *.dxelib/*.c | cut -d "," -f 3 | sed s/^\ \"/\"\./ >synC.txt
+	grep js_defproperty  src/*.c plugins/*.dxelib/*.c | cut -d "," -f 3 | sed s/^\ \"/\"\./ >synC.txt
 	cat synC.txt | awk '{ print length, "EDI_SYNTAX(YELLOW," $$0 "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
 
 fdos: zip
@@ -313,6 +320,7 @@ fdos: zip
 		cacert.pem \
 		examples/ \
 		V_*.BAT \
+		DPM.BAT \
 		*.DXE \
 		$(TMP)/DEVEL/DOJS
 
@@ -322,28 +330,22 @@ fdos: zip
 	# make clean and copy source files
 	make distclean
 	cp -R \
-		*.dxelib *.c *.h *.py *.md \
+		*.py \
+		*.md \
+		src/ \
+		plugins/ \
+		3rdparty/ \
 		WATTCP.CFG \
 		CWSDPMI.EXE \
 		LICENSE \
 		Makefile \
-		Makefile.dxemk \
 		dxetemplate.txt \
 		V_*.BAT \
-		allegro-4.2.2-xc-master/ \
-		alpng13/ \
-		curl-7.74.0/ \
 		doc/ \
-		dzcomm/ \
 		examples/ \
 		glide3x/ \
 		jsboot/ \
-		mujs-1.0.5/ \
-		openssl-1.1.1k/ \
 		tests/ \
-		watt32-2.2dev.rel.11/ \
-		zip/ \
-		zlib-1.2.11/ \
 		$(TMP)/tmp
 	# zip up sources and remove tmp
 	(cd $(TMP)/tmp && zip -9 -r ../SOURCE/DOJS/SOURCES.ZIP * && rm -rf $(TMP)/tmp)

@@ -1,0 +1,40 @@
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
+#define PRODNAME                "Mesa 3.4"
+#define CONTACTSTR              "http://www.mesa3d.org"
+#define HWSTR                   "3dfx Voodoo Graphics, Voodoo Rush, Voodoo^2, Voodoo Banshee, Velocity 100/200, Voodoo3, Voodoo4, Voodoo5"
+#define COPYRIGHTSTR            "Copyright \251 Brian E. Paul"
+
+#define VERSIONSTR              "3.4.0.3"
+#define MANVERSION              3
+#define MANREVISION             4
+#define BUILD_NUMBER            3
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION MANVERSION, MANREVISION, 0, BUILD_NUMBER
+ PRODUCTVERSION MANVERSION, MANREVISION, 0, BUILD_NUMBER
+ FILEFLAGSMASK 0x0030003FL
+
+ FILEOS VOS_DOS_WINDOWS32
+ FILETYPE VFT_DRV
+ FILESUBTYPE VFT2_DRV_INSTALLABLE
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "FileDescription", PRODNAME
+            VALUE "FileVersion", VERSIONSTR
+            VALUE "LegalCopyright", COPYRIGHTSTR
+            VALUE "ProductName", PRODNAME
+            VALUE "Graphics Subsystem", HWSTR
+            VALUE "Contact", CONTACTSTR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        /* the following line should be extended for localized versions */
+        VALUE "Translation", 0x409, 1252
+    END
+END

@@ -1,0 +1,32 @@
+#include <windows.h>
+
+#define IDR_VERSION1  1
+IDR_VERSION1	VERSIONINFO	MOVEABLE IMPURE LOADONCALL DISCARDABLE
+  FILEVERSION	 3,1,0,0
+  PRODUCTVERSION 3,1,0,0
+  FILEFLAGSMASK	VS_FFI_FILEFLAGSMASK
+  FILEFLAGS	0
+  FILEOS	VOS_DOS_WINDOWS32
+  FILETYPE	VFT_DLL
+  FILESUBTYPE	0	// not used
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904E4"
+    //language ID = U.S. English, char set = Windows, Multilingual
+
+    BEGIN
+      VALUE "FileDescription", "fxmesa32 3D Graphics Library\0"
+      VALUE "FileVersion",	"3.1\0"
+      VALUE "InternalName",	"FXMESAGL32\0"
+      VALUE "OriginalFilename",	"OPENGL32.DLL\0"
+      VALUE "ProductName",	"OPENGL32.DLL\0"
+      VALUE "Comments",	"Thanks to Brian Paul for making this possible\r\nRequires GLIDE2X.DLL.\0"
+      VALUE "LegalCopyright", "Copyright (C) 1995-1997 Brian Paul\0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 1252
+  END
+END

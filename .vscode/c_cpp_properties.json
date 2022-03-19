@@ -8,7 +8,9 @@
             ],
             "defines": [
                 "LFB_3DFX",
-                "EDI_FAST"
+                "EDI_FAST",
+                "USE_MESA",
+                "USE_GLUT"
             ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "c11",

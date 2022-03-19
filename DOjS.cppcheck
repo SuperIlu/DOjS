@@ -6,24 +6,26 @@
     <check-headers>true</check-headers>
     <check-unused-templates>false</check-unused-templates>
     <max-ctu-depth>10</max-ctu-depth>
+    <max-template-recursion>100</max-template-recursion>
     <defines>
         <define name="GC_BEFORE_MALLOC LFB_3DFX EDI_FAST"/>
     </defines>
     <paths>
-        <dir name="."/>
+        <dir name="src"/>
+        <dir name="plugins"/>
     </paths>
     <exclude>
-        <path name="allegro-4.2.2-xc-master/"/>
-        <path name="dzcomm/"/>
-        <path name="watt32-2.2dev.rel.11/"/>
         <path name="glide3x/texus/"/>
-        <path name="mujs-1.0.5/"/>
-        <path name="mujs-1.0.7/"/>
-        <path name="zip/"/>
-        <path name="zlib-1.2.11/"/>
         <path name="cylindrix/"/>
-        <path name="alpng13/"/>
-        <path name="openssl-1.1.1k/"/>
-        <path name="curl-7.74.0/"/>
+        <path name="3rdparty/"/>
+        <path name="tmp/"/>
+        <path name="__experiments/"/>
     </exclude>
+    <libraries>
+        <library>libcurl</library>
+        <library>opengl</library>
+        <library>openssl</library>
+        <library>sqlite3</library>
+        <library>zlib</library>
+    </libraries>
 </project>

@@ -1,0 +1,194 @@
+# Mesa 3-D graphics library
+# Version:  3.4.2
+# Copyright (C) 1995-2000  Brian Paul
+#
+# standalone Makefile for fxMesa libGL.so
+# builds normally for Glide3x
+# to build for Glide2x:  make GLIDE3=0
+
+INCDIR = ../include
+LIBDIR = ../lib
+
+#build for glide3
+GLIDE3 = 1
+ifneq ($(GLIDE3),1)
+GLIDEDIR=../3dfx/glide
+GLIDELIB=glide2x
+else
+GLIDEDIR=../3dfx/glide3
+GLIDELIB=glide3x
+endif
+
+GL_LIB = libGL.so
+
+CC = gcc
+LD = $(CC)
+
+CFLAGS = -O2 -mtune=i586 -fPIC -ffast-math -fomit-frame-pointer \
+	-DUSE_XSHM -DPTHREADS \
+	-DFX -DUSE_X86_ASM -DUSE_MMX_ASM -DUSE_3DNOW_ASM -DUSE_KATMAI_ASM -IFX/X86 \
+	-I$(GLIDEDIR)/include -I. -I$(INCDIR)
+CFLAGS+= -DNDEBUG
+ifeq ($(GLIDE3),1)
+CFLAGS+= -DFX_GLIDE3
+endif
+
+LDFLAGS = -shared -Wl,--no-undefined
+LDLIBS = -L/usr/X11R6/lib -lX11 -lXext -L$(GLIDEDIR)/lib -l$(GLIDELIB) -lm -lpthread
+
+CORE_SOURCES = \
+	aatriangle.c \
+	accum.c \
+	alpha.c \
+	alphabuf.c \
+	attrib.c \
+	bbox.c \
+	bitmap.c \
+	blend.c \
+	buffers.c \
+	clip.c \
+	colortab.c \
+	config.c \
+	context.c \
+	copypix.c \
+	cva.c \
+	debug_xform.c \
+	depth.c \
+	dispatch.c \
+	dlist.c \
+	drawpix.c \
+	enable.c \
+	enums.c \
+	eval.c \
+	extensions.c \
+	feedback.c \
+	fog.c \
+	get.c \
+	glapi.c \
+	glapinoop.c \
+	glthread.c \
+	hash.c \
+	hint.c \
+	image.c \
+	imaging.c \
+	light.c \
+	lines.c \
+	logic.c \
+	masking.c \
+	matrix.c \
+	mem.c \
+	mmath.c \
+	pb.c \
+	pipeline.c \
+	pixel.c \
+	pixeltex.c \
+	points.c \
+	polygon.c \
+	quads.c \
+	rastpos.c \
+	readpix.c \
+	rect.c \
+	scissor.c \
+	shade.c \
+	span.c \
+	stages.c \
+	state.c \
+	stencil.c \
+	texformat.c \
+	teximage.c \
+	texobj.c \
+	texstate.c \
+	texture.c \
+	texutil.c \
+	translate.c \
+	triangle.c \
+	varray.c \
+	vb.c \
+	vbcull.c \
+	vbfill.c \
+	vbindirect.c \
+	vbrender.c \
+	vbxform.c \
+	vector.c \
+	vertices.c \
+	winpos.c \
+	xform.c \
+	zoom.c \
+	X86/x86.c \
+	X86/common_x86.c \
+	X86/3dnow.c \
+	X86/katmai.c
+
+DRIVER_SOURCES = \
+	X/glxapi.c \
+	X/fakeglx.c \
+	X/xfonts.c \
+	X/xmesa1.c \
+	X/xmesa2.c \
+	X/xmesa3.c \
+	X/xmesa4.c \
+	OSmesa/osmesa.c \
+	FX/fxapi.c \
+	FX/fxclip.c \
+	FX/fxcva.c \
+	FX/fxdd.c \
+	FX/fxddspan.c \
+	FX/fxddtex.c \
+	FX/fxfastpath.c \
+	FX/fxpipeline.c \
+	FX/fxrender.c \
+	FX/fxsanity.c \
+	FX/fxsetup.c \
+	FX/fxtexman.c \
+	FX/fxtrifuncs.c \
+	FX/fxvsetup.c \
+	FX/fxglidew.c
+
+ASM_SOURCES = X86/common_x86_asm.S X86/glapi_x86.S \
+	X86/x86_xform_raw2.S X86/x86_xform_raw3.S \
+	X86/x86_xform_raw4.S X86/x86_xform_masked2.S \
+	X86/x86_xform_masked3.S X86/x86_xform_masked4.S \
+	X86/x86_cliptest.S X86/x86_vertex.S \
+	X86/mmx_blend.S \
+	X86/3dnow_xform_raw1.S X86/3dnow_xform_raw2.S \
+	X86/3dnow_xform_raw3.S X86/3dnow_xform_raw4.S \
+	X86/3dnow_xform_masked1.S X86/3dnow_xform_masked2.S \
+	X86/3dnow_xform_masked3.S X86/3dnow_xform_masked4.S \
+	X86/3dnow_norm_raw.S X86/3dnow_vertex.S \
+	FX/X86/fx_3dnow_fastpath.S \
+	X86/katmai_xform_raw1.S X86/katmai_xform_masked1.S \
+	X86/katmai_xform_raw2.S X86/katmai_xform_masked2.S \
+	X86/katmai_xform_raw3.S X86/katmai_xform_masked3.S \
+	X86/katmai_xform_raw4.S X86/katmai_xform_masked4.S \
+	X86/katmai_norm_raw.S X86/katmai_vertex.S
+
+ADDITIONAL_OBJ =
+
+OBJECTS = $(ASM_SOURCES:.S=.o) \
+	$(CORE_SOURCES:.c=.o) \
+	$(DRIVER_SOURCES:.c=.o) \
+	$(ADDITIONAL_OBJ)
+
+
+##### RULES #####
+
+.c.o:
+	$(CC) -c $(CFLAGS) $< -o $@
+.S.o:
+	$(CC) -c $(CFLAGS) $< -o $@
+
+##### TARGETS #####
+
+all: $(LIBDIR)/$(GL_LIB)
+
+clean:
+	rm -f *.o X86/*.o X/*.o OSmesa/*.o FX/*.o FX/X86/*.o
+realclean: clean
+	rm -f $(LIBDIR)/*.a $(LIBDIR)/*.so*
+
+$(LIBDIR):
+	-mkdir $(LIBDIR)
+
+$(LIBDIR)/$(GL_LIB): $(LIBDIR) $(OBJECTS)
+	$(LD) $(LDFLAGS) -o $@ $(OBJECTS) $(LDLIBS)
+

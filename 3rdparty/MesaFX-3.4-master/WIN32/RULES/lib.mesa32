@@ -1,0 +1,24 @@
+
+!IF "$(STATIC_MESA)" == "1"
+!ERROR lib.$(LIBBASE) : This file require STATIC_MESA be set to 0.
+!ENDIF
+
+LIBCOMMENTS=CPU-based Rendering usable as a direct replacement for system OpenGL32.DLL
+
+!INCLUDE .\rules\lib.mesa.core
+
+USE_CRTDLL=1
+
+SRCALT2=.\$(MESAROOT)\src\Windows
+SRCALT3=.\$(MESAROOT)\src\OSmesa
+
+DEFFILE = res\mesa32.def
+RCFILE  = res\mesa32.rc
+
+CPPOPTS = $(CPPOPTS) /DBUILD_GL32
+
+SRCFILES = $(MESA_CORE)\
+	Wmesa.c wgl.c\
+	OSmesa.c
+
+DLLBASE = OpenGL32

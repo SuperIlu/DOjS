@@ -1,0 +1,7 @@
+This directory contains Pascal Thibaudeau's original code for NeXT support
+under Mesa 2.0. This is now obsolete and NeXT support is incorporated
+into OpenStep support. The generic.m file from this directory has been
+used to make some of these demos continue to work. See the README
+file in OpenStep/Old_Demos for details.
+
+-Pete French. (pete@ohm.york.ac.uk) 28/5/98

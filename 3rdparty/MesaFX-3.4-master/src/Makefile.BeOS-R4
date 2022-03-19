@@ -1,0 +1,174 @@
+# $Id: Makefile.BeOS-R4,v 1.11.4.2 2001/01/24 04:49:53 brianp Exp $
+
+# Mesa 3-D graphics library
+# Version:  3.4
+# 
+# Copyright (C) 1999-2000  Brian Paul   All Rights Reserved.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+# BRIAN PAUL BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+# AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+# Makefile for Mese for BeOS R4/R5
+
+
+##### MACROS #####
+
+GL_MAJOR = 1
+GL_MINOR = 2
+GL_TINY = $(MESA_MAJOR)$(MESA_MINOR)$(MESA_TINY)
+
+VPATH = RCS
+
+INCDIR = ../include
+LIBDIR = ../lib
+
+CORE_SOURCES = \
+	aatriangle.c \
+	accum.c \
+	alpha.c \
+	alphabuf.c \
+	attrib.c \
+	bbox.c \
+	bitmap.c \
+	blend.c \
+	buffers.c \
+	clip.c \
+	colortab.c \
+	config.c \
+	context.c \
+	copypix.c \
+	cva.c \
+	debug_xform.c \
+	depth.c \
+	dispatch.c \
+	dlist.c \
+	drawpix.c \
+	enable.c \
+	enums.c \
+	eval.c \
+	extensions.c \
+	feedback.c \
+	fog.c \
+	get.c \
+	glapi.c \
+	glapinoop.c \
+	glthread.c \
+	hash.c \
+	hint.c \
+	image.c \
+	imaging.c \
+	light.c \
+	lines.c \
+	logic.c \
+	masking.c \
+	matrix.c \
+	mem.c \
+	mmath.c \
+	pb.c \
+	pixel.c \
+	pixeltex.c \
+	pipeline.c \
+	points.c \
+	polygon.c \
+	quads.c \
+	rastpos.c \
+	readpix.c \
+	rect.c \
+	scissor.c \
+	shade.c \
+	span.c \
+	stages.c \
+	state.c \
+	stencil.c \
+	teximage.c \
+	texobj.c \
+	texstate.c \
+	texture.c \
+	texutil.c \
+	translate.c \
+	triangle.c \
+	varray.c \
+	vb.c \
+	vbcull.c \
+	vbfill.c \
+	vbindirect.c \
+	vbrender.c \
+	vbxform.c \
+	vector.c \
+	vertices.c \
+	winpos.c \
+	xform.c \
+	zoom.c
+
+
+DRIVER_SOURCES = OSmesa/osmesa.c BeOS/GLView.cpp
+
+OBJECTS = $(CORE_SOURCES:.c=.o) OSmesa/osmesa.o BeOS/GLView.o
+
+
+
+##### TARGETS #####
+
+default:
+	@echo "Specify a target configuration"
+
+clean:
+	-rm *.o *~
+
+targets: $(LIBDIR)/$(GL_LIB)
+
+
+# Make the library
+$(LIBDIR)/$(GL_LIB): $(OBJECTS)
+	$(MAKELIB) $(GL_LIB) $(GL_MAJOR) $(GL_MINOR) $(GL_TINY) $(OBJECTS)
+	mv $(GL_LIB) $(LIBDIR)
+
+
+include ../Make-config
+
+include depend
+
+
+
+##### RULES #####
+
+.c.o:
+	$(CC) -c -I. -I../ -I$(INCDIR) $(CFLAGS) $<
+
+OSmesa/osmesa.o: OSmesa/osmesa.c
+	$(CC) -c -I. -I../ -I$(INCDIR) $(CFLAGS) $< -o $@
+
+BeOS/GLView.o: BeOS/GLView.cpp
+	cd BeOS ; gcc -c -I../../include -g GLView.cpp
+
+X86/x86.o: X86/x86.c
+	$(CC) -c -I. -I../ -I$(INCDIR) $(CFLAGS) $< -o $@
+
+X86/common_x86.o: X86/common_x86.c
+	$(CC) -c -I. -I../ -I$(INCDIR) $(CFLAGS) $< -o $@
+
+X86/3dnow.o: X86/3dnow.c
+	$(CC) -c -I. -I../ -I$(INCDIR) $(CFLAGS) $< -o $@
+
+
+#
+# Run 'make depend' to update the dependencies if you change what's included
+# by any source file.
+#
+dep: $(CORE_SOURCES) $(DRIVER_SOURCES)
+	makedepend -fdepend.BeOS -Y -I../include $(SOURCES)

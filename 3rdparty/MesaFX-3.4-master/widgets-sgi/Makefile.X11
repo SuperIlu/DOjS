@@ -1,0 +1,72 @@
+# Makefile for OpenGL widgets
+
+# NOTE: widget code is from SGI.  See any of the .c or .h files for the
+# complete copyright.  Mesa's GNU copyright DOES NOT apply to this widget
+# code.
+
+
+##### MACROS #####
+
+MAJOR = 1
+MINOR = 0
+TINY = 0
+
+VPATH = RCS
+
+INCDIRS = -I../include -I/usr/include/Motif1.2 -I/usr/X11R6/include
+LIBDIR = ../lib
+
+# Compile GLwMDrawA.c only if you have Motif headers!
+#SOURCES = GLwDrawA.c GLwMDrawA.c
+SOURCES = GLwDrawA.c
+
+
+OBJECTS = $(SOURCES:.c=.o)
+
+
+
+##### RULES #####
+
+.c.o:
+	$(CC) -c $(INCDIRS) $(CFLAGS) $<
+
+
+
+##### TARGETS #####
+
+default:
+	@echo "Specify a target configuration"
+
+clean:
+	-rm *.o *~
+
+targets: $(LIBDIR)/$(GLW_LIB) message
+
+
+# Make the library
+$(LIBDIR)/$(GLW_LIB): $(OBJECTS)
+	$(MAKELIB) $(GLW_LIB) $(MAJOR) $(MINOR) $(TINY) $(OBJECTS)
+	mv $(GLW_LIB)* $(LIBDIR)
+	-mv *.a $(LIBDIR)
+
+
+message:
+	@echo
+	@echo "************************************************************************"
+	@echo "*** Edit widgets-sgi/Makefile.X11 to enable Motif support, if needed ***"
+	@echo "************************************************************************"
+	@echo
+
+
+include ../Make-config
+
+include depend
+
+
+
+#
+# Run 'make depend' to update the dependencies if you change what's included
+# by any source file.
+# 
+dep: $(SOURCES)
+	makedepend -fdepend -Y -I../include $(SOURCES)

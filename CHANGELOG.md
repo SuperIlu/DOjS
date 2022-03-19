@@ -1,3 +1,21 @@
+# Version 1.8.0 (A package of 3D) / March 19th, 2022
+* Added `LFN_SUPPORTED` global to indicate if long filenames are supported by the current DOS installation.
+* Fixed some docs
+* Added QOI Image decoder in `jsboot/qoi.js`. See https://qoiformat.org/
+* Improved error reporting in case `Setup()`, `Loop()` or `Input()` are missing when running a script.
+* Updated openssl to 1.1.1n
+* Updated cURL to 7.80.0
+* Added `-t` command line option to disable TCP/IP (faster startup with a loaded packet driver).
+* Added `examples/1button.js` minimal text adventure.
+* Improved `Console` class with basic input handling
+* Updated `Zip` to 0.2.2
+* Added `ZIPFILE.DELETE` and `Zip.DeleteFile()`
+* Improved project structure, DOjS main source is now located in `src/`, all native libraries in `plugins/` and all third party code in `3rdparty/`.
+* Optimized buildfiles
+* Improved IPX remote logging with `REMLOG.BAT` and `EnableRemoteDebug()`
+* implemented `DPM` package manager
+* A sketch can now query if it is running on DOjS using `if (navigator.appName === "DOjS") {`
+
 # Version 1.7.0 (The live animation) / November 12th, 2021
 * Added FLIC playback (video)
 * Added MPEG1 playback (audio/video) using plugin `mpeg1`.

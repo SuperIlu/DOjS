@@ -24,10 +24,27 @@ function exec(sql, stmt) {
 
 var con;
 
-function Setup() {
-	con = new Console();
+function commandFunc(c) {
+	var sql = new SQLite("test.db");
 
-	RmFile("test.db");
+	var inp = c.GetInput();
+	if (inp.length > 0) {
+		exec(sql, inp);
+
+		c.SetInput("");
+	}
+
+	sql.Close();
+}
+
+function Setup() {
+	con = new Console(EGA.GREEN, EGA.BLACK, commandFunc);
+
+	try {
+		RmFile("test.db");
+	} catch (e) {
+		msg(e);
+	}
 
 	var sql = new SQLite("test.db");
 	//////
@@ -79,4 +96,4 @@ function Loop() {
 	con.Draw();
 }
 
-function Input(e) { }
+function Input(e) { con.HandleInput(e); }

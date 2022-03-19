@@ -1,0 +1,49 @@
+README FOR MACOS 99/7/31
+
+These are the MacOS sources. 
+
+Files needed:
+-------------
+In the include-mac: header the Apple directory is empty, you should put the headers 
+from the latest OpenGL SDK here.
+http://developer.apple.com/OpenGL/
+
+agl.h
+aglContext.h
+aglMacro.h
+aglRenderers.h
+gliContext.h
+gliDispatch.h
+glm.h
+
+Glide Headers:
+---------------
+You should put Glide3 headers to include-glide/Glide3
+and Glide2 headers to include-glide/Glide2.
+
+Glide2 headers are available from http://www.3dfx.com/ int the Glide2.x MacOS SDK.
+Glide3 headers are available from http://www.3dfx.com/ only in Win95 SDK. 
+To compile you should remove the __stdcall parameter. (The compiler will show you it :) )
+
+Compiling:
+----------
+
+The project file for Mesa3dfxEngine is:
+FXGLIPlugin.mcp
+
+The targets, which should compile are:
+Mesa3DfxEngine-3.1.opt
+Mesa3DfxEngine-3.1.dbg
+Mesa3DfxEngine-3.1.opt.pro
+
+Mesa3DfxEngine-3.1.g3.dbg
+Mesa3DfxEngine-3.1.g3.opt
+
+Compiler:
+---------
+You'll need CodeWarrior 4.
+
+MPW Makefiles will also included on request.
+
+Miklos.
+ 

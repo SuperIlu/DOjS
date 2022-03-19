@@ -1,0 +1,12 @@
+This is an application which I wrote to play around with Mesa and
+the rendering of surfaces. It is not particularly well written but does
+demonstarte how to incorporate Mesa into an actual OpenStep application.
+The Application generates a random surface of heights and colours
+which can be viewed from any angle by rotating the viewpoint. During rotation
+the Mesa projection functions are used to find the corners of the surface
+which is then drawn in wireframe using PostScript operators for speed. Normals
+to the surface my be generated for each face, or averaged for each vertex. The
+colouring of the surface may also be switched between colours for the
+individual points and a texture mapping of the colour matrix.
+
+-Pete French. (pete@ohm.york.ac.uk) 28/5/98

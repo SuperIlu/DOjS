@@ -1,0 +1,17 @@
+
+SRCALT1=.\$(MESAROOT)\src
+
+CPPOPTS=$(CPPOPTS) /I$(MESAROOT)\src
+
+MESA_CORE = aatriangle.c hash.c pixeltex.c texture.c\
+   accum.c debug_xform.c highpc.c points.c texutil.c alpha.c depth.c\
+   hint.c polygon.c translate.c alphabuf.c dispatch.c image.c quads.c\
+   triangle.c attrib.c dlist.c imaging.c rastpos.c varray.c bbox.c\
+   drawpix.c light.c readpix.c vb.c bitmap.c enable.c lines.c rect.c\
+   vbcull.c blend.c enums.c logic.c scissor.c vbfill.c buffers.c\
+   eval.c lowpc.c shade.c vbindirect.c clip.c extensions.c masking.c\
+   span.c vbrender.c colortab.c feedback.c matrix.c stages.c vbxform.c\
+   config.c fog.c mem.c state.c vector.c context.c get.c mmath.c\
+   stencil.c vertices.c convolve.c glapi.c pb.c teximage.c winpos.c\
+   copypix.c glapinoop.c pipeline.c texobj.c xform.c cva.c glthread.c\
+   pixel.c texstate.c zoom.c

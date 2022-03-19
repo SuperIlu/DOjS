@@ -1,0 +1,19 @@
+INCDIR = ../../include
+GL_LIBS = generic_next.o -L../../lib -lMesaGLU -lMesaGL
+PROGS = chess nurbs surface\
+	checker checker2 texturesurf font model disk
+
+all:
+	ranlib ../../lib/*.a
+	make -f Makefile.NeXT CC="$(CC)" progs
+
+progs: generic_next.o $(PROGS)
+
+generic_next.o:
+	$(CC) -c -I$(INCDIR) $(CFLAGS) ../Old_NeXT/generic.m -o $@
+
+.c: $(LIB_DEP) generic_next.o
+	$(CC) -I$(INCDIR) $(CFLAGS) $*.c $(GL_LIBS) -lNeXT_s -o $@
+
+clean:
+	rm -f $(PROGS) *.o

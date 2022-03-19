@@ -45,7 +45,7 @@ Sample.prototype.Play = function (volume, panning, loop) { };
 Sample.prototype.Stop = function () { };
 /**
  * Get sample data.
- * @param {number} sample index to return.
+ * @param {number} idx index to return.
  * @returns {number} The sample value at that position. The sample data are always in unsigned format.
  */
 Sample.prototype.Get = function (idx) { };

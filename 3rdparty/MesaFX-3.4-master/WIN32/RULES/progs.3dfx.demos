@@ -1,0 +1,25 @@
+
+!IF "$(STATIC_MESA)" == "1"
+EXELIBS     = mesaglut$(LIBSFX).lib mesaglu$(LIBSFX).lib $(MESAROOT)\lib\FX\fxmesagl$(LIBSFX).lib $(GLIDE2SDK)\src\lib\win32\glide2x.lib
+USE_CRTDLL  = 0
+FORCELINK   = 1
+!IF "$(GLIDE2SDK)" == ""
+!ERROR lib.$(LIBBASE) : 'GLIDE2SDK' environment var not set, can't find Glide SDK
+!ENDIF
+!ELSE
+EXELIBS     = GLUT32$(LIBSFX).LIB GLU32$(LIBSFX).LIB $(MESAROOT)\lib\FX\OPENGL32$(LIBSFX).LIB
+RUNTIMELIBS = GLUT32$(LIBSFX).DLL GLU32$(LIBSFX).DLL FX\OPENGL32$(LIBSFX).DLL
+!ENDIF
+
+!IF ("$(USE_SYSGL)" == "0") && ("$(DEBUG)" == "1")
+EXELIBS=$(EXELIBS:.lib=d.lib)
+!IF "$(RUNTIMELIBS)" != ""
+RUNTIMELIBS=$(RUNTIMELIBS:.dll=d.dll)
+!ENDIF
+!ENDIF
+
+SRCALT1     = .\$(MESAROOT)\3dfx\demos
+EXELIBS     = $(EXELIBS) winmm.lib
+CPPOPTS     = /DFX /DFX_SILENT $(CPPOPTS)
+SUPLIBSROOT = .\rules\progs.3dfx.demos
+SRCFILES    = fire.c glbpaltx.c gltest.c ipers.c mesaland.c paltex.c ray.c teapot.c tunnel.c

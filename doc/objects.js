@@ -1,5 +1,5 @@
 /**
- * @type Event
+ * @typedef {object} Event
  * @property {number} x mouse X coordinate.
  * @property {number} y mouse X coordinate.
  * @property {number} buttons mouse buttons, see {@link MOUSE}
@@ -10,7 +10,7 @@ class Event { }
 
 /**
  * An object with coordinates of a drawn arc.
- * @type ArcInfo
+ * @typedef {object} ArcInfo
  * @property {number} centerX center x coordinate of the arc.
  * @property {number} centerY center y coordinate of the arc.
  * @property {number} startX x coordinate of the arc start.
@@ -22,20 +22,20 @@ class ArcInfo { }
 
 /**
  * Node addresses are arrays of 6 numbers between 0-255 (e.g. [1, 2, 3, 4, 5, 6]).
- * @type IpcAddress
+ * @typedef {object} IpcAddress
  */
 class IpxAddress { }
 
 /**
  * received IPX data packet.
- * @type IpxPacket
+ * @typedef {object} IpxPacket
  * @property {string} data the received data.
  * @property {IpxAddress} source address of the sending node.
  */
 class IpxPacket { }
 
 /**
- * @type StatInfo
+ * @typedef {object} StatInfo
  * @property {string} atime file access timestamp.
  * @property {string} ctime file creation time.
  * @property {string} mtime file modification time.
@@ -51,14 +51,14 @@ class IpxPacket { }
 class StatInfo { }
 
 /**
- * @type MemInfo
+ * @typedef {object} MemInfo
  * @property {number} total total amount of memory in the system.
  * @property {number} remaining number of available bytes.
  */
 class MemInfo { }
 
 /**
- * @type Matrix
+ * @typedef {object} Matrix
  * @property {number[][]} v the 3x3 matrix data.
  * @property {number[]} t the translation data.
  */
@@ -154,13 +154,13 @@ class JoyInfo { }
 
 /**
  * An array with four numbers (e.g. [192.168.1.2]).
- * @type IpAdddress
+ * @typedef {object} IpAdddress
  */
 class IpAddress { }
 
 /**
  * An array with the HTTP result: [code, message, header, data]
- * @type HTTPResult
+ * @typedef {object} HTTPResult
  */
 class HTTPResult { }
 
@@ -203,5 +203,6 @@ class HTTPResult { }
 	"vendor": 0,
 	"vendor_str": "GenuineIntel"
 }
+ * @typedef {object} CpuInfo
  */
 class CpuInfo { }

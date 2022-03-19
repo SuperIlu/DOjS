@@ -1,0 +1,15 @@
+"MesaView" = {
+    ACTIONS = {
+        "changeBackground:" = id; 
+        "changeDrape:" = id; 
+        "changeElev:" = id; 
+        "changeNormal:" = id; 
+        "changeSpin:" = id; 
+        "changeZoom:" = id; 
+        "moveLight:" = id; 
+        "remakeSurface:" = id; 
+    }; 
+    OUTLETS = {elevSlider = id; spinSlider = id; zoomSlider = id; }; 
+    SUPERCLASS = NSView; 
+};
+"FirstResponder" = {ACTIONS = {}; CATEGORY = LocalActions; OUTLETS = {}; };

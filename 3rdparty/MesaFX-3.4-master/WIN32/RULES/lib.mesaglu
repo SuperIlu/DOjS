@@ -1,0 +1,4 @@
+
+!INCLUDE .\rules\lib.mesaglu.core
+
+USE_CRTDLL=0

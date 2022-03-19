@@ -51,7 +51,7 @@ function QuadTree(bounds, pointQuad, maxDepth, maxChildren) {
 /**
 * The root node of the QuadTree which covers the entire area being segmented.
 * @property root
-* @type Node
+* @typedef {object} Node
 **/
 QuadTree.prototype.root = null;
 

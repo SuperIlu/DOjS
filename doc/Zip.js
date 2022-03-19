@@ -2,7 +2,7 @@
  * Open a ZIP, for file modes see {@link ZIPFILE}.
  * @class
  * @param {string} filename the name of the file.
- * @param {FILE} mode READ, WRITE or APPEND.
+ * @param {ZIPFILE} mode READ, WRITE or APPEND.
  * @param {number} [compression] 1..9 to specify compression level.
  */
 function Zip(filename, mode, compression) { }
@@ -59,6 +59,11 @@ Zip.prototype.WriteBytes = function (zip_name, data) { };
  * @returns {IntArray} the content of the file as IntArray.
  */
 Zip.prototype.ReadInts = function (zip_name) { };
+/**
+* remove file from ZIP.
+* @param {string} zip_name the full path of the file to remove from ZIP.
+*/
+Zip.prototype.DeleteFile = function (zip_name) { };
 /**
  * Write a bytes to a file in the ZIP.
  * @param {string} zip_name the full path of the file in the ZIP.

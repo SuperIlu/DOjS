@@ -1,0 +1,17 @@
+gliGetInteger
+gliSetInteger
+gliGetVersion
+gliSwapBuffers
+gliDestroyRendererInfo 
+gliGetExtensionDispatch 
+gliCreateContext
+gliGetSystemDispatch
+gliDestroyPixelFormat
+gliGetFunctionDispatch
+gliDestroyContext
+gliQueryRendererInfo
+gliAttachDrawable
+gliChoosePixelFormat
+gliSetAttribute
+gliGetAttribute
+gliCopyAttributes

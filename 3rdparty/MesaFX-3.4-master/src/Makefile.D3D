@@ -1,0 +1,209 @@
+##############################################################################
+#
+# Mesa-3.3 Makefile for DirectX 6                          build 05
+#
+# By Leigh McRae
+#
+# Copyright (c) 1998-1995  alt.software inc.  All Rights Reserved
+##############################################################################
+NAME=OpenGL32
+TARGET=$(NAME).dll
+
+D3D_DIR=$(MAKEDIR)\D3D
+INSTALL_DIR1=e:\WinNT\System32
+INSTALL_DIR2=N:\Windows\System
+INSTALL_DIR3=c:\Windows\System
+SDKROOT=f:\mssdk
+
+SPACE=-
+LINKER=link.exe
+
+INCLUDE=$(SDKROOT)\include;$(INCLUDE)
+LIB=$(SDKROOT)\lib;$(LIB)
+##############################################################################
+CFLAGS= /c /nologo /W1 /G5 /I..\Include \
+		/D "_WIN32" /D "WIN32" /D "_WINDOWS" /D "__WIN32__" /D "__MSC__" /D "MESAD3D"
+LFLAGS= /INCREMENTAL:NO /PDB:NONE /subsystem:windows /dll /machine:I386 \
+        /DEF:$(D3D_DIR)\$(NAME).def /OUT:$(TARGET)
+
+!IF "$(DEBUG)" == "1"
+
+CFLAGS= /MTd /Od /Yd /Z7 /D "_DEBUG" /D "D3D_DEBUG" $(CFLAGS)
+LFLAGS=$(LFLAGS) /DEBUG /DEBUGTYPE:CV
+BUILD_TYPE=debug
+
+!ELSE
+
+CFLAGS= /MT /Ox /D "NDEBUG" $(CFLAGS)
+LFLAGS=$(LFLAGS)
+BUILD_TYPE=release
+
+!ENDIF
+##############################################################################
+
+SRCS = \
+	aatriangle.c \
+	accum.c \
+	alpha.c \
+	alphabuf.c \
+	attrib.c \
+	bbox.c \
+	bitmap.c \
+	blend.c \
+	buffers.c \
+	clip.c \
+	colortab.c \
+	config.c \
+	context.c \
+	copypix.c \
+	cva.c \
+	debug_xform.c \
+	depth.c \
+	dispatch.c \
+	dlist.c \
+	drawpix.c \
+	enable.c \
+	enums.c \
+	eval.c \
+	extensions.c \
+	feedback.c \
+	fog.c \
+	get.c \
+	glapi.c \
+	glapinoop.c \
+	glthread.c \
+	hash.c \
+	hint.c \
+	image.c \
+	imaging.c \
+	light.c \
+	lines.c \
+	logic.c \
+	masking.c \
+	matrix.c \
+	mem.c \
+	mmath.c \
+	pb.c \
+	pixel.c \
+	pixeltex.c \
+	pipeline.c \
+	points.c \
+	polygon.c \
+	quads.c \
+	rastpos.c \
+	readpix.c \
+	rect.c \
+	scissor.c \
+	shade.c \
+	span.c \
+	stages.c \
+	state.c \
+	stencil.c \
+	teximage.c \
+	texobj.c \
+	texstate.c \
+	texture.c \
+	texutil.c \
+	translate.c \
+	triangle.c \
+	varray.c \
+	vb.c \
+	vbcull.c \
+	vbfill.c \
+	vbindirect.c \
+	vbrender.c \
+	vbxform.c \
+	vector.c \
+	vertices.c \
+	winpos.c \
+	xform.c \
+	zoom.c
+
+OBJS    = $(SRCS:.c=.obj)
+
+WGL_OBJS= $(D3D_DIR)\wgl.obj \
+		$(D3D_DIR)\D3Dvbrender.obj \
+		$(D3D_DIR)\DDrawPROCS.obj \
+		$(D3D_DIR)\NULLProcs.obj \
+		$(D3D_DIR)\Debug.obj
+HAL_OBJS= $(D3D_DIR)\D3DInit.obj \
+		$(D3D_DIR)\D3DRaster.obj \
+		$(D3D_DIR)\D3DTextureMgr.obj \
+		$(D3D_DIR)\D3DUtils.obj \
+		$(D3D_DIR)\D3DCaps.obj
+
+WINLIBS = kernel32.lib user32.lib gdi32.lib oldnames.lib rtutils.lib
+DXLIBS = ddraw.lib dxguid.lib
+LIBS = $(WINLIBS) $(DXLIBS)
+###############################################################################
+# Primary Targets                                                             #
+##############################################################################
+
+default: WGL header $(TARGET) footer
+
+all: default install
+
+WGL : forceit
+	del opengl32.dll
+    cd $(D3D_DIR)
+	nmake /$(MAKEFLAGS)
+    cd $(MAKEDIR)
+
+$(TARGET) : $(OBJS)
+	$(LINKER) $(LFLAGS) $(LIBS) $(OBJS) $(WGL_OBJS) $(HAL_OBJS)
+
+install : forceit
+	@echo $(SPACE)
+	@echo ========================================
+	@echo Install files created.
+	@echo ========================================
+	@copy *.dll $(INSTALL_DIR1)
+	@copy *.dll $(INSTALL_DIR2)
+     @copy *.dll $(INSTALL_DIR3)
+
+original : forceit
+	@echo $(SPACE)
+	@echo ========================================
+	@echo Restore original OpenGL32.dll
+	@echo ========================================
+	@copy $(INSTALL_DIR1)\OpenGL32.dll.ori $(INSTALL_DIR1)\OpenGL32.dll
+
+###############################################################################
+# Secondary Targets                                                           #
+###############################################################################
+
+clean:
+	@echo ========================================
+	@echo Cleaning $(TARGET)
+	@del *.obj
+	@del *.dep
+	@del *.exp
+	@del *.ncb
+	@del *.plg
+	@del *.lib
+    @del *.nms
+    @del *.pch
+    @del *.map
+	@echo ========================================
+	cd $(D3D_DIR)
+	nmake clean
+	cd $(MAKEDIR)
+
+header:
+	@echo ============================================================
+	@echo Building $(TARGET)  ($(BUILD_TYPE) version)
+	@echo ============================================================
+	@echo $(SPACE)
+
+footer:
+	@echo $(SPACE)
+	@echo ============================================================
+	@echo DONE building $(TARGET)  ($(BUILD_TYPE) version)
+	@echo ============================================================
+
+forceit:
+
+
+
+
+

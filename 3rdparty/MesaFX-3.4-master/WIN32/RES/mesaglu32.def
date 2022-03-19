@@ -1,0 +1,58 @@
+DESCRIPTION '"""Mesa 3D graphics library GLU Routines for Win32"""'
+
+VERSION     3.1
+
+HEAPSIZE    1048576,4096
+
+EXPORTS
+    gluLookAt
+    gluOrtho2D
+    gluPerspective
+    gluPickMatrix
+    gluProject
+    gluUnProject
+    gluErrorString
+    gluScaleImage
+    gluBuild1DMipmaps
+    gluBuild2DMipmaps
+    gluNewQuadric
+    gluDeleteQuadric
+    gluQuadricDrawStyle
+    gluQuadricOrientation
+    gluQuadricNormals
+    gluQuadricTexture
+    gluQuadricCallback
+    gluCylinder
+    gluSphere
+    gluDisk
+    gluPartialDisk
+    gluNewNurbsRenderer
+    gluDeleteNurbsRenderer
+    gluLoadSamplingMatrices
+    gluNurbsProperty
+    gluGetNurbsProperty
+    gluBeginCurve
+    gluEndCurve
+    gluNurbsCurve
+    gluBeginSurface
+    gluEndSurface
+    gluNurbsSurface
+    gluBeginTrim
+    gluEndTrim
+    gluPwlCurve
+    gluNurbsCallback
+    gluNewTess
+    gluDeleteTess
+;    gluTessBeginPolygon
+;    gluTessBeginContour
+    gluTessVertex
+;    gluTessEndContour
+;    gluTessEndPolygon
+;    gluTessProperty
+;    gluTessNormal
+    gluTessCallback
+;    gluGetTessProperty
+    gluBeginPolygon
+    gluNextContour
+    gluEndPolygon
+    gluGetString

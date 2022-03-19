@@ -37,7 +37,14 @@
         "tuple": "c",
         "type_traits": "c",
         "internals.h": "c",
-        "animatedgif.h": "c"
+        "animatedgif.h": "c",
+        "glutint.h": "c",
+        "glut.h": "c",
+        "*.inc": "c",
+        "ogl_const.h": "c",
+        "gl.h": "c",
+        "ogl.h": "c",
+        "rand.h": "c"
     },
     "editor.formatOnSave": true,
     "editor.insertSpaces": false,

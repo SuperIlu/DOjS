@@ -1,0 +1,136 @@
+			=======================================
+			=     NeXT (TM) Mesa-OpenGL (TM)      =
+			=======================================
+					 by
+				  Pascal Thibaudeau
+			 pthibaud@cribx1.u-bordeaux.fr
+		    pascal@galileo.slip.u-bordeaux.fr (NeXTMail OK)
+
+
+@(#) README 1.4 96/11/29 19:49:23
+
+# Revision 1.4  1996/11/29  19:49:23 pascal thibaudeau
+# Mesa-2.0.1 fixed
+#
+# Revision 1.3  1996/10/16  10:59:02 pascal thibaudeau
+# Mesa-2.0 fixed
+#
+# Revision 1.2  1996/05/16  00:17:02 pascal thibaudeau
+# Mesa-1.2.8 fixed
+#
+# Revision 1.1  1996/03/02  15:03:07 pascal thibaudeau
+# Initial revision
+#
+
+1. Introduction
+---------------
+
+This is the README file for the NeXT version of the Mesa library.
+The file consists of information specific to the NeXT version of Mesa.
+For more general information please read the README file in the main Mesa
+directory.
+
+2. Whats new?
+-------------
+
+See the general Mesa README for all the new items in Mesa-2.0.  This
+section will only discuss those items which are specific to the NeXT.
+
+	0.4 Release
+	=========
+	- New demos from the book directory
+	- old nextdemoX removed
+
+	0.3 Release
+	=========
+	- Mesa-2.0 is fixed
+
+	0.2 Release
+	=========
+	- Some tk functions are now supported.
+	- minor bugs are corrected.
+
+	0.1 Release
+	=========
+	- Off-Screen rendering buffer is read by NXBitmapImageRep function.
+	- 32bpp is directly supported.
+	- WIDTH and HEIGHT are staticly defined.
+	- The window style is NX_TITLEDSTYLE.
+	- NeXT demos are straightforward ports of some book/ files.
+
+
+3. The Distribution
+-------------------
+
+NeXT Mesa is distributed in one form.  This should make it easier to only
+download what you need. The package is as follows:
+
+	Mesa-2.0.tar.gz
+
+This release contains the complete source to Mesa for the NeXT
+
+4. Documentation
+----------------
+
+There is a Mesa WWW page:  http://www.ssec.wisc.edu/~brianp/Mesa.html
+
+There is a general WWW page related to OpenGL under NeXTSTEP:
+http://wwwcip.informatik.uni-erlangen.de/user/tsengel/
+
+5. Compiling Mesa
+----------------
+
+In order to compile NeXT Mesa you need the following items:
+
+	NEXTSTEP Developper Kit Release 3.3
+	NeXT Mesa-2.0 (source)
+
+The project  files included with the NeXT Mesa source should work
+fine.  The only things you may need to update are the access paths.
+Simply typing "make next" should compile Mesa and a number of NeXT demo
+programs found in the NeXT/ directory. This was tested on a i386,m68k running
+NEXTSTEP 3.3.
+
+6. Test suite
+-------------
+
+The NeXT version of Mesa does not pass many of the tests in the
+demos or samples suites.  This is primarily due to dependencies in the
+suites on the size of particular X fonts, and other X related features.  We
+will be working on developping a more general NeXT suite for Mesa under
+the NeXT, but for now, you will not be able to pass many of the tests.
+It is, however, much better than the alpha release!
+
+
+6. NeXT Mesa Mailing List
+-----------------------------
+if uou want to subscribe to the Mesa mailing list., please send the following
+message to the address listproc@iqm.unicamp.br
+
+subs mesa <your name>
+
+For example:
+
+subs mesa Pascal Thibaudeau
+
+You will receive a welcome message from the list server when you have been
+added to the list. It tells you how to post messages to the list, how
+to unsubscribe, etc. Thanks to Pedro Vazquez for setting up the list.
+
+7. Acknowledgement
+-------------------------
+I would also like to thank the following contributors :
+
+Thomas Engel <tomi@shinto.nbg.sub.org>:                GNU3DKit Project
+Gregor Hoffleit <flight@mathi.uni-heidelberg.DE>:      GNU3DKit Project
+Pete French <pete@ohm.york.ac.uk>:
+
+If you have comments or Bug reports don't hesitate to send them to:
+Pascal Thibaudeau
+pthibaud@cribx1.u-bordeaux.fr
+pascal@galileo.slip.u-bordeaux.fr (NeXTMail OK)
+
+
+
+
+

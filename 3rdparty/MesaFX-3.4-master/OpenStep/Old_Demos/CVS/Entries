@@ -1,0 +1,15 @@
+/Makefile/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/Makefile.NeXT/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/README/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/README.NeXT/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/checker.c/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/checker2.c/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/chess.c/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/disk.c/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/font.c/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/generic.m/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/model.c/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/nurbs.c/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/surface.c/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+/texturesurf.c/1.2/Thu Feb 10 15:59:08 2000//Tmesa_3_4_branch
+D/GLaux////

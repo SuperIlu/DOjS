@@ -1,0 +1,11 @@
+#undef HAVE_XMU
+#undef USE_X86_ASM
+#undef USE_3DNOW_ASM
+#undef USE_KATMAI_ASM
+#undef USE_MMX_ASM
+#undef MESA_DEBUG
+#undef FX
+#undef FX_GLIDE3
+#undef GGI
+#undef SVGA
+#undef USE_XSHM

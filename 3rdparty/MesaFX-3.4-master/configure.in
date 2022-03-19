@@ -1,0 +1,547 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.13)
+AC_INIT(include/GL/gl.h)
+
+dnl ------------------------------------------
+AM_INIT_AUTOMAKE(Mesa, 3.4.2)
+MESA_MAJOR=3
+MESA_MINOR=4
+MESA_TINY=2
+LIBGL_VERSION=1:2:0${MESA_MAJOR}0${MESA_MINOR}0${MESA_TINY}
+LIBGLU_VERSION=1:1:0${MESA_MAJOR}0${MESA_MINOR}0${MESA_TINY}
+LIBGLUT_VERSION=3:7:0
+AC_SUBST(LIBGL_VERSION)
+AC_SUBST(LIBGLU_VERSION)
+AC_SUBST(LIBGLUT_VERSION)
+
+AM_CONFIG_HEADER(conf.h)
+AC_CANONICAL_HOST
+AC_DISABLE_STATIC
+AC_DISABLE_FAST_INSTALL
+dnl AM_MAINTAINER_MODE
+
+dnl ------------------------------------------
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_CPP
+AM_PROG_LIBTOOL
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+
+dnl ------------------------------------------
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS(math.h malloc.h)
+
+dnl ------------------------------------------
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_INLINE
+AC_CHECK_FUNCS(strchr memcpy memmove)
+
+if test "x$GCC" = xyes; then
+   CFLAGS="$CFLAGS -Wall"
+fi
+
+dnl ------------------------------------------
+dnl Checks for host system characteristics
+if test "x$host_os" = xTru64; then
+   CFLAGS=-O0 -std1 -ieee_with_no_inexact -DSHM
+fi
+
+AC_ARG_ENABLE(debug,
+[  --enable-debug          enable full Mesa debugging [default=no]],
+  enable_debug=$enableval, enable_debug=no)
+if test "x$enable_debug" = xyes; then
+  AC_DEFINE(MESA_DEBUG)
+  if test "x$GCC" = xyes; then
+    CFLAGS="$CFLAGS -O0 -DDEBUG"
+  fi
+fi
+
+AC_ARG_ENABLE(profile,
+[  --enable-profile        enable profiling [default=no]],
+  enable_prof=$enableval, enable_prof=no)
+if test "x$enable_prof" = xyes; then
+  CFLAGS="$CFLAGS -DPROFILE"
+  if test "x$GCC" = xyes; then
+    CFLAGS="$CFLAGS -pg"
+  fi
+fi
+
+AC_ARG_ENABLE(optimize,
+[  --enable-optimize       enable extra optimization [default=yes]],
+  enable_optim=$enableval, enable_optim=yes)
+if test "x$enable_optim" = xyes; then
+  dnl Optimization flags
+  if test "x$enable_debug" = xno && test "x$enable_prof" = xno; then
+    if test "x$GCC" = xyes; then
+      CFLAGS="$CFLAGS -fomit-frame-pointer -ffast-math -fexpensive-optimizations -fstrict-aliasing"
+      case "$host" in
+      i*86-*-*) CFLAGS="$CFLAGS -malign-loops=2 -malign-jumps=2 -malign-functions=2";;
+      esac     
+    fi
+  fi
+fi
+
+AC_ARG_ENABLE(warn,
+[  --enable-warn           enable extended compiler warnings [default=no]],
+  enable_warn=$enableval, enable_warn=no)
+if test "x$enable_warn" = xyes; then
+  if test "x$GCC" = xyes; then
+    CFLAGS="$CFLAGS -ansi -pedantic"
+  fi
+fi
+
+dnl Checks for library functions.
+
+THREAD_LIBS=
+AC_CHECK_LIB(pthread, pthread_create,
+  AC_CHECK_HEADERS(pthread.h, [
+    CFLAGS="$CFLAGS -D_REENTRANT -DPTHREADS"
+    THREAD_LIBS="$THREAD_LIBS -lpthread"]) 
+)
+AC_SUBST(THREAD_LIBS)
+
+dnl Check for drivers
+dnl ------------------------------------------
+
+dnl Necessary for assembler sources
+save_ac_ext="$ac_ext"
+save_CPPFLAGS="$CPPFLAGS"
+ac_ext=S
+CPPFLAGS="$CPPFLAGS -I$srcdir/src/X86"
+
+dnl x86 assembler
+case "$host" in
+i*86-*-*) have_x86=yes ;;
+*) have_x86=no ;;
+esac
+
+AC_ARG_ENABLE(x86,
+[  --enable-x86            enable x86 assembler [default=autodetect]],
+  have_x86=$enableval)
+if test "x$have_x86" = xyes; then
+  AC_MSG_CHECKING(whether the binutils support cpuid)
+  cp "$srcdir/src/X86/common_x86_asm.S" conftest.S
+  if AC_TRY_EVAL(ac_compile); then
+    AC_DEFINE(USE_X86_ASM)
+    AC_MSG_RESULT(yes)
+  else 
+    AC_MSG_RESULT(no)
+    have_x86=no
+  fi
+  rm -f conftest*
+fi
+
+dnl ------------------------------------------
+dnl MMX support
+have_mmx=$have_x86
+AC_ARG_ENABLE(mmx,
+[  --enable-mmx            enable MMX support [default=autodetect]],
+  have_mmx=$enableval)
+if test "x$have_mmx" = xyes; then
+  AC_MSG_CHECKING(whether the binutils support MMX)
+  cp "$srcdir/src/X86/mmx_blend.S" conftest.S
+  if AC_TRY_EVAL(ac_compile); then
+    AC_DEFINE(USE_MMX_ASM)
+    AC_MSG_RESULT(yes)
+  else 
+    AC_MSG_RESULT(no)
+    echo 2>&1 "*******************************************************************************"
+    echo 2>&1 " The installed assembler does not support the MMX command set."
+    echo 2>&1 " Update your binutils package if you want to compile MMX support into Mesa."
+    echo 2>&1 "*******************************************************************************"
+    have_mmx=no
+  fi
+  rm -f conftest*
+fi
+
+dnl ------------------------------------------
+dnl 3Dnow support
+have_3dnow=$have_x86
+AC_ARG_ENABLE(3dnow,
+[  --enable-3dnow          enable 3Dnow support [default=autodetect]],
+  have_3dnow=$enableval)
+if test "x$have_3dnow" = xyes; then
+  AC_MSG_CHECKING(whether the binutils support 3Dnow)
+  cp "$srcdir/src/X86/3dnow_norm_raw.S" conftest.S
+  if AC_TRY_EVAL(ac_compile); then
+    AC_DEFINE(USE_3DNOW_ASM)
+    AC_MSG_RESULT(yes)
+  else 
+    AC_MSG_RESULT(no)
+    echo 2>&1 "*******************************************************************************"
+    echo 2>&1 " The installed assembler does not support the 3Dnow! command set."
+    echo 2>&1 " Update your binutils package if you want to compile 3Dnow! support into Mesa."
+    echo 2>&1 "*******************************************************************************"
+    have_3dnow=no
+  fi
+  rm -f conftest*
+fi
+
+dnl ------------------------------------------
+dnl SSE support
+have_sse=no
+AC_ARG_ENABLE(sse,
+[  --enable-sse            enable SSE support [default=no]],
+  have_sse=$enableval)
+if test "x$have_sse" = xyes; then
+  AC_MSG_CHECKING(whether the binutils support PentiumIII SSE)
+  cp "$srcdir/src/X86/katmai_xform_raw3.S" conftest.S
+  if AC_TRY_EVAL(ac_compile); then
+    AC_DEFINE(USE_KATMAI_ASM)
+    AC_MSG_RESULT(yes)
+    echo 2>&1 "*******************************************************************************"
+    echo 2>&1 " You have decided to compile SSE support into Mesa."
+    echo 2>&1 " If you have a Pentium III and want to use SSE make sure your kernel"
+    echo 2>&1 " supports PIII SSE instructions.  Linux kernels prior to 2.4.0 may need the"
+    echo 2>&1 " patch from http://www.redhat.com/~dledford/"
+    echo 2>&1 "*******************************************************************************"
+  else 
+    AC_MSG_RESULT(no)
+    echo 2>&1 "*******************************************************************************"
+    echo 2>&1 " The installed assembler does not support the SSE command set."
+    echo 2>&1 " Update your binutils package if you want to compile SSE support into Mesa."
+    echo 2>&1 "*******************************************************************************"
+    have_sse=no
+  fi
+  rm -f conftest*
+fi
+ 
+ac_ext="$save_ac_ext"
+CPPFLAGS="$save_CPPFLAGS"
+ 
+dnl ------------------------------------------
+dnl OSmesa driver
+have_osmesa=yes
+AC_ARG_ENABLE(osmesa,
+  [  --enable-osmesa         enable OSmesa [default=yes]],
+  	have_osmesa=$enableval)
+
+dnl ------------------------------------------
+dnl Glide driver
+have_fx=auto
+FX_CFLAGS=""
+FX_LIBS=""
+AC_ARG_WITH(glide,
+[  --with-glide=DIR        Glide is installed in DIR], have_fx="$withval")
+if test "x$have_fx" != xno; then
+  if test "x$have_fx" != xauto && test "x$have_fx" != xyes; then
+    FX_CFLAGS="-I$have_fx/include"
+    FX_LIBS="-L$have_fx/lib"
+  fi
+  withval=$have_fx	# We still need it later.
+  save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $FX_CFLAGS"
+  glide2hdir=nil
+  glide3hdir=nil
+  AC_CHECK_HEADER(glide.h, 
+      AC_EGREP_HEADER(grSstControl, glide.h, glide2hdir="",
+          glide3hdir="") )
+  CPPFLAGS="$save_CPPFLAGS -I/usr/include/glide -I/usr/local/include/glide"
+  AC_CHECK_HEADER(glide/glide.h,
+      AC_EGREP_HEADER(grSstControl, glide/glide.h, glide2hdir=glide,
+          glide3hdir=glide) )
+  CPPFLAGS="$save_CPPFLAGS -I/usr/include/glide2 -I/usr/local/include/glide2"
+  AC_CHECK_HEADER(glide2/glide.h, glide2hdir="glide2")
+  CPPFLAGS="$save_CPPFLAGS -I/usr/include/glide3 -I/usr/local/include/glide3"
+  AC_CHECK_HEADER(glide3/glide.h, glide3hdir="glide3")
+  if test x$glide3hdir != xnil; then
+    glidehdir=$glide3hdir
+    have_fx=yes
+  elif test x$glide2hdir != xnil; then
+    glidehdir=$glide2hdir
+    have_fx=yes
+  else
+    have_fx=no
+  fi
+  if test "x$have_fx" = xyes; then
+    if test "x$withval" != xauto; then
+      FX_CFLAGS="-I$withval/include/$glidehdir"
+    elif test "x$glidehdir" != x; then
+      FX_CFLAGS="-I/usr/include/$glidehdir -I/usr/local/include/$glidehdir"
+    fi
+  fi
+  CPPFLAGS="$save_CPPFLAGS"
+
+  if test "x$have_fx" = xyes; then
+    save_LIBS="$LIBS"
+    LIBS="$LIBS $FX_LIBS"
+    AC_CHECK_LIB(glide, grSstControl, glide2lib=glide,
+        AC_CHECK_LIB(glide, main, glide3lib=glide, , -lm), -lm)
+    AC_CHECK_LIB(glide2, main, glide2lib=glide2, , -lm)
+    AC_CHECK_LIB(glide2x, main, glide2lib=glide2x, , -lm)
+    AC_CHECK_LIB(glide3, main, glide3lib=glide3, , -lm)
+    AC_CHECK_LIB(glide3x, main, glide3lib=glide3x, , -lm)
+    if test x$glide3lib != x; then
+      glidelib=$glide3lib
+      AC_DEFINE(FX_GLIDE3)
+    elif test x$glide2lib != x; then
+      glidelib=$glide2lib
+    fi
+    if test "x$glidelib" = x; then
+      have_fx=no
+    else
+      have_fx=yes
+      AC_DEFINE(FX)
+      FX_LIBS="$FX_LIBS -l$glidelib"
+    fi
+    LIBS="$save_LIBS"
+  fi
+  if test "x$have_fx" != xyes; then
+    FX_CFLAGS="" FX_LIBS=""
+  fi
+fi
+AC_SUBST(FX_CFLAGS)
+AC_SUBST(FX_LIBS)
+
+dnl ------------------------------------------
+dnl GGI driver
+GGI_CFLAGS=
+GGI_LIBS=
+AC_ARG_WITH(ggi,
+  [  --with-ggi=DIR          GGI is installed in DIR],
+  [if test x$with_ggi != xno && test x$with_ggi != yes; then
+     GGI_CFLAGS="-I$withval/include"
+     GGI_LIBS="-L$withval/lib"
+     with_ggi=yes;
+   fi],
+  with_ggi=auto)
+if test x$with_ggi != xno; then
+  save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $GGI_CFLAGS"
+  # Check for whether GGI is available (header and lib).
+  AC_CHECK_HEADER(ggi/ggi.h,
+    [save_LIBS="$LIBS"
+     LIBS="$LIBS $GGI_LIBS"
+     AC_CHECK_LIB(ggi, main, have_ggi=yes, have_ggi=no)
+     LIBS="$save_LIBS"],
+    have_ggi=no)
+  CPPFLAGS="$save_CPPFLAGS"
+  if test x$have_ggi = xyes; then
+    GGI_LIBS="$GGI_LIBS -lggi -lgii -lgg" 
+    AC_DEFINE(GGI)
+  elif test x$with_ggi = xyes; then
+    AC_MSG_ERROR(GGI requested but not found)
+  fi
+fi
+
+AC_MSG_CHECKING(whether to build the GGI driver)
+AC_MSG_RESULT($with_ggi)
+if test "x$with_ggi" = xyes; then
+  build_ggi_fbdev_target=auto
+  build_ggi_genkgi_driver=auto
+  AC_ARG_ENABLE(ggi_fbdev,
+  [  --disable-ggi-fbdev     Don't build the GGIMesa fbdev target],
+  build_ggi_fbdev_target=$enableval)
+  AC_ARG_ENABLE(ggi_genkgi,
+  [  --disable-ggi-genkgi    Don't build the GGIMesa generic KGI driver],
+  build_ggi_genkgi_driver=$enableval)
+
+  if test "x$build_ggi_fbdev_target" != "xno"; then
+    AC_CHECK_HEADER(linux/fb.h, , build_ggi_fbdev_target=no)
+  fi
+  
+  if test "x$build_ggi_genkgi_driver" != "xno"; then
+    AC_CHECK_HEADER(kgi/kgi.h, , build_ggi_genkgi_driver=no)
+  fi
+   
+  build_ggi_genkgi_driver=no
+  
+  AC_MSG_CHECKING(if we should build GGIMesa's fbdev target)
+  if test "x$build_ggi_fbdev_target" = "xno"; then
+    AC_MSG_RESULT(no)
+  else
+    GGI_DISPLAY_SUBDIRS="$GGI_DISPLAY_SUBDIRS fbdev"
+    build_ggi_fbdev_target=yes
+    AC_MSG_RESULT(yes)
+  fi
+      
+  AC_MSG_CHECKING(if we should build GGIMesa's generic KGI driver)
+  if test "x$build_ggi_genkgi_driver" = "xno"; then
+    AC_MSG_RESULT(no)
+  else
+    GGI_DEFAULT_SUBDIRS="$GGI_DEFAULT_SUBDIRS kgi"
+    build_ggi_genkgi_driver=yes
+    AC_MSG_RESULT(yes)
+  fi
+  AM_CONDITIONAL(HAVE_GGI_GENKGI, test $build_ggi_genkgi_driver = yes)
+  AM_CONDITIONAL(HAVE_GGI_FBDEV, test $build_ggi_fbdev_target = yes)
+fi
+ggi_confdir=/usr/local/etc
+ggi_libdir=/usr/local/lib
+AC_SUBST(ggi_confdir)
+AC_SUBST(ggi_libdir)
+AC_SUBST(GGI_CFLAGS)
+AC_SUBST(GGI_LIBS)
+
+dnl ------------------------------------------
+dnl SVGALib driver
+have_svga=auto
+SVGA_CFLAGS=""
+SVGA_LIBS=""
+AC_ARG_WITH(svga,
+[  --with-svga=DIR         SVGALib is installed in DIR], have_svga="$withval")
+if test "x$have_svga" != xno; then
+  if test "x$have_svga" != xauto; then
+    SVGA_CFLAGS="-I$have_svga/include"
+    SVGA_LIBS="-L$have_svga/lib"
+  fi
+  save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $SVGA_CFLAGS"
+  AC_CHECK_HEADER(vga.h, have_svga=yes, have_svga=no)
+  CPPFLAGS="$save_CPPFLAGS"
+  if test "x$have_svga" = xyes; then
+    save_LIBS="$LIBS"
+    LIBS="$LIBS $SVGA_LIBS"
+    AC_CHECK_LIB(vga, main, SVGA_LIBS="$SVGA_LIBS -lvga"
+	AC_DEFINE(SVGA) have_svga=yes, have_svga=no)
+    LIBS="$save_LIBS"
+  fi
+  if test "x$have_svga" != xyes; then
+    SVGA_CFLAGS="" SVGA_LIBS=""
+  fi
+fi
+AC_SUBST(SVGA_CFLAGS)
+AC_SUBST(SVGA_LIBS)
+
+dnl ------------------------------------------
+dnl X11 driver
+AC_PATH_XTRA
+X_LIBADD=""
+if test "x$have_x" = xyes; then
+  save_LIBS="$LIBS"
+  LIBS="$LIBS $X_LIBS $X_PRE_LIBS"
+  AC_CHECK_LIB(Xmu, XmuRegisterExternalAgent, X_LIBADD="$X_LIBADD -lXmu")
+  LIBS="$save_LIBS"
+fi
+X_LIBADD="$X_LIBADD -lXext -lXi -lX11"
+AC_SUBST(X_LIBADD)
+
+dnl Check for USE_XSHM
+AC_CHECK_HEADER(sys/shm.h, AC_DEFINE(USE_XSHM))
+
+dnl ------------------------------------------
+dnl Check for GLUT
+GLUT_CFLAGS=""
+GLUT_LIBS=""
+AC_ARG_WITH(glut,
+  [  --with-glut=DIR         GLUT is installed in DIR ],
+  [if test x$with_glut != xyes && test x$with_glut != xno; then
+     GLUT_CFLAGS="-I$with_glut/include"
+     GLUT_LIBS="-I$with_glut/lib"
+     with_glut=yes
+   fi],
+  with_glut=auto)
+if test x$with_glut != xno; then
+  save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $GLUT_CFLAGS"
+  AC_CHECK_HEADER(GL/glut.h, have_glut=yes, have_glut=no)
+  CPPFLAGS="$save_CPPFLAGS"
+  if test "x$have_glut" = xyes; then
+    save_LIBS="$LIBS"
+    LIBS="$LIBS $GLUT_LIBS"
+    AC_CHECK_LIB(glut, main, GLUT_LIBS="$GLUT_LIBS -lglut"
+	have_glut=yes, have_glut=no)
+    LIBS="$save_LIBS"
+  fi
+  if test x$have_glut = xyes; then
+    with_glut=yes
+  elif test x$with_glut = xauto; then
+    with_glut=no
+  else
+    AC_MSG_ERROR(No external GLUT found)
+  fi
+fi  
+AC_MSG_CHECKING([whether to use an external (=already-installed) GLUT])
+AC_MSG_RESULT($with_glut)
+
+AC_MSG_CHECKING([for GLUT source dir in '$srcdir' ])
+have_glut_source=no
+if test -d $srcdir/src-glut; then
+  have_glut_source=yes
+else
+  AC_MSG_ERROR(GLUT sources missing; that is not supported at this point.)
+fi
+AC_MSG_RESULT($have_glut_source)
+need_glut=no
+if test x$have_glut_source = xyes; then
+  if test "x$with_glut" = xno; then
+    need_glut=yes
+    AC_ARG_ENABLE(glut-debug,
+      [  --enable-glut-debug     enable GLUT debugging [default=no]])
+    if test "x$enable_glut_debug" != xyes; then
+      GLUT_CFLAGS="$GLUT_CFLAGS -DNDEBUG"
+    fi
+    GLUT_LIBS="\$(top_builddir)/src-glut/libglut.la"
+  else 
+    AC_MSG_WARN(Using external GLUT.)
+    AC_MSG_WARN(Use --without-glut to build and install Mesa's own version of GLUT.)
+  fi
+else
+  AC_MSG_WARN([No GLUT available. Demos might not work.])
+  GLUT_LIBS="-lglut"
+fi
+AC_SUBST(GLUT_CFLAGS)
+AC_SUBST(GLUT_LIBS)
+
+dnl ------------------------------------------
+dnl Check for demos
+AC_MSG_CHECKING([for Mesa demo source dirs in '$srcdir' ])
+have_demo_source=yes
+for i in book demos images samples xdemos; do
+  if test ! -d $srcdir/$i; then
+    have_demo_source=no
+  fi
+done
+AC_MSG_RESULT($have_demo_source)
+if test "x$have_demo_source" != xyes; then
+  AC_MSG_ERROR(Demo sources missing; that is not supported at this point.)
+fi
+
+dnl ------------------------------------------
+AM_CONDITIONAL(HAVE_3DNOW, test $have_3dnow = yes)
+AM_CONDITIONAL(HAVE_SSE, test $have_sse = yes)
+AM_CONDITIONAL(HAVE_MMX, test $have_mmx = yes)
+AM_CONDITIONAL(HAVE_X86, test $have_x86 = yes)
+AM_CONDITIONAL(HAVE_FX, test $have_fx = yes)
+AM_CONDITIONAL(HAVE_GGI, test $have_ggi = yes)
+AM_CONDITIONAL(HAVE_OSMESA, test $have_osmesa = yes)
+AM_CONDITIONAL(HAVE_SVGA, test $have_svga = yes)
+AM_CONDITIONAL(HAVE_X11, test $have_x = yes)
+AM_CONDITIONAL(NEED_GLUT, test $need_glut = yes)
+AM_CONDITIONAL(HAVE_DEMOS, test $have_demo_source = yes)
+
+dnl ------------------------------------------
+AC_OUTPUT(
+Makefile
+include/Makefile
+include/GL/Makefile
+src/Makefile
+src/FX/Makefile
+src/FX/X86/Makefile
+src/GGI/Makefile
+src/GGI/include/Makefile
+src/GGI/include/ggi/Makefile
+src/GGI/include/ggi/mesa/Makefile
+src/GGI/ggimesa.conf
+src/GGI/default/Makefile
+src/GGI/default/genkgi.conf
+src/GGI/display/Makefile
+src/GGI/display/fbdev.conf
+src/OSmesa/Makefile
+src/SVGA/Makefile
+src/X/Makefile
+src/X86/Makefile
+src-glu/Makefile
+src-glut/Makefile
+book/Makefile
+demos/Makefile
+samples/Makefile
+xdemos/Makefile
+util/Makefile
+ggi/demos/Makefile
+ggi/ggiglut/Makefile
+)

@@ -1,0 +1,38 @@
+
+!IF "$(STATIC_MESA)" == "1"
+EXELIBS     = mesaglut$(LIBSFX).lib mesaglu$(LIBSFX).lib mesagl$(LIBSFX).lib
+USE_CRTDLL  = 0
+!ELSEIF "$(USE_SYSGL)" == "2"
+EXELIBS     = glut.lib glu.lib opengl.lib
+RUNTIMELIBS = glut.dll
+!ELSEIF "$(USE_SYSGL)" == "1"
+EXELIBS     = glut32.lib glu32.lib opengl32.lib
+RUNTIMELIBS = glut32.dll
+!ELSE
+EXELIBS     = glut32$(LIBSFX).lib glu32$(LIBSFX).lib opengl32$(LIBSFX).lib
+RUNTIMELIBS = glut32$(LIBSFX).dll glu32$(LIBSFX).dll opengl32$(LIBSFX).dll
+!ENDIF
+
+!IF ("$(USE_SYSGL)" == "0") && ("$(DEBUG)" == "1")
+EXELIBS=$(EXELIBS:.lib=d.lib)
+!IF "$(RUNTIMELIBS)" != ""
+RUNTIMELIBS=$(RUNTIMELIBS:.dll=d.dll)
+!ENDIF
+!ENDIF
+
+!IF "$(STATIC_MESA)" == "1"
+EXELIBS=$(EXELIBS) winmm.lib
+!ENDIF
+
+SRCALT1 = .\$(MESAROOT)\book
+
+SRCFILES = aaindex.c aapoly.c aargb.c accanti.c accpersp.c alpha.c\
+	alpha3D.c anti.c bezcurve.c bezmesh.c checker.c clip.c colormat.c\
+	cube.c depthcue.c dof.c double.c drawf.c feedback.c fog.c\
+	fogindex.c font.c hello.c image.c light.c lines.c list.c\
+	material.c mipmap.c model.c movelight.c nurbs.c pickdepth.c\
+	picksquare.c plane.c planet.c polyoff.c polys.c quadric.c robot.c\
+	sccolorlight.c scene.c scenebamb.c sceneflat.c select.c smooth.c\
+	stencil.c stroke.c surface.c teaambient.c teapots.c tess.c\
+	tesswind.c texbind.c texgen.c texprox.c texsub.c texturesurf.c\
+	torus.c trim.c unproject.c varray.c wrap.c

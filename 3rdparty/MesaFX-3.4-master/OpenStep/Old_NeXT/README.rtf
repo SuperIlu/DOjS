@@ -1,0 +1,206 @@
+{\rtf0\ansi{\fonttbl\f0\fswiss Helvetica;\f1\fmodern Courier;\f2\fnil Times-Roman;}
+\paperw9860
+\paperh12540
+\margl120
+\margr120
+{\colortbl;\red1\green12\blue44;\red3\green0\blue123;\red41\green4\blue44;\red0\green7\blue44;}
+\pard\tx520\tx1060\tx1600\tx2120\tx2660\tx3200\tx3720\tx4260\tx4800\tx5320\f0\b0\i0\ulnone\fs24\fc0\cf0  \
+
+\b\qc NeXT
+\b0\fs16\up8 TM
+\b\fs24
+\up0 Mesa-OpenGL
+\b0\fs16\up8 TM
+\fs24\up0 \
+by\
+
+\b\gray46\fc1\cf1 Pascal Thibaudeau
+\b0\gray0\fc0\cf0 \
+pthibaud@cribx1.u-bordeaux.fr \
+pascal@galileo.slip.u-bordeaux.fr (
+\f1 NeXTMail OK
+\f0 )\
+
+\ql @(#) README 1.4 96/11/29 19:49:23\
+\
+\
+# Revision 1.4  1996/11/29  19:49:23 pascal thibaudeau \
+# Mesa-2.0.1 fixed\
+#\
+# Revision 1.3  1996/10/16  10:59:02 pascal thibaudeau \
+# Mesa-2.0 fixed\
+#\
+# Revision 1.2  1996/05/16  00:17:02 pascal thibaudeau \
+# Mesa-1.2.8 fixed\
+#\
+# Revision 1.1  1996/03/02  15:03:07 pascal thibaudeau \
+# Mesa-1.2.7 fixed\
+# Initial revision\
+#\
+\
+
+\b 1. Introduction
+\b0 \
+\
+This is the README file for the NeXT version of the
+\i  Mesa
+\i0  library.  \
+The file consists of information specific to the NeXT version of
+\i  Mesa
+\i0 .\
+For more general information please read the README file in the main
+\i  Mesa
+\i0 \
+directory.\
+\
+
+\b 2. Whats new?
+\b0 \
+\
+See the general
+\i  Mesa
+\i0  README for all new items in Mesa-2.0.  This\
+section will only discuss those items which are specific to the NeXT.\
+\
+
+\gray56\fc2\cf2 0.4 Release
+\gray0\fc0\cf0 \
+	=========\
+	- New demos from the book directory.\
+	- old nextdemoX removed.\
+\
+
+\gray56\fc2\cf2 0.3 Release
+\gray0\fc0\cf0 \
+        =========\
+	- Mesa-2.0 is fixed.\
+\
+
+\gray56\fc2\cf2 0.2 Release
+\gray0\fc0\cf0 \
+	=========\
+	- Some tk functions are now supported.\
+	- minor bugs are corrected.\
+\
+
+\gray56\fc2\cf2 0.1 Release
+\gray0\fc0\cf0 \
+	=========\
+	- Off-Screen rendering buffer is read by
+\f1  NXBitmapImageRep
+\f0  function.\
+	- 32bpp is directly supported.\
+	- WIDTH and HEIGHT are staticly defined.\
+	- The window style is
+\f1  NX_TITLEDSTYLE
+\f0 .\
+	- NeXT demos are straightforward ports of some book/ files.\
+	\
+		\
+
+\b 3. The Distribution
+\b0 \
+\
+NeXT
+\i  Mesa
+\i0  is distributed in one form.  This should make it easier to \
+download only what you need. The package is as follows:\
+\
+
+\f1 Mesa-2.0.tar.gz
+\f0 \
+\
+This release contains the complete source to
+\i  Mesa
+\i0  for the NeXT\
+\
+
+\b 4. Documentation
+\b0 \
+\
+The
+\i  Mesa
+\i0  WWW page is :
+\gray75\fc3\cf3 http://www.ssec.wisc.edu/~brianp/Mesa.html
+\gray0\fc0\cf0 \
+\
+There is also a general WWW page related to OpenGL under NeXTSTEP:\
+
+\gray75\fc3\cf3 http://wwwcip.informatik.uni-erlangen.de/user/tsengel/
+\gray0\fc0\cf0 \
+\
+
+\b 5. Compiling Mesa
+\b0 \
+\
+In order to compile NeXT
+\i Mesa
+\i0  you need the following items:\
+\
+	NEXTSTEP Developper Kit Release 3.3\
+	NeXT Mesa-2.0 (source)\
+\
+The project files included with the NeXT
+\i  Mesa
+\i0  source should work \
+fine. The only things you may need to update are the access paths.\
+Simply typing "make next" should compile Mesa and a number of NeXT demo\
+programs found in the NeXT/ directory. This was tested on a i386,m68k running \
+NEXTSTEP 3.3. \
+\
+
+\b 6. Test suite
+\b0 \
+\
+The NeXT version of
+\i Mesa
+\i0  does not pass many of the tests in the\
+demos or samples suites.  This is primarily due to dependencies in the \
+suites on the size of particular X fonts, and other X related features.  We\
+will be working on developping a more general NeXT suite for
+\i  Mesa
+\i0  under the\
+NeXT, but for now, you will not be able to pass many of the tests.  \
+It is, however, much better than the alpha release!\
+\
+\
+
+\b 7. NeXT Mesa Mailing List\
+\
+
+\b0 If you want to subscribe to the
+\i  Mesa
+\i0  Mailing List, please send the following message to the address listproc@iqm.unicamp.br\
+\
+
+\f1 subs mesa <your name>
+\f0 \
+\
+For example:\
+\
+
+\f1 subs mesa Pascal Thibaudeau\
+
+\f0 \
+You will receive a welcome message from the list server when you have been\
+added to the list.  It tells you how to post messages to the list, how\
+to unsubscribe, etc.  Thanks to Pedro Vazquez for setting up the list.\
+\
+
+\b 8. Acknowledgements\
+
+\b0 \
+I would also like to thank the following contributors :\
+\
+Thomas Engel <tomi@shinto.nbg.sub.org>:		   GNU3DKit Project\
+Gregor Hoffleit <flight@mathi.uni-heidelberg.DE>:  GNU3DKit Project\
+Pete French <pete@ohm.york.ac.uk>:\
+\
+\
+If you have comments or Bug reports don't hesitate to send them to:\
+
+\gray35\fc4\cf4 Pascal Thibaudeau\
+pthibaud@cribx1.u-bordeaux.fr\
+pascal@galileo.slip.u-bordeaux.fr (NeXTMail OK)\
+
+}

@@ -1,0 +1,168 @@
+# $Id: Makefile.cygnus,v 1.8 2000/04/07 16:28:38 brianp Exp $
+
+# Mesa 3-D graphics library
+# Version:  3.3
+# Copyright (C) 1995-1998  Brian Paul
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Library General Public License for more details.
+#
+# You should have received a copy of the GNU Library General Public
+# License along with this library; if not, write to the Free
+# Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+# Makefile for core library for cygnus
+# Stephane Rehel (rehel@worldnet.fr) April 13 1997
+
+
+##### MACROS #####
+
+VPATH = RCS
+
+INCDIR = ../include
+LIBDIR = ../lib
+
+CORE_SOURCES = \
+	aatriangle.c \
+	accum.c \
+	alpha.c \
+	alphabuf.c \
+	attrib.c \
+	bbox.c \
+	bitmap.c \
+	blend.c \
+	buffers.c \
+	clip.c \
+	colortab.c \
+	config.c \
+	context.c \
+	copypix.c \
+	cva.c \
+	debug_xform.c \
+	depth.c \
+	dispatch.c \
+	dlist.c \
+	drawpix.c \
+	enable.c \
+	enums.c \
+	eval.c \
+	extensions.c \
+	feedback.c \
+	fog.c \
+	get.c \
+	glapi.c \
+	glapinoop.c \
+	glthread.c \
+	hash.c \
+	hint.c \
+	image.c \
+	imaging.c \
+	light.c \
+	lines.c \
+	logic.c \
+	masking.c \
+	matrix.c \
+	mem.c \
+	mmath.c \
+	pb.c \
+	pixel.c \
+	pixeltex.c \
+	pipeline.c \
+	points.c \
+	polygon.c \
+	quads.c \
+	rastpos.c \
+	readpix.c \
+	rect.c \
+	scissor.c \
+	shade.c \
+	span.c \
+	stages.c \
+	state.c \
+	stencil.c \
+	teximage.c \
+	texobj.c \
+	texstate.c \
+	texture.c \
+	texutil.c \
+	translate.c \
+	triangle.c \
+	varray.c \
+	vb.c \
+	vbcull.c \
+	vbfill.c \
+	vbindirect.c \
+	vbrender.c \
+	vbxform.c \
+	vector.c \
+	vertices.c \
+	winpos.c \
+	xform.c \
+	zoom.c
+
+DRIVER_SOURCES = wmesa.c mesa_extend.c osmesa.c fxwgl.c
+
+OBJECTS = $(CORE_SOURCES:.c=.o) $(DRIVER_SOURCES:.c=.o)
+
+WING_DLL=$(WING_DIR)/bin/wing32.dll
+WING_INC=$(WING_DIR)/include
+
+##### RULES #####
+
+.c.o:
+	$(CC) -c -I$(INCDIR) -I$(WING_INC) $(CFLAGS) -DNO_PARALLEL -DNO_STEREO $<
+
+
+##### TARGETS #####
+
+default:
+	@echo "Specify a target configuration"
+
+clean:
+	-rm *.o *~
+
+targets: $(LIBDIR)/wing32.a $(LIBDIR)/$(GL_LIB)
+
+# build ../lib/wing32.a from /wing/bin/wing32.dll
+$(LIBDIR)/wing32.a: $(WING_DLL)
+	dlltool -v --dllname $(WING_DLL) --def wing32.def \
+		--output-exp wing32.exp --output-lib wing32_tmp.a
+	ld -e _WinGBitBlt@32 \
+	   -e _WinGCreateBitmap@12 \
+	   -e _WinGCreateDC@0 \
+	   -e _WinGCreateHalftoneBrush@12 \
+	   -e _WinGCreateHalftonePalette@0 \
+	   -e _WinGGetDIBColorTable@16 \
+	   -e _WinGGetDIBPointer@8 \
+	   -e _WinGRecommendDIBFormat@4 \
+	   -e _WinGSetDIBColorTable@16 \
+	   -e _WinGStretchBlt@40 \
+	   -o $(LIBDIR)/wing32.a wing32.exp wing32_tmp.a --dll
+	-rm -f wing32_tmp.a wing32.exp
+
+# Make the library
+$(LIBDIR)/$(GL_LIB): $(OBJECTS)
+	$(MAKELIB) $(GL_LIB) $(MAJOR) $(MINOR) $(TINY) $(OBJECTS)
+	mv $(GL_LIB)* $(LIBDIR)
+
+include ../Make-config
+
+include depend
+
+wmesa.o: wmesa.c xform.h vb.h matrix.h depth.h tritemp.h
+
+#
+# Run 'make dep' to update the dependencies if you change what's included
+# by any source file.
+#
+dep: $(CORE_SOURCES) $(DRIVER_SOURCES)
+	makedepend -fdepend -Y -I../include $(CORE_SOURCES) $(DRIVER_SOURCES)
+

@@ -1,0 +1,31 @@
+{
+    APPCLASS = NSApplication; 
+    FILESTABLE = {
+        BUNDLES = (); 
+        CLASSES = (MesaView.m); 
+        FRAMEWORKS = (AppKit.framework, Foundation.framework); 
+        HEADERSEARCH = (../../include/); 
+        H_FILES = (MesaView.h, mesadraw.h, vect3d.h); 
+        INTERFACES = (MesaView.nib); 
+        LIBRARYSEARCH = (../../lib/); 
+        LIBS = (); 
+        OTHER_LIBS = (MesaGL, MesaGLU); 
+        OTHER_LINKED = (mesadraw.c, MesaView_main.m, vect3d.c); 
+        OTHER_SOURCES = (Makefile.preamble, Makefile, Makefile.postamble, m.template, h.template); 
+        SUBPROJECTS = (); 
+        TOOLS = (); 
+    }; 
+    LANGUAGE = English; 
+    LOCALIZABLE_FILES = {MesaView.nib = MesaView.nib; }; 
+    MAKEFILEDIR = "$(NEXT_ROOT)/NextDeveloper/Makefiles/pb_makefiles"; 
+    NEXTSTEP_BUILDTOOL = /bin/gnumake; 
+    NEXTSTEP_INSTALLDIR = "$(HOME)/Apps"; 
+    NEXTSTEP_MAINNIB = MesaView; 
+    PDO_UNIX_MAINNIB = MesaView; 
+    PROJECTNAME = MesaView; 
+    PROJECTTYPE = Application; 
+    PROJECTVERSION = 2.6; 
+    WINDOWS_BUILDTOOL = make; 
+    WINDOWS_INSTALLDIR = /MyApps; 
+    WINDOWS_MAINNIB = MesaView; 
+}

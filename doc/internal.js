@@ -49,6 +49,11 @@ IPX_AVAILABLE = true;
 DOJS_VERSION = 0.0;
 
 /**
+ * @property {boolean} LFN_SUPPORTED true if long filenames are supported.
+ */
+LFN_SUPPORTED = false;
+
+/**
  * @property {string[]} ARGS the command line arguments including the script name.
  */
 ARGS = [];
@@ -397,8 +402,8 @@ function FilledCircle(x, y, r, c) { }
  * draw a filled ellipse.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
- * @param {number} xr radius.
- * @param {number} yr radius.
+ * @param {number} rx radius.
+ * @param {number} ry radius.
  * @param {number} c color.
  */
 function FilledEllipse(x, y, rx, ry, c) { }
@@ -414,8 +419,8 @@ function FloodFill(x, y, bound, c) { }
 
 /**
  * draw a filled polygon.
- * @param {number} c color.
  * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
+ * @param {number} c color.
  */
 function FilledPolygon(points, c) { }
 
@@ -627,6 +632,12 @@ function GetFramerate() { }
  * @param {number} key 
  */
 function SetExitKey(key) { }
+
+/**
+ * set a console message to display at shutdown of DOjS.
+ * @param {string} msg the message.
+ */
+function SetExitMessage(msg) { }
 
 /**
  * Run a DOS command.
@@ -1248,7 +1259,7 @@ function fxFogColorValue(color) { }
  * convert a fog table index to a floating point eye-space w value
  * @param {number} i The fog table index, between 0 and GR_FOG_TABLE_SIZE. 
  */
-function fxFogTableIndexToW(table) { }
+function fxFogTableIndexToW(i) { }
 
 /**
  * download a fog table
@@ -1505,7 +1516,7 @@ function GetDomainname() { }
 function Resolve(host) { }
 /**
  * reverse look up a host in DNS.
- * @param {IpAddress} host the ip address.
+ * @param {IpAddress} ip the ip address.
  * @returns {string} The name of the host or an exception.
  */
 function ResolveIp(ip) { }
@@ -1539,7 +1550,7 @@ function GetDiskStatus(disk) { }
 /**
  * get number of (LBA) sectors for a drive.
  * 
- * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
+ * @param {number} drive 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
  * 
  * @returns {number} number of sectors for that disk.
  */

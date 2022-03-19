@@ -1,0 +1,9 @@
+
+!INCLUDE .\rules\lib.mesa.core
+
+USE_CRTDLL=0
+
+SRCALT2=.\$(MESAROOT)\src\OSmesa
+SRCALT3=.\$(MESAROOT)\src\Windows
+
+SRCFILES = $(MESA_CORE) OSmesa.c Wmesa.c wgl.c

@@ -39,9 +39,11 @@ FILE = {
  * @property {*} READ open ZIP file in read mode.
  * @property {*} WRITE open ZIP file in write mode (truncating existing contents)
  * @property {*} APPEND open ZIP file in append mode.
+ * @property {*} DELETE open ZIP file in delete mode.
  */
 ZIPFILE = {
 	READ: "r",
 	WRITE: "w",
+	DELETE: "d",
 	APPEND: "a"
 };

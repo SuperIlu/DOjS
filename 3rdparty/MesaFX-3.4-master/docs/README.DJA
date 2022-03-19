@@ -1,0 +1,69 @@
+
+INTRODUCTION
+~~~~~~~~~~~~
+This is an Allegro (DJGPP) driver for MESA. This release also includes a
+"skeletal" version of GLUT for DJGPP. It was developed for the sole
+purpose of compiling the sample programs. It NOT AT ALL a complete
+version of GLUT!
+
+ALL CODE IS SUBJECT TO THE MESA COPYRIGHT AGREEMENT.
+
+
+CONTACT INFORMATION
+~~~~~~~~~~~~~~~~~~~
+
+    Name:   Bernhard Tschirren
+    Email:  bernie-t@geocities.com
+    WWW:    http://www.cs.curtin.edu.au/~tschirre/
+            http://www.geocities.com/SiliconValley/7259/
+           
+
+REQUIRED FILES
+~~~~~~~~~~~~~~
+    You will need MESA, of course. I have only tested it with version
+    3.0, but it will probably work with later versions as well. It will
+    NOT work with earlier versions due to major changes to the MESA
+    driver interface.
+    AVAILABLE AT: http://www.ssec.wisc.edu/~brianp/Mesa.html
+
+    You will also need DJGPP and "Allegro 3.0 + WIP". It will NOT work
+    with the release version of Allegro 3.0 because I'm using some new
+    features that weren't present in the first release.
+    AVAILABLE AT: http://www.talula.demon.co.uk/allegro/
+
+
+INSTALLATION
+~~~~~~~~~~~~
+    Unzip into the MESA directory, and type "make -f Makefile.dja" to
+    compile all libraries and samples.
+
+    If you get compiler (or linker) errors, make sure that you have
+    "Allegro 3.0 + WIP" and that DJGPP\INCLUDE has the new allegro.h,
+    and that DJGPP\LIB has the new liballeg.a.
+
+
+BUGS & OTHER SHORTCOMINGS
+~~~~~~~~~~~~~~~~~~~~~~~~~
+    src/allegro/direct.h:
+        Somehow the line demo (samples/line.c) only works in
+        double-buffer mode. The anti-aliased lines appear fat when using
+        direct mode. This is obviously a bug in direct.h - but I cannot
+        find it :(
+
+    src-glut.dja/*:
+        Only the basics work - main loop and keyboard/mouse input.
+        Windows, menus and fonts DO NOT WORK, and will NEVER be
+        implemented (at least not by me). This version of GLUT was only
+        created to allow the MESA sample programs to compile.
+
+    include/GL/glut.h:
+        This file clashes with the REAL glut.h (by Mark J. Kilgard).
+        Unfortunately, you cannot have both installed at the same time.
+        A backup exists (include/GL/glut_h.dja) in case you accidentally
+        copy Mark's glut.h over this one.
+
+
+Good Luck
+
+    Bernie (02/11/1998)
+

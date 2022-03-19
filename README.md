@@ -13,25 +13,25 @@ You can type in a script with the builtin or your favorite text editor and then 
 DOjS is pronounces like [doge](https://en.wikipedia.org/wiki/Doge_(meme)), but ending with an "s".
 
 DOjS was only possible due to the work of these people/projects:
-* [MuJS](https://mujs.com/) JavaScript interpreter
-* The [Allegro library](https://liballeg.org/) and [Allegro XC](https://github.com/msikma/allegro-4.2.2-xc)
-* [DJGPP](http://www.delorie.com/djgpp/) from DJ Delorie and the [Linux compile scripts](https://github.com/andrewwutw/build-djgpp) by Andrew Wu.
-* The people that contributed to [p5js](https://p5js.org/).
-* The Glide source cleanup of [Ozkan Sezer](https://github.com/sezero/glide).
-* [AllegroPNG](http://alpng.sourceforge.net/) PNG loader for Allegro
-* [DZCOMM](http://dzcomm.sourceforge.net/) COM port library
-* [libcpuid](https://github.com/anrieff/libcpuid) for cpuid module
-* [curl](https://curl.se/) and [OpenSSL](https://www.openssl.org/) for curl module
-* [cylindrix](https://sourceforge.net/projects/cylindrix/) for IPX module
-* [nanosvg](https://github.com/memononen/nanosvg) for SVG loading
-* [noise](https://github.com/stegu/perlin-noise) for perlin noise generation
-* [genann](https://github.com/codeplea/genann) for neural network engine
-* [SQLite](https://www.sqlite.org/index.html) for sqlite module
-* [Watt32](https://www.watt-32.net/) for TCP/IP networking
-* [zip](https://github.com/kuba--/zip) for ZIP file access
-* [zlib](http://zlib.net/)
-* [nanojpeg](http://keyj.emphy.de/nanojpeg/) for SVG loading
-* [AnimatedGIF](https://github.com/bitbank2/AnimatedGIF/) for rendering GIF animations.
+  * [MuJS](https://mujs.com/) JavaScript interpreter
+  * The [Allegro library](https://liballeg.org/) and [Allegro XC](https://github.com/msikma/allegro-4.2.2-xc)
+  * [DJGPP](http://www.delorie.com/djgpp/) from DJ Delorie and the [Linux compile scripts](https://github.com/andrewwutw/build-djgpp) by Andrew Wu.
+  * The people that contributed to [p5js](https://p5js.org/).
+  * The Glide source cleanup of [Ozkan Sezer](https://github.com/sezero/glide).
+  * [AllegroPNG](http://alpng.sourceforge.net/) PNG loader for Allegro
+  * [DZCOMM](http://dzcomm.sourceforge.net/) COM port library
+  * [libcpuid](https://github.com/anrieff/libcpuid) for cpuid module
+  * [curl](https://curl.se/) and [OpenSSL](https://www.openssl.org/) for curl module
+  * [cylindrix](https://sourceforge.net/projects/cylindrix/) for IPX module
+  * [nanosvg](https://github.com/memononen/nanosvg) for SVG loading
+  * [noise](https://github.com/stegu/perlin-noise) for perlin noise generation
+  * [genann](https://github.com/codeplea/genann) for neural network engine
+  * [SQLite](https://www.sqlite.org/index.html) for sqlite module
+  * [Watt32](https://www.watt-32.net/) for TCP/IP networking
+  * [zip](https://github.com/kuba--/zip) for ZIP file access
+  * [zlib](http://zlib.net/)
+  * [nanojpeg](http://keyj.emphy.de/nanojpeg/) for SVG loading
+  * [AnimatedGIF](https://github.com/bitbank2/AnimatedGIF/) for rendering GIF animations.
 
 You can find me on [Twitter](https://twitter.com/dec_hl) if you want...
 
@@ -43,25 +43,25 @@ DOjS runs in [Dosbox](https://www.dosbox.com/) and on real hardware or a virtual
 If you run it on real hardware you need at least a **80386 with 4MB**. I recommend a **Pentium class machine (>= 100MHz) with at least 32MB RAM**. The example files run fine on an Athlon 1GHz and with 256MB RAM.
 
 The following hardware/functions are available:
-* 8/16/24 and 32 bit 2D graphics. On 24/32bit display modes alpha channel transparency is available.
-* BMP, PCX, TGA and PNG image reading and writing, JPEG and SVG loading
-* GRX font loading and rendering
-* Keyboard input
-* Mouse input
-* Joystick/Joyport input
-* File IO
-* MIDI output
-* WAV output
-* Audio input/sampling
-* Allegro 3D rendering (software)
-* 3dfx/Glide3 3D rendering output (hardware)
-* p5js compatibility
-* direct io-port access (inb, outb, etc)
-* LPT or parallel port access (bi-directional)
-* COM or serial port access
-* IPX and TCP/IP networking
-* ZIP file access
-* GIF-Animation, FLC/FLI, MPEG1 or OggVorbis playback
+  * 8/16/24 and 32 bit 2D graphics. On 24/32bit display modes alpha channel transparency is available.
+  * BMP, PCX, TGA and PNG image reading and writing, JPEG and SVG loading
+  * GRX font loading and rendering
+  * Keyboard input
+  * Mouse input
+  * Joystick/Joyport input
+  * File IO
+  * MIDI output
+  * WAV output
+  * Audio input/sampling
+  * Allegro 3D rendering (software)
+  * 3dfx/Glide3 3D rendering output (hardware)
+  * p5js compatibility
+  * direct io-port access (inb, outb, etc)
+  * LPT or parallel port access (bi-directional)
+  * COM or serial port access
+  * IPX and TCP/IP networking
+  * ZIP file access
+  * GIF-Animation, FLC/FLI, MPEG1 or OggVorbis playback
 
 ## A minimal script
 You can find the following example in `examples/exampl.js`:
@@ -74,7 +74,7 @@ function Setup() {
 }
 
 /*
-** This function is repeated until ESC is pressed or Stop() is called.
+** This function is called repeatedly until ESC is pressed or Stop() is called.
 */
 function Loop() {
     ClearScreen(EGA.BLACK);
@@ -106,7 +106,7 @@ function setup() {
 }
 
 /*
-** This function is repeatedly until ESC is pressed or Stop() is called.
+** This function is called repeatedly until ESC is pressed or Stop() is called.
 */
 function draw() {
     background(EGA.BLACK);
@@ -122,15 +122,31 @@ function draw() {
 
 More info can be found at the end of this README in the section **Usage** and in the API documentation. Take a look at the `examples/` as well.
 
+## additional packages
+DOjS has a very simple integrated package manager (DPM). It can be started with `DPM.BAT`.
+A working packet driver is needed to connect to the package index and download packages using HTTPS.
+Packages (and the package index) are fetched from the [DOjS/jSH package repository](https://github.com/SuperIlu/DOjSHPackages).
+Downloaded packages are put into `JSBOOT.ZIP` in the `PACKAGE/` directory.
+Feel free to submit any packages you want to include in that repository using a pull request.
+DPM commands:
+  * installed - list installed packages.
+  * remove    - remove package.
+  * fetch     - fetch package index from server.
+  * install   - install a package (and its dependencies) from package index.
+  * list      - list available packages in index.
+  * setindex  - set index URL (HTTP or HTTPS).
+  * help      - this help.;
+  * quit      - exit dpm.
+
 ## 3dfx/Glide support
 DOjS supports most of the Glide3 API that was used with [3dfx](https://en.wikipedia.org/wiki/3dfx_Interactive) accelerator cards. The following hardware is supported:
-* Voodoo 1 [tested]
-* Voodoo 2 [tested]
-* Voodoo 3 [tested]
-* Voodoo 4 [tested by [tunguska](https://twitter.com/tunguska82)]
-* Voodoo 5 [tested by [tunguska](https://twitter.com/tunguska82)]
-* Voodoo Rush (all versions) [tested]
-* Voodoo Banshee (PCI and AGP) [tested]
+  * Voodoo 1 [tested]
+  * Voodoo 2 [tested]
+  * Voodoo 3 [tested]
+  * Voodoo 4 [tested by [tunguska](https://twitter.com/tunguska82)]
+  * Voodoo 5 [tested by [tunguska](https://twitter.com/tunguska82)]
+  * Voodoo Rush (all versions) [tested]
+  * Voodoo Banshee (PCI and AGP) [tested]
 
 Additionally you can use [DOSBox-X](https://github.com/joncampbell123/dosbox-x/releases) which emulates a Voodoo 1 card. Glide functions can be found in the 3dfx-module in the documentation, Javascript support functions have a "FX" prefix, all native functions are prefixed with "fx". Detailed Glide3-API documentation can be found on the internet, e.g. on [FalconFly Central](http://falconfly.3dfx.pl/reference.htm). **Make sure you grab the Glide3 SDK and not Glide2!**
 
@@ -146,13 +162,15 @@ Setup Windows Subsystem for Linux (WSL) according to [this](https://docs.microso
 
 ## Preparation
 Build and install DJGPP 7.2.0 according to [this](https://github.com/andrewwutw/build-djgpp) guide.
+Install [NVM](https://github.com/nvm-sh/nvm#installing-and-updating).
 I used the following command lines to update/install my dependencies:
 ```bash
 sudo apt-get update
 sudo apt-get dist-upgrade
-sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev g++ unzip htop screen git bash-completion build-essential npm zip dos2unix
-sudo npm install -g jsdoc
-sudo npm install -g better-docs
+sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev g++ unzip htop screen git bash-completion build-essential zip dos2unix python3
+nvm install node
+npm install -g jsdoc
+npm install -g better-docs
 ```
 
 And the following commands to build and install DJGPP to `/home/ilu/djgpp`.:
@@ -171,10 +189,16 @@ Checkout DOjS from Github:
 git clone https://github.com/SuperIlu/DOjS.git
 ```
 
-Open the `Makefile` in a text editor and change the path to DJGPP according to your installation.
+Make sure DJGPP is in your PATH and DJDIR is set (e.g. I have these lines in my ~/.profile):
+```
+# DJGPP
+export PATH=/home/ilu/djgpp/bin/:/home/ilu/djgpp/i586-pc-msdosdjgpp/bin/:$PATH
+export DJDIR=/home/ilu/djgpp/
+```
+
 If you used Windows-Tools to check out DOjS from git you may need to fix the newlines of the shell scripts by using `make fixnewlines`.
 
-Now you are ready to compile DOjS with `make clean all`. This might take some time as the dependencies are quite a large.
+Now you are ready to compile DOjS with `make clean all`. This might take some time as the dependencies are quite large.
 `make distclean` will clean dependencies as well. `make zip` will create the distribution ZIP and `make doc` will re-create the HTML help.
 
 # Notes
@@ -197,28 +221,28 @@ exports.Loop = function () {
     FilledBox(10, 10, 70, 20, EGA.GREEN);
 }
 ```
-* The first line must be exactly `// livedojs`
-* The file must end with `.js`
-* Only `Setup()` and `Loop()` are available, `Input()` does not work.
-* p5js compatibility does not work, you must code using DOjS native API
-* If the hostname is set the sketch will be automatically be uploaded on save
-* The sketch can be uploaded using `DOjS: Upload sketch` manually
-* you can access the JSLOG.TXT of the running server by using `DOjS: get logfile`
+  * The first line must be exactly `// livedojs`
+  * The file must end with `.js`
+  * Only `Setup()` and `Loop()` are available, `Input()` does not work.
+  * p5js compatibility does not work, you must code using DOjS native API
+  * If the hostname is set the sketch will be automatically be uploaded on save
+  * The sketch can be uploaded using `DOjS: Upload sketch` manually
+  * you can access the JSLOG.TXT of the running server by using `DOjS: get logfile`
 
 # History
 See the [changelog](/CHANGELOG.md) for the projects history.
 
 # Planed work
-* Stack trace selector in the editor
-* TCP/IP remote logging/debugging.
-* add FFT module
-* Add ZIP file functions (e.g. https://libzip.org/users/ or https://github.com/kuba--/zip).
+  * Stack trace selector in the editor
+  * TCP/IP remote logging/debugging.
+  * add FFT module
+  * Add ZIP file functions (e.g. https://libzip.org/users/ or https://github.com/kuba--/zip).
     * Implement 3df file loading from ZIP
-* add/implement some more math functions
+  * add/implement some more math functions
     * https://mathjs.org/
     * https://github.com/evanw/lightgl.js
-* Fix bugs!
-* Anything fun...
+  * Fix bugs!
+  * Anything fun...
     * http://www.speech.cs.cmu.edu/flite/
     * http://speect.sourceforge.net/
     * http://espeak.sourceforge.net/
@@ -261,9 +285,9 @@ The logo font is [Comic relief](https://www.fontsquirrel.com/fonts/comic-relief)
 
 ## WAVs
 All WAV files were downloaded from [BigSoundBank](https://bigsoundbank.com/) and are licensed under [WTFPL](https://bigsoundbank.com/droit.html)
-* https://bigsoundbank.com/detail-0283-song-of-rooster.html
-* https://bigsoundbank.com/detail-1102-bell-bike-5.html
-* https://bigsoundbank.com/detail-1023-explosion-far-away.html
+  * https://bigsoundbank.com/detail-0283-song-of-rooster.html
+  * https://bigsoundbank.com/detail-1102-bell-bike-5.html
+  * https://bigsoundbank.com/detail-1023-explosion-far-away.html
 
 ## MIDs
 The MIDI files were downloaded from the [FreeDOOM](https://github.com/freedoom/freedoom) project and are licensed under [this](https://github.com/freedoom/freedoom/blob/master/COPYING.adoc) license.
@@ -384,10 +408,10 @@ Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
 ## Scripts and resources
 Scripts, as well as resources can either be stored in the file system or in ZIP files. To load data from a zip file the format is `<ZIP filename>=<ZIP entry name>` (e.g. `data.zip=mypic.bmp`). DOjS can be started with a script, a script in a ZIP file or no parameters. If the script was loaded from a ZIP file the running script can obtain resources from the same ZIP file by using `ZipPrefix()` to obtain paths refering to that ZIP. If the script was not started from a ZIP `ZipPrefix()` just passes through the file name (thus loading the file from HDD). If no arameters are supplied DOjS will first try to load `<name of the EXE>.ZIP=MAIN.JS` and then `JSBOOT.ZIP=MAIN.JS`.
 Examples:
-* `DOJS.EXE -r script.js` will start `script.js` from the HDD, `ZipPrefix("pic.bmp")` will yield `pic.bmp`.
-* `DOJS.EXE -r data.zip=script.js` will start `script.js` from the ZIP file `data.zip`, `ZipPrefix("pic.bmp")` will yield `data.zip=pic.bmp`.
-* `HURTZ.EXE` DOjS was renamed to `HURTZ.EXE`. It will start `MAIN.JS` from the ZIP file `HURTZ.ZIP`, `ZipPrefix("pic.bmp")` will yield `HURTZ.ZIP=pic.bmp`.
-* `DOJS.EXE` The script was added to `JSBOOT.ZIP`. DOjS will start `MAIN.JS` from the ZIP file `JSBOOT.ZIP`, `ZipPrefix("pic.bmp")` will yield `JSBOOT.ZIP=pic.bmp`.
+  * `DOJS.EXE -r script.js` will start `script.js` from the HDD, `ZipPrefix("pic.bmp")` will yield `pic.bmp`.
+  * `DOJS.EXE -r data.zip=script.js` will start `script.js` from the ZIP file `data.zip`, `ZipPrefix("pic.bmp")` will yield `data.zip=pic.bmp`.
+  * `HURTZ.EXE` DOjS was renamed to `HURTZ.EXE`. It will start `MAIN.JS` from the ZIP file `HURTZ.ZIP`, `ZipPrefix("pic.bmp")` will yield `HURTZ.ZIP=pic.bmp`.
+  * `DOJS.EXE` The script was added to `JSBOOT.ZIP`. DOjS will start `MAIN.JS` from the ZIP file `JSBOOT.ZIP`, `ZipPrefix("pic.bmp")` will yield `JSBOOT.ZIP=pic.bmp`.
 
 ## API documentation
 You can find the full API doc in the [doc/html/](http://htmlpreview.github.io/?https://github.com/SuperIlu/DOjS/blob/master/doc/html/index.html) directory.
@@ -414,19 +438,19 @@ See API doc for details.
 ## Processing/p5js compatibility layer
 Add `Include('p5');` as first line to your script. After that you have (limited) [p5.js](https://p5js.org/reference/) compatibility.
 Things that don't work:
-* Anything 3D (objects, lights camera, etc)
-* Key release events work different for Allegro and are simulated for p5js.
-* Only simple vertices are supported.
-* no DOM
+  * Anything 3D (objects, lights camera, etc)
+  * Key release events work different for Allegro and are simulated for p5js.
+  * Only simple vertices are supported.
+  * no DOM
 
 ## Logfile
 All output via `Print()` and `Println()` is sent to the file `JSLOG.TXT`. You can use `Debug()` instead and output is only generated when you set the global variable `DEBUG=true`.
 
 ## Remote logging/debugging
 This feature allows you to debug a running script via IPX networking and a second machine. To use remote logging do the following:
-* Put both machines on the same network.
-* Run `DOJS.EXE -r JSBOOT\LOGVIEW.JS` on one machine.
-* Enable debugging by setting `DEBUG=true` and enable remote debugging by `REMOTE_DEBUG=true`. You can either modify `JSBOOT\FUNC.JS` or change the variables at the very beginning of your script.
+  * Put both machines on the same network.
+  * Run `DOJS.EXE -r JSBOOT\LOGVIEW.JS` on one machine.
+  * Enable debugging by setting `DEBUG=true` and enable remote debugging by `REMOTE_DEBUG=true`. You can either modify `JSBOOT\FUNC.JS` or change the variables at the very beginning of your script.
 
 This works fine with two instances of DOSBox as well.
 Please note that if the log messages are transmitted to fast the receiving instance of DOJS might skip some of these when displaying.

@@ -1,0 +1,121 @@
+Mesa 2.2 MSDOS Port Revision 0.9.1
+----------------------------------
+
+I`ve setup an ftp site to get the latest versions of mesa msdos
+its at 206.103.168.10 login mesa password mesa
+rememberr though those are likely to be beta/alpha versions,
+the one you get from brian paul`s homepage is the release version.
+
+I`ll stick dmake.exe (3.80) there too..
+
+Watcom C Build Instructions ----------------------------------------------------
+
+To compile with Watcom C 10.x do in each of
+mesa/src mesa/src-tk mesa/src-aux mesa/src-glu do this
+
+make sure you have a \etc\startup.mk, i`ve supplied mine in
+case you need it, watch you don`t overwrite your own.
+
+dmake -f makefile.dos
+
+Demos can be built with the mesados.bat use, edit the mesados.bat first
+and make any changes for your system !
+
+mesados <demo_name>
+
+eg. mesados wave
+
+will build wave.exe
+
+DJGPP Build Instructions -------------------------------------------------------
+
+To compile the libs, demos, and samples with DJGPP do:
+
+make -f makefile.dj
+
+
+VESA Instructions --------------------------------------------------------------
+
+To use the VESA support you *need* to get hold of Scitechs SuperVGA KIT library
+from http://wwww.scitechsoft.com, also make sure you remove the # from the
+#CFLAGS += UNIVBE in the src/makefile.dos line, I`m more than sure i can`t
+distribute the files required with DOS Mesa. Its a very good library and makes
+VESA intergration very easy.
+
+Currently the DJGPP version has no VESA support. I`m working on it, djgpp
+has some really bad tools, ld is very poor add a.out support back !.
+
+Some of the demos won`t build out of the box as they use near and far as
+variable names, which are reserved words on DOS compilers. Some other
+demos use unix style time() functions which some dos compilers don`t support.
+
+--------------------------------------------------------------------------------
+
+I use dmake because wmake, make and nmake all suck big time, dmake
+is excellent and is unix friendly. I`ll send the .exe to anyone
+who wants it, or make it available at my website..
+
+I use Denis Vadura`s Dmake 3.80PL
+
+If anyone hassles me enough i might rewrite the makefiles for wmake at
+least.
+
+A couple of the demos don`t work yet....
+
+--------------------------------------------------------------------------------
+
+Things I (or some kind soul) need to do..
+
+Change the key handler, i have a keyboard interrupt already made just
+needs integration. (the one in there is really poor and is temporary)
+
+The RGB mode is really a 256 colour mode, it allocates the first 256
+colours used. then tries to map them to others allocated later. Currently
+it isn`t that good, its difficult to make up a palette that will effectively
+work for all situations, its not really effective at the moment.
+
+General improvements.
+
+GLX support.
+
+Does anyone really want mode13 support ? Do i need to fix up the RGB
+mode of 320x200x256 ? email me at cwallace@dreamworks.com and nag me
+or any other wishlist stuff for modes.
+
+Better Glide support, thanks to brian bruning and gary mctaggart
+at 3dfx for the dual board and the support.
+
+Change Scitech SuperVGA KIT to MGL ( thanks to tom and kendall at scitech for
+sending me a copy )
+
+MsVC support.
+
+Figure out a way of guessing the resolution , I`m more than likely
+going to change the way it works, so that it first tries for 3DFX,
+then Vesa, then mode13.
+
+--------------------------------------------------------------------------------
+
+Long Live OpenGL(tm) and kudos to brian paul for Mesa.
+
+--------------------------------------------------------------------------------
+
+Revision History
+
+v0.0 10/30/96 Initial DOS 320x200x256 Using Mesa 1.2.8
+v0.1 11/05/96 Ported to Mesa 2.0
+v0.3 11/12/96 Ported to Mesa 2.1
+v0.4 11/12/96 Started to assemble for release.
+v0.5 11/28/96 Small changes for release.
+v0.6 Sun 12-08-1996 Added VESA support.
+v0.7 Sun 12-08-1996 Cleaned up, should be able to compile without Watcom.
+v0.8 Sun 12-28-1996 Built for DJGPP. ( time traveller )
+v0.9 Thu 01-09-1997 Added 3DFX Glide support.
+v0.9.1 Fri 02-28-1997 Integrated into 2.2.7 beta
+
+Charlie Wallace - Software Scientist, Dreamworks SKG Interactive
+--------------------------------------------------------------------------------
+http://www.geocities.com/~charlie_x                      cwallace@dreamworks.com
+														 charlie_x@geocities.com
+														 charlie__x@msn.com
+														 charlie@trespasser.com

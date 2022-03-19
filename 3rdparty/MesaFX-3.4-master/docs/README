@@ -1,0 +1,513 @@
+
+                                Mesa 3.4.2
+                         (stable release version)
+
+                     Copyright (C) 1995-2001  Brian Paul
+
+                              www.mesa3d.org
+
+
+Disclaimer
+==========
+
+Mesa is a 3-D graphics library with an API which is very similar to that
+of OpenGL*.  To the extent that Mesa utilizes the OpenGL command syntax
+or state machine, it is being used with authorization from Silicon Graphics,
+Inc.  However, the author makes no claim that Mesa is in any way a
+compatible replacement for OpenGL or associated with Silicon Graphics, Inc.
+Those who want a licensed implementation of OpenGL should contact a licensed
+vendor.
+
+While Mesa is not a licensed OpenGL implementation, it is currently
+being tested with the OpenGL conformance tests.  For the current
+conformance status see the CONFORM file included in the Mesa distribution.
+
+* OpenGL(R) is a registered trademark of Silicon Graphics, Inc.
+
+
+
+Author
+======
+
+Brian Paul
+brian@mesa3d.org
+
+
+
+Copyright Information
+=====================
+
+See the docs/COPYRIGHT file.
+
+
+
+Introduction
+============
+
+While Mesa uses the OpenGL API and mimics its semantics, it is
+important to understand that Mesa is not a real implementation of OpenGL
+since it is not licensed.  That said, Mesa is still a viable alternative
+to OpenGL.  Most OpenGL applications should run with Mesa without code
+changes.
+
+The first six years of Mesa development were done during my spare time
+from August 1993 to August 1999.  Now, much of the Mesa development
+work is done during my working hours with Precision Insight, Inc.
+
+The core library was originally written on an Amiga using the DCC compiler.
+Later, development was moved to an SGI workstation.  Current development
+is done on PC/Linux systems.
+
+Mesa works on most Unix workstations with ANSI C and X11.  There are also
+drivers for Amiga, Microsoft Windows, Macintosh, MS DOS, NeXT, BeOS and
+other systems.  Unix/X11 is still the best-supported platform.
+
+Since the OpenGL API is used, OpenGL documentation can serve as the
+documentation for Mesa's core functions.  Visit http://www.opengl.org/
+for extensive OpenGL information.
+
+The primary design goal of this library has been correctness.  Performance
+has been a secondary (but still very important!) priority.  At this point,
+most common rendering operations have been optimized a great deal.
+However, if you find an obscure code path that isn't as fast as you
+think it could be (like glDrawPixels with lookup tables and a crazy
+blend mode) send a note to the author; it might not be hard to improve
+the path.  Better yet, try optimizing that path yourself and send a patch.
+
+
+
+Getting the software
+====================
+
+Mesa can be downloaded from
+http://sourceforge.net/project/filelist.php?group_id=3 or from
+http://www.mesa3d.org/
+
+Since version 2.3, Mesa is distributed in two pieces:  main library code
+and demos.  If you're upgrading from a previous version of Mesa or you're not
+interested in the demos you can just download the core Mesa archive file.
+
+Mesa is available in at least three archive formats:
+
+1. GNU zip/tar
+
+	Download MesaLib-3.4.2.tar.gz and optionally MesaDemos-3.4.2.tar.gz
+	Unpack with:
+		gzcat MesaLib-3.4.2.tar.gz | tar xf -
+		gzcat MesaDemos-3.4.2.tar.gz | tar xf -
+	or
+		gunzip MesaLib-3.4.2.tar.gz ; tar xf MesaLib-3.4.2.tar
+		gunzip MesaDemos-3.4.2.tar.gz ; tar xf MesaLib-3.4.2.tar
+	or
+		tar zxf MesaLib-3.4.2.tar.gz
+		tar zxf MesaDemos-3.4.2.tar.gz
+
+	If you don't have gzcat try zcat instead.
+
+2. Unix compressed/tar
+
+	Download MesaLib-3.4.2.tar.Z and optionally MesaDemos-3.4.2.tar.Z
+	Unpack with:
+		zcat MesaLib-3.4.2.tar.Z | tar xf -
+		zcat MesaDemos-3.4.2.tar.Z | tar xf -
+
+3. ZIP format
+
+	Download MesaLib-3.4.2.zip and optionally MesaDemos-3.4.2.zip
+	Unpack with:
+		unzip MesaLib-3.4.2.zip
+		unzip MesaDemos-3.4.2.zip
+
+
+Note, there may be other package formats on the Mesa ftp/web site.
+
+
+After unpacking you'll have these files (and more):
+
+docs/README	- this file
+docs/README.*	- detailed information for specific OS/hardware systems
+docs/COPYRIGHT	- copyright info
+docs/VERSIONS	- version history
+docs/RELNOTES	- release notes for the new version
+docs/CONFORM	- results of conformance testing
+Makefile.X11	- "old" top-level Makefile for X11-based systems
+Make-config	- "old" system configurations used by the Makefiles
+bin/mklib.*	- shell scripts for making shared libraries for some systems
+include/	- client include files
+lib/		- client libraries, created during installation
+src/		- source code for core library
+src-glu/	- source code for utility library
+util/		- handly utility functions
+widgets-mesa/	- Mesa widgets for Xt/Motif
+widgets-sgi/	- SGI OpenGL widgets for Xt/Motif
+
+and if you downloaded and unpacked the demos:
+
+src-glut/	- source code for GLUT toolkit
+demos/		- GLUT demos
+xdemos/		- X11 and SVGA demo programs
+samples/	- sample OpenGL programs from SGI
+book/		- example programs from the OpenGL Programming Guide,
+		  converted to GLUT by Mark Kilgard, from GLUT distribution.
+images/		- image files
+3Dfx/		- 3Dfx demos and tests
+mtdemos/	- multi-threading demos
+
+
+
+GLUT
+====
+
+Mesa 2.5 and later includes Mark Kilgard's GLUT library (GL Utility Toolkit).
+GLUT is built automatically on systems which support it.
+
+The GLUT tests, demos, examples, etc are not included, just the main library.
+To obtain the latest complete release of GLUT please visit
+http://reality.sgi.com/employees/mjk_asd/glut3/glut3.html
+
+
+
+Compiling and Installation
+==========================
+
+See the INSTALL file for instructions.
+
+
+
+Using the Library
+=================
+
+Performance tips for software rendering:
+   1. Turn off smooth shading when you don't need it (glShadeModel)
+   2. Turn off depth buffering when you don't need it.
+   3. Turn off dithering when not needed.
+   4. Use double buffering as it's often faster than single buffering
+   5. Compile in the X Shared Memory extension option if it's supported
+      on your system by adding -DSHM to CFLAGS and -lXext to XLIBS for
+      your system in the Make-config file.
+   6. Recompile Mesa with more optimization if possible.
+   7. Try to maximize the amount of drawing done between glBegin/glEnd pairs.
+   8. Use the MESA_BACK_BUFFER variable to find best performance in double
+      buffered mode.  (X users only)
+   9. Optimized polygon rasterizers are employed when:
+         rendering into back buffer which is an XImage
+         RGB mode, not grayscale, not monochrome
+         depth buffering is GL_LESS, or disabled
+         flat or smooth shading
+         dithered or non-dithered
+         no other rasterization operations enabled (blending, stencil, etc)
+  10. Optimized line drawing is employed when:
+         rendering into back buffer which is an XImage
+         RGB mode, not grayscale, not monochrome
+         depth buffering is GL_LESS or disabled
+         flat shading
+         dithered or non-dithered
+         no other rasterization operations enabled (blending, stencil, etc)
+  11. Textured polygons are fastest when:
+         using a 3-component (RGB), 2-D texture
+         minification and magnification filters are GL_NEAREST
+         texture coordinate wrap modes for S and T are GL_REPEAT
+         GL_DECAL environment mode
+         glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST )
+         depth buffering is GL_LESS or disabled
+  12. Lighting is fastest when:
+         Two-sided lighting is disabled
+         GL_LIGHT_MODEL_LOCAL_VIEWER is false
+         GL_COLOR_MATERIAL is disabled
+         No spot lights are used (all GL_SPOT_CUTOFFs are 180.0)
+         No local lights are used (all position W's are 0.0)
+         All material and light coefficients are >= zero
+  13. XFree86 users:  if you want to use 24-bit color try starting your
+      X server in 32-bit per pixel mode for better performance.  That is,
+      start your X server with
+         startx -- -bpp 32
+      instead of
+         startx -- -bpp 24
+  14. Try disabling dithering with the MESA_NO_DITHER environment variable.
+      If this env var is defined Mesa will disable dithering and the
+      command glEnable(GL_DITHER) will be ignored.
+
+
+Debugging:
+   Normally Mesa records but does not notify the user of errors.  It is up
+   to the application to call glGetError to check for errors.  Mesa supports
+   an environment variable, MESA_DEBUG, to help with debugging.  If MESA_DEBUG
+   is defined, a message will be printed to stdout whenever an error occurs.
+
+   More extensive error checking is done when Mesa is compiled with the
+   DEBUG symbol defined.  You'll have to edit the Make-config file and
+   add -DDEBUG to the CFLAGS line for your system configuration.  You may
+   also want to replace any optimization flags with the -g flag so you can
+   use your debugger.  After you've edited Make-config type 'make clean'
+   before recompiling.
+
+   In your debugger you can set a breakpoint in gl_error() to trap Mesa
+   errors.
+
+   There is a display list printing/debugging facility.  See the end of
+   src/dlist.c for details.
+
+
+Fortran bindings:
+   Fortan bindings are no longer included with Mesa.  William F. Mitchell
+   (william.mitchell@nist.gov) has developed a new set of Mesa/OpenGL and
+   GLUT bindings for Fortran.  See http://math.nist.gov/f90gl for more
+   information.
+
+
+Off-screen rendering:
+   Mesa 1.2.4 introduced off-screen rendering, a facility for generating
+   3-D imagery without having to open a window on your display.  Mesa's
+   simple off-screen rendering interface is completely operating system
+   and window system independent so programs which use off-screen rendering
+   should be very portable.  This new feature effectively enables you to
+   use Mesa as an off-line, batch-oriented renderer.
+
+   The "OSMesa" API provides 3 functions for making off-screen renderings:
+   OSMesaCreateContext(), OSMesaMakeCurrent(), and OSMesaDestroyContext().
+   See the Mesa/include/GL/osmesa.h header for more information.  See the
+   demos/osdemo.c file for an example program.   There is no facility for
+   writing images to files.
+
+   If you want to generate large images (larger than 1280x1024) you'll
+   have to edit the src/config.h file to change MAX_WIDTH and MAX_HEIGHT
+   then recompile Mesa.  Image size should only be limited by available
+   memory.
+
+
+Profiling (may no longer work in Mesa 3.1 or later, sorry):
+   Mesa 1.2.6 introduced a simple profiling facility.  It counts and
+   measures the time spent in a number of important rendering operations
+   and prints the information in a report before your program exits.
+
+   By default, profiling is disabled.  To enable it, add -DPROFILE to
+   the appropriate CFLAGS entry in the Make-config file, then recompile
+   Mesa.  In general, you should only enable profiling during program
+   development to gain insight into Mesa's performance.  Mesa runs a bit
+   slower when profiling is enabled because it requires frequent polling
+   of the system clock.
+
+   The profiling report will be printed when glXDestroyContext is called
+   _if_ the MESA_PROFILE environment variable is set.  You must be sure
+   glXDestroyContext is called before exiting to get the profile report.
+   The report will be printed to stdout and includes:
+
+      glBegin/glEnd - number of glBegin/glEnd pairs called, total time,
+         and rate in pairs/second.
+      vertexes transformed - number of vertices transformed, lit, clip-
+         tested, fogged, and mapped to window coordinates, total time,
+         and rate in vertexes/second.
+      points rasterized - number of points drawn, time, and rate.
+      lines rasterized - number of lines drawn, time, and rate.
+      polygons rasterized - number of polygons drawn, time and rate.
+      overhead - time between glBegin/glEnd not accounted for by vertexes,
+         points, lines, and polygons.  This is time spent executing
+         glVertex, glNormal, glColor, etc, clipping, primitive assembly,
+         and user code between glBegin/glEnd.
+      glClear - number of glClears executed, total time and clears/second.
+      SwapBuffers - number of swaps executed, total time and swaps/second.
+
+   Note that the real point, line, and polygon rates should be computed by
+      adding in the vertex transformation and overhead time factors.
+
+
+Extensions:
+   Mesa supports quite a few OpenGL extensions.  The set of available
+   extensions depends on the device driver you're using.  Run the glinfo
+   program to learn which extensions are available on your computer.
+
+   There are a few Mesa-specific extensions:
+
+   GL_MESA_window_pos
+
+      This extension adds the glWindowPos*MESA() functions.  These functions
+      are convenient alternatives to glRasterPos*() because they set the
+      current raster position to a specific window coordinate, bypassing the
+      usual modelview, projection and viewport transformations.  This is
+      especially useful for setting the position for glDrawPixels() or
+      glBitmap() to a specific window coordinate.
+
+      See the docs/MESA_window_pos.spec file for details.
+
+   GL_MESA_resize_buffers
+
+      This extension adds the glResizeBuffersMESA() function.  When this
+      function is called, Mesa checks if the color buffer (window) has
+      been resized.  If it has, Mesa reallocates the ancillary (depth,
+      stencil, accum) buffers.
+
+      Normally, Mesa checks for window size changes whenever glViewport()
+      is called.  In some applications it may not be appropriate to call
+      glViewport() when the window is resized.  Such applications should
+      call glResizeBuffersMESA() instead so the ancillary buffers are
+      correctly updated.
+
+      See the docs/MESA_resize_buffers.spec file for more details.
+      This extension is new in version 2.2.
+
+
+Runtime Configuration File:
+   See the CONFIG file for information on how to setup a Mesa runtime
+   config file.
+
+
+Version 2.x features:
+   Version 2.x of Mesa implements the OpenGL 1.1 API with the following
+   new features.
+
+   Texture mapping:
+	glAreTexturesResident
+	glBindTexture
+	glCopyTexImage1D
+	glCopyTexImage2D
+	glCopyTexSubImage1D
+	glCopyTexSubImage2D
+	glDeleteTextures
+	glGenTextures
+	glIsTexture
+	glPrioritizeTextures
+	glTexSubImage1D
+	glTexSubImage2D
+
+   Vertex Arrays:
+	glArrayElement
+	glColorPointer
+	glDrawElements
+	glEdgeFlagPointer
+	glIndexPointer
+	glInterleavedArrays
+	glNormalPointer
+	glTexCoordPointer
+	glVertexPointer
+
+   Client state management:
+	glDisableClientState
+	glEnableClientState
+	glPopClientAttrib
+	glPushClientAttrib
+
+   Misc:
+	glGetPointer
+	glIndexub
+	glIndexubv
+	glPolygonOffset
+
+
+Version 3.x features:
+   Version 3.x of Mesa implements the OpenGL 1.2 API with the following
+   new features:
+
+   BGR, BGRA and packed pixel formats
+   New texture border clamp mode
+   glDrawRangeElements()
+   standard 3-D texturing
+   advanced MIPMAP control
+   separate specular color interpolation
+
+
+Summary of environment variables:
+   MESA_DEBUG - if defined, error messages are printed to stderr
+   MESA_NO_DITHER - disable dithering, overriding glEnable(GL_DITHER)
+   MESA_RGB_VISUAL - specifies the X visual and depth for RGB mode (X only)
+   MESA_CI_VISUAL - specifies the X visual and depth for CI mode (X only)
+   MESA_BACK_BUFFER - specifies how to implement the back color buffer (X only)
+   MESA_PRIVATE_CMAP - force aux/tk libraries to use private colormaps (X only)
+   MESA_GAMMA - gamma correction coefficients (X only)
+   MESA_PROFILE - enable reporting of performance measurements
+   MESA_XSYNC - enable synchronous X behavior (for X debugging only)
+
+
+
+Mailing List
+============
+
+Visit the Mesa web site at http://www.mesa3d.org to join the mailing
+lists.  There is a user's list and developer's list.
+
+
+
+Reporting Bugs
+==============
+
+If you think you've found a bug in Mesa:
+
+   1. Check if there's a new version of Mesa to download.
+
+   2. Check if the bug has already been reported in the Mesa bug
+      database at http://www.mesa3d.org
+
+   3. If you've found a new bug, submit it to the bug database.
+      Provide as much information as possible!  Check back on the
+      bug report from time to time to monitor its status.
+
+   4. Please provide small test programs when possible.
+
+
+The following people have made contributions to the Mesa project
+and may be able to help with specific problems.  Some of these
+email addresses may be way out of date, however.
+
+Area			Contact
+----------------------	-------------------------------------------
+GLU polygon tessellator	Gareth Hugues  gareth@precisioninsight
+GLU NURBS		Bogdan Sikorski  bogdan@cira.it
+Evaluators		Bernd Barsuhn  bernd@berlin.muc.de
+Xt/Motif widgets	Thorsten Ohl  ohl@crunch.ikp.physik.th-darmstadt.de
+			  and Jeroen van der Zijp  jvz@cyberia.cfdrc.com
+Fortran bindings	William Mitchell  william.mitchell@nist.gov
+Amiga driver		Stefan Zivkovic  d94sz@efd.lth.se
+Amiwin driver		Victor Ng-Thow-Hing  victorng@dgp.toronto.edu
+Macintosh driver	Miklos Fazekas  boga@augusta.elte.hu
+NeXT driver		Pascal Thibaudeau pthibaud@frbdx11.cribx1.u-bordeaux.fr
+OS/2 driver		Darren Abbott  abbott@hiwaay.net
+VMS support		Jouk Jansen  joukj@crys.chem.uva.nl
+Windows 95/NT driver	Theodore A. Jump  tjump@spgs.com
+MS-DOS driver		Charlie Wallace  cwallace@dreamworks.com
+BeOS driver		Tinic Uro  5uro@informatik.uni-hamburg.de
+GLX encoder/decoder	Steven Parker  sparker@taz.cs.utah.edu
+SciTech MGL driver	Kendall Bennett  KendallB@scitechsoft.com
+Cygnus Win32 support	No maintainer.  Any volunteers?
+S3 Virge driver		rkoduri@s3.com or pcgamedev@s3.com
+Allegro DJGPP driver	Bernhard Tschirren  bernie-t@geocities.com
+Direct3D driver		Leigh McRae  leigh@altsoftware.com
+GGI driver		Jon Taylor  jtaylor@creaf.com
+
+None of the people on this list are under any obligation to respond to bug
+reports.  However, they have been pretty helpful so far.
+
+
+
+Why is it the library called Mesa?
+==================================
+
+Why not?  More obvious names were considered but had to be rejected:
+FreeGL (too similar to the trademarked name OpenGL), Free3D (too similar
+to DEC's Open3D).  Also, I'm tired of acronyms.
+
+
+
+Contributors
+============
+
+Many people have contributed to Mesa.  I really appreciate the help!
+See the Mesa web site for a list of past and current contributors.
+
+If you want to help with Mesa, first join the Mesa developer's
+mailing list.  Then post a message explaining what you might like
+to help with.  The Mesa web page has a list of a few work items
+which you may consider.
+
+Anyone is welcome to contribute code to the Mesa project, provided you
+agree to the copyright terms of the relevant code.  See the COPYRIGHT
+file.
+
+If you're contribution code to the Mesa library itself:
+   1. Try to write clean code (uniform indentation, comments, meaningful
+      identifiers, etc).  It must be readable and maintainable!
+   2. Test your code.  On several occations I've incorporated code from
+      users which later turned out to have bugs.  Now, I'm pretty hesitant
+      to use code which doesn't look good.
+
+
+--------------------------------------------------------------------------
+$Id: README,v 3.28.2.4 2001/05/14 19:11:32 brianp Exp $

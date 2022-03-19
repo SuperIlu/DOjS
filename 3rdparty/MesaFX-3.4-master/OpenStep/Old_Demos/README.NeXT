@@ -1,0 +1,7 @@
+Although these old demo examples are intended for use with OpenStep
+they can also be made to work with NeXTStep by using the "Makefile.NeXT"
+makefile in this directory. This ranlibs the libraries and builds the
+examples using the generic file taken from Pascal Thibaudeau's original
+NeXT support in the "Old_NeXT" directory.
+
+-Pete French. (pete@ohm.york.ac.uk) 28/5/98

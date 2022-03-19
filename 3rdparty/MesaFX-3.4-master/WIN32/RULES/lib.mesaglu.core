@@ -1,0 +1,5 @@
+
+SRCALT1=.\$(MESAROOT)\src-glu
+
+SRCFILES = glu.c mipmap.c nurbs.c nurbscrv.c nurbssrf.c nurbsutl.c\
+        project.c quadric.c polytest.c tess.c tesselat.c

@@ -1,0 +1,40 @@
+
+!IF "$(STATIC_MESA)" == "0"
+!ERROR lib.$(LIBBASE) : This file require STATIC_MESA be set to 1.
+!ENDIF
+
+!IF "$(GLIDE2SDK)" == ""
+!ERROR lib.$(LIBBASE) : 'GLIDE2SDK' environment var not set, can't find Glide SDK
+!ENDIF
+
+LIBCOMMENTS=Requires Glide 2.x Runtime for 3Dfx Voodoo Graphics, Voodoo Rush, or Voodoo2.
+
+!INCLUDE .\rules\lib.mesa.core
+
+USE_CRTDLL=0
+STATIC_MESA=1
+
+SRCALT2 = .\$(MESAROOT)\src\FX
+SRCALT3 = .\$(MESAROOT)\src\OSmesa
+
+CPPOPTS = $(CPPOPTS) /DFX /DFX_V2 /DMESA_FX_DDRAW /DFX_SILENT /I$(GLIDE2SDK)\src\include
+EXELIBS = $(GLIDE2SDK)\src\lib\win32\glide2x.lib
+
+SRCFILES = $(MESA_CORE)\
+   fxapi.c fxcva.c fxdd.c fxddspan.c fxddtex.c fxrender.c fxsetup.c fxspan.c fxtexman.c\
+   fxtrifuncs.c fxvsetup.c fxwgl.c\
+	OSmesa.c
+
+!IF "$(NASM)" != ""
+
+SRCALT4 = .\$(MESAROOT)\src\X86
+
+SRCFILES = $(SRCFILES) x86.c x86a.S common_x86.c common_x86asm.S mmx_blend.S 3dnow.c 3dnow_norm_raw.S\
+	3dnow_xform_masked1.S 3dnow_xform_masked2.S 3dnow_xform_masked3.S 3dnow_xform_masked4.S\
+	3dnow_xform_raw1.S 3dnow_xform_raw2.S 3dnow_xform_raw3.S 3dnow_xform_raw4.S\
+
+!ENDIF
+
+OBJDIR_R = $(MESAROOT)\lib\FX
+
+# derecated ? -- fxpoints.c

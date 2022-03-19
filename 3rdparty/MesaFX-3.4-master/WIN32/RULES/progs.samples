@@ -1,0 +1,40 @@
+
+!IF "$(STATIC_MESA)" == "1"
+EXELIBS     = mesaglut.lib mesaglu.lib mesagl.lib
+USE_CRTDLL  = 0
+!ELSEIF "$(USE_SYSGL)" == "2"
+EXELIBS     = glut.lib glu.lib opengl.lib
+RUNTIMELIBS = glut.dll
+!ELSEIF "$(USE_SYSGL)" == "1"
+EXELIBS     = glut32.lib glu32.lib opengl32.lib
+RUNTIMELIBS = glut32.dll
+!ELSE
+EXELIBS     = glut32$(LIBSFX).lib glu32$(LIBSFX).lib opengl32$(LIBSFX).lib
+RUNTIMELIBS = glut32$(LIBSFX).dll glu32$(LIBSFX).dll opengl32$(LIBSFX).dll
+!ENDIF
+
+!IF ("$(USE_SYSGL)" == "0") && ("$(DEBUG)" == "1")
+EXELIBS=$(EXELIBS:.lib=d.lib)
+!IF "$(RUNTIMELIBS)" != ""
+RUNTIMELIBS=$(RUNTIMELIBS:.dll=d.dll)
+!ENDIF
+!ENDIF
+
+!IF "$(STATIC_MESA)" == "1"
+EXELIBS=$(EXELIBS) winmm.lib
+!ENDIF
+
+SRCALT1 = .\$(MESAROOT)\samples
+
+SRCFILES = accum.c bitmap1.c bitmap2.c copy.c\
+	cursor.c depth.c eval.c fog.c font.c line.c logo.c nurb.c\
+	olympic.c overlay.c point.c prim.c quad.c rgbtoppm.c select.c\
+   shape.c sphere.c star.c stencil.c stretch.c texture.c tri.c wave.c
+
+!IF "$(USE_SYSGL)" == "0"
+SRCFILES = $(SRCFILES) blendeq.c blendxor.c
+!ENDIF
+
+# The following items have not been ported to the environment...
+
+NAUGHTY = oglinfo.c

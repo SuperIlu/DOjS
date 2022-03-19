@@ -1,0 +1,439 @@
+# DO NOT DELETE
+
+aatriangle.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h
+aatriangle.o: aatriangle.h types.h config.h fixed.h glapitable.h glthread.h
+aatriangle.o: macros.h matrix.h vb.h vector.h dd.h span.h aatritemp.h
+accum.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h accum.h types.h
+accum.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+accum.o: vector.h dd.h context.h glapi.h mem.h masking.h span.h state.h
+alpha.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h alpha.h types.h
+alpha.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+alpha.o: vector.h dd.h context.h glapi.h mmath.h
+alphabuf.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h alphabuf.h
+alphabuf.o: types.h config.h fixed.h glapitable.h glthread.h macros.h
+alphabuf.o: matrix.h vb.h vector.h dd.h context.h glapi.h mem.h
+attrib.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h accum.h types.h
+attrib.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+attrib.o: vector.h dd.h alpha.h attrib.h blend.h buffers.h clip.h context.h
+attrib.o: glapi.h depth.h enable.h enums.h fog.h hint.h light.h lines.h
+attrib.o: logic.h masking.h mem.h points.h polygon.h scissor.h simple_list.h
+attrib.o: stencil.h texstate.h
+bbox.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h bbox.h types.h
+bbox.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+bbox.o: vector.h dd.h xform.h
+bitmap.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h bitmap.h
+bitmap.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+bitmap.o: vb.h vector.h dd.h context.h glapi.h feedback.h image.h pb.h
+bitmap.o: pixel.h state.h vbrender.h
+blend.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h alphabuf.h
+blend.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+blend.o: vb.h vector.h dd.h blend.h context.h glapi.h enums.h pb.h span.h
+buffers.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h accum.h
+buffers.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+buffers.o: vb.h vector.h dd.h alphabuf.h buffers.h context.h glapi.h depth.h
+buffers.o: enums.h masking.h mem.h stencil.h state.h
+clip.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h clip.h types.h
+clip.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+clip.o: vector.h dd.h context.h glapi.h mmath.h xform.h interp_tmp.h
+clip.o: clip_funcs.h general_clip.h
+colortab.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h colortab.h
+colortab.o: types.h config.h fixed.h glapitable.h glthread.h macros.h
+colortab.o: matrix.h vb.h vector.h dd.h context.h glapi.h image.h mem.h
+colortab.o: mmath.h span.h
+config.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h config.h
+config.o: enums.h extensions.h types.h fixed.h glapitable.h glthread.h
+config.o: macros.h matrix.h vb.h vector.h dd.h hint.h simple_list.h mem.h
+context.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h accum.h
+context.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+context.o: vb.h vector.h dd.h alphabuf.h clip.h colortab.h context.h glapi.h
+context.o: cva.h depth.h dlist.h eval.h enums.h extensions.h fog.h get.h
+context.o: glapinoop.h hash.h light.h mem.h mmath.h pb.h pipeline.h shade.h
+context.o: simple_list.h stencil.h stages.h state.h translate.h teximage.h
+context.o: texobj.h texstate.h texture.h varray.h vbcull.h vbrender.h
+context.o: vbxform.h vertices.h xform.h
+copypix.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+copypix.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+copypix.o: matrix.h vb.h vector.h dd.h copypix.h depth.h feedback.h imaging.h
+copypix.o: mem.h mmath.h pixel.h pixeltex.h span.h state.h stencil.h
+copypix.o: texture.h zoom.h
+cva.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h types.h config.h
+cva.o: fixed.h glapitable.h glthread.h macros.h matrix.h vb.h vector.h dd.h
+cva.o: cva.h context.h glapi.h mem.h pipeline.h varray.h vbcull.h vbrender.h
+cva.o: vbxform.h
+debug_xform.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+debug_xform.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h
+debug_xform.o: macros.h matrix.h vb.h vector.h dd.h mem.h xform.h
+debug_xform.o: debug_xform.h
+depth.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+depth.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+depth.o: matrix.h vb.h vector.h dd.h enums.h depth.h mem.h pb.h
+dispatch.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h glapi.h
+dispatch.o: glapitable.h glapitemp.h
+dlist.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h accum.h types.h
+dlist.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+dlist.o: vector.h dd.h attrib.h bitmap.h bbox.h blend.h buffers.h clip.h
+dlist.o: colortab.h context.h glapi.h copypix.h cva.h depth.h enable.h
+dlist.o: enums.h eval.h extensions.h feedback.h get.h hash.h image.h
+dlist.o: imaging.h light.h lines.h dlist.h mem.h pipeline.h pixel.h
+dlist.o: pixeltex.h points.h polygon.h readpix.h rect.h state.h texobj.h
+dlist.o: teximage.h texstate.h varray.h vbfill.h vbxform.h xform.h
+drawpix.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+drawpix.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+drawpix.o: matrix.h vb.h vector.h dd.h drawpix.h feedback.h image.h mem.h
+drawpix.o: mmath.h pixel.h pixeltex.h span.h state.h stencil.h texture.h
+drawpix.o: zoom.h
+enable.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+enable.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+enable.o: matrix.h vb.h vector.h dd.h enable.h light.h mmath.h simple_list.h
+enable.o: vbfill.h xform.h enums.h
+enums.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h enums.h mem.h
+eval.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h glapi.h
+eval.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+eval.o: vb.h vector.h dd.h eval.h mem.h mmath.h vbcull.h vbfill.h vbxform.h
+extensions.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+extensions.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h
+extensions.o: macros.h matrix.h vb.h vector.h dd.h extensions.h mem.h
+extensions.o: simple_list.h
+feedback.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+feedback.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+feedback.o: matrix.h vb.h vector.h dd.h enums.h feedback.h mmath.h triangle.h
+fog.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h glapi.h
+fog.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+fog.o: vb.h vector.h dd.h fog.h mmath.h xform.h fog_tmp.h
+get.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h glapi.h
+get.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+get.o: vb.h vector.h dd.h enable.h enums.h extensions.h get.h mmath.h
+glapi.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h glapi.h
+glapi.o: glapinoop.h glapioffsets.h glapitable.h glthread.h
+glapinoop.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h glapi.h
+glapinoop.o: glapinoop.h glapitable.h glapitemp.h
+glthread.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h glthread.h
+hash.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h glthread.h hash.h
+hash.o: mem.h
+hint.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h enums.h context.h
+hint.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+hint.o: matrix.h vb.h vector.h dd.h hint.h state.h
+image.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+image.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+image.o: matrix.h vb.h vector.h dd.h image.h imaging.h mem.h mmath.h pixel.h
+imaging.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+imaging.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+imaging.o: matrix.h vb.h vector.h dd.h image.h imaging.h mmath.h span.h
+light.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+light.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+light.o: matrix.h vb.h vector.h dd.h enums.h light.h mem.h mmath.h
+light.o: simple_list.h xform.h
+lines.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+lines.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+lines.o: matrix.h vb.h vector.h dd.h depth.h feedback.h lines.h mmath.h pb.h
+lines.o: texstate.h linetemp.h lnaatemp.h
+logic.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h alphabuf.h
+logic.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+logic.o: vb.h vector.h dd.h context.h glapi.h logic.h pb.h span.h
+masking.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h alphabuf.h
+masking.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+masking.o: vb.h vector.h dd.h context.h glapi.h enums.h masking.h pb.h span.h
+matrix.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h buffers.h
+matrix.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+matrix.o: vb.h vector.h dd.h context.h glapi.h enums.h mem.h mmath.h
+mem.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h macros.h mem.h
+mmath.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h mmath.h
+pb.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h alpha.h types.h
+pb.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+pb.o: vector.h dd.h alphabuf.h blend.h depth.h fog.h logic.h mem.h masking.h
+pb.o: pb.h scissor.h stencil.h texture.h
+pipeline.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h bbox.h
+pipeline.o: types.h config.h fixed.h glapitable.h glthread.h macros.h
+pipeline.o: matrix.h vb.h vector.h dd.h clip.h context.h glapi.h cva.h fog.h
+pipeline.o: light.h mem.h mmath.h pipeline.h shade.h stages.h state.h
+pipeline.o: translate.h vbcull.h vbindirect.h vbrender.h vbxform.h xform.h
+pixel.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+pixel.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+pixel.o: matrix.h vb.h vector.h dd.h mem.h pixel.h
+pixeltex.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+pixeltex.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+pixeltex.o: matrix.h vb.h vector.h dd.h pixeltex.h
+points.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+points.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+points.o: matrix.h vb.h vector.h dd.h feedback.h mmath.h pb.h points.h span.h
+points.o: texstate.h
+polygon.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+polygon.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+polygon.o: matrix.h vb.h vector.h dd.h image.h enums.h mem.h polygon.h
+quads.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h quads.h types.h
+quads.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+quads.o: vector.h dd.h
+rastpos.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h clip.h types.h
+rastpos.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+rastpos.o: vector.h dd.h context.h glapi.h feedback.h light.h mmath.h
+rastpos.o: rastpos.h shade.h state.h xform.h
+readpix.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h alphabuf.h
+readpix.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+readpix.o: vb.h vector.h dd.h context.h glapi.h depth.h feedback.h image.h
+readpix.o: mem.h pixel.h readpix.h span.h state.h stencil.h
+rect.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h glapi.h
+rect.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+rect.o: vb.h vector.h dd.h rect.h varray.h vbfill.h
+scissor.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+scissor.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+scissor.o: matrix.h vb.h vector.h dd.h scissor.h
+shade.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h light.h types.h
+shade.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+shade.o: vector.h dd.h mmath.h pipeline.h shade.h simple_list.h shade_tmp.h
+span.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h alpha.h types.h
+span.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+span.o: vector.h dd.h alphabuf.h blend.h depth.h fog.h logic.h masking.h
+span.o: mem.h scissor.h span.h stencil.h texture.h
+stages.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h bbox.h types.h
+stages.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+stages.o: vector.h dd.h clip.h context.h glapi.h cva.h fog.h light.h mmath.h
+stages.o: pipeline.h shade.h stages.h translate.h vbcull.h vbindirect.h
+stages.o: vbrender.h vbxform.h xform.h
+state.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h accum.h types.h
+state.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+state.o: vector.h dd.h alpha.h attrib.h bitmap.h blend.h buffers.h clip.h
+state.o: colortab.h context.h glapi.h copypix.h cva.h depth.h dlist.h
+state.o: drawpix.h enable.h eval.h get.h feedback.h fog.h hint.h imaging.h
+state.o: light.h lines.h logic.h masking.h mmath.h pipeline.h pixel.h
+state.o: pixeltex.h points.h polygon.h quads.h rastpos.h readpix.h rect.h
+state.o: scissor.h shade.h state.h stencil.h teximage.h texobj.h texstate.h
+state.o: texture.h triangle.h varray.h vbfill.h vbrender.h winpos.h
+stencil.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+stencil.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+stencil.o: matrix.h vb.h vector.h dd.h depth.h mem.h pb.h stencil.h enable.h
+texformat.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+texformat.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h
+texformat.o: macros.h matrix.h vb.h vector.h dd.h image.h mem.h mmath.h
+texformat.o: span.h texformat.h teximage.h texstate.h
+teximage.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+teximage.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+teximage.o: matrix.h vb.h vector.h dd.h image.h mem.h mmath.h span.h
+teximage.o: texformat.h teximage.h texstate.h
+texobj.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h colortab.h
+texobj.o: types.h config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+texobj.o: vb.h vector.h dd.h context.h glapi.h enums.h hash.h mem.h
+texobj.o: teximage.h texstate.h texobj.h
+texstate.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+texstate.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+texstate.o: matrix.h vb.h vector.h dd.h enums.h extensions.h texobj.h
+texstate.o: teximage.h texstate.h texture.h xform.h
+texture.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+texture.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+texture.o: matrix.h vb.h vector.h dd.h mmath.h mem.h pb.h teximage.h
+texture.o: texture.h xform.h texgen_tmp.h
+texutil.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+texutil.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+texutil.o: matrix.h vb.h vector.h dd.h enums.h image.h mem.h texformat.h
+texutil.o: texutil.h texutil_tmp.h
+translate.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h mem.h
+translate.o: mmath.h translate.h types.h config.h fixed.h glapitable.h
+translate.o: glthread.h macros.h matrix.h vb.h vector.h dd.h trans_tmp.h
+triangle.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h aatriangle.h
+triangle.o: types.h config.h fixed.h glapitable.h glthread.h macros.h
+triangle.o: matrix.h vb.h vector.h dd.h context.h glapi.h depth.h feedback.h
+triangle.o: mem.h mmath.h span.h teximage.h texstate.h triangle.h tritemp.h
+varray.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+varray.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+varray.o: matrix.h vb.h vector.h dd.h cva.h dlist.h enable.h enums.h hash.h
+varray.o: light.h mem.h mmath.h pipeline.h state.h texstate.h translate.h
+varray.o: varray.h vbfill.h vbrender.h vbindirect.h vbxform.h xform.h
+vb.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h mem.h types.h
+vb.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+vb.o: vector.h dd.h vbxform.h xform.h
+vbcull.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+vbcull.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+vbcull.o: matrix.h vb.h vector.h dd.h mem.h vbcull.h vbrender.h xform.h
+vbcull.o: cull_tmp.h
+vbfill.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+vbfill.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+vbfill.o: matrix.h vb.h vector.h dd.h enums.h light.h mmath.h state.h
+vbfill.o: varray.h vbcull.h vbfill.h vbrender.h vbxform.h xform.h
+vbindirect.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h pb.h
+vbindirect.o: types.h config.h fixed.h glapitable.h glthread.h macros.h
+vbindirect.o: matrix.h vb.h vector.h dd.h pipeline.h stages.h vbcull.h
+vbindirect.o: vbindirect.h vbrender.h
+vbrender.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h clip.h
+vbrender.o: types.h config.h fixed.h glapitable.h glthread.h macros.h
+vbrender.o: matrix.h vb.h vector.h dd.h context.h glapi.h light.h lines.h
+vbrender.o: pb.h points.h pipeline.h stages.h vbcull.h vbrender.h
+vbrender.o: vbindirect.h xform.h render_tmp.h
+vbxform.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+vbxform.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+vbxform.o: matrix.h vb.h vector.h dd.h cva.h clip.h eval.h enums.h dlist.h
+vbxform.o: fog.h light.h mem.h mmath.h pipeline.h shade.h state.h texture.h
+vbxform.o: varray.h vbcull.h vbfill.h vbrender.h vbxform.h xform.h
+vector.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h config.h
+vector.o: macros.h mem.h vector.h
+vertices.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h types.h
+vertices.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+vertices.o: vector.h dd.h vertices.h
+winpos.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+winpos.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+winpos.o: matrix.h vb.h vector.h dd.h feedback.h mmath.h rastpos.h winpos.h
+xform.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+xform.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+xform.o: matrix.h vb.h vector.h dd.h mmath.h xform.h xform_tmp.h clip_tmp.h
+xform.o: norm_tmp.h dotprod_tmp.h copy_tmp.h
+zoom.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h macros.h span.h
+zoom.o: types.h config.h fixed.h glapitable.h glthread.h matrix.h vb.h
+zoom.o: vector.h dd.h stencil.h zoom.h
+X86/x86.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+X86/x86.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+X86/x86.o: matrix.h vb.h vector.h dd.h vertices.h xform.h X86/x86.h
+X86/common_x86.o: context.h glapi.h ../include/GL/gl.h ../include/GL/glext.h
+X86/common_x86.o: types.h glheader.h config.h fixed.h glapitable.h glthread.h
+X86/common_x86.o: macros.h matrix.h vb.h vector.h dd.h X86/common_x86_asm.h
+X86/common_x86.o: X86/common_x86_features.h
+X86/3dnow.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+X86/3dnow.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h
+X86/3dnow.o: macros.h matrix.h vb.h vector.h dd.h shade.h vertices.h xform.h
+X86/3dnow.o: X86/3dnow.h
+X86/katmai.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h context.h
+X86/katmai.o: glapi.h types.h config.h fixed.h glapitable.h glthread.h
+X86/katmai.o: macros.h matrix.h vb.h vector.h dd.h vertices.h xform.h
+X86/katmai.o: X86/katmai.h
+X/glxapi.o: glapi.h ../include/GL/gl.h ../include/GL/glext.h X/glxapi.h
+X/glxapi.o: ../include/GL/glx.h
+X/fakeglx.o: X/glxheader.h glheader.h ../include/GL/gl.h
+X/fakeglx.o: ../include/GL/glext.h X/glxapi.h ../include/GL/glx.h
+X/fakeglx.o: ../include/GL/xmesa.h ../include/GL/xmesa_x.h context.h glapi.h
+X/fakeglx.o: types.h config.h fixed.h glapitable.h glthread.h macros.h
+X/fakeglx.o: matrix.h vb.h vector.h dd.h mmath.h X/xfonts.h X/xmesaP.h
+X/fakeglx.o: ../include/GL/fxmesa.h FX/fxdrv.h mem.h texture.h xform.h clip.h
+X/fakeglx.o: vbrender.h FX/fxglidew.h
+X/xfonts.o: ../include/GL/gl.h ../include/GL/glext.h ../include/GL/glx.h
+X/xfonts.o: context.h glapi.h types.h glheader.h config.h fixed.h
+X/xfonts.o: glapitable.h glthread.h macros.h matrix.h vb.h vector.h dd.h
+X/xfonts.o: mem.h X/xfonts.h
+X/xmesa1.o: X/glxheader.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+X/xmesa1.o: ../include/GL/xmesa.h ../include/GL/xmesa_x.h X/xmesaP.h types.h
+X/xmesa1.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+X/xmesa1.o: vector.h dd.h ../include/GL/fxmesa.h FX/fxdrv.h context.h glapi.h
+X/xmesa1.o: mem.h texture.h xform.h clip.h vbrender.h FX/fxglidew.h
+X/xmesa1.o: extensions.h
+X/xmesa2.o: X/glxheader.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+X/xmesa2.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+X/xmesa2.o: glthread.h macros.h matrix.h vb.h vector.h dd.h drawpix.h mem.h
+X/xmesa2.o: state.h depth.h X/xmesaP.h ../include/GL/xmesa.h
+X/xmesa2.o: ../include/GL/xmesa_x.h ../include/GL/fxmesa.h FX/fxdrv.h
+X/xmesa2.o: texture.h xform.h clip.h vbrender.h FX/fxglidew.h extensions.h
+X/xmesa3.o: X/glxheader.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+X/xmesa3.o: depth.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+X/xmesa3.o: matrix.h vb.h vector.h dd.h X/xmesaP.h ../include/GL/xmesa.h
+X/xmesa3.o: ../include/GL/xmesa_x.h ../include/GL/fxmesa.h FX/fxdrv.h
+X/xmesa3.o: context.h glapi.h mem.h texture.h xform.h clip.h vbrender.h
+X/xmesa3.o: FX/fxglidew.h linetemp.h
+X/xmesa4.o: X/glxheader.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+X/xmesa4.o: depth.h types.h config.h fixed.h glapitable.h glthread.h macros.h
+X/xmesa4.o: matrix.h vb.h vector.h dd.h X/xmesaP.h ../include/GL/xmesa.h
+X/xmesa4.o: ../include/GL/xmesa_x.h ../include/GL/fxmesa.h FX/fxdrv.h
+X/xmesa4.o: context.h glapi.h mem.h texture.h xform.h clip.h vbrender.h
+X/xmesa4.o: FX/fxglidew.h tritemp.h
+OSmesa/osmesa.o: glheader.h ../include/GL/gl.h ../include/GL/glext.h
+OSmesa/osmesa.o: ../include/GL/osmesa.h context.h glapi.h types.h config.h
+OSmesa/osmesa.o: fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+OSmesa/osmesa.o: vector.h dd.h depth.h mem.h extensions.h linetemp.h
+OSmesa/osmesa.o: tritemp.h
+SVGA/svgamesa.o: ../include/GL/svgamesa.h ../include/GL/gl.h
+SVGA/svgamesa.o: ../include/GL/glext.h context.h glapi.h types.h glheader.h
+SVGA/svgamesa.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+SVGA/svgamesa.o: vb.h vector.h dd.h SVGA/svgapix.h SVGA/svgamesa8.h
+SVGA/svgamesa.o: SVGA/svgamesa15.h SVGA/svgamesa16.h SVGA/svgamesa24.h
+SVGA/svgamesa.o: SVGA/svgamesa32.h
+SVGA/svgamesa8.o: SVGA/svgapix.h ../include/GL/gl.h ../include/GL/glext.h
+SVGA/svgamesa8.o: ../include/GL/svgamesa.h context.h glapi.h types.h
+SVGA/svgamesa8.o: glheader.h config.h fixed.h glapitable.h glthread.h
+SVGA/svgamesa8.o: macros.h matrix.h vb.h vector.h dd.h SVGA/svgamesa8.h
+SVGA/svgamesa15.o: SVGA/svgapix.h ../include/GL/gl.h ../include/GL/glext.h
+SVGA/svgamesa15.o: ../include/GL/svgamesa.h context.h glapi.h types.h
+SVGA/svgamesa15.o: glheader.h config.h fixed.h glapitable.h glthread.h
+SVGA/svgamesa15.o: macros.h matrix.h vb.h vector.h dd.h SVGA/svgamesa15.h
+SVGA/svgamesa16.o: SVGA/svgapix.h ../include/GL/gl.h ../include/GL/glext.h
+SVGA/svgamesa16.o: ../include/GL/svgamesa.h context.h glapi.h types.h
+SVGA/svgamesa16.o: glheader.h config.h fixed.h glapitable.h glthread.h
+SVGA/svgamesa16.o: macros.h matrix.h vb.h vector.h dd.h SVGA/svgamesa16.h
+SVGA/svgamesa24.o: SVGA/svgapix.h ../include/GL/gl.h ../include/GL/glext.h
+SVGA/svgamesa24.o: ../include/GL/svgamesa.h context.h glapi.h types.h
+SVGA/svgamesa24.o: glheader.h config.h fixed.h glapitable.h glthread.h
+SVGA/svgamesa24.o: macros.h matrix.h vb.h vector.h dd.h SVGA/svgamesa24.h
+SVGA/svgamesa32.o: SVGA/svgapix.h ../include/GL/gl.h ../include/GL/glext.h
+SVGA/svgamesa32.o: ../include/GL/svgamesa.h context.h glapi.h types.h
+SVGA/svgamesa32.o: glheader.h config.h fixed.h glapitable.h glthread.h
+SVGA/svgamesa32.o: macros.h matrix.h vb.h vector.h dd.h SVGA/svgamesa32.h
+FX/fxapi.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxapi.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxapi.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h texture.h
+FX/fxapi.o: xform.h clip.h vbrender.h ../include/GL/fxmesa.h FX/fxglidew.h
+FX/fxclip.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxclip.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxclip.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h texture.h
+FX/fxclip.o: xform.h clip.h vbrender.h ../include/GL/fxmesa.h FX/fxglidew.h
+FX/fxclip.o: mmath.h FX/fxcliptmp.h
+FX/fxcva.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxcva.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxcva.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h texture.h
+FX/fxcva.o: xform.h clip.h vbrender.h ../include/GL/fxmesa.h FX/fxglidew.h
+FX/fxcva.o: mmath.h vbindirect.h pb.h FX/fxvsetup.h pipeline.h stages.h
+FX/fxcva.o: FX/fxcvatmp.h
+FX/fxdd.o: image.h types.h glheader.h ../include/GL/gl.h
+FX/fxdd.o: ../include/GL/glext.h config.h fixed.h glapitable.h glthread.h
+FX/fxdd.o: macros.h matrix.h vb.h vector.h dd.h FX/fxdrv.h context.h glapi.h
+FX/fxdd.o: mem.h texture.h xform.h clip.h vbrender.h ../include/GL/fxmesa.h
+FX/fxdd.o: FX/fxglidew.h enums.h extensions.h pb.h
+FX/fxddspan.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxddspan.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxddspan.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h
+FX/fxddspan.o: texture.h xform.h clip.h vbrender.h ../include/GL/fxmesa.h
+FX/fxddspan.o: FX/fxglidew.h
+FX/fxddtex.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxddtex.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxddtex.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h texture.h
+FX/fxddtex.o: xform.h clip.h vbrender.h ../include/GL/fxmesa.h FX/fxglidew.h
+FX/fxddtex.o: image.h texutil.h texformat.h
+FX/fxfastpath.o: types.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxfastpath.o: config.h fixed.h glapitable.h glthread.h macros.h matrix.h
+FX/fxfastpath.o: vb.h vector.h dd.h cva.h mmath.h FX/fxdrv.h context.h
+FX/fxfastpath.o: glapi.h mem.h texture.h xform.h clip.h vbrender.h
+FX/fxfastpath.o: ../include/GL/fxmesa.h FX/fxglidew.h vertices.h
+FX/fxfastpath.o: X86/common_x86_asm.h X86/common_x86_features.h
+FX/fxfastpath.o: FX/fxfasttmp.h render_tmp.h
+FX/fxpipeline.o: FX/fxdrv.h glheader.h ../include/GL/gl.h
+FX/fxpipeline.o: ../include/GL/glext.h context.h glapi.h types.h config.h
+FX/fxpipeline.o: fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+FX/fxpipeline.o: vector.h dd.h mem.h texture.h xform.h clip.h vbrender.h
+FX/fxpipeline.o: ../include/GL/fxmesa.h FX/fxglidew.h vbindirect.h
+FX/fxrender.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxrender.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxrender.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h
+FX/fxrender.o: texture.h xform.h clip.h vbrender.h ../include/GL/fxmesa.h
+FX/fxrender.o: FX/fxglidew.h vbcull.h render_tmp.h
+FX/fxsanity.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxsanity.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxsanity.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h
+FX/fxsanity.o: texture.h xform.h clip.h vbrender.h ../include/GL/fxmesa.h
+FX/fxsanity.o: FX/fxglidew.h
+FX/fxsetup.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxsetup.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxsetup.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h texture.h
+FX/fxsetup.o: xform.h clip.h vbrender.h ../include/GL/fxmesa.h FX/fxglidew.h
+FX/fxsetup.o: enums.h
+FX/fxtexman.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxtexman.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxtexman.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h
+FX/fxtexman.o: texture.h xform.h clip.h vbrender.h ../include/GL/fxmesa.h
+FX/fxtexman.o: FX/fxglidew.h
+FX/fxtrifuncs.o: FX/fxdrv.h glheader.h ../include/GL/gl.h
+FX/fxtrifuncs.o: ../include/GL/glext.h context.h glapi.h types.h config.h
+FX/fxtrifuncs.o: fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+FX/fxtrifuncs.o: vector.h dd.h mem.h texture.h xform.h clip.h vbrender.h
+FX/fxtrifuncs.o: ../include/GL/fxmesa.h FX/fxglidew.h mmath.h FX/fxtritmp.h
+FX/fxvsetup.o: FX/fxdrv.h glheader.h ../include/GL/gl.h ../include/GL/glext.h
+FX/fxvsetup.o: context.h glapi.h types.h config.h fixed.h glapitable.h
+FX/fxvsetup.o: glthread.h macros.h matrix.h vb.h vector.h dd.h mem.h
+FX/fxvsetup.o: texture.h xform.h clip.h vbrender.h ../include/GL/fxmesa.h
+FX/fxvsetup.o: FX/fxglidew.h mmath.h pipeline.h FX/fxvsetup.h FX/fxvs_tmp.h
+FX/fxglidew.o: FX/fxglidew.h FX/fxdrv.h glheader.h ../include/GL/gl.h
+FX/fxglidew.o: ../include/GL/glext.h context.h glapi.h types.h config.h
+FX/fxglidew.o: fixed.h glapitable.h glthread.h macros.h matrix.h vb.h
+FX/fxglidew.o: vector.h dd.h mem.h texture.h xform.h clip.h vbrender.h
+FX/fxglidew.o: ../include/GL/fxmesa.h

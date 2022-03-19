@@ -7,6 +7,7 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <dpmi.h>
+#include <glide.h>
 #include <go32.h>
 #include <io.h>
 #include <math.h>
@@ -30,6 +31,7 @@
 #include "intarray.h"
 #include "util.h"
 #include "zipfile.h"
+#include "bitmap.h"
 
 // symbols without include file from libgcc
 extern BOOL _watt_do_exit;
@@ -95,6 +97,7 @@ utimes
 vfprintf
 vsnprintf
 write
+exit
 
 // time
 clock
@@ -133,6 +136,7 @@ strstr
 strtol
 strtoll
 strtoul
+stpcpy
 
 // memory/system
 abort
@@ -156,6 +160,10 @@ pow
 exp
 ldexp
 floor
+tan
+sqrt
+cos
+sin
 
 // gcc/djgpp/lowlevel
 __divdi3
@@ -318,6 +326,8 @@ IntArray_destroy
 IntArray_fromStruct
 IntArray_push
 
+Bitmap_fromRGBA
+
 // watt32
 _watt_do_exit
 accept
@@ -334,6 +344,7 @@ geteuid
 getgid
 gethostbyname
 getnameinfo
+getpeername
 getpid
 getsockname
 getsockopt
@@ -356,3 +367,64 @@ socket
 tcgetattr
 tcsetattr
 watt_sock_init
+
+// 3dfx GLIDE
+grSstSelect
+grTexSource
+guFogGenerateExp2
+grGetString
+grDepthMask
+grFogMode
+grDrawPoint
+grDisable
+grDrawVertexArrayContiguous
+grGlideSetState
+grTexCombine
+grDrawTriangle
+grFlush
+guFogGenerateExp
+grLfbReadRegion
+grGet
+grAlphaBlendFunction
+grTexFilterMode
+grColorMask
+grTexClampMode
+grLfbUnlock
+grTexMaxAddress
+grAlphaTestFunction
+grGlideGetState
+grGlideInit
+grGlideShutdown
+grTexDownloadMipMapLevel
+grBufferClear
+grFogColorValue
+grAlphaTestReferenceValue
+grLfbWriteRegion
+grDepthBufferFunction
+grEnable
+grVertexLayout
+grBufferSwap
+grCullMode
+grRenderBuffer
+guFogGenerateLinear
+grTexDownloadTable
+grTexMinAddress
+grLfbLock
+grTexDownloadMipMapLevelPartial
+grTexMipMapMode
+grClipWindow
+grColorCombine
+grDepthBufferMode
+grTexTextureMemRequired
+grReset
+grTexLodBiasValue
+grDrawLine
+grDepthBiasLevel
+grAlphaCombine
+grConstantColorValue
+grSstWinClose
+grCoordinateSpace
+grLfbWriteColorFormat
+grDitherMode
+grSstWinOpen
+grFogTable

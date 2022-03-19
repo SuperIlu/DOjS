@@ -1,0 +1,2433 @@
+# ----- Notes on usage --------------------------------------------------------#
+
+!IF "$(PAGER)" == ""
+PAGER=more
+!ENDIF
+
+buildhelp:
+	$(PAGER) < <<
+
+o Controlling Definitions - Directories
+
+TEMP            - temporary directory for interim files
+RELDIR          - target directory for release build output files
+DEBDIR          - target directory for debug build output files
+BINDIR          - target directory for EXE/DLL file updates
+USEDIR          - target directory for LIB file updates
+INCDIR          - target directory for INCLUDE file updates
+INCDIRSFX       - target header directory suffx (such as 'gl' for gl/glut.h)
+DISTDIR         - target directory for distribution file update
+                  (default to ./dist)
+OBJDIRSFX       - optional intermediate file directory
+PCHDDIR         - target directory for Debug PCH file
+PCHRDIR         - target directory for Release PCH file
+SRCFILES        - macro that is the list of source file for the current target
+SUPLIBSSRC      - similar to SRCFILES but these are *all* added to every link
+                  for an 'exefileseries' targeted build.
+SUPLIBDEPS      - additional dependencies correlating to SRCFILES, only for
+                  an 'exefileseries' targeted build.
+SRCPATH         - source file path specification - default path to source
+SRCALT1         - alternate 1 to source files
+SRCALT2         - alternate 2 to source files
+SRCALT3         - alternate 3 to source files
+SRCALT4         - alternate 4 to source files
+SRCALT5         - alternate 5 to source files (addition by TXM, alextxm@tin.it)
+ALTLIBPATH      - alternate link time library path
+
+Supported file extensions: .asm, .cpp, .cxx, .cc, .c, .a, .S
+
+o Controlling Definitions - Build Control
+
+BUILD_FOR_P6    - when 1, targeted for PPro, else for Pentium
+BUILD_DLL       - when 1, changes some compile flags for building DLL-based
+                  code specific flags added to the CL command line are:
+                  /GD - optimize for Windows DLL (vs /GA - opt for Windows App)
+CPP_PCH         - when 1, uses CPP to build PCH file
+CPPDEPS         - additional dependencies which must be built BEFORE compiling
+CPPOPTS         - additional options added to c/c++ compile line
+CL_FULL_OPT     - when 1, uses '/Ox /Ob2' instead of specific optimizations
+ ------------------------------------------------------------------------------
+  Explanation of compiler optimization used when CL_FULL_OPT is zero (default)
+ ------------------------------------------------------------------------------
+  /Ob2 - automatic-inlining of any suitable code
+  /Oa  - Assume No Aliasing of pointers and data
+  /Oi  - generate intrinsic functions instead of calls to libc routines
+  /Ot  - favor code speed over size
+  /Oy  - frame pointer omission, does not setup frame pointers on the stack
+  /Os  - control stack checking calls,
+  /Op- - improve floating point consistency - disabled; with this option set to
+         '-' it causes the compiler to generate faster code which attempts to
+         maximize use of the fp registers and minimizing memory reads/writes.
+         Personally, I would like to see this turned to '/Op' to prevent fp
+         computation glitches, however currently this generates a tremendous
+         amount of compiler warnings about fp overflow in computations, and it
+         would significantly slow down the generated code anyway so "*sigh*"
+ ------------------------------------------------------------------------------
+DEBUG           - when 1, enables debug build and disables release build
+DEFFILE         - when non nil, used during DLL linking
+DLLBASE         - base file name for dll (minus '32' moniker)
+DLLBASEADDR     - base address of DLL
+DLLBASEFILE     - base address reference of DLL
+                  NOTE: Use only *one* of DLLBASEADDR or DLLBASEFILE, but not
+                        both!
+DOGUI           - when 1, links executable for windows GUI subsystem
+EXEFILE         - test exe file name, default file for source .c/.cc/.cpp file
+EXETYPE         - alias for LIBTYPE, for when building EXE files only
+FORCELINK       - Forces link, regardless of undefined/multiply defined symbols
+                  (useful for debugging linkage problems)
+LIBBASE         - base file name for library
+LIBTYPE         - set to desired library build type (d-s, r-s, d-d, r-d)
+LINKTARGET      - set to 'app' or 'dll' to specify, affects some CL.EXE options
+MAKEFILE        - name of source makefile
+NOSTATIC        - when 1, do not build static libs (libc??.lib usage)
+NODYNAMIC       - when 1, do not build dynamic libs (msvcrt??.dll usage)
+NODEBUG         - when 1, do not build debug libs
+NORELEASE       - when 1, do not build release libs
+NOPCH           - when 1, do not use PCH file
+NOMULTIBUILD    - when 1, disable multi-file rules (MSVC 5(+) only)
+PCHINCROOT      - set to file name root that is the PCH include trigger file
+PCHINCFILE      - set to file that is the PCH include file for c code
+PCHSOURCEFILE   - set to complete source file name for ansi c code
+                  (e.g. stdinc.c)
+PCHFILE         - set to precompiled header file pathname for ansi c code
+PCHOBJFILE      - set to precompiled header file object file pathname for
+                  ansi c code
+RCFLAGS         - resource compiler option flags
+RCDEFS          - user provided resource compiler flags
+STRIPSYMBOLS    - strip debugging symbols from release libs
+                  (normally even release builds are made with debug symbols)
+SMP             - when 1, builds and links as multi-threaded code
+USE_STD_CPP_HDRS- enables C++ exception handling and _STD_USING definition
+USE_ICC         - enables use of Intel C/C++ compiler instead of MS
+                    uses: 'icl.exe' instead of 'cl.exe'
+                    uses: 'xilink.exe' instead of 'link.exe'
+                    prefixes link libraries with 'libm' and 'libmmt' to pull
+                    them from the ICC install.
+<<
+
+# ----- build options ---------------------------------------------------------#
+
+.SUFFIXES: .asm .cpp .cxx .cc .c .a .S
+
+!IF "$(OS)" == "Windows_NT"
+DELTREE=rd /q /s
+NULL=NUL
+COPYFILE=copy /v
+!ELSE
+DELTREE=deltree /y
+NULL=NUL
+COPYFILE=copy /y/v
+!ENDIF
+
+!IF "$(TESTEXE)" != ""
+!MESSAGE Macro TESTEXE built by client "nmake.mak" file but is outdated.
+EXEFILE=$(TESTEXE)
+!UNDEF TESTEXE
+!ENDIF
+
+!IF "$(NOSTATIC)" == ""
+NOSTATIC=0
+!ENDIF
+
+!IF "$(NODYNAMIC)" == ""
+NODYNAMIC=0
+!ENDIF
+
+!IF "$(DEBUG)" == "1"
+NODEBUG=0
+NORELEASE=1
+!ELSEIF "$(DEBUG)" == "0"
+NODEBUG=1
+NORELEASE=0
+!ENDIF
+
+!IF "$(NODEBUG)" == ""
+NODEBUG=0
+!ENDIF
+
+!IF "$(NORELEASE)" == ""
+NORELEASE=0
+!ENDIF
+
+!IF "$(NOMULTIBUILD)" == ""
+!IF "$(DEBUG)" == "1"
+NOMULTIBUILD=1
+!ELSE
+NOMULTIBUILD=0
+!ENDIF
+!ENDIF
+
+!IF "$(NOPCH)" == ""
+NOPCH=0
+!ENDIF
+
+!IF "$(DOGUI)" == ""
+DOGUI=0
+!ENDIF
+
+!IF "$(FORCELINK)" == ""
+FORCELINK=0
+!ENDIF
+
+!IF "$(USE_ICC)" == ""
+USE_ICC=0
+!ENDIF
+
+!IF "$(USE_STD_CPP_HDRS)" == ""
+USE_STD_CPP_HDRS=0
+!ENDIF
+
+!IF "$(DOGUI)" == "1"
+SUBSYSTEM=windows
+!ELSE
+SUBSYSTEM=console
+!ENDIF
+
+!IF "$(PROC_EXEFILESERIES)" == ""
+PROC_EXEFILESERIES=0
+!ENDIF
+
+!IF "$(CPP_PCH)" == ""
+CPP_PCH=0
+!ENDIF
+
+!IF "$(TEMP)" == ""
+TEMP=.
+!ENDIF
+
+!IF "$(DEVDIR)" == ""
+DEVDIR=..
+#\..\..
+!ENDIF
+
+!IF "$(RELDIR)" == ""
+RELDIR=.\Release
+!ENDIF
+
+!IF "$(DEBDIR)" == ""
+DEBDIR=.\Debug
+!ENDIF
+
+!IF "$(USEDIR)" == ""
+USEDIR=$(DEVDIR)\sdk\lib\win32\vc
+!ENDIF
+
+!IF "$(BINDIR)" == ""
+BINDIR=$(DEVDIR)\sdk\bin
+!ENDIF
+
+!IF "$(DISTDIR)" == ""
+DISTDIR=dist
+!ENDIF
+
+!IF "$(INCDIR)" == ""
+INCDIR=$(DEVDIR)\sdk\h
+!ENDIF
+
+!IF "$(INCDIR_L)" == ""
+INCDIR_L=.
+!ENDIF
+
+!IF "$(INCDIRSFX)" == ""
+INCDIRSFX=-
+!ENDIF
+
+!IF "$(SRCPATH)" == ""
+SRCPATH=.
+!ENDIF
+
+!IF "$(PCHINCROOT)" == ""
+PCHINCROOT=stdinc
+!ENDIF
+
+!IF "$(PCHINCFILE)" == ""
+PCHINCFILE=$(PCHINCROOT).h
+!ENDIF
+
+!IF "$(PCHSOURCEFILE)" == ""
+PCHSOURCEFILE=$(PCHINCROOT).c
+!ENDIF
+
+!IF "$(PCHINCFILEPP)" == ""
+PCHINCFILEPP=$(PCHINCROOT).hpp
+!ENDIF
+
+!IF "$(PCHSOURCEFILEPP)" == ""
+PCHSOURCEFILEPP=$(PCHINCROOT).cpp
+!ENDIF
+
+!IF "$(MAKEFILE)" == ""
+MAKEFILE=nmake.mak
+!ENDIF
+
+!IF "$(NOSTATIC)" == "1"
+CRTTYPE=d
+!ELSE
+CRTTYPE=s
+!ENDIF
+
+!IF "$(CRTTYPE)" == ""
+CRTTYPE=s
+!ENDIF
+
+!IF "$(LINKTARGET)" == ""
+LINKTARGET=app
+!ENDIF
+
+!IF "$(LIBBASE)" == ""
+LIBBASE=mylib
+!ENDIF
+
+!IF "$(DLLBASE)" == ""
+DLLBASE=$(LIBBASE)32
+!ENDIF
+
+!IF "$(BUILD_DLL)" == ""
+BUILD_DLL=0
+!ENDIF
+
+!IF "$(DIRECTORYNAME)" == ""
+DIRECTORYNAME=.\directoryname.default
+!ENDIF
+
+!IF "$(SMP)" == ""
+SMP=0
+!ENDIF
+
+!IF "$(EXEFSERIES_UP)" == "1"
+!IF "$(BINDIR)" == ""
+EXEFSERIES_UP=0
+!ENDIF
+!ENDIF
+
+!IF EXIST (nmake.mif)
+NMAKE_MIF_FILE=nmake.mif
+!ELSE
+NMAKE_MIF_FILE=$(DEVDIR)\sdk\h\nmake.mif
+!ENDIF
+
+!IF "$(DLLBASEADDR)" != ""
+DLLBASEOPT=/base:$(DLLBASEADDR)
+!ELSEIF "$(DLLBASEFILE)" != ""
+DLLBASEOPT=/base:@$(DLLBASEFILE)
+!ELSE
+DLLBASEOPT=
+!ENDIF
+
+!IF "$(STRIPSYMBOLS)" == ""
+STRIPSYMBOLS=0
+!ENDIF
+
+!IF "$(CL_FULL_OPT)" == ""
+CL_FULL_OPT=1
+!ENDIF
+
+# ----- macro resolution / error checking --------------------------------------
+
+# MS DevStudio/VC5 nmake. defines the macro _NMAKE_VER as 162, nmake for
+# VC 4 does not define it, we use this as a tag for conditionals to handle
+# build with VC4 nmake.
+
+_NMAKE_VER_6=6.00.8168.0 # For reference, probably will change with a service pack
+_NMAKE_VER_5=162
+_NMAKE_VER_4=0
+
+!IFNDEF _NMAKE_VER
+_NMAKE_VER=$(_NMAKE_VER_4)
+!ENDIF
+
+!IF "$(EXEFILE)" == ""
+EXEFILE=test
+!ENDIF
+
+!IF ("$(SRCFILES)" == "") && ("$(EXEFILE)" != "")
+SRCFILES=$(EXEFILE).c
+!ELSEIF  ("$(SRCFILES)" == "") && ("$(EXEFILE)" == "")
+SRCFILES=main.c
+!ENDIF
+
+OBJ = $(SRCFILES)
+OBJ = $(OBJ:.cpp=.obj)
+OBJ = $(OBJ:.cxx=.obj)
+OBJ = $(OBJ:.cc=.obj)
+OBJ = $(OBJ:.c=.obj)
+OBJ = $(OBJ:.a=.obj)
+OBJ = $(OBJ:.asm=.obj)
+OBJ = $(OBJ:.S=.obj)
+
+!IF "$(RCFILE)" != ""
+OBJ = $(OBJ) $(LIBBASE)$(DEBTAG).res
+!ENDIF
+
+EXEFILESLIST = $(SRCFILES)
+EXEFILESLIST = $(EXEFILESLIST:.cpp=.exe)
+EXEFILESLIST = $(EXEFILESLIST:.cxx=.exe)
+EXEFILESLIST = $(EXEFILESLIST:.cc=.exe)
+EXEFILESLIST = $(EXEFILESLIST:.c=.exe)
+EXEFILESLIST = $(EXEFILESLIST:.a=.exe)
+EXEFILESLIST = $(EXEFILESLIST:.asm=.exe)
+EXEFILESLIST = $(EXEFILESLIST:.S=.exe)
+
+!IF "$(SUPLIBSSRC)" == ""
+EXESUPLIBSLIST =
+!ELSE
+EXESUPLIBSLIST = $(SUPLIBSSRC)
+EXESUPLIBSLIST = $(EXESUPLIBSLIST:.cpp=.lib)
+EXESUPLIBSLIST = $(EXESUPLIBSLIST:.cxx=.lib)
+EXESUPLIBSLIST = $(EXESUPLIBSLIST:.cc=.lib)
+EXESUPLIBSLIST = $(EXESUPLIBSLIST:.c=.lib)
+EXESUPLIBSLIST = $(EXESUPLIBSLIST:.a=.lib)
+EXESUPLIBSLIST = $(EXESUPLIBSLIST:.asm=.lib)
+EXESUPLIBSLIST = $(EXESUPLIBSLIST:.S=.lib)
+!ENDIF
+
+!IF "$(LIBTYPE)" == ""
+!IF "$(NODEBUG)" == "1"
+LIBTYPE=r-$(CRTTYPE)
+!ELSE
+LIBTYPE=d-$(CRTTYPE)
+!ENDIF
+!ENDIF
+
+!IF "$(PCHRDIR)" == ""
+PCHRDIR=$(RELDIR)
+!ENDIF
+
+!IF "$(PCHDDIR)" == ""
+PCHDDIR=$(DEBDIR)
+!ENDIF
+
+!IF "$(LIBTYPE)" == "r-s"			# release build / static CRTL linkage
+!IF "$(INTDIRSFX)" != ""
+OBJDIR=$(RELDIR)\$(INTDIRSFX)
+!ELSE
+OBJDIR=$(RELDIR)
+!ENDIF
+PCHDIR=$(PCHRDIR)
+LIBCNTRL=
+LIBSFX=
+EXESFX=
+LIBPFX=
+RCFLAGS=/DNDEBUG
+!IF "$(SMP)" == "0"
+CRTLIB=libc
+CXXRTLIB=libcp
+!ELSE
+CRTLIB=libcmt
+CXXRTLIB=libcpmt
+LIBCNTRL=/D_MT $(LIBCNTRL)
+!ENDIF # SMP
+!ELSEIF "$(LIBTYPE)" == "d-s"		# debug build / static CRTL linkage
+!IF "$(INTDIRSFX)" != ""
+OBJDIR=$(DEBDIR)\$(INTDIRSFX)
+!ELSE
+OBJDIR=$(DEBDIR)
+!ENDIF
+PCHDIR=$(PCHDDIR)
+LIBCNTRL=
+LIBSFX=d
+EXESFX=d
+LIBPFX=
+RCFLAGS=/D_DEBUG
+!IF "$(SMP)" == "0"
+CRTLIB=libcd
+CXXRTLIB=libcpd
+!ELSE
+CRTLIB=libcmtd
+CXXRTLIB=libcpmtd
+LIBCNTRL=/D_MT $(LIBCNTRL)
+!ENDIF # SMP
+!ELSEIF "$(LIBTYPE)" == "r-d"		# release build / DLL CRTL linkage
+!IF "$(INTDIRSFX)" != ""
+OBJDIR=$(RELDIR)\$(INTDIRSFX)
+!ELSE
+OBJDIR=$(RELDIR)
+!ENDIF
+!IF "$(PCHRDIR)" == "$(RELDIR)"
+PCHDIR=$(PCHRDIR)
+!ELSE
+PCHDIR=$(PCHRDIR)
+!ENDIF
+LIBCNTRL=/D_DLL
+LIBSFX=
+EXESFX=
+LIBPFX=m
+RCFLAGS=/DNDEBUG
+CRTLIB=msvcrt
+CXXRTLIB=msvcprt
+!IF "$(SMP)" == "1"
+LIBCNTRL=/D_MT $(LIBCNTRL)
+!ENDIF # SMP
+!ELSE # "$(LIBTYPE)" == "d-d"		# debug build / DLL CRTL linkage
+LIBTYPE=d-d
+!IF "$(INTDIRSFX)" != ""
+OBJDIR=$(DEBDIR)\$(INTDIRSFX)
+!ELSE
+OBJDIR=$(DEBDIR)
+!ENDIF
+!IF "$(PCHDDIR)" == "$(DEBDIR)"
+PCHDIR=$(PCHDDIR)
+!ELSE
+PCHDIR=$(PCHDDIR)
+!ENDIF
+LIBCNTRL=/D_DLL
+LIBSFX=d
+EXESFX=d
+LIBPFX=m
+RCFLAGS=/D_DEBUG
+CRTLIB=msvcrtd
+CXXRTLIB=msvcprtd
+!IF "$(SMP)" == "1"
+LIBCNTRL=/D_MT $(LIBCNTRL)
+!ENDIF # SMP
+!ENDIF
+
+!IF "$(OBJDIR_R)" == ""
+!IF ("$(LIBTYPE)" == "d-d") || ("$(LIBTYPE)" == "d-s")
+OBJDIR_R=$(DEBDIR)
+!ELSE
+OBJDIR_R=$(RELDIR)
+!ENDIF
+!ENDIF
+
+!IF "$(LIBBASE)" == "mylib"
+EEXELIBFILE=
+!ELSE
+EEXELIBFILE=$(OBJDIR)\$(LIBBASE).lib
+!ENDIF
+
+# ----- File list transformation rules -----------------------------------------
+
+filelistxform:
+	rem <<$(TEMP)\$*
+EXEFILESLIST = $(OBJDIR)\$$(EXEFILESLIST: = $(OBJDIR)\)
+OBJ = $(OBJDIR)\$$(OBJ: = $(OBJDIR)\)
+!IF "$(EXESUPLIBSLIST)" != ""
+EXESUPLIBSLIST = $(OBJDIR)\$$(EXESUPLIBSLIST: = $(OBJDIR)\)
+!ENDIF
+<<KEEP
+
+filelistxform.kill:
+	echo. > $(TEMP)\$*
+	del $(TEMP)\$* > $(NULL)
+
+!IF EXIST ($(TEMP)\filelistxform)
+!INCLUDE $(TEMP)\filelistxform
+!ELSE # NOT EXIST ($(TEMP)\filelistxform)
+!IF ("$(LIBTYPE)" == "r-s") || ("$(LIBTYPE)" == "r-d")
+EXEFILESLIST = .\Release\$(EXEFILESLIST: = .\Release\)
+OBJ = .\Release\$(OBJ: = .\Release\)
+!IF "$(EXESUPLIBSLIST)" != ""
+EXESUPLIBSLIST = .\Release\$(EXESUPLIBSLIST: = .\Release\)
+!ENDIF # EXESUPLIBSLIST conditional
+!ELSE
+EXEFILESLIST = .\Debug\$(EXEFILESLIST: = .\Debug\)
+OBJ = .\Debug\$(OBJ: = .\Debug\)
+!IF "$(EXESUPLIBSLIST)" != ""
+EXESUPLIBSLIST = .\Debug\$(EXESUPLIBSLIST: = .\Debug\)
+!ENDIF # EXESUPLIBSLIST conditional
+!ENDIF # LIBTYPE conditional
+!ENDIF # EXIST ($(TEMP)\filelistxform)
+
+# ----- Some final macro building ----------------------------------------------
+
+!IF "$(CPP_PCH)" == "1"
+PCHINCFILE=$(PCHINCFILEPP)
+PCHSOURCEFILE=$(PCHSOURCEFILEPP)
+!ENDIF
+
+!IF "$(DEFFILE)" != ""
+DEFFILEOPT=/def:$(DEFFILE)
+!ELSE
+DEFFILEOPT=
+!ENDIF
+
+!IF "$(PCHFILE)" == ""
+!IF "$(LINKTARGET)" == "dll"
+PCHFILE=$(OBJDIR)\$(DLLBASE)$(LIBSFX).pch
+!ELSE
+PCHFILE=$(OBJDIR)\$(PCHINCROOT).pch
+!ENDIF
+!ENDIF
+
+!IF "$(PCHOBJFILE)" == ""
+!IF "$(LINKTARGET)" == "dll"
+PCHOBJFILE=$(OBJDIR)\$(DLLBASE)$(LIBSFX).obj
+!ELSE
+PCHOBJFILE=$(OBJDIR)\$(PCHINCROOT).obj
+!ENDIF
+!ENDIF
+
+!IF "$(PDBFILE)" == ""
+!IF "$(LINKTARGET)" == "dll"
+PDBFILE=$(OBJDIR)\$(DLLBASE)$(LIBSFX).pdb
+!ELSE
+PDBFILE=$(OBJDIR)\$(PCHINCROOT).pdb
+!ENDIF
+!ENDIF
+
+# ----- basic compiler directives ----------------------------------------------
+
+CLOPTIONS=/nologo /c /GF /Gy /Zl
+MLOPTIONS=/nologo /c /coff /Cx
+
+!IF "$(ALLWARNINGS)" == "0"
+CLOPTIONS=$(CLOPTIONS) /W3
+MLOPTIONS=$(CLOPTIONS) /W3
+!ELSE
+CLOPTIONS=$(CLOPTIONS) /W4
+MLOPTIONS=$(CLOPTIONS) /W4
+!ENDIF
+
+!IF "$(BUILD_DLL)" == "0"
+CLOPTIONS=$(CLOPTIONS) /GA /Gd
+!ELSE
+CLOPTIONS=$(CLOPTIONS) /GD /Gd
+!ENDIF
+
+!IF ("$(LIBTYPE)" == "d-s") || ("$(LIBTYPE)" == "d-d")
+RCFLAGS=/D_DEBUG
+OPTFLAGS=/D_DEBUG /Zi /Od
+MLOPTFLAGS=/D_DEBUG /Zi
+!ELSE
+RCFLAGS=/DNDEBUG
+OPTFLAGS=/DNDEBUG /Zi
+MLOPTFLAGS=/DNDEBUG /Zi
+
+!IF "$(CL_FULL_OPT)" == "1"
+OPTFLAGS  = $(OPTFLAGS) /Ox /Ob2
+!ELSE
+OPTFLAGS  = $(OPTFLAGS) /Ob2 /Oa /Oi /Ot /Oy /Op-
+!ENDIF
+
+!ENDIF
+
+# ----- Explanation of compiler optimization options ---------
+# /Ob2 - automatic-inlining of any suitable code
+# /Oa  - Assume No Aliasing of pointers and data
+# /Oi  - generate intrinsic functions instead of calls to libc routines
+# /Ot  - favor code speed over size
+# /Oy  - frame pointer omission, does not setup frame pointers on the call stack
+# /Os  - control stack checking calls,
+# /Op- - improve floating point consistency; note: this option actually is
+#        likely to slow down the overall code generated, however it produces
+#        more reliable comparisions, etc., by forcing any fp data used
+#        after some computations to actually be reloaded from memory
+#        instead of just using the 80-bit output from the previous
+#        computations. This also causes more flushing to memory of the results.
+# ------------------------------------------------------------
+
+!IF (("$(BUILD_FOR_P6)" == "0") || ("$(_NMAKE_VER)" == "$(_NMAKE_VER_4)"))
+CLOPTIONS=$(CLOPTIONS) /G5 /Zp4
+MLOPTIONS=$(MLOPTIONS) /Zp4
+!ELSE
+CLOPTIONS=$(CLOPTIONS) /G6 /GM /Zp8
+MLOPTIONS=$(MLOPTIONS) /Zp8
+!ENDIF
+
+!IF "$(USE_STD_CPP_HDRS)" == "1"
+CPPOPTS=/GX /D_STD_USING $(CPPOPTS)
+!ENDIF
+
+!IF "$(USE_ICC)" == "1"
+CC=icl
+LINK=xilink
+ASM=ml
+!ELSE
+CC=cl
+LINK=link
+ASM=ml
+!ENDIF
+
+!IF "$(LINKTARGET)" == "dll"
+CLOPTIONS=$(CLOPTIONS) /Fd$(PDBFILE)
+!IF "$(CPP_PCH)" == "1"
+PCHOPTS=/Yu"$(PCHINCROOT).hpp" /Fp$(PCHFILE)
+PCHOPTSC=/Yc"$(PCHINCROOT).hpp" /Fp$(PCHFILE)
+!ELSE
+PCHOPTS=/Yu"$(PCHINCROOT).h" /Fp$(PCHFILE)
+PCHOPTSC=/Yc"$(PCHINCROOT).h" /Fp$(PCHFILE)
+!ENDIF # CCP_PCH==1
+!ELSE
+CLOPTIONS=$(CLOPTIONS) /Fd$(PDBFILE)
+!IF "$(CPP_PCH)" == "1"
+PCHOPTS=/Yu"$(PCHINCROOT).hpp" /Fp$(PCHFILE)
+PCHOPTSC=/Yc"$(PCHINCROOT).hpp" /Fp$(PCHFILE)
+!ELSE
+PCHOPTS=/Yu"$(PCHINCROOT).h" /Fp$(PCHFILE)
+PCHOPTSC=/Yc"$(PCHINCROOT).h" /Fp$(PCHFILE)
+!ENDIF # CPP_PCH==1
+!ENDIF
+
+!IF "$(NOPCH)" == "1"
+PCHFILE=
+PCHOBJFILE=
+PCHOPTS=
+PCHOPTSC=
+!ENDIF
+
+!IF "$(INCDIR_L)" != "."
+CLOPTIONS=$(CLOPTIONS) /I$(INCDIR_L)
+RCFLAGS=$(RCFLAGS) /i$(INCDIR_L)
+!ENDIF
+
+!IF "$(RCDEFS)" != ""
+RCFLAGS=$(RCFLAGS) $(RCDEFS)
+!ENDIF
+
+!IF "$(LINKLIBPATH)" == ""
+LINKLIBPATH=/libpath:$(OBJDIR)
+!ELSE
+LINKLIBPATH=$(LINKLIBPATH) /libpath:$(OBJDIR)
+!ENDIF
+
+!IF "$(OBJDIR_R)" != "$(OBJDIR)"
+LINKLIBPATH=/libpath:$(OBJDIR_R) $(LINKLIBPATH)
+!ENDIF
+
+!IF "$(ALTLIBPATH)" != ""
+LINKLIBPATH=/libpath:$(ALTLIBPATH) $(LINKLIBPATH)
+!ENDIF
+
+!IF "$(FORCELINK)" == "M"
+FORCELINKFLAGS=/force:multiple
+!ELSEIF "$(FORCELINK)" == "U"
+FORCELINKFLAGS=/force:unresolved
+!ELSEIF "$(FORCELINK)" == "1"
+FORCELINKFLAGS=/force
+!ELSE
+FORCELINKFLAGS=
+!ENDIF
+
+# ----- Platform SDK compatability items ---------------------------------------
+
+CLOPTIONS=$(CLOPTIONS) /DWIN32 /D_WIN32
+CLOPTIONS=$(CLOPTIONS) /DCRTAPI1=__cdecl /DCRTAPI2=__cdecl /D_X86_=1
+CLOPTIONS=$(CLOPTIONS) /D_WIN95 /D_WIN32_WINDOWS=0x0400 /DWINVER=0x0400
+
+MLOPTIONS=$(MLOPTIONS) /DWIN32 /D_WIN32
+MLOPTIONS=$(MLOPTIONS) /DCRTAPI1=__cdecl /DCRTAPI2=__cdecl /D_X86_=1
+MLOPTIONS=$(MLOPTIONS) /D_WIN95 /D_WIN32_WINDOWS=0x0400 /DWINVER=0x0400
+
+#--------------------------------------------------------------------------------
+# ----- basic compilation rules ------------------------------------------------
+#--------------------------------------------------------------------------------
+
+# ----- PCH file build rule ----------------------------------------------------
+
+!IF "$(NOPCH)" != "1"
+
+$(PCHFILE): $(PCHSOURCEFILE) $(PCHINCFILE) $(PCHDIR)
+	$(CC) $(CLOPTIONS) $(LIBCNTRL) $(OPTFLAGS)\
+		$(CPPOPTS) $(PCHOPTSC)\
+		/Fo$*.obj /Fp$*.pch $(PCHSOURCEFILE)
+
+pch: $(PCHFILE)
+
+!ENDIF
+
+# ----- build rules, default source directory ---------------------------------
+
+!IF (("$(_NMAKE_VER)" == "$(_NMAKE_VER_4)") || ("$(NOMULTIBUILD)" != "1"))
+
+{$(SRCPATH)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCPATH)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCPATH)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCPATH)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCPATH)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ELSE
+
+{$(SRCPATH)\}.c{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCPATH)\}.cpp{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCPATH)\}.cc{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCPATH)\}.cxx{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCPATH)\}.asm{$(OBJDIR)\}.obj::
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ENDIF
+
+{$(SRCPATH)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+{$(SRCPATH)\}.rc{$(OBJDIR)\}.res:
+	echo $<
+	rc $(RCFLAGS) /fo$@ $<
+
+!IF "$(PROC_EXEFILESERIES)" == "1"
+
+# This is a special-case build rule utilized by the 'exefileseries.bin' target for
+# constructing an executable from one or more sources files.
+#
+# LIMITATION: All source files MUST be in the same directory!
+#
+
+{$(SRCPATH)\}.c{$(OBJDIR)\}.exe:
+	echo $@
+	rem <<$(OBJDIR)\$(@B).mak
+.SILENT:
+.SUFFIXES: .asm .cpp .cxx .cc .c .a .S
+
+<<KEEP
+	echo !IF EXIST (.\Rules\$(EXEFILE).$(@B))>> $(OBJDIR)\$(@B).mak
+	echo !INCLUDE .\Rules\$(EXEFILE).$(@B)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(SRCFILESX:.c=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cc=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cpp=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.asm=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$(OBJDIR)\$$(XOBJ: = $(OBJDIR)\)>> $(OBJDIR)\$(@B).mak
+	echo !ELSE>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=>> $(OBJDIR)\$(@B).mak
+	echo !ENDIF>> $(OBJDIR)\$(@B).mak
+	type >> $(OBJDIR)\$(@B).mak <<
+
+SRCDIR=$(SRCPATH)
+
+!IF "$(EXEFSERIES_UP)" == "1"
+target: $(BINDIR)\$(@B)$(EXESFX).EXE
+!ELSE
+target: $@
+!ENDIF
+
+$(BINDIR)\$(@B)$(EXESFX).EXE: $@
+	echo Updating $(BINDIR)\$(@B)$(EXESFX).EXE ...
+	$(COPYFILE) $@ $(BINDIR)\$(@B)$(EXESFX).EXE
+
+$@: $(OBJDIR)\$(@B).obj $$(XOBJ)
+	$(LINK) /nologo /subsystem:$(SUBSYSTEM) /nodefaultlib /machine:ix86 /map:$*.map /out:$@\
+		$(FORCELINKFLAGS) $(LINKLIBPATH) $(OBJDIR)\$(@B).obj $$(XOBJ) $(EXELIBS)\
+		$(CRTLIB).lib kernel32.lib gdi32.lib user32.lib oldnames.lib
+
+{$$(SRCDIR)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $$<
+
+{$$(SRCDIR)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+<<KEEP
+	nmake /nologo /f $(OBJDIR)\$(@B).mak
+
+!ENDIF # "$(PROC_EXEFILESERIES)" == "1"
+
+#--------------------------------------------------------------------------------
+# Alternate source directory 1 build rules, defined only if SRCALT1 not null
+#--------------------------------------------------------------------------------
+
+!IF "$(SRCALT1)" != ""
+
+!IF (("$(_NMAKE_VER)" == "$(_NMAKE_VER_4)") || ("$(NOMULTIBUILD)" == "1"))
+
+{$(SRCALT1)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT1)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT1)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT1)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ELSE
+
+{$(SRCALT1)\}.c{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT1)\}.cpp{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT1)\}.cc{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT1)\}.cxx{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT1)\}.asm{$(OBJDIR)\}.obj::
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ENDIF
+
+{$(SRCALT1)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+{$(SRCALT1)\}.rc{$(OBJDIR)\}.res:
+	echo $<
+	rc $(RCFLAGS) /fo$@ $<
+
+!IF "$(PROC_EXEFILESERIES)" == "1"
+
+# This is a special-case build rule utilized by the 'exefileseries.bin' target for
+# constructing an executable from one or more sources files.
+#
+# LIMITATION: All source files MUST be in the same directory!
+#
+
+{$(SRCALT1)\}.c{$(OBJDIR)\}.exe:
+	echo $@
+	rem <<$(OBJDIR)\$(@B).mak
+.SILENT:
+.SUFFIXES: .asm .cpp .cxx .cc .c .a .S
+
+<<KEEP
+	echo !IF EXIST (.\Rules\$(EXEFILE).$(@B))>> $(OBJDIR)\$(@B).mak
+	echo !INCLUDE .\Rules\$(EXEFILE).$(@B)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(SRCFILESX:.c=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cc=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cpp=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.asm=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$(OBJDIR)\$$(XOBJ: = $(OBJDIR)\)>> $(OBJDIR)\$(@B).mak
+	echo !ELSE>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=>> $(OBJDIR)\$(@B).mak
+	echo !ENDIF>> $(OBJDIR)\$(@B).mak
+	type >> $(OBJDIR)\$(@B).mak <<
+
+SRCDIR=$(SRCALT1)
+
+!IF "$(EXEFSERIES_UP)" == "1"
+target: $(BINDIR)\$(@B)$(EXESFX).EXE
+!ELSE
+target: $@
+!ENDIF
+
+$(BINDIR)\$(@B)$(EXESFX).EXE: $@
+	echo Updating $(BINDIR)\$(@B)$(EXESFX).EXE ...
+	$(COPYFILE) $@ $(BINDIR)\$(@B)$(EXESFX).EXE
+
+$@: $(OBJDIR)\$(@B).obj $$(XOBJ)
+	$(LINK) /nologo /subsystem:$(SUBSYSTEM) /nodefaultlib /machine:ix86 /map:$*.map /out:$@\
+		$(FORCELINKFLAGS) $(LINKLIBPATH) $(OBJDIR)\$(@B).obj $$(XOBJ) $(EXELIBS)\
+		$(CRTLIB).lib kernel32.lib gdi32.lib user32.lib oldnames.lib
+
+{$$(SRCDIR)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $$<
+
+{$$(SRCDIR)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+<<KEEP
+	nmake /nologo /f $(OBJDIR)\$(@B).mak
+
+!ENDIF # "$(PROC_EXEFILESERIES)" == "1"
+
+!ENDIF
+
+#--------------------------------------------------------------------------------
+# Alternate source directory 2 build rules, defined only if SRCALT2 not null
+#--------------------------------------------------------------------------------
+
+!IF "$(SRCALT2)" != ""
+
+!IF (("$(_NMAKE_VER)" == "$(_NMAKE_VER_4)") || ("$(NOMULTIBUILD)" != "1"))
+
+{$(SRCALT2)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT2)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT2)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT2)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT2)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ELSE
+
+{$(SRCALT2)\}.c{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT2)\}.cpp{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT2)\}.cc{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT2)\}.cxx{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT2)\}.asm{$(OBJDIR)\}.obj::
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ENDIF
+
+{$(SRCALT2)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+{$(SRCALT2)\}.rc{$(OBJDIR)\}.res:
+	echo $<
+	rc $(RCFLAGS) /fo$@ $<
+
+!IF "$(PROC_EXEFILESERIES)" == "1"
+
+# This is a special-case build rule utilized by the 'exefileseries.bin' target for
+# constructing an executable from one or more sources files.
+#
+# LIMITATION: All source files MUST be in the same directory!
+#
+
+{$(SRCALT2)\}.c{$(OBJDIR)\}.exe:
+	echo $@
+	rem <<$(OBJDIR)\$(@B).mak
+.SILENT:
+.SUFFIXES: .asm .cpp .cxx .cc .c .a .S
+
+<<KEEP
+	echo !IF EXIST (.\Rules\$(EXEFILE).$(@B))>> $(OBJDIR)\$(@B).mak
+	echo !INCLUDE .\Rules\$(EXEFILE).$(@B)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(SRCFILESX:.c=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cc=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cpp=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.asm=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$(OBJDIR)\$$(XOBJ: = $(OBJDIR)\)>> $(OBJDIR)\$(@B).mak
+	echo !ELSE>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=>> $(OBJDIR)\$(@B).mak
+	echo !ENDIF>> $(OBJDIR)\$(@B).mak
+	type >> $(OBJDIR)\$(@B).mak <<
+
+SRCDIR=$(SRCALT2)
+
+!IF "$(EXEFSERIES_UP)" == "1"
+target: $(BINDIR)\$(@B)$(EXESFX).EXE
+!ELSE
+target: $@
+!ENDIF
+
+$(BINDIR)\$(@B)$(EXESFX).EXE: $@
+	echo Updating $(BINDIR)\$(@B)$(EXESFX).EXE ...
+	$(COPYFILE) $@ $(BINDIR)\$(@B)$(EXESFX).EXE
+
+$@: $(OBJDIR)\$(@B).obj $$(XOBJ)
+	$(LINK) /nologo /subsystem:$(SUBSYSTEM) /nodefaultlib /machine:ix86 /map:$*.map /out:$@\
+		$(FORCELINKFLAGS) $(LINKLIBPATH) $(OBJDIR)\$(@B).obj $$(XOBJ) $(EXELIBS)\
+		$(CRTLIB).lib kernel32.lib gdi32.lib user32.lib oldnames.lib
+
+{$$(SRCDIR)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $$<
+
+{$$(SRCDIR)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+<<KEEP
+	nmake /nologo /f $(OBJDIR)\$(@B).mak
+
+!ENDIF # "$(PROC_EXEFILESERIES)" == "1"
+
+!ENDIF
+
+#--------------------------------------------------------------------------------
+# Alternate source directory 3 build rules, defined only if SRCALT3 not null
+#--------------------------------------------------------------------------------
+
+!IF "$(SRCALT3)" != ""
+
+!IF (("$(_NMAKE_VER)" == "$(_NMAKE_VER_4)") || ("$(NOMULTIBUILD)" != "1"))
+
+{$(SRCALT3)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT3)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT3)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT3)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT3)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ELSE
+
+{$(SRCALT3)\}.c{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT3)\}.cpp{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT3)\}.cc{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT3)\}.cxx{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT3)\}.asm{$(OBJDIR)\}.obj::
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ENDIF
+
+{$(SRCALT3)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+{$(SRCALT3)\}.rc{$(OBJDIR)\}.res:
+	echo $<
+	rc $(RCFLAGS) /fo$@ $<
+
+!IF "$(PROC_EXEFILESERIES)" == "1"
+
+# This is a special-case build rule utilized by the 'exefileseries.bin' target for
+# constructing an executable from one or more sources files.
+#
+# LIMITATION: All source files MUST be in the same directory!
+#
+
+{$(SRCALT3)\}.c{$(OBJDIR)\}.exe:
+	echo $@
+	rem <<$(OBJDIR)\$(@B).mak
+.SILENT:
+.SUFFIXES: .asm .cpp .cxx .cc .c .a .S
+
+<<KEEP
+	echo !IF EXIST (.\Rules\$(EXEFILE).$(@B))>> $(OBJDIR)\$(@B).mak
+	echo !INCLUDE .\Rules\$(EXEFILE).$(@B)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(SRCFILESX:.c=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cc=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cpp=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.asm=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$(OBJDIR)\$$(XOBJ: = $(OBJDIR)\)>> $(OBJDIR)\$(@B).mak
+	echo !ELSE>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=>> $(OBJDIR)\$(@B).mak
+	echo !ENDIF>> $(OBJDIR)\$(@B).mak
+	type >> $(OBJDIR)\$(@B).mak <<
+
+SRCDIR=$(SRCALT3)
+
+!IF "$(EXEFSERIES_UP)" == "1"
+target: $(BINDIR)\$(@B)$(EXESFX).EXE
+!ELSE
+target: $@
+!ENDIF
+
+$(BINDIR)\$(@B)$(EXESFX).EXE: $@
+	echo Updating $(BINDIR)\$(@B)$(EXESFX).EXE ...
+	$(COPYFILE) $@ $(BINDIR)\$(@B)$(EXESFX).EXE
+
+$@: $(OBJDIR)\$(@B).obj $$(XOBJ)
+	$(LINK) /nologo /subsystem:$(SUBSYSTEM) /nodefaultlib /machine:ix86 /map:$*.map /out:$@\
+		$(FORCELINKFLAGS) $(LINKLIBPATH) $(OBJDIR)\$(@B).obj $$(XOBJ) $(EXELIBS)\
+		$(CRTLIB).lib kernel32.lib gdi32.lib user32.lib oldnames.lib
+
+{$$(SRCDIR)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $$<
+
+{$$(SRCDIR)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+<<KEEP
+	nmake /nologo /f $(OBJDIR)\$(@B).mak
+
+!ENDIF # "$(PROC_EXEFILESERIES)" == "1"
+
+!ENDIF
+
+#--------------------------------------------------------------------------------
+# Alternate source directory 4 build rules, defined only if SRCALT4 not null
+#--------------------------------------------------------------------------------
+
+!IF "$(SRCALT4)" != ""
+
+!IF (("$(_NMAKE_VER)" == "$(_NMAKE_VER_4)") || ("$(NOMULTIBUILD)" != "1"))
+
+{$(SRCALT4)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT4)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT4)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT4)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT4)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ELSE
+
+{$(SRCALT4)\}.c{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT4)\}.cpp{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT4)\}.cc{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT4)\}.cxx{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT4)\}.asm{$(OBJDIR)\}.obj::
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ENDIF
+
+{$(SRCALT4)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+{$(SRCALT4)\}.rc{$(OBJDIR)\}.res:
+	echo $<
+	rc $(RCFLAGS) /fo$@ $<
+
+!IF "$(PROC_EXEFILESERIES)" == "1"
+
+# This is a special-case build rule utilized by the 'exefileseries.bin' target for
+# constructing an executable from one or more sources files.
+#
+# LIMITATION: All source files MUST be in the same directory!
+#
+
+{$(SRCALT4)\}.c{$(OBJDIR)\}.exe:
+	echo $@
+	rem <<$(OBJDIR)\$(@B).mak
+.SILENT:
+.SUFFIXES: .asm .cpp .cxx .cc .c .a .S
+
+<<KEEP
+	echo !IF EXIST (.\Rules\$(EXEFILE).$(@B))>> $(OBJDIR)\$(@B).mak
+	echo !INCLUDE .\Rules\$(EXEFILE).$(@B)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(SRCFILESX:.c=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cc=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cpp=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.asm=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$(OBJDIR)\$$(XOBJ: = $(OBJDIR)\)>> $(OBJDIR)\$(@B).mak
+	echo !ELSE>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=>> $(OBJDIR)\$(@B).mak
+	echo !ENDIF>> $(OBJDIR)\$(@B).mak
+	type >> $(OBJDIR)\$(@B).mak <<
+
+SRCDIR=$(SRCALT4)
+
+!IF "$(EXEFSERIES_UP)" == "1"
+target: $(BINDIR)\$(@B)$(EXESFX).EXE
+!ELSE
+target: $@
+!ENDIF
+
+$(BINDIR)\$(@B)$(EXESFX).EXE: $@
+	echo Updating $(BINDIR)\$(@B)$(EXESFX).EXE ...
+	$(COPYFILE) $@ $(BINDIR)\$(@B)$(EXESFX).EXE
+
+$@: $(OBJDIR)\$(@B).obj $$(XOBJ)
+	$(LINK) /nologo /subsystem:$(SUBSYSTEM) /nodefaultlib /machine:ix86 /map:$*.map /out:$@\
+		$(FORCELINKFLAGS) $(LINKLIBPATH) $(OBJDIR)\$(@B).obj $$(XOBJ) $(EXELIBS)\
+		$(CRTLIB).lib kernel32.lib gdi32.lib user32.lib oldnames.lib
+
+{$$(SRCDIR)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $$<
+
+{$$(SRCDIR)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+<<KEEP
+	nmake /nologo /f $(OBJDIR)\$(@B).mak
+
+!ENDIF # "$(PROC_EXEFILESERIES)" == "1"
+
+!ENDIF
+
+#--------------------------------------------------------------------------------
+# Alternate source directory 5 build rules, defined only if SRCALT5 not null
+#--------------------------------------------------------------------------------
+
+!IF "$(SRCALT5)" != ""
+
+!IF (("$(_NMAKE_VER)" == "$(_NMAKE_VER_4)") || ("$(NOMULTIBUILD)" != "1"))
+
+{$(SRCALT5)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT5)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT5)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT5)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT5)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ELSE
+
+{$(SRCALT5)\}.c{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT5)\}.cpp{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT5)\}.cc{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT5)\}.cxx{$(OBJDIR)\}.obj::
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$(SRCALT5)\}.asm{$(OBJDIR)\}.obj::
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+!ENDIF
+
+{$(SRCALT5)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+{$(SRCALT5)\}.rc{$(OBJDIR)\}.res:
+	echo $<
+	rc $(RCFLAGS) /fo$@ $<
+
+!IF "$(PROC_EXEFILESERIES)" == "1"
+
+# This is a special-case build rule utilized by the 'exefileseries.bin' target for
+# constructing an executable from one or more sources files.
+#
+# LIMITATION: All source files MUST be in the same directory!
+#
+
+{$(SRCALT5)\}.c{$(OBJDIR)\}.exe:
+	echo $@
+	rem <<$(OBJDIR)\$(@B).mak
+.SILENT:
+.SUFFIXES: .asm .cpp .cxx .cc .c .a .S
+
+<<KEEP
+	echo !IF EXIST (.\Rules\$(EXEFILE).$(@B))>> $(OBJDIR)\$(@B).mak
+	echo !INCLUDE .\Rules\$(EXEFILE).$(@B)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(SRCFILESX:.c=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cc=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.cpp=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$$(XOBJ:.asm=.obj)>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=$(OBJDIR)\$$(XOBJ: = $(OBJDIR)\)>> $(OBJDIR)\$(@B).mak
+	echo !ELSE>> $(OBJDIR)\$(@B).mak
+	echo XOBJ=>> $(OBJDIR)\$(@B).mak
+	echo !ENDIF>> $(OBJDIR)\$(@B).mak
+	type >> $(OBJDIR)\$(@B).mak <<
+
+SRCDIR=$(SRCALT5)
+
+!IF "$(EXEFSERIES_UP)" == "1"
+target: $(BINDIR)\$(@B)$(EXESFX).EXE
+!ELSE
+target: $@
+!ENDIF
+
+$(BINDIR)\$(@B)$(EXESFX).EXE: $@
+	echo Updating $(BINDIR)\$(@B)$(EXESFX).EXE ...
+	$(COPYFILE) $@ $(BINDIR)\$(@B)$(EXESFX).EXE
+
+$@: $(OBJDIR)\$(@B).obj $$(XOBJ)
+	$(LINK) /nologo /subsystem:$(SUBSYSTEM) /nodefaultlib /machine:ix86 /map:$*.map /out:$@\
+		$(FORCELINKFLAGS) $(LINKLIBPATH) $(OBJDIR)\$(@B).obj $$(XOBJ) $(EXELIBS)\
+		$(CRTLIB).lib kernel32.lib gdi32.lib user32.lib oldnames.lib
+
+{$$(SRCDIR)\}.c{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $$<
+
+{$$(SRCDIR)\}.cpp{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cc{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.cxx{$(OBJDIR)\}.obj:
+	$(CC) $(CLOPTIONS)\
+		$(LIBCNTRL) $(OPTFLAGS) $(CPPOPTS) $(PCHOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.asm{$(OBJDIR)\}.obj:
+	$(ASM) $(MLOPTIONS)\
+		$(LIBCNTRL) $(MLOPTFLAGS) $(MLOPTS)\
+		/Fo$(OBJDIR)\ $<
+
+{$$(SRCDIR)\}.S{$(OBJDIR)\}.obj:
+	$(CC) -nologo -DNASM_ASSEMBLER /EP $< >$*.as
+        $(USENASM) -o $@ -f win32 $*.as
+	-erase $*.as
+
+<<KEEP
+	nmake /nologo /f $(OBJDIR)\$(@B).mak
+
+!ENDIF # "$(PROC_EXEFILESERIES)" == "1"
+
+!ENDIF
+
+
+#--------------------------------------------------------------------------------
+# utility batch programs
+#--------------------------------------------------------------------------------
+
+$(TEMP)\copyfile.mak: $(NMAKE_MIF_FILE)
+	rem <<$@
+.SILENT:
+.SUFFIXES: .asm .cpp .cxx .cc .c .a .S
+
+$$(TGTFILE): $$(SRCFILE)
+	echo $$(TGTFILE) ...
+	$(COPYFILE) $$(SRCFILE) $$(TGTFILE) > $(NULL)
+
+copyfile: $$(TGTFILE)
+
+copyfileck:
+	echo CopyFile Check: $$(SRCFILE) ... $$(TGTFILE)
+
+<<KEEP
+
+$(TEMP)\copyfiles.bat: $(NMAKE_MIF_FILE)
+	rem <<$@
+@echo off
+set tgtdir=%1
+shift
+set srcdir=%1
+shift
+if [%1]==[] goto nofiles
+if [%tgtdir%] == [-] set tgtdir=
+if not [%tgtdir%] == [] set tgtdir=%tgtdir%\
+if [%srcdir%] == [-] set srcdir=
+if not [%srcdir%] == [] set srcdir=%srcdir%\
+:start
+nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=%SRCDIR%%1" "TGTFILE=%TGTDIR%%1" copyfile
+shift
+if not [%1] == [] goto start
+goto endex
+:nofiles
+echo Error: %0 called with no files!
+echo tgtdir=%tgtdir%
+echo srcdir=%srcdir%
+echo xargs.=%*
+:endex
+set tgtdir=
+set srcdir=
+echo.
+<<KEEP
+
+# ----- Directory checking rules -----------------------------------------------
+
+# ----- Generic directory check rule -------------------------------------------
+
+$(TEMP)\mkpath.exe: nmake.mif
+	rem <<$(TEMP)\mkpath.c
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <direct.h>
+#include <errno.h>
+
+int mkpath(char *);
+
+int main(int n, char **a)
+{
+	int i,rc;
+
+	if (n<2)
+		return 1;
+
+	for (i=1,rc=0;((i<n)&&(rc==0));i++)
+		rc = mkpath(a[i]);
+
+	return rc;
+}
+
+int mkpath(char *path)
+{
+	static char pbuf[2049];
+	static char dbuf[2049];
+	char *token;
+
+	strcpy(pbuf,path);
+
+	if ( (pbuf[0] == '/') || (pbuf[0] == '\\'))
+		strcpy(dbuf,"\\");
+	else
+		strcpy(dbuf,"");
+
+	token = strtok( pbuf, "/\\" );
+
+	while (token)
+	{
+		strcat(dbuf,token);
+
+		if (dbuf[strlen(dbuf)-1] != ':')
+		{
+			FILE *fp;
+
+			fp = fopen(dbuf,"rb");
+			if (fp) fclose(fp);
+
+			if (fp!=NULL)
+			{
+				printf("Error: [%s] is a file!\n", dbuf);
+				return 2;
+			}
+
+			if (mkdir(dbuf)!=0)
+			{
+				switch (errno)
+				{
+				case EEXIST:
+					break;
+				default:
+					printf("Error creating [%s] : %s\n",dbuf,strerror(errno));
+					return 2;
+				}
+			}
+		}
+
+		token = strtok( NULL, "/\\" );
+		if (token) strcat(dbuf,"\\");
+	}
+
+	return 0;
+}
+<<KEEP
+	$(CC) /nologo /MD /Fo$(TEMP)\ /Fe$@ $(TEMP)\mkpath.c
+	$(LINK) /nologo /subsystem:console /nodefaultlib /machine:ix86\
+		/out:$@ $(TEMP)\mkpath.obj msvcrt.lib kernel32.lib gdi32.lib user32.lib oldnames.lib
+
+$(DIRECTORYNAME): $(TEMP)\mkpath.exe
+	if not exist "$@\$(NULL)" $(TEMP)\mkpath "$@"
+
+directory: $(TEMP)\mkpath.exe "$(DIRECTORYNAME)"
+
+# ----- Convenience direcotry checking rules -----------------------------------
+
+!IF ("$(BINDIR)"!="$(DIRECTORYNAME)")
+$(BINDIR):
+	nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+!ENDIF
+
+!IF ("$(INCDIR)"!="$(DIRECTORYNAME)")&&("$(INCDIR)"!="$(BINDIR)")
+$(INCDIR):
+	nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+!ENDIF
+
+!IF ("$(USEDIR)"!="$(DIRECTORYNAME)")&&("$(USEDIR)"!="$(BINDIR)")&&("$(USEDIR)"!="$(INCDIR)")
+$(USEDIR):
+	nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+!ENDIF
+
+!IF ("$(RELDIR)"!="$(DIRECTORYNAME)")&&("$(RELDIR)"!="$(BINDIR)")&&("$(RELDIR)"!="$(INCDIR)")&&("$(RELDIR)"!="$(USEDIR)")
+$(RELDIR):
+	nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+!ENDIF
+
+!IF ("$(DEBDIR)"!="$(DIRECTORYNAME)")&&("$(DEBDIR)"!="$(BINDIR)")&&("$(DEBDIR)"!="$(INCDIR)")&&("$(DEBDIR)"!="$(USEDIR)")&&("$(DEBDIR)"!="$(RELDIR)")
+$(DEBDIR):
+	nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+!ENDIF
+
+!IF ("$(DISTDIR)"!="$(DIRECTORYNAME)")&&("$(DISTDIR)"!="$(BINDIR)")&&("$(DISTDIR)"!="$(INCDIR)")&&("$(DISTDIR)"!="$(USEDIR)")&&("$(DISTDIR)"!="$(RELDIR)")&&("$(DISTDIR)"!="$(DEBDIR)")
+$(DISTDIR):
+	nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+!ENDIF
+
+!IF ("$(OBJDIR)"!="$(DIRECTORYNAME)")&&("$(OBJDIR)"!="$(BINDIR)")&&("$(OBJDIR)"!="$(INCDIR)")&&("$(OBJDIR)"!="$(USEDIR)")&&("$(OBJDIR)"!="$(RELDIR)")&&("$(OBJDIR)"!="$(DEBDIR)")&&("$(OBJDIR)"!="$(DISTDIR)")
+$(OBJDIR):
+	nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+!ENDIF
+
+!IF ("$(RELDIR)"!="$(DIRECTORYNAME)")&&("$(RELDIR)"!="$(BINDIR)")&&("$(RELDIR)"!="$(INCDIR)")&&("$(RELDIR)"!="$(USEDIR)")&&("$(RELDIR)"!="$(RELDIR)")&&("$(RELDIR)"!="$(DEBDIR)")&&("$(RELDIR)"!="$(DISTDIR)")&&("$(RELDIR)"!="$(OBJDIR)")
+$(RELDIR):
+	nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+!ENDIF
+
+!IF ("$(DEBDIR)"!="$(DIRECTORYNAME)")&&("$(DEBDIR)"!="$(BINDIR)")&&("$(DEBDIR)"!="$(INCDIR)")&&("$(DEBDIR)"!="$(USEDIR)")&&("$(DEBDIR)"!="$(RELDIR)")&&("$(DEBDIR)"!="$(DEBDIR)")&&("$(DEBDIR)"!="$(DISTDIR)")&&("$(DEBDIR)"!="$(OBJDIR)")
+$(DEBDIR):
+	nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+!ENDIF
+
+# $(PCHDDIR): nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+
+# $(PCHRDIR): nmake /nologo /f nmake.mak "DIRECTORYNAME=$@" directory
+
+# ----- Header file update list ------------------------------------------------
+
+headers: $(INCDIR) $(TEMP)\copyfile.mak $(TEMP)\copyfiles.bat
+!IF "$(INCDIRSFX)" == "-"
+	$(TEMP)\copyfiles.bat $(INCDIR) $(INCDIR_L) $(H_FILES)
+!ELSE
+	$(TEMP)\copyfiles.bat $(INCDIR)\$(INCDIRSFX) $(INCDIR_L)\$(INCDIRSFX) $(H_FILES)
+!ENDIF
+
+headers.ck: $(INCDIR) $(TEMP)\copyfile.mak $(TEMP)\copyfiles.bat
+!IF "$(INCDIRSFX)" == "-"
+	echo $(TEMP)\copyfiles.bat $(INCDIR) $(INCDIR_L) $(H_FILES)> $(TEMP)\headers.bat
+!ELSE
+	echo $(TEMP)\copyfiles.bat $(INCDIR)\$(INCDIRSFX) $(INCDIR_L)\$(INCDIRSFX) $(H_FILES)> $(TEMP)\headers.bat
+!ENDIF
+	type $(TEMP)\headers.bat
+
+# ----- Shared Object File dependancy directives -------------------------------
+
+!IF "$(OBJDIR_R)" != "$(OBJDIR)"
+obj: $(CPPDEPS) $(OBJDIR_R) $(OBJDIR) $(PCHFILE) $(OBJ)
+!ELSE
+obj: $(CPPDEPS) $(OBJDIR) $(PCHFILE) $(OBJ)
+!ENDIF
+
+!IF ("$(COPYSOURCE)"!="") && ("$(COPYTARGET)"!="")
+copyfile: $(TEMP)\copyfile.mak
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(COPYSOURCE)" "TGTFILE=$(COPYTARGET)" copyfile
+!ENDIF
+
+# ----- Static Library build directives ----------------------------------------
+
+$(OBJDIR)\$(LIBBASE)$(LIBSFX).lib: obj
+	echo $@ ...
+	lib /nologo /nodefaultlib /verbose /out:$@ /subsystem:$(SUBSYSTEM) @<<
+$(OBJ: =
+)
+<<
+
+libbin: $(OBJDIR)\$(LIBBASE)$(LIBSFX).lib
+
+lib:
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) filelistxform
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) libbin
+	nmake /nologo /f nmake.mak filelistxform.kill
+
+$(USEDIR)\$(LIBPFX)$(LIBBASE)$(LIBSFX).lib: $(OBJDIR)\$(LIBBASE)$(LIBSFX).lib
+	echo $@ ...
+	$(COPYFILE) $? $@ > $(NULL)
+
+libup: $(USEDIR) lib $(TEMP)\copyfile.mak
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(LIBBASE)$(LIBSFX).lib" "TGTFILE=$(USEDIR)\$(LIBPFX)$(LIBBASE)$(LIBSFX).lib" copyfile
+
+libupck: $(USEDIR) lib $(TEMP)\copyfile.mak
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(LIBBASE)$(LIBSFX).lib" "TGTFILE=$(USEDIR)\$(LIBPFX)$(LIBBASE)$(LIBSFX).lib" copyfileck
+
+!IF "$(OBJDIR_R)" != "$(OBJDIR)"
+libupr: $(USEDIR) lib $(TEMP)\copyfile.mak
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(LIBBASE)$(LIBSFX).lib" "TGTFILE=$(OBJDIR_R)\$(LIBBASE)$(LIBSFX).lib" copyfile
+!ENDIF
+
+# ----- Dynamic Library build directives ---------------------------------------
+
+# Note: Shares 'obj' subtarget with normal 'lib' build and 'exe' build
+
+!IF "$(RCFILE)" != ""
+$(OBJDIR)\$(LIBBASE)$(DEBTAG).res: $(RCFILE)
+	echo $(RCFILE) ...
+	rc $(RCFLAGS) /fo$@ $(RCFILE)
+
+resources: $(OBJDIR)\$(LIBBASE)$(DEBTAG).res
+!ENDIF
+
+$(OBJDIR)\$(DLLBASE)$(LIBSFX).dll: obj
+	echo $@ ...
+	$(LINK) > $*.err /nologo @<<$*.rsp
+/out:$@
+/opt:ref
+/machine:ix86
+/debug
+/pdb:$*.pdb
+/map:$*.map
+/dll
+!IF "$(FORCELINKFLAGS)" != ""
+$(FORCELINKFLAGS: =
+)
+!ENDIF
+!IF "$(LINKLIBPATH)" != ""
+$(LINKLIBPATH: =
+)
+!ENDIF
+!IF "$(DLLBASEOPT)" != ""
+$(DLLBASEOPT)
+!ENDIF
+!IF "$(DEFFILEOPT)" != ""
+$(DEFFILEOPT)
+!ENDIF
+/nodefaultlib
+/swaprun:cd
+/swaprun:net
+$(OBJ: =
+)
+!IF "$(DLLLIBS)" != ""
+$(DLLLIBS: =
+)
+!ENDIF
+$(CRTLIB).lib
+!IF "$(USE_STD_CPP_HDRS)" == "1"
+$(CXXRTLIB).lib
+!ENDIF
+kernel32.lib
+gdi32.lib
+user32.lib
+oldnames.lib
+<<KEEP
+
+dllbin: $(OBJDIR)\$(DLLBASE)$(LIBSFX).dll
+
+dll: $(DEFFILE)
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) filelistxform
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) BUILD_DLL=1 dllbin
+	nmake /nologo /f nmake.mak filelistxform.kill
+
+dllup: $(BINDIR) $(USEDIR) dll $(TEMP)\copyfile.mak
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(DLLBASE)$(LIBSFX).dll" "TGTFILE=$(BINDIR)\$(DLLBASE)$(LIBSFX).dll" copyfile
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(DLLBASE)$(LIBSFX).pdb" "TGTFILE=$(BINDIR)\$(DLLBASE)$(LIBSFX).pdb" copyfile
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(DLLBASE)$(LIBSFX).lib" "TGTFILE=$(USEDIR)\$(DLLBASE)$(LIBSFX).lib" copyfile
+
+!IF "$(OBJDIR_R)" != "$(OBJDIR)"
+dllupr: dll $(TEMP)\copyfile.mak
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(DLLBASE)$(LIBSFX).dll" "TGTFILE=$(OBJDIR_R)\$(DLLBASE)$(LIBSFX).dll" copyfile
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(DLLBASE)$(LIBSFX).pdb" "TGTFILE=$(OBJDIR_R)\$(DLLBASE)$(LIBSFX).pdb" copyfile
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(DLLBASE)$(LIBSFX).lib" "TGTFILE=$(OBJDIR_R)\$(DLLBASE)$(LIBSFX).lib" copyfile
+!ENDIF
+
+# ----- Execuable build directives (full multi-module exe) ---------------------
+
+# Note: Shares 'obj' subtarget with normal 'lib' build and 'dll' build
+
+!IF "$(PROC_EXEFILESERIES)" == "0"
+
+$(OBJDIR)\$(EXEFILE)$(EXESFX).exe: obj
+	echo $@ ...
+	$(LINK) > $*.err /nologo @<<$(OBJDIR)\$(EXEFILE)$(EXESFX).lnk
+/debug /map:$*.map
+/subsystem:$(SUBSYSTEM) $(FORCELINKFLAGS)
+/nodefaultlib /swaprun:cd /swaprun:net
+$(LINKLIBPATH)
+/machine:ix86
+/out:$@ $(DEFFILEOPT)
+$(OBJ: =
+)
+$(EXELIBS: =
+)
+$(CRTLIB).lib
+!IF "$(USE_STD_CPP_HDRS)" == "1"
+$(CXXRTLIB).lib
+!ENDIF
+kernel32.lib
+gdi32.lib
+user32.lib
+oldnames.lib
+<<KEEP
+
+exebin: $(OBJDIR)\$(EXEFILE)$(EXESFX).EXE
+
+exe: $(DEFFILE)
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) filelistxform
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) exebin
+	nmake /nologo /f nmake.mak filelistxform.kill
+
+exeup: $(BINDIR) exe $(TEMP)\copyfile.mak
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(EXEFILE)$(EXESFX).EXE" "TGTFILE=$(BINDIR)\$(EXEFILE)$(EXESFX).EXE" copyfile
+
+exeupck: $(BINDIR) exe $(TEMP)\copyfile.mak
+	nmake /nologo /f $(TEMP)\copyfile.mak "SRCFILE=$(OBJDIR)\$(EXEFILE)$(EXESFX).EXE" "TGTFILE=$(BINDIR)\$(EXEFILE)$(EXESFX).EXE" copyfileck
+
+!ENDIF # "$(PROC_EXEFILESERIES)" == "0"
+
+# ----- meta-lib build - all libs & test executable ----------------------------
+
+metalib:
+	echo Building '$(LIBBASE)' series ...
+!IF ( ("$(NODEBUG)" == "0") && ("$(NOSTATIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-s LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		lib
+!ENDIF
+!IF ( ("$(NODEBUG)" == "0") && ("$(NODYNAMIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		lib
+!ENDIF
+!IF ( ("$(NORELEASE)" == "0") && ("$(NOSTATIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-s LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		lib
+!ENDIF
+!IF ( ("$(NORELEASE)" == "0") && ("$(NODYNAMIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		lib
+!ENDIF
+!IF ( ("$(NORELEASE)" == "0") && ("$(NODYNAMIC)" == "0") && ("$(EXE)" != "") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		exe
+!ENDIF
+	echo.
+
+# ----- use/bin directories update ---------------------------------------------
+
+metalibup:
+	echo Updating '$(LIBBASE)' series ...
+!IF ( ("$(NORELEASE)" == "0") && ("$(NOSTATIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-s LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libup
+!ENDIF
+!IF ( ("$(NORELEASE)" == "0") && ("$(NODYNAMIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libup
+!ENDIF
+!IF ( ("$(NODEBUG)" == "0") && ("$(NOSTATIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-s LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libup
+!ENDIF
+!IF ( ("$(NODEBUG)" == "0") && ("$(NODYNAMIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libup
+!ENDIF
+!IF ( ("$(NORELEASE)" == "0") && ("$(NODYNAMIC)" == "0") && ("$(EXE)" != "") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		exeup
+!ENDIF
+	echo.
+
+!IF "$(OBJDIR_R)" != "$(OBJDIR)"
+metalibupr:
+	echo Updating '$(LIBBASE)' series (local) ...
+!IF ( ("$(NORELEASE)" == "0") && ("$(NOSTATIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-s LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libupr
+!ENDIF
+!IF ( ("$(NORELEASE)" == "0") && ("$(NODYNAMIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libupr
+!ENDIF
+!IF ( ("$(NODEBUG)" == "0") && ("$(NOSTATIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-s LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libupr
+!ENDIF
+!IF ( ("$(NODEBUG)" == "0") && ("$(NODYNAMIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libupr
+!ENDIF
+	echo.
+!ENDIF
+
+metalibupck:
+	echo Updating '$(LIBBASE)' series ...
+!IF ( ("$(NORELEASE)" == "0") && ("$(NOSTATIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-s LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libupck
+!ENDIF
+!IF ( ("$(NORELEASE)" == "0") && ("$(NODYNAMIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libupck
+!ENDIF
+!IF ( ("$(NODEBUG)" == "0") && ("$(NOSTATIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-s LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libupck
+!ENDIF
+!IF ( ("$(NODEBUG)" == "0") && ("$(NODYNAMIC)" == "0") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libupck
+!ENDIF
+!IF ( ("$(NORELEASE)" == "0") && ("$(NODYNAMIC)" == "0") && ("$(EXE)" != "") )
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-d LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		libupck
+!ENDIF
+	echo.
+
+# ----- DLL meta rule
+
+metadll:
+	echo Building '$(LIBBASE)' DLL series ...
+!IF ("$(NORELEASE)" == "0")
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-$(CRTTYPE) LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		dll
+!ENDIF
+!IF ("$(NODEBUG)" == "0")
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-$(CRTTYPE) LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		dll
+!ENDIF
+	echo.
+
+# ----- DLL meta=update rule
+
+metadllup:
+	echo Updating '$(LIBBASE)' series ...
+!IF ("$(NORELEASE)" == "0")
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-$(CRTTYPE) LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		dllup
+!ENDIF
+!IF ("$(NODEBUG)" == "0")
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-$(CRTTYPE) LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		dllup
+!ENDIF
+	echo.
+
+metadllupr:
+	echo Updating '$(LIBBASE)' series (local) ...
+!IF ("$(NORELEASE)" == "0")
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=r-$(CRTTYPE) LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		dllupr
+!ENDIF
+!IF ("$(NODEBUG)" == "0")
+	nmake /nologo /f $(MAKEFILE) LIBTYPE=d-$(CRTTYPE) LIBBASE=$(LIBBASE)\
+		EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) DLLBASE=$(DLLBASE)\
+		NOSTATIC=$(NOSTATIC) NODYNAMIC=$(NODYNAMIC)\
+		NODEBUG=$(NODEBUG) NORELEASE=$(NORELEASE)\
+		dllupr
+!ENDIF
+	echo.
+
+# ----- Single-Step source->exe build list ------------------------------------
+
+exefileseries.msg:
+	type <<
+
+----- Building executable file/series --------------------------------
+$(EXEFILESLIST)
+----------------------------------------------------------------------
+
+<<
+
+!IF "$(OBJDIR_R)" != "$(OBJDIR)"
+exefileseries.bin: exefileseries.msg $(CPPDEPS) $(OBJDIR_R) $(OBJDIR) $(EXESUPLIBSLIST) $(EXEFILESLIST)
+!ELSE
+exefileseries.bin: exefileseries.msg $(CPPDEPS) $(OBJDIR) $(EXESUPLIBSLIST) $(EXEFILESLIST)
+!ENDIF
+
+suplibdeps: $(SUPLIBDEPS)
+
+exefileseries: # suplibdeps
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) filelistxform
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) PROC_EXEFILESERIES=1 exefileseries.bin
+
+exefilestatus:
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) filelistxform
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) status
+
+EXEFSERIESLIST = $(SRCFILES:.asm=.exe)
+EXEFSERIESLIST = $(EXEFSERIESLIST:.cpp=.exe)
+EXEFSERIESLIST = $(EXEFSERIESLIST:.cxx=.exe)
+EXEFSERIESLIST = $(EXEFSERIESLIST:.cc=.exe)
+EXEFSERIESLIST = $(EXEFSERIESLIST:.c=.exe)
+EXEFSERIESLIST = $(EXEFSERIESLIST:.a=.exe)
+
+!IF "$(OBJDIR_R)" != "$(OBJDIR)"
+exefileseries.copy: exefileseries.msg $(OBJDIR_R) $(OBJDIR) $(EXESUPLIBSLIST) $(EXEFILESLIST)
+!ELSE
+exefileseries.copy: exefileseries.msg $(OBJDIR) $(EXESUPLIBSLIST) $(EXEFILESLIST)
+!ENDIF
+	echo Updating $(BINDIR) ...
+	echo.
+	$(TEMP)\copyfiles.bat $(BINDIR) $(OBJDIR) $(EXEFSERIESLIST)
+
+exefileseriesup: $(TEMP)\copyfile.mak $(TEMP)\copyfiles.bat
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) filelistxform
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) PROC_EXEFILESERIES=1 exefileseries.copy
+
+# ----- Clear exes from build and optional target directories -----------------
+
+EXEFILESLISTCLR = $(SRCFILES:.asm=.exe)
+EXEFILESLISTCLR = $(EXEFILESLISTCLR:.cpp=.exe)
+EXEFILESLISTCLR = $(EXEFILESLISTCLR:.cxx=.exe)
+EXEFILESLISTCLR = $(EXEFILESLISTCLR:.cc=.exe)
+EXEFILESLISTCLR = $(EXEFILESLISTCLR:.c=.exe)
+EXEFILESLISTCLR = $(EXEFILESLISTCLR:.a=.exe)
+
+!IF "$(DEBUG)" == "1"
+EXEFILESLISTCLR = $(EXEFILESLISTCLR:.exe=d.exe)
+!ENDIF
+
+clrxfileseries.msg:
+	echo ... cleaning $(BINDIR) ...
+
+$(EXEFILESLISTCLR:.exe=.execlr):
+	if exist "$(BINDIR)\$(@B).EXE" echo ... removing $(BINDIR)\$(@B).EXE
+	if exist "$(BINDIR)\$(@B).EXE" del "$(BINDIR)\$(@B).EXE"
+
+exefileseries.clr: clrxfileseries.msg $(EXEFILESLISTCLR:.exe=.execlr)
+
+clrxfileseries:
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) filelistxform
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) PROC_EXEFILESERIES=1 exefileseries.clr
+	nmake /nologo /f nmake.mak filelistxform.kill
+
+# ----- Distribution setup ----------------------------------------------------
+
+!IF "$(NMAKE_MIF_FILE)" != "nmake.mif"
+nmake.mif: $(NMAKE_MIF_FILE)
+	echo $@ ...
+	$(COPYFILE) $? $@ > $(NULL)
+!ENDIF
+
+_distfiles: $(TEMP)\copyfile.mak $(TEMP)\copyfiles.bat
+	echo $@ not yet ready for prime time.
+
+_distfiles.old:
+!IF "$(H_FILES)" != ""
+	$(TEMP)\copyfiles $(DISTDIR) . $(INCDIRSFX) $(H_FILES)
+!ENDIF
+!IF "$(MANIFEST)" != ""
+	$(TEMP)\copyfiles $(DISTDIR) . - $(MANIFEST)
+!ENDIF
+
+distcore: $(DISTDIR) $(NMAKE_MIF_FILE) _distfiles
+
+# ----- Cleanup ---------------------------------------------------------------
+
+cleanlib:
+	-if exist "$(OBJDIR)\$(NULL)" $(DELTREE) $(OBJDIR)
+
+cleanexe:
+	echo. > $(EXEFILE).EXE
+	del $(EXEFILE).exe > $(NULL)
+
+cleanroot: $(RELDIR) $(DEBDIR)
+	-$(DELTREE) $(RELDIR) $(DEBDIR) > $(NULL)
+!IF "$(CLEANSUPS)" != ""
+	-$(DELTREE) $(CLEANSUPS) > $(NULL)
+!ENDIF
+	echo. > foo.ncb
+	del *.ncb > $(NULL)
+	echo. > $(TEMP)\copyfiles.bat
+	del $(TEMP)\copyfiles.bat > $(NULL)
+	echo. > $(TEMP)\copyfile.mak
+	del $(TEMP)\copyfile.mak > $(NULL)
+
+# ----- special common targets ------------------------------------------------
+
+status.core:
+	$(PAGER) < <<$(TEMP)\nmake.status
+Status Information - Directories
+----------------------------------------------------------------------
+BINDIR........... = $(BINDIR)
+DEBDIR........... = $(DEBDIR)
+DEVDIR........... = $(DEVDIR)
+DISTDIR.......... = $(DISTDIR)
+INCDIR........... = $(INCDIR)
+INCDIR_L......... = $(INCDIR_L)
+INTDIRSFX........ = $(INTDIRSFX)
+OBJDIR........... = $(OBJDIR)
+OBJDIR_R......... = $(OBJDIR_R)
+PCHDIR........... = $(PCHDIR)
+PCHRDIR.......... = $(PCHRDIR)
+PCHDDIR.......... = $(PCHDDIR)
+RELDIR........... = $(RELDIR)
+SRCPATH.......... = $(SRCPATH)
+SRCALT1.......... = $(SRCALT1)
+SRCALT2.......... = $(SRCALT2)
+SRCALT3.......... = $(SRCALT3)
+SRCALT4.......... = $(SRCALT4)
+ALTLIBPATH....... = $(ALTLIBPATH)
+TEMP............. = $(TEMP)
+USEDIR........... = $(USEDIR)
+----------------------------------------------------------------------
+Status Information - Build Control
+----------------------------------------------------------------------
+CRTLIB........... = $(CRTLIB)
+CRTTYPE.......... = $(CRTTYPE)
+DEBUG............ = $(DEBUG)
+DLL.............. = $(OBJDIR)\$(DLLBASE).dll
+DLLBASE.......... = $(DLLBASE)
+DLLIMPLIB........ = $(OBJDIR)\$(DLLBASE).lib
+DOGUI............ = $(DOGUI)
+EXELIBS.......... = $(EXELIBS)
+EXESFX........... = $(EXESFX)
+EXETYPE.......... = $(EXETYPE)
+FORCELINK........ = $(FORCELINK)
+LIB.............. = $(OBJDIR)\$(LIBPFX)$(LIBBASE)$(LIBSFX).lib
+LIBBASE.......... = $(LIBBASE)
+LIBTYPE.......... = $(LIBTYPE)
+LINKTARGET....... = $(LINKTARGET)
+MAKEFILE......... = $(MAKEFILE)
+NODEBUG.......... = $(NODEBUG)
+NODYNAMIC........ = $(NODYNAMIC)
+NOPCH............ = $(NOPCH)
+NORELEASE........ = $(NORELEASE)
+NOSTATIC......... = $(NOSTATIC)
+----------------------------------------------------------------------
+Status Information - Compiler Options
+----------------------------------------------------------------------
+!IF "$(LIBCNTRL)" == ""
+CLOPTIONS........ = (starts on next line)
+$(CLOPTIONS) -----##----
+MLOPTIONS........ = (starts on next line)
+$(MLOPTIONS) -----##----
+!ELSE
+CLOPTIONS........ = (incl. LIBCNTRL, starts on next line)
+$(CLOPTIONS) $(LIBCNTRL) -----##----
+MLOPTIONS........ = (incl. LIBCNTRL, starts on next line)
+$(MLOPTIONS) $(LIBCNTRL) -----##----
+!ENDIF
+CPP_PCH.......... = $(CPP_PCH)
+CPPOPTS.......... = $(CPPOPTS)
+CPPDEPS.......... = $(SPPDEPS)
+DEFFILE.......... = $(DEFFILE)
+EEXEOBJ.......... = $(EEXEOBJ)
+H_FILES.......... = $(H_FILES)
+LINKTARGET....... = $(LINKTARGET)
+MAKEFILE......... = $(MAKEFILE)
+MLOPTS........... = $(MLOPTS)
+MLOPTFLAGS....... = $(MLOPTFLAGS)
+OPTFLAGS......... = $(OPTFLAGS)
+PCHINCROOT....... = $(PCHINCROOT)
+PCHINCFILE....... = $(PCHINCFILE)
+PCHSOURCEFILE.... = $(PCHSOURCEFILE)
+PCHFILE.......... = $(PCHFILE)
+PCHOBJFILE....... = $(PCHOBJFILE)
+PCHOPTS.......... = $(PCHOPTS)
+PCHOPTSC......... = $(PCHOTPSC)
+EXEFILE.......... = $(EXEFILE)
+EXEFILESLIST..... = (starts on next line)
+$(EXEFILESLIST)
+EXESUPLIBSLIST... = (starts on next line)
+$(EXESUPLIBSLIST)
+SRCFILES......... = (starts on next line)
+$(SRCFILES)
+SUPLIBSSRC....... = (starts on next line)
+$(SUPLIBSSRC)
+SUPLIBSLIST...... = (starts on next line)
+$(SUPLIBSLIST)
+OBJ.............. = (starts on next line)
+$(OBJ)
+OBJ2............. = (starts on next line)
+$(OBJ2)
+----------------------------------------------------------------------
+EXEFILESLIST = $(OBJDIR)\$$(EXEFILESLIST: = $(OBJDIR)\)
+OBJ = $(OBJDIR)\$$(OBJ: = $(OBJDIR)\)
+!IF "$(EXESUPLIBSLIST)" != ""
+EXESUPLIBSLIST = $(OBJDIR)\$$(EXESUPLIBSLIST: = $(OBJDIR)\)
+!ENDIF
+----------------------------------------------------------------------
+<<
+
+status:
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) filelistxform
+	nmake /nologo /f nmake.mak EXEFILE=$(EXEFILE) EXETYPE=$(EXETYPE) EXEBASE=$(EXEBASE) LIBBASE=$(LIBBASE) DLLBASE=$(DLLBASE) status.core
+	nmake /nologo /f nmake.mak filelistxform.kill
+
+force: clean all

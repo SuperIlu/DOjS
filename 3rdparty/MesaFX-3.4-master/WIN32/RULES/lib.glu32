@@ -1,0 +1,20 @@
+
+!IF "$(STATIC_MESA)" == "1"
+!ERROR lib.$(LIBBASE) : This file require STATIC_MESA be set to 0.
+!ENDIF
+
+!INCLUDE .\rules\lib.mesaglu.core
+
+USE_CRTDLL=1
+
+DEFFILE = res\mesaglu32.def
+RCFILE  = res\mesaglu32.rc
+
+!IF "$(DEBUG)" == "1"
+DLLLIBS = OpenGL32d.lib
+!ELSE
+DLLLIBS = OpenGL32.lib
+!ENDIF
+
+CPPOPTS = $(CPPOPTS) /DBUILD_GLU32
+DLLBASE = GLU32

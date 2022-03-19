@@ -7,7 +7,7 @@
 			// all classes
 			"Bitmap.js",
 			"COMPort.js",
-			"CpuId.js",
+			"Cpuid.js",
 			"Curl.js",
 			"File.js",
 			"Font.js",
@@ -18,6 +18,7 @@
 			"Mpeg1.js",
 			"Neural.js",
 			"Noise.js",
+			"OGL.js",
 			"Rawplay.js",
 			"Sample.js",
 			"Socket.js",
@@ -46,6 +47,8 @@
 			"../jsboot/p5typo.js",
 			"../jsboot/p5util.js",
 			"../jsboot/p5vect.js",
+			"../jsboot/qoi.js",
+			"../jsboot/qrcode.js",
 			"../jsboot/quadtree.js",
 			"../jsboot/socket.js"
 		],
@@ -54,7 +57,7 @@
 	"opts": {
 		"readme": "../README.md",
 		"search": true,
-		"template": "/usr/local/lib/node_modules/better-docs"
+		"template": "/home/ilu/.nvm/versions/node/v17.4.0/lib/node_modules/better-docs"
 	},
 	"plugins": [
 		"plugins/markdown"
@@ -64,7 +67,7 @@
 			"outputSourceFiles": false
 		},
 		"better-docs": {
-			"name": "DOjS V1.7.0",
+			"name": "DOjS V1.8.0",
 			"hideGenerator": true,
 			"navLinks": [
 				{

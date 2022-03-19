@@ -1,0 +1,155 @@
+
+                        Mesa Copyright Information
+
+
+The Mesa distribution consists of several components.  Different copyrights
+apply to different components.  For example, GLUT is copyrighted by Mark
+Kilgard, some demo programs are copyrighted by SGI, some of the Mesa
+device drivers are copyrighted by the respective authors.
+
+Through version 3.0, the core Mesa library was been distributed under the
+GNU Library General Public License.
+
+In Mesa 3.1 (and later) the core library instead uses the XFree86 copyright.
+The copyright was being changed so that Mesa could be integrated into the
+XFree86 X server in order to support 3D hardware acceleration.  Mesa will
+still also be supported as a stand-alone library.
+
+If you have contributed code to Mesa in the past and don't want your
+code included in the non-GNU LGPL version please contact Brian to
+have your code removed.
+
+
+
+
+Common questions about the copyright change
+-------------------------------------------
+
+Q1. Why was the copyright changed?
+
+A1. Mesa is being integrated with XFree86 (the free X server for Linux
+and other Unix-like operating systems) in order to better support
+3D hardware on Linux.  All code used in XFree86 must use the XFree86
+copyright.  3D hardware acceleration on Linux is long overdue.  The
+Mesa copyright change will allow better hardware support on Linux in
+the near future.
+
+
+Q2. Is it legal to change the copyright?
+
+A2. Yes, since I (Brian Paul) hold the copyright.
+
+
+Q3. I contributed code to Mesa while under the GNU copyright and don't
+agree with the new copyright.  What can I do?
+
+A3. I'll remove any such code upon request.  So far, no one has made
+this request.
+
+
+Q4. The XFree86 copyright allows people/companies to release binary-only
+works derived from the Mesa code.  Isn't that bad?
+
+A4. It's somewhat unfortunate, but acceptable.  However, it really is in a
+company's best interest to keep modification to open-source software in the
+open-source domain.  See the open-source essays written by Eric Raymond for
+the reasoning.  Also note that any such concerns can be applied to the
+XFree86 project as well.  It seems to be doing well.
+
+
+
+Attention Contributors
+----------------------
+
+If you want to contribute to the Mesa project please consider the
+copyright issues.  If you contribute a bug fix or new feature to
+an existing component you should agree to the copyright on that
+component before submitting the bug fix or feature code.
+
+If you want to contribute a new component, such as a new device
+driver or demo program, then you can put whatever copyright you want
+on your code.  Insert the copyright into all files to avoid confusion.
+
+
+
+
+Mesa component copyrights
+-------------------------
+
+Component       Files                 Primary Author      Copyright
+-------------------------------------------------------------------------------
+core Mesa code  src/*.[ch]            Brian Paul          See below (*)
+                include/GL/gl.h
+
+GLU library     src-glu/*             Brian Paul          GNU-LGPL
+                include/GL/glu.h
+
+GLX driver      src/X/*               Brian Paul          See below (*)
+                include/GL/glx.h
+                include/GL/xmesa.h
+
+OS/Mesa driver  src/OSmesa/*          Brian Paul          See below (*)
+                include/GL/osmesa.h
+
+3Dfx driver     src/FX/*              David Bucciarelli   GNU-LGPL
+                include/GL/fxmesa.h
+
+MGL driver      src/MGL/*             SciTech, Inc        SciTech copyright
+                include/GL/mglmesa.h
+
+Windows driver  src/Windows/*         Li Wei              copyright by Li Wei
+                include/GL/wmesa.h
+
+SVGA driver     src/SVGA/*            Brian Paul          GNU-LGPL
+                include/GL/svgamesa.h
+
+DOS driver      src/DOS/*             Charlie Wallace     GNU-LGPL
+                include/GL/dosmesa.h
+
+GGI driver      src/GGI/*             Uwe Maurer          GNU-LGPL
+                include/GL/ggimesa.h
+
+S3 driver       src/S3/*              S3, Inc.            S3 copyright
+
+BeOS R4 driver  src/BeOS/*            Brian Paul          See below (*)
+
+GLUT            src-glut/*            Mark Kilgard        Mark's copyright
+                include/GL/*glut*.h
+
+demo programs   demos/*               various             see source file
+
+X demos         xdemos/*              Brian Paul          see source file
+
+SGI demos       samples/*             SGI                 SGI copyright
+
+RedBook demos   book/*                SGI                 SGI copyright
+
+
+
+(*) Main Mesa Copyright
+-----------------------
+
+Mesa code without an explicit copyright is covered by the following
+copyright:
+
+Copyright (C) 1999-2001  Brian Paul   All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+BRIAN PAUL BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+----------------------------------------------------------------------
+$Id: COPYRIGHT,v 1.4.4.1 2001/01/24 04:53:26 brianp Exp $

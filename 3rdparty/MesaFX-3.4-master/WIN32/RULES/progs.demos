@@ -1,0 +1,28 @@
+
+!IF "$(STATIC_MESA)" == "1"
+EXELIBS     = mesaglut.lib mesaglu.lib mesagl.lib
+USE_CRTDLL  = 0
+!ELSEIF "$(USE_SYSGL)" == "2"
+EXELIBS     = glut.lib glu.lib opengl.lib
+RUNTIMELIBS = glut.dll
+!ELSEIF "$(USE_SYSGL)" == "1"
+EXELIBS     = glut32.lib glu32.lib opengl32.lib
+RUNTIMELIBS = glut32.dll
+!ELSE
+EXELIBS     = glut32$(LIBSFX).lib glu32$(LIBSFX).lib opengl32$(LIBSFX).lib
+RUNTIMELIBS = glut32$(LIBSFX).dll glu32$(LIBSFX).dll opengl32$(LIBSFX).dll
+!ENDIF
+
+!IF "$(STATIC_MESA)" == "1"
+EXELIBS=$(EXELIBS) winmm.lib
+!ENDIF
+
+SRCALT1 = .\$(MESAROOT)\demos
+
+SRCFILES = bounce.c clearspd.c drawpix.c gamma.c gears.c glinfo.c gloss.c\
+   glutfx.c morph3d.c multiarb.c pointblast.c reflect.c spectex.c tessdemo.c\
+   texcyl.c texobj.c trispd.c winpos.c
+
+!IF "$(USE_SYSGL)" == "0"
+SRCFILES = $(SRCFILES) isosurf.c osdemo.c paltex.c renormal.c
+!ENDIF

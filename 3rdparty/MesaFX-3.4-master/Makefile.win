@@ -1,0 +1,7 @@
+target:
+	echo Please use the command-line build files in
+	echo ./win32 for building Mesa on Win32.
+	echo.
+	echo Better yet, use the IDE files if you have
+	echo DevStudio 5.
+	echo -Ted

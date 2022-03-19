@@ -22,6 +22,7 @@ SOFTWARE.
 /**
 Additional code taken from MDN:
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/hypot
 
 Code samples added on or after August 20, 2010 are in the public domain (CC0). 
 No licensing notice is necessary, but if you need one, you can use: 
@@ -46,6 +47,21 @@ REMOTE_DEBUG = false;
 ZIP_DELIM = "=";
 
 /**
+* @property {string} JSBOOT_ZIP path/name of the JSBOOT.ZIP
+*/
+JSBOOT_ZIP = "JSBOOT.ZIP";
+
+/**
+* @property {string} JSBOOT_DIR path of the JSBOOT directory
+*/
+JSBOOT_DIR = "JSBOOT/";
+
+/**
+* @property {string} PACKAGE_DIR path of the JSBOOT packages directory
+*/
+PACKAGE_DIR = "PACKAGE/";
+
+/**
  * @property {number} RAW_HDD_FLAG index for HDDs when using raw disk functions.
  */
 RAW_HDD_FLAG = 0x80;
@@ -66,6 +82,13 @@ Width = SizeX();
 Height = SizeY();
 
 /**
+ * @property {String} navigator.appName can be used to detect DOjS
+ */
+navigator = {
+	"appName": "DOjS"
+};
+
+/**
  * print javascript debug output if DEBUG is true.
  * 
  * @param {string} str the message to print.
@@ -75,6 +98,15 @@ function Debug(str) {
 	if (REMOTE_DEBUG) {
 		IpxDebug(str + "\n");
 	}
+}
+
+/**
+ * enable IPX remote debugging output.
+ */
+function EnableRemoteDebug() {
+	LoadLibrary("ipx");
+	REMOTE_DEBUG = true;
+	Info("Remote debug logging enabled.");
 }
 
 /**
@@ -150,12 +182,13 @@ function Require(name) {
 	}
 
 	var names = [
-		name,
-		name + '.js',
-		'jsboot.zip=jsboot/' + name,
-		'jsboot.zip=jsboot/' + name + '.js',
-		'jsboot/' + name,
-		'jsboot/' + name + '.js'
+		name,													// try local dir, plain name
+		name + '.js',											// try local dir, name with .js
+		JSBOOT_ZIP + ZIP_DELIM + JSBOOT_DIR + name,				// try jsboot.zip, core packages, plain name
+		JSBOOT_ZIP + ZIP_DELIM + JSBOOT_DIR + name + '.js',		// try jsboot.zip, core packages, name with .js
+		JSBOOT_DIR + name,										// try jsboot directory, core packages, plain name
+		JSBOOT_DIR + name + '.js',								// try jsboot directory, core packages, name with .js
+		JSBOOT_ZIP + ZIP_DELIM + PACKAGE_DIR + name + '.js'		// try jsboot.zip, installed packages, name with .js
 	];
 	Debug("Require(names) " + JSON.stringify(names));
 
@@ -229,6 +262,7 @@ function StartupInfo() {
 
 	Info("Screen size: " + width + "x" + height + "x" + mode);
 	Info("Memory: " + JSON.stringify(MemoryInfo()));
+	Info("Long file names: " + LFN_SUPPORTED);
 	Info("Command line args: " + JSON.stringify(ARGS));
 	Info("SerialPorts: " + JSON.stringify(GetSerialPorts().map(function (e) { return "0x" + e.toString(16) })));
 	Info("ParallelPorts: " + JSON.stringify(GetParallelPorts().map(function (e) { return "0x" + e.toString(16) })));
@@ -312,6 +346,25 @@ if (!String.prototype.endsWith) {
 		return this.substring(this_len - search.length, this_len) === search;
 	};
 }
+
+// add hypot to Math
+if (!Math.hypot) Math.hypot = function () {
+	var max = 0;
+	var s = 0;
+	var containsInfinity = false;
+	for (var i = 0; i < arguments.length; ++i) {
+		var arg = Math.abs(Number(arguments[i]));
+		if (arg === Infinity)
+			containsInfinity = true
+		if (arg > max) {
+			s *= (max / arg) * (max / arg);
+			max = arg;
+		}
+		s += arg === 0 && max === 0 ? 0 : (arg / max) * (arg / max);
+	}
+	return containsInfinity ? Infinity : (max === 1 / 0 ? 1 / 0 : max * Math.sqrt(s));
+};
+
 
 /**
  * create stop watch for benchmarking

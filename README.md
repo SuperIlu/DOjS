@@ -64,18 +64,18 @@ The following hardware/functions are available:
   * GIF-Animation, FLC/FLI, MPEG1 or OggVorbis playback
 
 ## Examples
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_003.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_010.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_019.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_034.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_004.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_013.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_025.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/gltixy.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_009.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_018.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_026.png" alt="DOjS example" style="max-width: 20%;">
-<img src="https://github.com/SuperIlu/DOjS/raw/master/images/ogl02.png" alt="DOjS example" style="max-width: 20%;">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_003.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_010.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_019.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_034.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_004.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_013.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_025.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/gltixy.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_009.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_018.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_026.png" alt="DOjS example" width="200">
+<img src="https://github.com/SuperIlu/DOjS/raw/master/images/ogl02.png" alt="DOjS example" width="200">
 
 ## A minimal script
 You can find the following example in `examples/exampl.js`:

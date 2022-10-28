@@ -33,7 +33,8 @@ DOjS was only possible due to the work of these people/projects:
   * [nanojpeg](http://keyj.emphy.de/nanojpeg/) for SVG loading
   * [AnimatedGIF](https://github.com/bitbank2/AnimatedGIF/) for rendering GIF animations.
 
-You can find me on [Twitter](https://twitter.com/dec_hl) if you want...
+## Contact
+You can find me on [Twitter](https://twitter.com/dec_hl), [Mastodon](https://mastodon.social/@dec_hl) or in the [DOjS Discord](https://discord.gg/J7MUTap9fM) if you want...
 
 # Download and quick start
 **You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases).** Just extract the contents of the archive and run `DOjS.exe`.

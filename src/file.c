@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2022 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ SOFTWARE.
 
 #include "DOjS.h"
 #include "file.h"
-#include "intarray.h"
+#include "bytearray.h"
 
 /************
 ** defines **
@@ -71,7 +71,7 @@ static void new_File(js_State *J) {
     NEW_OBJECT_PREP(J);
     const char *fname = js_tostring(J, 1);
 
-    file_t *f = malloc(sizeof(file_t));
+    file_t *f = calloc(1, sizeof(file_t));
     if (!f) {
         JS_ENOMEM(J);
         return;
@@ -134,8 +134,8 @@ static void File_ReadByte(js_State *J) {
 }
 
 /**
- * @brief return the remaining bytes from the file as number array.
- * file.ReadBytes():number[]
+ * @brief return the (remaining) bytes from the file as number array.
+ * file.ReadBytes([num:number]):number[]
  *
  * @param J VM state.
  */
@@ -146,26 +146,35 @@ static void File_ReadBytes(js_State *J) {
         return;
     }
 
+    // get number of bytes to read
+    uint32_t num = 0xFFFFFFFFU;
+    if (js_isnumber(J, 1)) {
+        num = js_touint32(J, 1);
+    }
+
     if (f->writeable) {
         js_error(J, "File was opened for writing!");
         return;
     } else {
         js_newarray(J);
 
-        int idx = 0;
+        uint32_t idx = 0;
         int ch = getc(f->file);
         while (ch != EOF) {
             js_pushnumber(J, ch);
             js_setindex(J, -2, idx);
             idx++;
+            if (idx >= num) {
+                break;
+            }
             ch = getc(f->file);
         }
     }
 }
 
 /**
- * @brief return the remaining bytes from the file as IntArray.
- * file.ReadInts():IntArray
+ * @brief return the (remaining) bytes from the file as ByteArray.
+ * file.ReadInts([num:number]):ByteArray
  *
  * @param J VM state.
  */
@@ -176,26 +185,36 @@ static void File_ReadInts(js_State *J) {
         return;
     }
 
+    // get number of bytes to read
+    uint32_t num = 0xFFFFFFFFU;
+    if (js_isnumber(J, 1)) {
+        num = js_touint32(J, 1);
+    }
+
     if (f->writeable) {
         js_error(J, "File was opened for writing!");
         return;
     } else {
-        int_array_t *ia = IntArray_create();
-        if (!ia) {
+        byte_array_t *ba = ByteArray_create();
+        if (!ba) {
             JS_ENOMEM(J);
             return;
         }
 
         int ch = getc(f->file);
         while (ch != EOF) {
-            if (IntArray_push(ia, 0xFF & ch) < 0) {
-                IntArray_destroy(ia);
+            if (ByteArray_push(ba, 0xFF & ch) < 0) {
+                ByteArray_destroy(ba);
                 JS_ENOMEM(J);
                 return;
             }
+            num--;
+            if (num == 0) {
+                break;
+            }
             ch = getc(f->file);
         }
-        IntArray_fromStruct(J, ia);
+        ByteArray_fromStruct(J, ba);
     }
 }
 
@@ -279,14 +298,18 @@ static void File_WriteByte(js_State *J) {
         return;
     } else {
         int ch = js_toint16(J, 1);
-        fputc((char)ch, f->file);
+        int err = fputc((char)ch, f->file);
+        if (err == EOF) {
+            js_error(J, "Error writing to file!");
+            return;
+        }
         fflush(f->file);
     }
 }
 
 /**
- * @brief write a bytes to a file.
- * file.WriteBytes(data:number[])
+ * @brief write bytes to a file.
+ * file.WriteBytes(data:number[], [num:number])
  *
  * @param J VM state.
  */
@@ -297,12 +320,21 @@ static void File_WriteBytes(js_State *J) {
         return;
     }
 
+    // get number of bytes to read
+    uint32_t num = 0xFFFFFFFFU;
+    if (js_isnumber(J, 2)) {
+        num = js_touint32(J, 2);
+    }
+
     if (!f->writeable) {
         js_error(J, "File was opened for reading!");
         return;
     } else {
         if (js_isarray(J, 1)) {
             int len = js_getlength(J, 1);
+            if (num < len) {
+                len = num;
+            }
 
             uint8_t *data = malloc(len);
             if (!data) {
@@ -315,9 +347,12 @@ static void File_WriteBytes(js_State *J) {
                 data[i] = (uint8_t)js_toint16(J, -1);
                 js_pop(J, 1);
             }
-            fwrite(data, 1, len, f->file);
-
+            int err = fwrite(data, 1, len, f->file);
             free(data);
+            if (err != len) {
+                js_error(J, "Error writing to file!");
+                return;
+            }
         } else {
             JS_ENOARR(J);
         }
@@ -325,8 +360,8 @@ static void File_WriteBytes(js_State *J) {
 }
 
 /**
- * @brief write a bytes to a file.
- * file.WriteInts(data:IntArray)
+ * @brief write bytes to a file.
+ * file.WriteInts(data:ByteArray, [num:number])
  *
  * @param J VM state.
  */
@@ -337,17 +372,30 @@ static void File_WriteInts(js_State *J) {
         return;
     }
 
-    JS_CHECKTYPE(J, 1, TAG_INT_ARRAY);
+    JS_CHECKTYPE(J, 1, TAG_BYTE_ARRAY);
+
+    // get number of bytes to read
+    uint32_t num = 0xFFFFFFFFU;
+    if (js_isnumber(J, 2)) {
+        num = js_touint32(J, 2);
+    }
 
     if (!f->writeable) {
         js_error(J, "File was opened for reading!");
         return;
     } else {
-        if (js_isuserdata(J, 1, TAG_INT_ARRAY)) {
-            int_array_t *ia = js_touserdata(J, 1, TAG_INT_ARRAY);
+        if (js_isuserdata(J, 1, TAG_BYTE_ARRAY)) {
+            byte_array_t *ba = js_touserdata(J, 1, TAG_BYTE_ARRAY);
 
-            for (int i = 0; i < ia->size; i++) {
-                fputc(ia->data[i], f->file);
+            int len = ba->size;
+            if (num < len) {
+                len = num;
+            }
+
+            int err = fwrite(ba->data, 1, len, f->file);
+            if (err != len) {
+                js_error(J, "Error writing to file!");
+                return;
             }
         } else {
             JS_ENOARR(J);
@@ -374,8 +422,16 @@ static void File_WriteLine(js_State *J) {
         js_error(J, "File was opened for reading!");
         return;
     } else {
-        fputs(line, f->file);
-        fputc('\n', f->file);
+        int err = fputs(line, f->file);
+        if (err == EOF) {
+            js_error(J, "Error writing to file!");
+            return;
+        }
+        err = fputc('\n', f->file);
+        if (err == EOF) {
+            js_error(J, "Error writing to file!");
+            return;
+        }
         fflush(f->file);
     }
 }
@@ -399,8 +455,62 @@ static void File_WriteString(js_State *J) {
         js_error(J, "File was opened for reading!");
         return;
     } else {
-        fputs(line, f->file);
+        int err = fputs(line, f->file);
+        if (err == EOF) {
+            js_error(J, "Error writing to file!");
+            return;
+        }
         fflush(f->file);
+    }
+}
+
+/**
+ * @brief get current read/write position.
+ * file.Tell():number
+ *
+ * @param J VM state.
+ */
+static void File_Tell(js_State *J) {
+    file_t *f = js_touserdata(J, 0, TAG_FILE);
+    if (!f->file) {
+        js_error(J, "File was closed!");
+        return;
+    }
+
+    long pos = ftell(f->file);
+    if (pos < 0) {
+        js_error(J, "Error getting file position!");
+    } else {
+        js_pushnumber(J, pos);
+    }
+}
+
+/**
+ * @brief set current read/write position.
+ * file.Seek(offset:number, whence:number):number
+ *
+ * @param J VM state.
+ */
+static void File_Seek(js_State *J) {
+    file_t *f = js_touserdata(J, 0, TAG_FILE);
+    if (!f->file) {
+        js_error(J, "File was closed!");
+        return;
+    }
+
+    int32_t offset = js_toint32(J, 1);
+    uint32_t whence = SEEK_SET;
+
+    // get whence if it is specified
+    if (js_isnumber(J, 2)) {
+        whence = js_touint32(J, 2);
+    }
+
+    int newPos = fseek(f->file, offset, whence);
+    if (newPos < 0) {
+        js_error(J, "Error setting file position!");
+    } else {
+        js_pushnumber(J, newPos);
     }
 }
 
@@ -418,16 +528,18 @@ void init_file(js_State *J) {
     js_newobject(J);
     {
         NPROTDEF(J, File, ReadByte, 0);
-        NPROTDEF(J, File, ReadBytes, 0);
-        NPROTDEF(J, File, ReadInts, 0);
+        NPROTDEF(J, File, ReadBytes, 1);
+        NPROTDEF(J, File, ReadInts, 1);
         NPROTDEF(J, File, ReadLine, 0);
         NPROTDEF(J, File, Close, 0);
         NPROTDEF(J, File, WriteByte, 1);
-        NPROTDEF(J, File, WriteBytes, 1);
-        NPROTDEF(J, File, WriteInts, 1);
+        NPROTDEF(J, File, WriteBytes, 2);
+        NPROTDEF(J, File, WriteInts, 2);
         NPROTDEF(J, File, WriteLine, 1);
         NPROTDEF(J, File, WriteString, 1);
         NPROTDEF(J, File, GetSize, 0);
+        NPROTDEF(J, File, Tell, 0);
+        NPROTDEF(J, File, Seek, 2);
     }
     CTORDEF(J, new_File, TAG_FILE, 2);
 

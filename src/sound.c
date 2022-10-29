@@ -68,7 +68,7 @@ static void new_Sample(js_State *J) {
     if (!delim) {
         snd = load_sample(fname);
         if (!snd) {
-            js_error(J, "Can't load sample '%s': %s", fname, allegro_error);
+            js_error(J, "Can't load sample '%s'", fname);
             return;
         }
     } else {

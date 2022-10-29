@@ -98,7 +98,7 @@ static void new_SQLite(js_State *J) {
     NEW_OBJECT_PREP(J);
     const char *fname = js_tostring(J, 1);
 
-    sqlite_t *sql = malloc(sizeof(sqlite_t));
+    sqlite_t *sql = calloc(1, sizeof(sqlite_t));
     if (!sql) {
         JS_ENOMEM(J);
         return;

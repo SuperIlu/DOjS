@@ -29,6 +29,7 @@ SOFTWARE.
 #include "DOjS.h"
 #include "bitmap.h"
 #include "util.h"
+#include "zipfile.h"
 
 /************
 ** defines **
@@ -167,40 +168,91 @@ static void new_Texinfo(js_State *J) {
     } else {
         fname = js_tostring(J, 1);
 
-        if (gu3dfGetInfo(fname, &tdfInfo)) {
-            ti->textureSize = tdfInfo.mem_required;
-            tdfInfo.data = malloc(tdfInfo.mem_required);
-            if (!tdfInfo.data) {
-                JS_ENOMEM(J);
-                free(ti);
-                return;
-            }
-            if (gu3dfLoad(fname, &tdfInfo)) {
-                ti->info.smallLodLog2 = tdfInfo.header.small_lod;
-                ti->info.largeLodLog2 = tdfInfo.header.large_lod;
-                ti->info.aspectRatioLog2 = tdfInfo.header.aspect_ratio;
-                ti->info.format = tdfInfo.header.format;
-                ti->info.data = tdfInfo.data;
-                ti->tableType = texTableType(ti->info.format);
-                switch (ti->tableType) {
-                    case GR_TEXTABLE_NCC0:
-                    case GR_TEXTABLE_NCC1:
-                    case GR_TEXTABLE_PALETTE:
-                        memcpy(&ti->tableData, &(tdfInfo.table), sizeof(TlTextureTable));
-                        break;
-                    default:
-                        break;
+        char *delim = strchr(fname, ZIP_DELIM);  // check for ZIP
+
+        if (!delim) {
+            if (gu3dfGetInfo(fname, &tdfInfo)) {
+                ti->textureSize = tdfInfo.mem_required;
+                tdfInfo.data = malloc(tdfInfo.mem_required);
+                if (!tdfInfo.data) {
+                    JS_ENOMEM(J);
+                    free(ti);
+                    return;
+                }
+                if (gu3dfLoad(fname, &tdfInfo)) {
+                    ti->info.smallLodLog2 = tdfInfo.header.small_lod;
+                    ti->info.largeLodLog2 = tdfInfo.header.large_lod;
+                    ti->info.aspectRatioLog2 = tdfInfo.header.aspect_ratio;
+                    ti->info.format = tdfInfo.header.format;
+                    ti->info.data = tdfInfo.data;
+                    ti->tableType = texTableType(ti->info.format);
+                    switch (ti->tableType) {
+                        case GR_TEXTABLE_NCC0:
+                        case GR_TEXTABLE_NCC1:
+                        case GR_TEXTABLE_PALETTE:
+                            memcpy(&ti->tableData, &(tdfInfo.table), sizeof(TlTextureTable));
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    free(tdfInfo.data);
+                    js_error(J, "Can't load '%s'!", fname);
+                    free(ti);
+                    return;
                 }
             } else {
-                free(tdfInfo.data);
                 js_error(J, "Can't load '%s'!", fname);
                 free(ti);
                 return;
             }
         } else {
-            js_error(J, "Can't load '%s'!", fname);
-            free(ti);
-            return;
+            char *data;
+            size_t size;
+            if (!read_zipfile1(fname, (void **)&data, &size)) {
+                js_error(J, "Can't load '%s'!", fname);
+                return;
+            }
+
+            if (gu3dfGetInfoM(data, size, &tdfInfo)) {
+                ti->textureSize = tdfInfo.mem_required;
+                tdfInfo.data = malloc(tdfInfo.mem_required);
+                if (!tdfInfo.data) {
+                    JS_ENOMEM(J);
+                    free(ti);
+                    free(data);
+                    return;
+                }
+                if (gu3dfLoadM(data, size, &tdfInfo)) {
+                    ti->info.smallLodLog2 = tdfInfo.header.small_lod;
+                    ti->info.largeLodLog2 = tdfInfo.header.large_lod;
+                    ti->info.aspectRatioLog2 = tdfInfo.header.aspect_ratio;
+                    ti->info.format = tdfInfo.header.format;
+                    ti->info.data = tdfInfo.data;
+                    ti->tableType = texTableType(ti->info.format);
+                    switch (ti->tableType) {
+                        case GR_TEXTABLE_NCC0:
+                        case GR_TEXTABLE_NCC1:
+                        case GR_TEXTABLE_PALETTE:
+                            memcpy(&ti->tableData, &(tdfInfo.table), sizeof(TlTextureTable));
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    free(tdfInfo.data);
+                    js_error(J, "Can't load '%s'!", fname);
+                    free(ti);
+                    free(data);
+                    return;
+                }
+            } else {
+                js_error(J, "Can't load '%s'!", fname);
+                free(ti);
+                free(data);
+                return;
+            }
+            free(data);
         }
     }
     ti->startAddress = FX_NONE;

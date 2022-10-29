@@ -36,9 +36,9 @@ SOFTWARE.
 ** exported functions **
 ***********************/
 bool dia_ask_text(edi_t* edi, char buffer[DIA_ASK_SIZE], char* allowed, char* msg);
-void dia_show_message(edi_t* edi, char* txt);
-bool dia_show_confirm(edi_t* edi, char* txt);
-void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable, char* ctx);
-bool dia_show_text(edi_t* edi, char* txt, int* pos);
+void dia_show_message(edi_t* edi, const char* txt);
+bool dia_show_confirm(edi_t* edi, const char* txt);
+void dia_show_file(edi_t* edi, const char* fname, int* pos, bool deletable, char* ctx);
+bool dia_show_text(edi_t* edi, const char* txt, int* pos);
 
 #endif  // __DIALOG_H__

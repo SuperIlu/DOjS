@@ -90,14 +90,16 @@ export: `_grTriStats'
 export: `_grVertexLayout'
 export: `_grViewport'
 export: `_gu3dfGetInfo'
+export: `_gu3dfGetInfoM'
 export: `_gu3dfLoad'
+export: `_gu3dfLoadM'
 export: `_guEncodeRLE16'
 export: `_guFogGenerateExp'
 export: `_guFogGenerateExp2'
 export: `_guFogGenerateLinear'
 export: `_guFogTableIndexToW'
 export: `_guGammaCorrectionRGB'
-i586-pc-msdosdjgpp-ld -X -S -r -o dxe_tmp.o -L /home/ilu/djgpp473/lib -T dxe.ld distate.o diget.o gstrip.o distrip.o diglide.o disst.o ditex.o g3df.o gaa.o gbanner.o gdraw.o gerror.o gglide.o glfb.o gpci.o gsplash.o gsst.o gtex.o gtexdl.o gu.o gxdraw.o sst96.o ../../init/init96/init96.o ../../init/init96/dxdrvr.o ../../init/init96/initat3d.o ../../init/init96/initmcrx.o ../../init/init.o ../../init/vgdrvr.o ../../init/vg96drvr.o ../../init/initvg/gamma.o ../../init/initvg/dac.o ../../init/initvg/video.o ../../init/initvg/parse.o ../../init/initvg/sli.o ../../init/initvg/util.o ../../init/initvg/info.o ../../init/initvg/print.o ../../init/initvg/gdebug.o ../../init/initvg/sst1init.o ../../../swlibs/newpci/pcilib/sst1_pci.o ../../../swlibs/newpci/pcilib/fxmsr.o ../../../swlibs/newpci/pcilib/fxpci.o ../../../swlibs/newpci/pcilib/fxdpmi2.o 
+i586-pc-msdosdjgpp-ld -X -S -r -o dxe_tmp.o -L /home/ilu/djgpp473/lib -T dxe.ld distate.o diget.o gstrip.o distrip.o diglide.o disst.o ditex.o g3df.o g3dfM.o gaa.o gbanner.o gdraw.o gerror.o gglide.o glfb.o gpci.o gsplash.o gsst.o gtex.o gtexdl.o gu.o gxdraw.o sst96.o ../../init/init96/init96.o ../../init/init96/dxdrvr.o ../../init/init96/initat3d.o ../../init/init96/initmcrx.o ../../init/init.o ../../init/vgdrvr.o ../../init/vg96drvr.o ../../init/initvg/gamma.o ../../init/initvg/dac.o ../../init/initvg/video.o ../../init/initvg/parse.o ../../init/initvg/sli.o ../../init/initvg/util.o ../../init/initvg/info.o ../../init/initvg/print.o ../../init/initvg/gdebug.o ../../init/initvg/sst1init.o ../../../swlibs/newpci/pcilib/sst1_pci.o ../../../swlibs/newpci/pcilib/fxmsr.o ../../../swlibs/newpci/pcilib/fxpci.o ../../../swlibs/newpci/pcilib/fxdpmi2.o 
 unresolved: `___dj_stderr' (2 references)
 unresolved: `___dj_stdout' (7 references)
 unresolved: `___djgpp_base_address' (2 references)
@@ -117,19 +119,20 @@ unresolved: `_fgets' (1 references)
 unresolved: `_fopen' (6 references)
 unresolved: `_fprintf' (2 references)
 unresolved: `_fread' (2 references)
+unresolved: `_free' (1 references)
 unresolved: `_getc' (2 references)
 unresolved: `_getenv' (21 references)
 unresolved: `_int86' (14 references)
-unresolved: `_malloc' (19 references)
+unresolved: `_malloc' (20 references)
 unresolved: `_memcpy' (2 references)
 unresolved: `_pow' (4 references)
 unresolved: `_printf' (1 references)
 unresolved: `_putenv' (1 references)
 unresolved: `_puts' (2 references)
 unresolved: `_sprintf' (7 references)
-unresolved: `_sscanf' (74 references)
+unresolved: `_sscanf' (75 references)
 unresolved: `_strcat' (3 references)
-unresolved: `_strcmp' (3 references)
+unresolved: `_strcmp' (4 references)
 unresolved: `_strcpy' (13 references)
 unresolved: `_strtok' (40 references)
 unresolved: `_vfprintf' (2 references)

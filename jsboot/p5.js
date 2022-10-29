@@ -36,6 +36,8 @@ Include('p5util');
 Include('p5vect');
 Include('p5trans');
 
+exports.__VERSION__ = 2;
+
 exports._loop = true;
 exports._lastButtons = 0;
 

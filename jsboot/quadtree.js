@@ -405,4 +405,6 @@ BoundsNode.prototype.clear = function () {
 	//Object.getPrototypeOf(BoundsNode.prototype).clear.call(this);
 };
 
+// export functions and version
+exports.__VERSION__ = 2;
 exports.QuadTree = QuadTree;

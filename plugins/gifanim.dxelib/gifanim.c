@@ -29,8 +29,8 @@ SOFTWARE.
 
 #include "DOjS.h"
 
-#include "AnimatedGIF-1.4.3/src/AnimatedGIF.h"
-#include "AnimatedGIF-1.4.3/src/gif.inl"
+#include "AnimatedGIF-1.4.7/src/AnimatedGIF.h"
+#include "AnimatedGIF-1.4.7/src/gif.inl"
 
 void init_gifanim(js_State *J);
 
@@ -125,7 +125,7 @@ static void new_GIF(js_State *J) {
 
     NEW_OBJECT_PREP(J);
 
-    gifanim_t *g = malloc(sizeof(gifanim_t));
+    gifanim_t *g = calloc(1, sizeof(gifanim_t));
     if (!g) {
         JS_ENOMEM(J);
         return;

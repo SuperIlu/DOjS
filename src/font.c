@@ -65,7 +65,7 @@ static void new_Font(js_State *J) {
         if (!delim) {
             f = load_font((char *)fname, NULL, NULL);
             if (!f) {
-                js_error(J, "Can't load font '%s'", allegro_error);
+                js_error(J, "Can't load font '%s'", fname);
                 return;
             }
         } else {
@@ -76,7 +76,7 @@ static void new_Font(js_State *J) {
             }
             f = load_grx_font_pf(pf, NULL, NULL);  // PACKFILE is closed by this function!
             if (!f) {
-                js_error(J, "Can't load font '%s'", allegro_error);
+                js_error(J, "Can't load font '%s'", fname);
                 return;
             }
         }

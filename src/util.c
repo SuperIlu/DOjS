@@ -46,7 +46,7 @@ char *ut_clone_string(const char *str) {
 }
 
 /**
- * @brief check if string ends with suffix.
+ * @brief check if string ends with suffix (case insensitiv).
  *
  * @param str the string to check.
  * @param suffix the suffix to check for.
@@ -59,7 +59,7 @@ bool ut_endsWith(const char *str, const char *suffix) {
     size_t lenstr = strlen(str);
     size_t lensuffix = strlen(suffix);
     if (lensuffix > lenstr) return false;
-    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
+    return strncasecmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
 }
 
 /**

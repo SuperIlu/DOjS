@@ -54,9 +54,9 @@ Zip.prototype.ReadBytes = function (zip_name) { };
  */
 Zip.prototype.WriteBytes = function (zip_name, data) { };
 /**
- * get file contents as IntArray.
+ * get file contents as ByteArray.
  * @param {string} zip_name the full path of the file in the ZIP.
- * @returns {IntArray} the content of the file as IntArray.
+ * @returns {ByteArray} the content of the file as ByteArray.
  */
 Zip.prototype.ReadInts = function (zip_name) { };
 /**
@@ -67,6 +67,6 @@ Zip.prototype.DeleteFile = function (zip_name) { };
 /**
  * Write a bytes to a file in the ZIP.
  * @param {string} zip_name the full path of the file in the ZIP.
- * @param {IntArray} data the data to write as IntArray (must be integers between 0-255).
+ * @param {ByteArray} data the data to write as ByteArray (must be integers between 0-255).
  */
 Zip.prototype.WriteInts = function (zip_name, data) { };

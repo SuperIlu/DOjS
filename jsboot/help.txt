@@ -1,6 +1,6 @@
 # Usage
 ## Command line
-Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
+Usage: DOjS.EXE [<flags>] <script> [script parameters]
     -r             : Do not invoke the editor, just run the script.
     -l             : Use 50-line mode in the editor.
     -w <width>     : Screen width: 320 or 640, Default: 640.
@@ -9,6 +9,9 @@ Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
     -f             : No FM sound.
     -a             : Disable alpha (speeds up rendering).
     -x             : Allow raw disk write (CAUTION!)
+    -t             : Disable TCP-stack
+    -n             : Disable JSLOG.TXT.
+    -j <file>      : Redirect JSLOG.TXT to <file>.
 
 ## Editor keys
     F1        : Open/Close help
@@ -70,14 +73,23 @@ This function is called whenever mouse/keyboard input happens. The parameter is 
 Open a file, for file modes see jsboot/file.js. Files can only either be read or written, never both. Writing to a closed file throws an exception.
 
 ### f.ReadByte():number
-### f.ReadBytes():number[]
+### f.ReadBytes([num:number]):number[]
+### f.ReadInts([num:number]):ByteArray
 ### f.ReadLine():string
 Read a single/multiple byte(s)/line from file. The maximum line length is 4096 byte.
 
 ### f.WriteByte(ch:number)
+### f.WriteBytes(ch:number[], [num:number])
+### f.WriteInts(ch:ByteArray, [num:number])
 ### f.WriteString(txt:string)
 ### f.WriteLine(txt:string)
 Write a byte/string/NEWLINE terminated string to a file.
+
+### f.Seek(pos:number, [whence:number]):number
+Set current file position relative to start, current or end position. Returns new position.
+
+### f.Tell():number
+Get current file position
 
 ### f.Close()
 Close the file.
@@ -358,6 +370,12 @@ Get ms timestamp.
 ### Read(filename:string):string
 Load the contents of a file into a string.
 
+### FileExists(filename:string):boolean { }
+Check for existence of a file.
+
+### DirExists(dirname:string):boolean
+Check for existence of a directory.
+
 ### ReadZIP(filename:string, entry:string):string
 Load the contents of a ZIP file entry into a string.
 
@@ -619,6 +637,7 @@ return the next byte from the socket as number.
 write a byte to a socket.
 
 ### socket.WriteBytes(data:number[])
+### socket.WriteInts(data:ByteArray)
 send binary data.
 
 ### socket.WriteString(data:string)
@@ -658,6 +677,7 @@ return the next line from the socket as string (blocks until CR/NL).
 return data as string (blocks until 'len' was read).
 
 ### socket.ReadBytes(len:number):number[]
+### socket.ReadInts(len:number):ByteArray
 return data as array of numbers (blocks until 'len' was read).
 
 ## ZIP Files
@@ -684,9 +704,11 @@ Add file to ZIP.
 Extract file from ZIP.
 
 ### zip.ReadBytes(entry_name:string):number[]
+### zip.ReadInts(entry_name:string):ByteArray
 Return the bytes from the zip entry as number array.
 
 ### zip.WriteBytes(entry_name:string, data:number[])
+### zip.WriteInts(entry_name:string, data:ByteArray)
 Write a bytes to a zip entry.
 
 ## raw disk access

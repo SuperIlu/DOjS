@@ -31,7 +31,7 @@ SOFTWARE.
 
 #include "DOjS.h"
 #include "zip.h"
-#include "intarray.h"
+#include "bytearray.h"
 
 /************
 ** defines **
@@ -341,8 +341,8 @@ static void Zip_ReadBytes(js_State *J) {
 }
 
 /**
- * @brief return the bytes from the zip entry as IntArray.
- * zip.ReadBytes(entry_name:string):IntArray
+ * @brief return the bytes from the zip entry as ByteArray.
+ * zip.ReadBytes(entry_name:string):ByteArray
  *
  * @param J VM state.
  */
@@ -375,7 +375,7 @@ static void Zip_ReadInts(js_State *J) {
             free(buf);
             return;
         }
-        IntArray_fromBytes(J, buf, bufsize);
+        ByteArray_fromBytes(J, buf, bufsize);
         free(buf);
     }
 }
@@ -437,7 +437,7 @@ static void Zip_WriteBytes(js_State *J) {
 
 /**
  * @brief write a bytes to a zip entry.
- * zip.WriteBytes(entry_name:string, data:IntArray)
+ * zip.WriteInts(entry_name:string, data:ByteArray)
  *
  * @param J VM state.
  */
@@ -452,8 +452,8 @@ static void Zip_WriteInts(js_State *J) {
         js_error(J, "ZIP was not opened for writing!");
         return;
     } else {
-        if (js_isuserdata(J, 2, TAG_INT_ARRAY)) {
-            int_array_t *ia = js_touserdata(J, 2, TAG_INT_ARRAY);
+        if (js_isuserdata(J, 2, TAG_BYTE_ARRAY)) {
+            byte_array_t *ba = js_touserdata(J, 2, TAG_BYTE_ARRAY);
 
             const char *zip_name = js_tostring(J, 1);
             if (zip_entry_open(z->zip, zip_name) < 0) {
@@ -461,27 +461,14 @@ static void Zip_WriteInts(js_State *J) {
                 return;
             }
 
-            uint8_t *data = malloc(ia->size);
-            if (!data) {
-                JS_ENOMEM(J);
-                return;
-            }
-
-            for (int i = 0; i < ia->size; i++) {
-                data[i] = ia->data[i];
-            }
-            if (zip_entry_write(z->zip, data, ia->size) < 0) {
+            if (zip_entry_write(z->zip, ba->data, ba->size) < 0) {
                 js_error(J, "Could create '%s' in ZIP (zip_entry_write)!", zip_name);
-                free(data);
                 return;
             }
             if (zip_entry_close(z->zip) < 0) {
                 js_error(J, "Could create '%s' in ZIP (zip_entry_close)!", zip_name);
-                free(data);
                 return;
             }
-
-            free(data);
         } else {
             JS_ENOARR(J);
         }

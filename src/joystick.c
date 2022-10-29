@@ -62,7 +62,7 @@ static void f_JoystickSaveData(js_State *J) {
     if (DOjS.joystick_available) {
         const char *fname = js_tostring(J, 1);
         if (save_joystick_data(fname) != 0) {
-            js_error(J, "Can't save joystick data '%s'", allegro_error);
+            js_error(J, "Can't save joystick data to '%s'", fname);
         }
     }
 }
@@ -77,7 +77,7 @@ static void f_JoystickLoadData(js_State *J) {
     if (DOjS.joystick_available) {
         const char *fname = js_tostring(J, 1);
         if (load_joystick_data(fname) != 0) {
-            js_error(J, "Can't load joystick data '%s'", allegro_error);
+            js_error(J, "Can't load joystick data from '%s'", fname);
         }
     }
 }
@@ -182,7 +182,7 @@ static void f_JoystickCalibrate(js_State *J) {
             return;
         }
         if (calibrate_joystick(num) != 0) {
-            js_error(J, "Can't calibrate joystick '%s'", allegro_error);
+            js_error(J, "Can't calibrate joystick");
         }
     }
 }

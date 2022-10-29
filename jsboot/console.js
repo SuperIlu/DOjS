@@ -147,4 +147,6 @@ Console.prototype.Log = function (txt, col) {
 	}
 };
 
+// export functions and version
+exports.__VERSION__ = 2;
 exports.Console = Console;

@@ -30,15 +30,28 @@ function dbg(s) {
 }
 
 /**
- * Read a 32 bit unsigned, big endian number from an IntArray.
+ * Read a 32 bit unsigned, big endian number from an ByteArray.
  * 
- * @param {IntArray} data the data to read from
+ * @param {ByteArray} data the data to read from
  * @param {Number} pos The position to start reading from.
  * 
  * @returns {Number} the resulting 32bit number
  */
 function ReadUint32BE(data, pos) {
 	return (data.Get(pos) << 24) | (data.Get(pos + 1) << 16) | (data.Get(pos + 2) << 8) | (data.Get(pos + 3));
+}
+
+/**
+ * copy pixel data from source to destination.
+ * 
+ * @param {*} d destination object
+ * @param {*} s source object
+ */
+function CopyPx(d, s) {
+	d.r = s.r;
+	d.g = s.g;
+	d.b = s.b;
+	d.a = s.a;
 }
 
 /**
@@ -50,12 +63,24 @@ function ReadUint32BE(data, pos) {
  * @returns {Bitmap} the loaded Bitmap.
  */
 function LoadQoi(fname) {
-	// read file contents into an IntArray for fast processing
+	// read file contents into an ByteArray
 	var f = new File(fname, FILE.READ);
 	var data = f.ReadInts();
 	f.Close();
 	dbg("Loaded " + data.length + " Bytes from " + fname);
 
+	return DecodeQoi(data);
+}
+
+/**
+ * Decode a QOI image from ByteArray and return it as Bitmap.
+ * @see https://qoiformat.org/
+ * 
+ * @param {ByteArray} data QOI data.
+ * 
+ * @returns {Bitmap} the loaded Bitmap.
+ */
+function DecodeQoi(data) {
 	var p = 0;
 	if (
 		data.Get(0) != CharCode('q') ||
@@ -111,7 +136,7 @@ function LoadQoi(fname) {
 	var run = 0;
 	var index = [];
 	for (var i = 0; i < 64; i++) {
-		index.push({ r: 0, g: 0, b: 0, a: 0xff });
+		index.push({ r: 0, g: 0, b: 0, a: 255 });
 	}
 
 	var x = 0;
@@ -137,7 +162,7 @@ function LoadQoi(fname) {
 			}
 			else if ((b1 & QOI_MASK_2) === QOI_OP_INDEX) {
 				var idx = index[b1];
-				px = { r: idx.r, g: idx.g, b: idx.b, a: idx.a };
+				CopyPx(px, idx);
 			}
 			else if ((b1 & QOI_MASK_2) === QOI_OP_DIFF) {
 				px.r += ((b1 >> 4) & 0x03) - 2;
@@ -155,7 +180,7 @@ function LoadQoi(fname) {
 				run = (b1 & 0x3f);
 			}
 
-			index[QOI_COLOR_HASH(px) % 64] = { r: px.r, g: px.g, b: px.b, a: px.a };
+			CopyPx(index[QOI_COLOR_HASH(px) % 64], px);
 		}
 
 		if (channels == 4) {
@@ -170,10 +195,12 @@ function LoadQoi(fname) {
 		}
 	}
 
-
 	// return image
 	SetRenderBitmap(null);
 	return img;
 }
 
+// export functions and version
+exports.__VERSION__ = 2;
+exports.DecodeQoi = DecodeQoi;
 exports.LoadQoi = LoadQoi;

@@ -19,6 +19,7 @@ extern_asm(_fgets);
 extern_asm(_fopen);
 extern_asm(_fprintf);
 extern_asm(_fread);
+extern_asm(_free);
 extern_asm(_getc);
 extern_asm(_getenv);
 extern_asm(_int86);
@@ -56,6 +57,7 @@ DXE_EXPORT_TABLE_AUTO (___dxe_eta___glide3x)
 	DXE_EXPORT_ASM (_fopen)
 	DXE_EXPORT_ASM (_fprintf)
 	DXE_EXPORT_ASM (_fread)
+	DXE_EXPORT_ASM (_free)
 	DXE_EXPORT_ASM (_getc)
 	DXE_EXPORT_ASM (_getenv)
 	DXE_EXPORT_ASM (_int86)

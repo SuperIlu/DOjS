@@ -154,7 +154,7 @@ static void MPEG1_Finalize(js_State *J, void *data) {
 static void new_MPEG1(js_State *J) {
     NEW_OBJECT_PREP(J);
 
-    mpeg1_t *m = malloc(sizeof(mpeg1_t));
+    mpeg1_t *m = calloc(1, sizeof(mpeg1_t));
     if (!m) {
         JS_ENOMEM(J);
         return;

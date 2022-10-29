@@ -9,8 +9,7 @@
  * 
  * @returns {Bitmap} a bitmap containing a QR code.
  */
-exports.MakeQR = function (bmw, bmh, text) {
-	Println("1");
+function MakeQR(bmw, bmh, text) {
 	// create the qrcode itself
 	var qrcode = new QRCode(-1, QRErrorCorrectLevel.H);
 	qrcode.addData(text);
@@ -1277,3 +1276,7 @@ QRBitBuffer.prototype = {
 		this.length++;
 	}
 };
+
+// export functions and version
+exports.__VERSION__ = 2;
+exports.MakeQR = this.MakeQR;

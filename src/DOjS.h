@@ -37,8 +37,7 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION 1.80          //!< version number
-#define DOSJS_VERSION_STR "V1.8.0"  //!< version number as string
+#define DOSJS_VERSION_STR "V1.9"  //!< version number as string
 
 #define JSBOOT_DIR "JSBOOT/"     //!< directory with boot files.
 #define JSBOOT_ZIP "JSBOOT.ZIP"  //!< filename for ZIP of JSBOOT
@@ -205,16 +204,16 @@ typedef struct __library_t {
 } library_t;
 
 typedef struct {
-    char *script;    //!< script name/path
-    bool run;        //!< skip editor invocation
-    bool no_sound;   //!< do not initialize sound
-    bool no_fm;      //!< do not initialize fm sound
-    bool no_alpha;   //!< disable alpha blending
-    bool highres;    //!< use 50-line mode in editor
-    bool raw_write;  //!< allow raw writes in JS
-    bool no_tcpip;   //!< disable Watt32 TCP stack
-    int width;       //!< requested screen with
-    int bpp;         //!< requested bit depth
+    const char *script;  //!< script name/path
+    bool run;            //!< skip editor invocation
+    bool no_sound;       //!< do not initialize sound
+    bool no_fm;          //!< do not initialize fm sound
+    bool no_alpha;       //!< disable alpha blending
+    bool highres;        //!< use 50-line mode in editor
+    bool raw_write;      //!< allow raw writes in JS
+    bool no_tcpip;       //!< disable Watt32 TCP stack
+    int width;           //!< requested screen with
+    int bpp;             //!< requested bit depth
 } cmd_params_t;
 
 typedef struct {
@@ -229,7 +228,7 @@ typedef struct {
     blend_mode_t transparency_available;  //!< indicates blend mode
     bool glide_enabled;                   //!< indicates if glide is active
     bool do_logfile;                      //!< indicates if a logfile should be created
-    char *logfile_name;                   //!< name of the logfile
+    const char *logfile_name;             //!< name of the logfile
     float current_frame_rate;             //!< current frame rate
     float wanted_frame_rate;              //!< wanted frame rate
     bool keep_running;                    //!< indicates that the script should keep on running
@@ -246,6 +245,7 @@ typedef struct {
     int last_mouse_b;                     //!< last reported mouse button
     bool input_available;                 //!< indicates if the input callback function is available
     char *exitMessage;                    //!< a message to print to the console when DOjS shuts down
+    const char *jsboot;                   //!< path/name of jsboot-file.
 } dojs_t;
 
 /*********************
@@ -260,6 +260,7 @@ extern void dojs_update_transparency(void);
 extern bool dojs_register_library(const char *name, void *handle, void (*init)(js_State *J), void (*shutdown)(void));
 extern bool dojs_check_library(const char *name);
 extern int dojs_do_file(js_State *J, const char *fname);
+extern int dojs_do_zipfile(js_State *J, const char *zipname, const char *fname);
 extern void dojs_logflush(void);
 
 #endif  // __DOJS_H__

@@ -49,7 +49,11 @@ Neural.prototype.Save = function (fname) { }
 
 
 /**
- * Create an empty DoubleArray. DoubleArrays can be used to very fast store a large number of integer values. They are supported mainly for File/Zip/Socket IO.
+ * Create an empty DoubleArray. DoubleArrays can be used to very fast store a large number of float values.
+ * For now it it only available when used with Neural
+ * 
+ * @see Neural
+ * 
  * @class
  * 
  * @param {number[]|string[]|string} data numbers will be used as given.
@@ -68,6 +72,7 @@ function DoubleArray(data) {
 }
 /**
  * truncate DoubleArray to zero length.
+ * Note: this does not free any memory, it just declares the length of the array as 0.
  */
 DoubleArray.prototype.Clear = function () { };
 /**

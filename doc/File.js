@@ -52,22 +52,26 @@ File.prototype.ReadByte = function () { };
  */
 File.prototype.WriteByte = function (ch) { };
 /**
- * get file contents as number array.
- * @returns {number[]} the remaining contents of the file as array of numbers.
+ * get file (remaining) contents as number array.
+ * @param {number} [num] max number of bytes to return.
+ * @returns {number[]} the (remaining) contents of the file as array of numbers.
  */
-File.prototype.ReadBytes = function () { };
+File.prototype.ReadBytes = function (num) { };
 /**
  * Write a bytes to a file.
  * @param {number[]} data the data to write as array of numbers (must be integers between 0-255).
+ * @param {number} [num] max number of bytes to write.
  */
-File.prototype.WriteBytes = function (data) { };
+File.prototype.WriteBytes = function (data, num) { };
 /**
- * get file contents as number IntArray.
- * @returns {IntArray} the remaining contents of the file as IntArray.
+ * get file (remaining) contents as number ByteArray.
+ * @param {number} [num] max number of bytes to return.
+ * @returns {ByteArray} the (remaining) contents of the file as ByteArray.
  */
-File.prototype.ReadInts = function () { };
+File.prototype.ReadInts = function (num) { };
 /**
  * Write a bytes to a file.
- * @param {IntArray} data the data to write as IntArray (must be integers between 0-255).
+ * @param {ByteArray} data the data to write as ByteArray (must be integers between 0-255).
+ * @param {number} [num] max number of bytes to write.
  */
-File.prototype.WriteInts = function (data) { };
+File.prototype.WriteInts = function (data, num) { };

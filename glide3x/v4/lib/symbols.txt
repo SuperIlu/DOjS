@@ -119,7 +119,9 @@ export: `_grTriStats'
 export: `_grVertexLayout'
 export: `_grViewport'
 export: `_gu3dfGetInfo'
+export: `_gu3dfGetInfoM'
 export: `_gu3dfLoad'
+export: `_gu3dfLoadM'
 export: `_guAlphaSource'
 export: `_guEncodeRLE16'
 export: `_guEndianSwapBytes'
@@ -130,7 +132,7 @@ export: `_guFogGenerateLinear'
 export: `_guFogTableIndexToW'
 export: `_guGammaCorrectionRGB'
 export: `_guTexCreateColorMipMap'
-i586-pc-msdosdjgpp-ld -X -S -r -o dxe_tmp.o -L /home/ilu/djgpp473/lib -T dxe.ld fifo.o distate.o gstrip.o distrip.o diget.o gsplash.o g3df.o gu.o gpci.o diglide.o disst.o ditex.o gbanner.o gerror.o gaa.o gdraw.o gglide.o glfb.o gsst.o gtex.o gtexdl.o xtexdl_def.o gxdraw.o gthread.o ../../../swlibs/newpci/pcilib/fxpci.o ../../../swlibs/newpci/pcilib/fxdpmi2.o ../../minihwc/hwcio.o ../../minihwc/gdebug.o ../../minihwc/minihwc.o ../../minihwc/dos_mode.o ../../minihwc/gpio.o ../../cinit/h3cinit.o 
+i586-pc-msdosdjgpp-ld -X -S -r -o dxe_tmp.o -L /home/ilu/djgpp473/lib -T dxe.ld fifo.o distate.o gstrip.o distrip.o diget.o gsplash.o g3df.o g3dfM.o gu.o gpci.o diglide.o disst.o ditex.o gbanner.o gerror.o gaa.o gdraw.o gglide.o glfb.o gsst.o gtex.o gtexdl.o xtexdl_def.o gxdraw.o gthread.o ../../../swlibs/newpci/pcilib/fxpci.o ../../../swlibs/newpci/pcilib/fxdpmi2.o ../../minihwc/hwcio.o ../../minihwc/gdebug.o ../../minihwc/minihwc.o ../../minihwc/dos_mode.o ../../minihwc/gpio.o ../../cinit/h3cinit.o 
 unresolved: `___dj_stdout' (5 references)
 unresolved: `___djgpp_base_address' (2 references)
 unresolved: `___djgpp_nearptr_disable' (1 references)
@@ -147,20 +149,20 @@ unresolved: `_fflush' (1 references)
 unresolved: `_fgets' (1 references)
 unresolved: `_fopen' (4 references)
 unresolved: `_fread' (3 references)
-unresolved: `_free' (6 references)
+unresolved: `_free' (7 references)
 unresolved: `_fwrite' (2 references)
 unresolved: `_getc' (2 references)
 unresolved: `_getenv' (9 references)
 unresolved: `_int86' (3 references)
-unresolved: `_malloc' (5 references)
-unresolved: `_memcpy' (3 references)
+unresolved: `_malloc' (6 references)
+unresolved: `_memcpy' (4 references)
 unresolved: `_memset' (1 references)
 unresolved: `_pow' (4 references)
 unresolved: `_printf' (1 references)
 unresolved: `_sprintf' (13 references)
-unresolved: `_sscanf' (5 references)
+unresolved: `_sscanf' (6 references)
 unresolved: `_strcat' (2 references)
-unresolved: `_strcmp' (2 references)
+unresolved: `_strcmp' (3 references)
 unresolved: `_strcpy' (1 references)
 unresolved: `_strtoul' (4 references)
 unresolved: `_usleep' (9 references)

@@ -43,7 +43,7 @@ static void f_SavePngImage(js_State *J) {
     get_palette(pal);
 
     if (save_png(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save screen to PNG file '%s': %s", fname, allegro_error);
+        js_error(J, "Can't save screen to PNG file '%s'", fname);
     }
 }
 
@@ -61,7 +61,7 @@ static void Bitmap_SavePngImage(js_State *J) {
     get_palette(pal);
 
     if (save_png(fname, bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save Bitmap to PNG file '%s': %s", fname, allegro_error);
+        js_error(J, "Can't save Bitmap to PNG file '%s'", fname);
     }
 }
 

@@ -108,16 +108,16 @@ Socket.prototype.ReadBytes = function (len) { }
  */
 Socket.prototype.WriteBytes = function (data) { }
 /**
- * Return data as IntArray.
+ * Return data as ByteArray.
  * This method blocks until 'len' bytes have been read.
  * 
  * @param {number} len number of bytes to read from socket.
  * 
- * @returns {IntArray} data as IntArray.
+ * @returns {ByteArray} data as ByteArray.
  */
 Socket.prototype.ReadInts = function (len) { }
 /**
  * send binary data.
- * @param {IntArray} data data to write as IntArray.
+ * @param {ByteArray} data data to write as ByteArray.
  */
 Socket.prototype.WriteInts = function (data) { }

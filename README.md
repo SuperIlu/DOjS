@@ -29,9 +29,11 @@ DOjS was only possible due to the work of these people/projects:
   * [SQLite](https://www.sqlite.org/index.html) for sqlite module
   * [Watt32](https://www.watt-32.net/) for TCP/IP networking
   * [zip](https://github.com/kuba--/zip) for ZIP file access
-  * [zlib](http://zlib.net/)
-  * [nanojpeg](http://keyj.emphy.de/nanojpeg/) for SVG loading
+  * [zlib](http://zlib.net/) for compression
+  * [nanojpeg](http://keyj.emphy.de/nanojpeg/) for JPEG loading
   * [AnimatedGIF](https://github.com/bitbank2/AnimatedGIF/) for rendering GIF animations.
+  * [PL_MPEG](https://github.com/phoboslab/pl_mpeg) for mpeg1 decoding
+  * [pdfgen](https://github.com/AndreRenaud/PDFGen) for PDF rendering.
 
 ## Contact
 You can find me on [Twitter](https://twitter.com/dec_hl), [Mastodon](https://mastodon.social/@dec_hl) or in the [DOjS Discord](https://discord.gg/J7MUTap9fM) if you want...
@@ -222,6 +224,8 @@ In order to compile DOjS you need Glide3 includes and binaries. The ones include
 
 ## GRX Fonts
 DOjS comes pre-bundled with all fonts included with GRX (files ending with ".FNT"). If you want/need additional fonts you can find a very simple tool to convert TTF/BDF fonts to GRX format [here](https://github.com/SuperIlu/GrxFntConv). Results may vary...
+A minimal version capable of converting BDF fonts to FNT is included with DOjS (`FONTCONV.EXE`).
+You can find information on how to convert a TTF to BDF [here](https://learn.adafruit.com/custom-fonts-for-pyportal-circuitpython-display/conversion).
 
 ## Live coding
 If you run DOjS on a computer with network interface and a matching packet driver you can (sort of) live code using the [VSCode](https://code.visualstudio.com/) extension in `vscode\livedojs-0.0.4.vsix`. You need to start `DOjS -r examples/websvr.js` and then set the IP address in VSCode using the command `DOjS: Set hostname`. Live coding sketches must look like below to work:
@@ -375,7 +379,7 @@ See LICENSE in gifanim.dxelib.
 # Usage
 ## Command line
 ```
-Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
+Usage: DOjS.EXE [<flags>] <script> [script parameters]
     -r             : Do not invoke the editor, just run the script.
     -l             : Use 50-line mode in the editor.
     -w <width>     : Screen width: 320 or 640, Default: 640.
@@ -384,7 +388,13 @@ Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]
     -f             : No FM sound.
     -a             : Disable alpha (speeds up rendering).
     -x             : Allow raw disk write (CAUTION!)
+    -t             : Disable TCP-stack
+    -n             : Disable JSLOG.TXT.
+    -j <file>      : Redirect JSLOG.TXT to <file>.
 ```
+
+## dojs.ini
+All command line options can also be provided in `dojs.ini` (which is read at startup from the current directory). See the included example for details.
 
 ## Editor keys
 ```

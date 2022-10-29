@@ -108,11 +108,11 @@ typedef struct _edi {
     int x;                 //!< cursor x pos on line (starting with 0)
     int y;                 //!< cursor y pos on screen (starting with 0)
     int num;               //!< current line number
-    char *name;            //!< name of the file
+    const char *name;      //!< name of the file
     bool changed;          //!< file change indicator
     struct text_info scr;  //!< screen dimensions
-    char *msg;             //!< message to display in next loop
-    char *err_msg;         //!< last error message to display when pressing F7
+    const char *msg;       //!< message to display in next loop
+    const char *err_msg;   //!< last error message to display when pressing F7
     line_t *last_top;      //!< last y drawing position
     int last_offset;       //!< last x drawing position
 
@@ -154,7 +154,7 @@ typedef struct _cnp {
 void edi_dump(edi_t *edi);
 #endif
 
-extern edi_exit_t edi_edit(char *fname, bool highres, char *err_msg);
+extern edi_exit_t edi_edit(const char *fname, bool highres, const char *err_msg);
 extern void edi_clear_selection(edi_t *edi);
 
 #endif  // __EDI_H__

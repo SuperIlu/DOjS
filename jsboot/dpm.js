@@ -72,6 +72,24 @@ function commandFunc(c) {
 }
 
 /**
+ * extract the version for a module.
+ * 
+ * @param {string} m name of the module
+ * 
+ * @returns the module version or 0 if there was no version.
+ */
+function GetModuleVersion(m) {
+	try {
+		var pkg = Require(e);			// try to load module
+		if (pkg.__VERSION__) {			// check if __VERSION__ is provided
+			return pkg.__VERSION__;
+		}
+	} catch (e) { }
+
+	return 0; // fallback if there is no version info
+}
+
+/**
  * COMMAND: show a list of installed packages
  */
 function CmdAvailable() {
@@ -79,7 +97,7 @@ function CmdAvailable() {
 		var pkgs = GetInstalledPackages();
 		msg("Installed packages:");
 		pkgs.forEach(function (e) {
-			msg("  " + e);
+			msg("  " + e + "{" + GetModuleVersion(e) + "}");
 		});
 	} catch (e) {
 		err(e);
@@ -165,7 +183,7 @@ function CmdFetch() {
 }
 
 /**
- * COMMAND: list installed packages to console.
+ * COMMAND: list installable packages to console.
  */
 function CmdList() {
 	if (index) {
@@ -351,7 +369,9 @@ function Setup() {
 	MouseShowCursor(false);
 	https = new Curl();
 	con = new Console(EGA.GREEN, EGA.BLACK, commandFunc);
-	msg("DOjS Packet Manager (DPM) V0.1 starting up.");
+	msg("DOjS Packet Manager (DPM) V0.2 starting up.");
+	msg("Local IP address : " + JSON.stringify(GetLocalIpAddress()));
+	msg("Network mask     : " + JSON.stringify(GetNetworkMask()));
 	msg("Type 'help' for command help.")
 	msg("Current package index URL:");
 	msg("  " + indexUrl);

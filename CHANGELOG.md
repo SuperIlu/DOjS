@@ -1,3 +1,28 @@
+# Version 1.9.0 (The Portable DOS Format) / October 29th, 2022
+* Modules can now provide version information with `__VERSION__`
+* `DPM` will automatically update modules that are installed if there are more recent versions in the index.
+* Updated zlib to 1.2.12
+* `DOJS_VERSION` is now a string.
+* Class `TexInfo()` can now load 3DF from ZIP files (https://github.com/SuperIlu/DOjS/issues/24)
+* Updated `Zip` to 0.2.3
+* Updated openssl to 1.1.1q
+* Added `DirExists()` and `FileExists()`.
+* Updated AnimatedGIF to 1.4.7
+* Updated nanosvg
+* Updated PL_MPEG
+* Renaming `DOjS.EXE` and `JSBOOT.ZIP` for packaging purposes should now work as intended (https://github.com/SuperIlu/DOjS/issues/22)
+* Added `dojs.ini` loading for parameters (https://github.com/SuperIlu/DOjS/issues/25)
+* Added `IniFile` class
+* Removed missleading VBE3 error messages on failed Font/Bitmap/etc loading/saving (https://github.com/SuperIlu/DOjS/issues/26).
+* Included a stripped down version of [GrxFntConv](https://github.com/SuperIlu/GrxFntConv) that can convert BDF fonts to FNT format (https://github.com/SuperIlu/DOjS/issues/27).
+* Added PDF rendering plugin using [pdfgen](https://github.com/SuperIlu/DOjS/issues/33).
+* `File`, `Zip`, `Socket` and `Curl` now use `ByteArray` instead of `IntArray` (https://github.com/SuperIlu/DOjS/issues/30)
+* `File` and `Zip` now supports partial reads/writes using `ReadBytes()/ReadInts()/WriteBytes()/WriteInts()` (https://github.com/SuperIlu/DOjS/issues/31)
+* Added missing error detection when reading/writing data using `File`
+* `File` now supports `Seek` and `Tell` (https://github.com/SuperIlu/DOjS/issues/31)
+* QOI loading from `ByteArray` is now possible via `DecodeQoi` (e.g. to load from ZIP or network socket).
+* Created a Discord for DOjS and jSH and put the link into `README.md`
+
 # Version 1.8.0 (A package of 3D) / March 19th, 2022
 * Added `LFN_SUPPORTED` global to indicate if long filenames are supported by the current DOS installation.
 * Fixed some docs
@@ -14,7 +39,7 @@
 * Optimized buildfiles
 * Improved IPX remote logging with `REMLOG.BAT` and `EnableRemoteDebug()`
 * implemented `DPM` package manager
-* A sketch can now query if it is running on DOjS using `if (navigator.appName === "DOjS") {`
+* A sketch can now query if it is running on DOjS using `if (navigator.appName === "DOjS") {}`
 
 # Version 1.7.0 (The live animation) / November 12th, 2021
 * Added FLIC playback (video)

@@ -1,0 +1,9 @@
+{
+  "name": "pdfgen",
+  "version": "0.1.0",
+  "repo": "AndreRenaud/PDFGen",
+  "description": "Create PDF documents",
+  "keywords": ["pdf", "document"],
+  "license": "UNLICENSE",
+  "src": ["pdfgen.c", "pdfgen.h"]
+}

@@ -52,8 +52,8 @@ SOFTWARE.
 /************************
 ** function prototypes **
 ************************/
-static char* edi_load(edi_t* edi, char* fname);
-static char* edi_save(edi_t* edi, char* fname);
+static char* edi_load(edi_t* edi, const char* fname);
+static char* edi_save(edi_t* edi, const char* fname);
 static bool edi_do_up(edi_t* edi);
 static bool edi_do_down(edi_t* edi);
 static void edi_do_left(edi_t* edi);
@@ -82,7 +82,7 @@ static void edi_do_cut(edi_t* edi);
 static void edi_do_paste(edi_t* edi);
 static void edi_do_del_sel(edi_t* edi);
 static edi_exit_t edi_loop(edi_t* edi);
-static edi_t* edi_init(char* fname, bool highres);
+static edi_t* edi_init(const char* fname, bool highres);
 static void edi_shutdown(edi_t* edi);
 static void edi_start_selection(edi_t* edi);
 static void edi_goto_line(edi_t* edi, line_t* l, int line_num);
@@ -123,7 +123,7 @@ void edi_dump(edi_t* edi) {
  *
  * @return an error message or NULL if all went well.
  */
-static char* edi_load(edi_t* edi, char* fname) {
+static char* edi_load(edi_t* edi, const char* fname) {
     assert(edi);
     assert(fname);
 
@@ -172,7 +172,7 @@ static char* edi_load(edi_t* edi, char* fname) {
  *
  * @return an error message or NULL if all went well.
  */
-static char* edi_save(edi_t* edi, char* fname) {
+static char* edi_save(edi_t* edi, const char* fname) {
     FILE* f = fopen(fname, "w");
     if (!f) {
         return strerror(errno);
@@ -1072,8 +1072,10 @@ static edi_exit_t edi_loop(edi_t* edi) {
                 break;
 
             case K_F1:  // show help
-                if (ut_file_exists(JSBOOT_ZIP)) {
-                    dia_show_file(edi, JSBOOT_ZIP ZIP_DELIM_STR EDI_HELPFILE, &last_help_pos, false, NULL);
+                if (ut_file_exists(DOjS.jsboot)) {
+                    char buffer[1024];  // this is a hack, I'm to lazy to calculate an appropriate buffer
+                    snprintf(buffer, sizeof(buffer), "%s" ZIP_DELIM_STR EDI_HELPFILE, DOjS.jsboot);
+                    dia_show_file(edi, buffer, &last_help_pos, false, NULL);
                 } else {
                     dia_show_file(edi, EDI_HELPFILE, &last_help_pos, false, NULL);
                 }
@@ -1082,8 +1084,10 @@ static edi_exit_t edi_loop(edi_t* edi) {
             case K_Shift_F1:  // context help
             {
                 char* ctx = edi_get_context(edi);
-                if (ut_file_exists(JSBOOT_ZIP)) {
-                    dia_show_file(edi, JSBOOT_ZIP ZIP_DELIM_STR EDI_HELPFILE, &last_help_pos, false, ctx);
+                if (ut_file_exists(DOjS.jsboot)) {
+                    char buffer[1024];  // this is a hack, I'm to lazy to calculate an appropriate buffer
+                    snprintf(buffer, sizeof(buffer), "%s" ZIP_DELIM_STR EDI_HELPFILE, DOjS.jsboot);
+                    dia_show_file(edi, buffer, &last_help_pos, false, ctx);
                 } else {
                     dia_show_file(edi, EDI_HELPFILE, &last_help_pos, false, ctx);
                 }
@@ -1174,7 +1178,7 @@ static edi_exit_t edi_loop(edi_t* edi) {
  *
  * @return a usable editor with a single empty line.
  */
-static edi_t* edi_init(char* fname, bool highres) {
+static edi_t* edi_init(const char* fname, bool highres) {
     if (highres) {
         textmode(C4350);  // switch to 80column/50line/color mode
     } else {
@@ -1235,7 +1239,7 @@ void edi_clear_selection(edi_t* edi) {
  *
  * @return a code describing why the editor was quit.
  */
-edi_exit_t edi_edit(char* fname, bool highres, char* err_msg) {
+edi_exit_t edi_edit(const char* fname, bool highres, const char* err_msg) {
     edi_t* edi = edi_init(fname, highres);
     edi->err_msg = err_msg;
     if (ut_file_exists(fname)) {
@@ -1245,9 +1249,9 @@ edi_exit_t edi_edit(char* fname, bool highres, char* err_msg) {
             return EDI_ERROR;
         }
     } else {
-        if (ut_file_exists(JSBOOT_ZIP)) {
+        if (ut_file_exists(DOjS.jsboot)) {
             // extract template to new file
-            struct zip_t* zip = zip_open(JSBOOT_ZIP, 0, 'r');
+            struct zip_t* zip = zip_open(DOjS.jsboot, 0, 'r');
             if (!zip) {
                 fputs("Can't load template", stderr);
                 return EDI_ERROR;

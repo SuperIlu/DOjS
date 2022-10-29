@@ -47,11 +47,6 @@ REMOTE_DEBUG = false;
 ZIP_DELIM = "=";
 
 /**
-* @property {string} JSBOOT_ZIP path/name of the JSBOOT.ZIP
-*/
-JSBOOT_ZIP = "JSBOOT.ZIP";
-
-/**
 * @property {string} JSBOOT_DIR path of the JSBOOT directory
 */
 JSBOOT_DIR = "JSBOOT/";
@@ -165,14 +160,20 @@ function RequireFile(name, fname) {
 }
 
 /**
- * import a module. DOjS modules must put all exported symbols into an object called 'exports'.
+ * import a module.
+ * DOjS modules are CommonJS modules where all exported symbols must be put into an object called 'exports'.
+ * A module may provide an optional version using the __VERSION__ member.
+ * 
+ * @param {string} name module file name.
+ * 
+ * @returns the imported module.
+ * 
  * @example
+ * exports.__VERSION__ = 23;        // declare module version
  * exports.myVar = 0;               // will be exported
  * exports.myFunc = function() {};  // will also be exported
  * var localVar;                    // will only be accessible in the module
  * function localFunction() {};     // will also only be accessible in the module
- * @param {string} name module file name.
- * @returns the imported module.
  */
 function Require(name) {
 	// look in cache

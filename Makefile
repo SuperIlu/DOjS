@@ -12,16 +12,19 @@ MUJS		= $(THIRDPARTY)/mujs-1.0.5
 ALLEGRO		= $(THIRDPARTY)/allegro-4.2.2-xc-master
 DZCOMMDIR	= $(THIRDPARTY)/dzcomm
 WATT32		= $(THIRDPARTY)/watt32-2.2dev.rel.11/
-ZLIB		= $(THIRDPARTY)/zlib-1.2.11
-KUBAZIP		= $(THIRDPARTY)/zip
+ZLIB		= $(THIRDPARTY)/zlib-1.2.12
+KUBAZIP		= $(THIRDPARTY)/zip-0.2.5
 ALPNG		= $(THIRDPARTY)/alpng13
-OPENSSL		= $(THIRDPARTY)/openssl-1.1.1n
-CURL		= $(THIRDPARTY)/curl-7.80.0
+OPENSSL		= $(THIRDPARTY)/openssl-1.1.1q
+CURL		= $(THIRDPARTY)/curl-7.84.0
 MESA3		= $(THIRDPARTY)/MesaFX-3.4-master
+BZIP2		= $(THIRDPARTY)/bzip2-1.0.8
+INI			= $(THIRDPARTY)/ini-20220806/src
 
 GLIDE=glide3x
 GLIDESDK=$(GLIDE)/v1
 TEXUS=$(GLIDE)/texus
+FONTCONV=GrxFntConv
 
 LIB_DZCOMM	= $(DZCOMMDIR)/lib/djgpp/libdzcom.a
 LIB_MUJS	= $(MUJS)/build/release/libmujs.a
@@ -32,7 +35,7 @@ LIB_ALPNG	= $(ALPNG)/libalpng.a
 LIB_SSL		= $(OPENSSL)/libssl.a
 LIB_CURL	= $(CURL)/libcurl.a
 LIB_MESA	= $(MESA3)/lib/libgl.a
-
+LIB_BZIP2	= $(BZIP2)/libbzip2.a
 
 # compiler
 CDEF     = -DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED # -DMEMDEBUG 
@@ -48,11 +51,12 @@ INCLUDES = \
 	-I$(realpath $(KUBAZIP))/src \
 	-I$(realpath $(ALPNG))/src \
 	-I$(realpath $(OPENSSL))/include \
-	-I$(realpath $(CURL))/include
+	-I$(realpath $(CURL))/include \
+	-I$(realpath $(INI))/
 
 # linker
 LIBS     = -lalleg -lmujs -lm -lemu -lglide3i -ldzcom -lz -lwatt 
-LDFLAGS  = \
+LDFLAGS  = -s \
 	-L$(MUJS)/build/release \
 	-L$(ALLEGRO)/lib/djgpp \
 	-L$(GLIDE)/v1/lib \
@@ -61,8 +65,8 @@ LDFLAGS  = \
 	-L$(ZLIB)
 
 # output
-EXE      = DOJS.EXE
-RELZIP   = dojs.zip
+EXE      = dojs.exe
+RELZIP   = dojs-X.Y.Z.zip
 FDZIP    = $(shell pwd)/FreeDOS_dojs.zip
 
 # dirs/files
@@ -88,6 +92,7 @@ MPARA=-j8
 
 PARTS= \
 	$(BUILDDIR)/blender.o \
+	$(BUILDDIR)/bytearray.o \
 	$(BUILDDIR)/intarray.o \
 	$(BUILDDIR)/3dfx-glide.o \
 	$(BUILDDIR)/3dfx-state.o \
@@ -105,6 +110,7 @@ PARTS= \
 	$(BUILDDIR)/funcs.o \
 	$(BUILDDIR)/lowlevel.o \
 	$(BUILDDIR)/gfx.o \
+	$(BUILDDIR)/inifile.o \
 	$(BUILDDIR)/joystick.o \
 	$(BUILDDIR)/lines.o \
 	$(BUILDDIR)/midiplay.o \
@@ -115,11 +121,12 @@ PARTS= \
 	$(BUILDDIR)/watt.o \
 	$(BUILDDIR)/zip/src/zip.o \
 	$(BUILDDIR)/zipfile.o \
-	$(BUILDDIR)/dexport.o
+	$(BUILDDIR)/dexport.o \
+	$(BUILDDIR)/ini/ini.o
 
 DXE_DIRS := $(wildcard plugins/*.dxelib)
 
-all: init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3 TEXUS.EXE $(EXE) $(DXE_DIRS) JSBOOT.ZIP
+all: init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3 texus.exe fntconv.exe $(EXE) $(DXE_DIRS) JSBOOT.ZIP
 
 mesa3: $(LIB_MESA)
 $(LIB_MESA):
@@ -142,6 +149,10 @@ libz: $(LIB_Z)
 $(LIB_Z):
 	$(MAKE) $(MPARA) -C $(ZLIB) -f Makefile.dojs
 
+libbzip2: $(LIB_BZIP2)
+$(LIB_BZIP2):
+	$(MAKE) $(MPARA) -C $(BZIP2) -f Makefile libbz2.a
+
 dzcomm: $(LIB_DZCOMM)
 $(LIB_DZCOMM):
 	$(MAKE) -C $(DZCOMMDIR) lib/djgpp/libdzcom.a
@@ -160,8 +171,6 @@ $(LIB_WATT):
 
 $(EXE): $(PARTS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
-	$(STRIP) $@
-	#rm -f DOJS.exe
 
 $(BUILDDIR)/%.o: src/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -170,6 +179,9 @@ $(BUILDDIR)/loadpng/%.o: $(LOADPNG)/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILDDIR)/zip/src/%.o: $(KUBAZIP)/src/%.c Makefile
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/ini/%.o: $(INI)/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(DXE_DIRS):
@@ -182,23 +194,27 @@ JSBOOT.ZIP: $(shell find jsboot/ -type f)
 	rm -f $@
 	zip -9 -r $@ jsboot/
 
-TEXUS.EXE:
+texus.exe:
 	$(MAKE) -C $(TEXUS) clean all
-	cp $(TEXUS)/TEXUS.EXE .
+	cp $(TEXUS)/texus.exe .
+
+fntconv.exe:
+	$(MAKE) -C $(FONTCONV) clean all
+	cp $(FONTCONV)/fntconv.exe .
 
 zip: all doc
 	rm -f $(RELZIP)
 	rm -f dxetest.DXE dxetest2.DXE
 	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe DPM.BAT V_*.BAT TEXUS.EXE cacert.pem *.DXE
+	zip -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe DPM.BAT V_*.BAT texus.exe fntconv.exe cacert.pem *.DXE
 
 devzip: all doc
 	rm -f $(RELZIP)
 	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
 	cp $(OPENSSL)/apps/openssl.exe .
-	zip -9 -r $(RELZIP) $(EXE) WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT TEXUS.EXE cacert.pem openssl.exe *.DXE
+	zip -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT texus.exe fntconv.exe cacert.pem openssl.exe *.DXE
 	scp $(RELZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:
@@ -207,18 +223,20 @@ doc:
 	cd doc && jsdoc --verbose -c jsdoc.conf.json -d ../$(DOCDIR)
 
 init:
-	mkdir -p $(BUILDDIR) $(BUILDDIR)/loadpng $(BUILDDIR)/zip/src
+	mkdir -p $(BUILDDIR) $(BUILDDIR)/loadpng $(BUILDDIR)/zip/src $(BUILDDIR)/ini
 	# make sure compile time is always updated
 	rm -f $(BUILDDIR)/DOjS.o
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) DOJS.exe $(ZIP) JSLOG.TXT TEXUS.EXE GLIDE3X.DXE JSBOOT.ZIP cacert.pem W32DHCP.TMP
+	rm -f $(EXE) $(ZIP) JSLOG.TXT texus.exe fntconv.exe GLIDE3X.DXE JSBOOT.ZIP cacert.pem W32DHCP.TMP
 	for dir in $(DXE_DIRS); do \
 		$(MAKE) -C $$dir -f Makefile $@; \
 	done
 
 distclean: clean alclean jsclean dzclean wattclean zclean apclean sslclean curlclean dxeclean mesa3clean
+	$(MAKE) -C $(TEXUS) clean
+	$(MAKE) -C $(FONTCONV) clean
 	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.* openssl.exe
 	rm -rf $(GLIDE)/*/test $(GLIDE)/texus/*.exe $(GLIDE)/texus/*.EXE $(GLIDE)/texus/build
 
@@ -236,6 +254,9 @@ wattclean:
 
 zclean:
 	$(MAKE) -C $(ZLIB) -f Makefile.dojs clean
+
+bzip2clean:
+	$(MAKE) -C $(BZIP2) -f Makefile clean
 
 dxeclean:
 	rm -f $(DXE_EXPORTS)
@@ -260,7 +281,7 @@ glideclean:
 	rm -rf glidedxe.c
 
 fixnewlines:
-	find . -iname *.sh -exec dos2unix -v \{\} \;
+	find . -iname "*.sh" -exec dos2unix -v \{\} \;
 
 glidedxe.c:
 	dxe3res -o dxetmp_v1.c $(GLIDE)/v1/lib/glide3x.dxe
@@ -316,7 +337,8 @@ fdos: zip
 		LICENSE \
 		*.md \
 		JSBOOT.ZIP \
-		TEXUS.EXE \
+		texus.exe \
+		fntconv.exe \
 		cacert.pem \
 		examples/ \
 		V_*.BAT \
@@ -337,6 +359,7 @@ fdos: zip
 		3rdparty/ \
 		WATTCP.CFG \
 		CWSDPMI.EXE \
+		dojs.ini \
 		LICENSE \
 		Makefile \
 		dxetemplate.txt \
@@ -346,6 +369,7 @@ fdos: zip
 		glide3x/ \
 		jsboot/ \
 		tests/ \
+		GrxFntConv/ \
 		$(TMP)/tmp
 	# zip up sources and remove tmp
 	(cd $(TMP)/tmp && zip -9 -r ../SOURCE/DOJS/SOURCES.ZIP * && rm -rf $(TMP)/tmp)

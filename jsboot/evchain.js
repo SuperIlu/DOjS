@@ -50,4 +50,6 @@ EvalChain.prototype.Step = function () {
 	}
 };
 
+// export functions and version
+exports.__VERSION__ = 2;
 exports.EvalChain = EvalChain;

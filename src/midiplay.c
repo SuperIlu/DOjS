@@ -68,7 +68,7 @@ static void new_Midi(js_State *J) {
         }
         midi = load_midi_pf(pf);  // PACKFILE is closed by this function!
         if (!midi) {
-            js_error(J, "Can't load midi '%s'", allegro_error);
+            js_error(J, "Can't load midi '%s'", fname);
             return;
         }
     }

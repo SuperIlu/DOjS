@@ -1,0 +1,1 @@
+* Add support for utf-8 (at the moment it's 7-bit ASCII only, especially around font width calculations).

@@ -19,6 +19,14 @@ This library does not make use of any SIMD instructions, but because of
 the relative simplicity of the codec it still manages to decode 4k60fps video
 on a single CPU core (on my i7-6700k at least).
 
+## Compilation on Linux
+
+Use a GCC invocation like the following to build the example `pl_mpeg_player`
+program:
+
+```shell
+gcc -o pl_mpeg_player pl_mpeg_player.c $(pkg-config --cflags --libs sdl2 glew)
+```
 
 ## Example Usage
 
@@ -39,8 +47,13 @@ not supported by this library.
 You can encode video in a suitable format using ffmpeg:
 
 ```
-ffmpeg -i input.mp4 -c:v mpeg1video -c:a mp2 -format mpeg output.mpg
+ffmpeg -i input.mp4 -c:v mpeg1video -q:v 0 -c:a mp2 -format mpeg output.mpg
 ```
+
+`-q:v` sets a fixed video quality with a variable bitrate, where `0` is the 
+highest. You may use `-b:v` to set a fixed bitrate instead; e.g. 
+`-b:v 2000k` for 2000 kbit/s. Please refer to the 
+[ffmpeg documentation](http://ffmpeg.org/ffmpeg.html#Options) for more details.
 
 If you just want to quickly test the library, try this file:
 

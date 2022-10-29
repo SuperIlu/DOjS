@@ -93,7 +93,7 @@ static void f_freeArray(poly_array_t *array) {
  * @return poly_array_t* or NULL if out of memory.
  */
 static poly_array_t *f_allocArray(int len) {
-    poly_array_t *array = malloc(sizeof(poly_array_t));
+    poly_array_t *array = calloc(1, sizeof(poly_array_t));
     if (!array) {
         return NULL;
     }
@@ -123,6 +123,7 @@ static poly_array_t *f_convertArray(js_State *J, int idx) {
         int len = js_getlength(J, idx);
         poly_array_t *array = f_allocArray(len);
         if (!array) {
+            JS_ENOMEM(J);
             return NULL;
         }
         for (int i = 0; i < len; i++) {
@@ -560,6 +561,9 @@ static void f_FloodFill(js_State *J) {
  */
 static void f_FilledPolygon(js_State *J) {
     poly_array_t *array = f_convertArray(J, 1);
+    if (!array) {
+        return;
+    }
     int color = js_toint32(J, 2);
 
     polygon(DOjS.current_bm, array->len, array->data, color);
@@ -598,7 +602,7 @@ static void f_SaveBmpImage(js_State *J) {
     get_palette(pal);
 
     if (save_bmp(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save screen to BMP file '%s': %s", fname, allegro_error);
+        js_error(J, "Can't save screen to BMP file '%s'", fname);
     }
 }
 
@@ -615,7 +619,7 @@ static void f_SavePcxImage(js_State *J) {
     get_palette(pal);
 
     if (save_pcx(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save screen to PCX file '%s': %s", fname, allegro_error);
+        js_error(J, "Can't save screen to PCX file '%s'", fname);
     }
 }
 
@@ -632,7 +636,7 @@ static void f_SaveTgaImage(js_State *J) {
     get_palette(pal);
 
     if (save_tga(fname, DOjS.current_bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save screen to TGA file '%s': %s", fname, allegro_error);
+        js_error(J, "Can't save screen to TGA file '%s'", fname);
     }
 }
 

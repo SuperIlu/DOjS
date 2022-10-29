@@ -34,7 +34,7 @@ SOFTWARE.
 #include "color.h"
 #include "util.h"
 #include "curl.h"
-#include "intarray.h"
+#include "bytearray.h"
 
 /************
 ** defines **
@@ -94,8 +94,8 @@ SOFTWARE.
 ************/
 //! file userdata definition
 typedef struct __curl_read {
-    int_array_t *ia;  //!< IntArray to read from
-    uint32_t pos;     //!< current read position
+    byte_array_t *ba;  //!< ByteArray to read from
+    uint32_t pos;      //!< current read position
 } curl_read_t;
 
 typedef struct __curl {
@@ -157,11 +157,11 @@ static void f_CurlRandom(js_State *J) {
 static size_t Curl_WriteFunction(void *ptr, size_t size, size_t nmemb, void *stream) {
     size_t taken = 0;
     if (stream) {
-        int_array_t *ia = stream;
+        byte_array_t *ba = stream;
         char *data = ptr;
         size_t num = size * nmemb;
         while (taken < num) {
-            if (IntArray_push(ia, data[taken]) < 0) {
+            if (ByteArray_push(ba, data[taken]) < 0) {
                 break;  // could not write data, bail out
             }
             taken++;
@@ -176,11 +176,11 @@ static size_t Curl_WriteFunction(void *ptr, size_t size, size_t nmemb, void *str
 static size_t Curl_ReadFunction(void *ptr, size_t size, size_t nmemb, void *stream) {
     size_t provided = 0;
     curl_read_t *rd = stream;
-    if (rd->ia) {
+    if (rd->ba) {
         char *data = ptr;
         size_t num = size * nmemb;
-        while ((provided < num) && (rd->pos < rd->ia->size)) {
-            data[provided] = rd->ia->data[rd->pos];
+        while ((provided < num) && (rd->pos < rd->ba->size)) {
+            data[provided] = rd->ba->data[rd->pos];
             provided++;
             rd->pos++;
         }
@@ -464,9 +464,9 @@ static void Curl_SetPost(js_State *J) {
 static void Curl_SetPut(js_State *J) {
     f_CurlRandom(J);
 
-    JS_CHECKTYPE(J, 1, TAG_INT_ARRAY);
+    JS_CHECKTYPE(J, 1, TAG_BYTE_ARRAY);
 
-    // create copy of IntArray object
+    // create copy of ByteArray object
     js_copy(J, 1);
     js_setproperty(J, 0, CURL_PUT_PROPERTY);
 
@@ -517,15 +517,15 @@ static void Curl_DoRequest(js_State *J) {
     curl_t *c = js_touserdata(J, 0, TAG_CURL);
     const char *url = js_tostring(J, 1);
 
-    int_array_t *ia_body = IntArray_create();
-    if (!ia_body) {
+    byte_array_t *ba_body = ByteArray_create();
+    if (!ba_body) {
         JS_ENOMEM(J);
         return;
     }
 
-    int_array_t *ia_header = IntArray_create();
-    if (!ia_header) {
-        IntArray_destroy(ia_body);
+    byte_array_t *ba_header = ByteArray_create();
+    if (!ba_header) {
+        ByteArray_destroy(ba_body);
         JS_ENOMEM(J);
         return;
     }
@@ -533,10 +533,10 @@ static void Curl_DoRequest(js_State *J) {
     // prepare for PUT if necessary
     if (js_hasproperty(J, 0, CURL_PUT_PROPERTY)) {
         js_getproperty(J, 0, CURL_PUT_PROPERTY);
-        if (js_isuserdata(J, -1, TAG_INT_ARRAY)) {
-            c->read.ia = js_touserdata(J, -1, TAG_INT_ARRAY);
+        if (js_isuserdata(J, -1, TAG_BYTE_ARRAY)) {
+            c->read.ba = js_touserdata(J, -1, TAG_BYTE_ARRAY);
             c->read.pos = 0;
-            curl_easy_setopt(c->curl, CURLOPT_READDATA, c->read.ia);
+            curl_easy_setopt(c->curl, CURLOPT_READDATA, c->read.ba);
         }
         js_pop(J, 1);
     }
@@ -547,21 +547,21 @@ static void Curl_DoRequest(js_State *J) {
     }
 
     // set URL, body and header
-    curl_easy_setopt(c->curl, CURLOPT_WRITEDATA, ia_body);
-    curl_easy_setopt(c->curl, CURLOPT_HEADERDATA, ia_header);
+    curl_easy_setopt(c->curl, CURLOPT_WRITEDATA, ba_body);
+    curl_easy_setopt(c->curl, CURLOPT_HEADERDATA, ba_header);
     curl_easy_setopt(c->curl, CURLOPT_ERRORBUFFER, cerror);
     curl_easy_setopt(c->curl, CURLOPT_URL, url);
 
     // perform request
     CURLcode res = curl_easy_perform(c->curl);
 
-    c->read.ia = NULL;
+    c->read.ba = NULL;
     c->read.pos = 0;
 
     // check for error
     if (res != CURLE_OK) {
-        IntArray_destroy(ia_body);
-        IntArray_destroy(ia_header);
+        ByteArray_destroy(ba_body);
+        ByteArray_destroy(ba_header);
         js_error(J, "[%d] %s", res, curl_easy_strerror(res));
         return;
     }
@@ -571,9 +571,9 @@ static void Curl_DoRequest(js_State *J) {
     // create array with [body, header]
     js_newarray(J);
     {
-        IntArray_fromStruct(J, ia_body);
+        ByteArray_fromStruct(J, ba_body);
         js_setindex(J, -2, 0);
-        IntArray_fromStruct(J, ia_header);
+        ByteArray_fromStruct(J, ba_header);
         js_setindex(J, -2, 1);
         js_pushnumber(J, code);
         js_setindex(J, -2, 2);

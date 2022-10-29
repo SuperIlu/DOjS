@@ -83,7 +83,7 @@ static inline void edi_putch(edi_t* edi, char c) {
  * @param edi the edi system to work on.
  * @param s the NULL terminated string.
  */
-static inline void edi_cputs(edi_t* edi, char* s) {
+static inline void edi_cputs(edi_t* edi, const char* s) {
     while (*s) {
         edi_putch(edi, *s);
         s++;

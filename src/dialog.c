@@ -192,7 +192,7 @@ bool dia_ask_text(edi_t* edi, char buffer[DIA_ASK_SIZE], char* allowed, char* ms
  * @param edi current editor.
  * @param txt the message to display.
  */
-void dia_show_message(edi_t* edi, char* txt) {
+void dia_show_message(edi_t* edi, const char* txt) {
     edi->last_top = NULL;
 
     int w = 0;
@@ -302,7 +302,7 @@ void dia_show_message(edi_t* edi, char* txt) {
  * @param edi current editor.
  * @param txt the question to display.
  */
-bool dia_show_confirm(edi_t* edi, char* txt) {
+bool dia_show_confirm(edi_t* edi, const char* txt) {
     edi->last_top = NULL;
 
     int w = strlen(txt) + 4;
@@ -363,7 +363,7 @@ bool dia_show_confirm(edi_t* edi, char* txt) {
  * @param deletable TRUE if the DEL-key shall delete the file after displaying.
  * @param ctx help context or NULL if none.
  */
-void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable, char* ctx) {
+void dia_show_file(edi_t* edi, const char* fname, int* pos, bool deletable, char* ctx) {
     edi->last_top = NULL;
 
     char* file_data;
@@ -417,7 +417,7 @@ void dia_show_file(edi_t* edi, char* fname, int* pos, bool deletable, char* ctx)
  * @return true the user exited via DEL key.
  * @return false the user exited via any other key.
  */
-bool dia_show_text(edi_t* edi, char* txt, int* pos) {
+bool dia_show_text(edi_t* edi, const char* txt, int* pos) {
     edi->last_top = NULL;
 
     int start = 0;

@@ -289,7 +289,7 @@ static void f_fxDrawVertexArray(js_State *J) {
     FxU32 mode = js_toint32(J, 1);
     if (js_isarray(J, 2)) {
         int len = js_getlength(J, 2);
-        fx_vertex_t *vlist = malloc(sizeof(fx_vertex_t) * len);
+        fx_vertex_t *vlist = calloc(len, sizeof(fx_vertex_t));
         if (vlist) {
             for (int i = 0; i < len; i++) {
                 js_getindex(J, 2, i);
@@ -331,7 +331,7 @@ static void f_fxFogTable(js_State *J) {
     FxI32 nFog;
     grGet(GR_FOG_TABLE_ENTRIES, 4, &nFog);
     if (js_isarray(J, 1) && (js_getlength(J, 1) >= nFog)) {
-        GrFog_t *table = malloc(nFog * sizeof(GrFog_t));
+        GrFog_t *table = calloc(nFog, sizeof(GrFog_t));
         if (table) {
             for (int i = 0; i < nFog; i++) {
                 js_getindex(J, 1, i);
@@ -359,7 +359,7 @@ static void f_fxFogGenerateExp(js_State *J) {
 
     DEBUGF("fog table size=%ld\n", nFog);
 
-    GrFog_t *table = malloc(nFog * sizeof(GrFog_t));
+    GrFog_t *table = calloc(nFog, sizeof(GrFog_t));
     if (!table) {
         JS_ENOMEM(J);
         return;
@@ -385,7 +385,7 @@ static void f_fxFogGenerateExp2(js_State *J) {
     FxI32 nFog;
     grGet(GR_FOG_TABLE_ENTRIES, 4, &nFog);
 
-    GrFog_t *table = malloc(nFog * sizeof(GrFog_t));
+    GrFog_t *table = calloc(nFog, sizeof(GrFog_t));
     if (!table) {
         JS_ENOMEM(J);
         return;
@@ -411,7 +411,7 @@ static void f_fxFogGenerateLinear(js_State *J) {
     FxI32 nFog;
     grGet(GR_FOG_TABLE_ENTRIES, 4, &nFog);
 
-    GrFog_t *table = malloc(nFog * sizeof(GrFog_t));
+    GrFog_t *table = calloc(nFog, sizeof(GrFog_t));
     if (!table) {
         JS_ENOMEM(J);
         return;

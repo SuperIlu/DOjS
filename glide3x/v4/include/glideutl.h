@@ -141,7 +141,13 @@ FX_ENTRY FxBool FX_CALL
 gu3dfGetInfo( const char *filename, Gu3dfInfo *info );
 
 FX_ENTRY FxBool FX_CALL
+gu3dfGetInfoM( const char *const data, unsigned int data_len, Gu3dfInfo *Info );
+
+FX_ENTRY FxBool FX_CALL
 gu3dfLoad( const char *filename, Gu3dfInfo *data );
+
+FX_ENTRY FxBool FX_CALL
+gu3dfLoadM( const char *const data, unsigned int data_len, Gu3dfInfo *info );
 
 #endif /* FX_GLIDE_NO_FUNC_PROTO */
 

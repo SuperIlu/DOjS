@@ -1,5 +1,7 @@
 /**
- * Create an empty IntArray. IntArrays can be used to very fast store a large number of integer values. They are supported mainly for File/Zip/Socket IO.
+ * Create an empty IntArray. IntArrays can be used to very fast store a large number of integer values.
+ * Note: IntArrays are no longer used for IO. Fast File/ZIP/Socket is now provided by ByteArray.
+ * @see ByteArray
  * @class
  * 
  * @param {number[]|string[]|string} data numbers will be used as given, string arrays will be intepreted as "characters" and only the first char is added to the IntArray. Strings will be added char by char.
@@ -18,6 +20,7 @@ function IntArray(data) {
 }
 /**
  * truncate IntArray to zero length.
+ * Note: this does not free any memory, it just declares the length of the array as 0.
  */
 IntArray.prototype.Clear = function () { };
 /**

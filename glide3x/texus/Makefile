@@ -1,7 +1,7 @@
 ###
 # TexUS makefile
 
-EXE=TEXUS.EXE
+EXE=texus.exe
 CROSS_PLATFORM=i586-pc-msdosdjgpp-
 CC=$(CROSS_PLATFORM)gcc
 AR=$(CROSS_PLATFORM)ar
@@ -48,12 +48,11 @@ init:
 	mkdir -p $(BUILDDIR)
 
 $(EXE): $(PARTS)
-	$(CC) -o $@ $^
-	$(STRIP) $@
+	$(CC) -s -o $@ $^
 
 $(BUILDDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) TEXUS.exe
+	rm -f $(EXE)

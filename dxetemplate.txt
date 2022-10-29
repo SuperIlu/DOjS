@@ -29,6 +29,7 @@
 
 #include "DOjS.h"
 #include "intarray.h"
+#include "bytearray.h"
 #include "util.h"
 #include "zipfile.h"
 #include "bitmap.h"
@@ -96,6 +97,7 @@ unlink
 utimes
 vfprintf
 vsnprintf
+vsprintf
 write
 exit
 
@@ -105,6 +107,7 @@ delay
 gettimeofday
 gmtime
 localtime
+localtime_r
 sleep
 strftime
 time
@@ -269,6 +272,10 @@ get_transformation_matrix_f
 get_x_rotate_matrix_f
 get_y_rotate_matrix_f
 get_z_rotate_matrix_f
+getr
+getg
+getb
+geta
 geta_depth
 getb_depth
 getg_depth
@@ -314,6 +321,7 @@ check_zipfile1
 check_zipfile2
 DOjS
 dojs_do_file
+dojs_do_zipfile
 read_zipfile1
 read_zipfile2
 ut_clone_string
@@ -325,6 +333,12 @@ IntArray_create
 IntArray_destroy
 IntArray_fromStruct
 IntArray_push
+
+// ByteArray
+ByteArray_create
+ByteArray_destroy
+ByteArray_fromStruct
+ByteArray_push
 
 Bitmap_fromRGBA
 

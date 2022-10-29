@@ -40,8 +40,8 @@ void init_al3d(js_State *J);
 void init_al3d(js_State *J) {
     LOGF("%s\n", __PRETTY_FUNCTION__);
 
-    if (ut_file_exists(JSBOOT_ZIP)) {
-        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_A3D);
+    if (ut_file_exists(DOjS.jsboot)) {
+        dojs_do_zipfile(J, DOjS.jsboot, JSINC_A3D);
     } else {
         dojs_do_file(J, JSINC_A3D);
     }

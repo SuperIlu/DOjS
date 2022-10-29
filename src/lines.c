@@ -43,8 +43,8 @@ SOFTWARE.
  *
  * @return an empty edi system.
  */
-edi_t* lin_init(char* name) {
-    edi_t* edi = malloc(sizeof(edi_t));
+edi_t* lin_init(const char* name) {
+    edi_t* edi = calloc(1, sizeof(edi_t));
     if (edi) {
         gettextinfo(&edi->scr);
 
@@ -130,7 +130,7 @@ line_t* lin_find(edi_t* edi, int num) {
  * @return a line ready to use in the system.
  */
 line_t* lin_newline() {
-    line_t* l = malloc(sizeof(line_t));
+    line_t* l = calloc(1, sizeof(line_t));
     if (l) {
         l->txt = malloc(EDI_LINE_WIDTH);
         if (!l->txt) {

@@ -1,0 +1,10 @@
+*.o
+.*.swp
+*.gcda
+*.gcno
+*.gcov
+testprog
+output.pdf
+output.txt
+docs/
+tests/penguin.c

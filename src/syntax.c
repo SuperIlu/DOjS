@@ -108,22 +108,35 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "GetVectorRotationMatrix"),       //
     EDI_SYNTAX(LIGHTRED, "GetTransformationMatrix"),       //
     EDI_SYNTAX(LIGHTRED, "FxTexMemGetStartAddress"),       //
+    EDI_SYNTAX(LIGHTRED, "glGetTexLevelParameter"),        //
     EDI_SYNTAX(LIGHTRED, "fxGetGammaTableEntries"),        //
+    EDI_SYNTAX(LIGHTRED, "glutSolidDodecahedron"),         //
     EDI_SYNTAX(LIGHTRED, "fxDepthBufferFunction"),         //
     EDI_SYNTAX(LIGHTRED, "SetProjectionViewport"),         //
     EDI_SYNTAX(LIGHTRED, "JoystickCalibrateName"),         //
+    EDI_SYNTAX(LIGHTRED, "glutWireDodecahedron"),          //
+    EDI_SYNTAX(LIGHTRED, "glutSolidTetrahedron"),          //
+    EDI_SYNTAX(LIGHTRED, "glutSolidIcosahedron"),          //
+    EDI_SYNTAX(LIGHTRED, "glDisableClientState"),          //
     EDI_SYNTAX(LIGHTRED, "fxTexCalcMemRequired"),          //
     EDI_SYNTAX(LIGHTRED, "fxGetFogTableEntries"),          //
     EDI_SYNTAX(LIGHTRED, "fxGammaCorrectionRGB"),          //
     EDI_SYNTAX(LIGHTRED, "fxConstantColorValue"),          //
     EDI_SYNTAX(LIGHTRED, "fxAlphaBlendFunction"),          //
     EDI_SYNTAX(LIGHTRED, "GetTranslationMatrix"),          //
+    EDI_SYNTAX(LIGHTRED, "glutWireTetrahedron"),           //
+    EDI_SYNTAX(LIGHTRED, "glutWireIcosahedron"),           //
+    EDI_SYNTAX(LIGHTRED, "glutSolidOctahedron"),           //
+    EDI_SYNTAX(LIGHTRED, "glGetPolygonStipple"),           //
+    EDI_SYNTAX(LIGHTRED, "glEnableClientState"),           //
     EDI_SYNTAX(LIGHTRED, "fxResetVertexLayout"),           //
     EDI_SYNTAX(LIGHTRED, "fxGetMaxTextureSize"),           //
     EDI_SYNTAX(LIGHTRED, "fxFogGenerateLinear"),           //
     EDI_SYNTAX(LIGHTRED, "fxDisableAllEffects"),           //
     EDI_SYNTAX(LIGHTRED, "fxAlphaTestFunction"),           //
     EDI_SYNTAX(LIGHTRED, "TransparencyEnabled"),           //
+    EDI_SYNTAX(LIGHTRED, "glutWireOctahedron"),            //
+    EDI_SYNTAX(LIGHTRED, "glPushClientAttrib"),            //
     EDI_SYNTAX(LIGHTRED, "fxTexDetailControl"),            //
     EDI_SYNTAX(LIGHTRED, "fxLfbConstantDepth"),            //
     EDI_SYNTAX(LIGHTRED, "fxLfbConstantAlpha"),            //
@@ -135,6 +148,8 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "IpxGetLocalAddress"),            //
     EDI_SYNTAX(LIGHTRED, "IpxAddressToString"),            //
     EDI_SYNTAX(LIGHTRED, "GetLoadedLibraries"),            //
+    EDI_SYNTAX(LIGHTRED, "glPopClientAttrib"),             //
+    EDI_SYNTAX(LIGHTRED, "glGetTexParameter"),             //
     EDI_SYNTAX(LIGHTRED, "fxTexLodBiasValue"),             //
     EDI_SYNTAX(LIGHTRED, "fxGetZDepthMinMax"),             //
     EDI_SYNTAX(LIGHTRED, "fxGetWDepthMinMax"),             //
@@ -148,6 +163,9 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "GetRotationMatrix"),             //
     EDI_SYNTAX(LIGHTRED, "GetLocalIpAddress"),             //
     EDI_SYNTAX(LIGHTRED, "GetIdentityMatrix"),             //
+    EDI_SYNTAX(LIGHTRED, "EnableRemoteDebug"),             //
+    EDI_SYNTAX(LIGHTRED, "glPolygonStipple"),              //
+    EDI_SYNTAX(LIGHTRED, "glDeleteTextures"),              //
     EDI_SYNTAX(LIGHTRED, "fxGetRevisionTmu"),              //
     EDI_SYNTAX(LIGHTRED, "fxFogGenerateExp"),              //
     EDI_SYNTAX(LIGHTRED, "fxDepthBiasLevel"),              //
@@ -164,6 +182,10 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "GetScalingMatrix"),              //
     EDI_SYNTAX(LIGHTRED, "GetRawSectorSize"),              //
     EDI_SYNTAX(LIGHTRED, "GetParallelPorts"),              //
+    EDI_SYNTAX(LIGHTRED, "glutSolidSphere"),               //
+    EDI_SYNTAX(LIGHTRED, "glPolygonOffset"),               //
+    EDI_SYNTAX(LIGHTRED, "glPixelTransfer"),               //
+    EDI_SYNTAX(LIGHTRED, "glColorMaterial"),               //
     EDI_SYNTAX(LIGHTRED, "fxTexMipMapMode"),               //
     EDI_SYNTAX(LIGHTRED, "fxTexMinAddress"),               //
     EDI_SYNTAX(LIGHTRED, "fxTexMaxAddress"),               //
@@ -179,6 +201,13 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "MouseShowCursor"),               //
     EDI_SYNTAX(LIGHTRED, "GetCameraMatrix"),               //
     EDI_SYNTAX(LIGHTRED, "CustomCircleArc"),               //
+    EDI_SYNTAX(LIGHTRED, "glutWireSphere"),                //
+    EDI_SYNTAX(LIGHTRED, "glutSolidTorus"),                //
+    EDI_SYNTAX(LIGHTRED, "gluPerspective"),                //
+    EDI_SYNTAX(LIGHTRED, "glTexParameter"),                //
+    EDI_SYNTAX(LIGHTRED, "glLoadIdentity"),                //
+    EDI_SYNTAX(LIGHTRED, "glGetClipPlane"),                //
+    EDI_SYNTAX(LIGHTRED, "glClearStencil"),                //
     EDI_SYNTAX(LIGHTRED, "fxVertexLayout"),                //
     EDI_SYNTAX(LIGHTRED, "fxTexClampMode"),                //
     EDI_SYNTAX(LIGHTRED, "fxRenderBuffer"),                //
@@ -190,6 +219,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "fxColorCombine"),                //
     EDI_SYNTAX(LIGHTRED, "fxAlphaCombine"),                //
     EDI_SYNTAX(LIGHTRED, "SoundStopInput"),                //
+    EDI_SYNTAX(LIGHTRED, "SetExitMessage"),                //
     EDI_SYNTAX(LIGHTRED, "ScenePolygon3D"),                //
     EDI_SYNTAX(LIGHTRED, "ReadSoundInput"),                //
     EDI_SYNTAX(LIGHTRED, "PolygonZNormal"),                //
@@ -202,6 +232,19 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "GetNetworkMask"),                //
     EDI_SYNTAX(LIGHTRED, "GetEmptyMatrix"),                //
     EDI_SYNTAX(LIGHTRED, "GetAlignMatrix"),                //
+    EDI_SYNTAX(LIGHTRED, "glutWireTorus"),                 //
+    EDI_SYNTAX(LIGHTRED, "glutSolidCube"),                 //
+    EDI_SYNTAX(LIGHTRED, "glutSolidCone"),                 //
+    EDI_SYNTAX(LIGHTRED, "glStencilMask"),                 //
+    EDI_SYNTAX(LIGHTRED, "glStencilFunc"),                 //
+    EDI_SYNTAX(LIGHTRED, "glPolygonMode"),                 //
+    EDI_SYNTAX(LIGHTRED, "glLineStipple"),                 //
+    EDI_SYNTAX(LIGHTRED, "glGetTexImage"),                 //
+    EDI_SYNTAX(LIGHTRED, "glGetPixelMap"),                 //
+    EDI_SYNTAX(LIGHTRED, "glGetMaterial"),                 //
+    EDI_SYNTAX(LIGHTRED, "glGenTextures"),                 //
+    EDI_SYNTAX(LIGHTRED, "glDeleteLists"),                 //
+    EDI_SYNTAX(LIGHTRED, "glBindTexture"),                 //
     EDI_SYNTAX(LIGHTRED, "fxTexNCCTable"),                 //
     EDI_SYNTAX(LIGHTRED, "fxGetMemoryFb"),                 //
     EDI_SYNTAX(LIGHTRED, "fxBufferClear"),                 //
@@ -220,6 +263,34 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "FilledEllipse"),                 //
     EDI_SYNTAX(LIGHTRED, "CustomEllipse"),                 //
     EDI_SYNTAX(LIGHTRED, "BytesToString"),                 //
+    EDI_SYNTAX(LIGHTRED, "glutWireCube"),                  //
+    EDI_SYNTAX(LIGHTRED, "glutWireCone"),                  //
+    EDI_SYNTAX(LIGHTRED, "glTexImage2D"),                  //
+    EDI_SYNTAX(LIGHTRED, "glTexImage1D"),                  //
+    EDI_SYNTAX(LIGHTRED, "glShadeModel"),                  //
+    EDI_SYNTAX(LIGHTRED, "glRenderMode"),                  //
+    EDI_SYNTAX(LIGHTRED, "glReadPixels"),                  //
+    EDI_SYNTAX(LIGHTRED, "glReadBuffer"),                  //
+    EDI_SYNTAX(LIGHTRED, "glRasterPos4"),                  //
+    EDI_SYNTAX(LIGHTRED, "glRasterPos3"),                  //
+    EDI_SYNTAX(LIGHTRED, "glRasterPos2"),                  //
+    EDI_SYNTAX(LIGHTRED, "glPushMatrix"),                  //
+    EDI_SYNTAX(LIGHTRED, "glPushAttrib"),                  //
+    EDI_SYNTAX(LIGHTRED, "glPixelStore"),                  //
+    EDI_SYNTAX(LIGHTRED, "glMultMatrix"),                  //
+    EDI_SYNTAX(LIGHTRED, "glMatrixMode"),                  //
+    EDI_SYNTAX(LIGHTRED, "glLoadMatrix"),                  //
+    EDI_SYNTAX(LIGHTRED, "glLightModel"),                  //
+    EDI_SYNTAX(LIGHTRED, "glGetInteger"),                  //
+    EDI_SYNTAX(LIGHTRED, "glGetBoolean"),                  //
+    EDI_SYNTAX(LIGHTRED, "glDrawPixels"),                  //
+    EDI_SYNTAX(LIGHTRED, "glDrawBuffer"),                  //
+    EDI_SYNTAX(LIGHTRED, "glDepthRange"),                  //
+    EDI_SYNTAX(LIGHTRED, "glCopyPixels"),                  //
+    EDI_SYNTAX(LIGHTRED, "glClearIndex"),                  //
+    EDI_SYNTAX(LIGHTRED, "glClearDepth"),                  //
+    EDI_SYNTAX(LIGHTRED, "glClearColor"),                  //
+    EDI_SYNTAX(LIGHTRED, "glClearAccum"),                  //
     EDI_SYNTAX(LIGHTRED, "fxTexCombine"),                  //
     EDI_SYNTAX(LIGHTRED, "fxDitherMode"),                  //
     EDI_SYNTAX(LIGHTRED, "fxDepthRange"),                  //
@@ -246,6 +317,32 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "DestroyScene"),                  //
     EDI_SYNTAX(LIGHTRED, "CustomCircle"),                  //
     EDI_SYNTAX(LIGHTRED, "CrossProduct"),                  //
+    EDI_SYNTAX(LIGHTRED, "glTranslate"),                   //
+    EDI_SYNTAX(LIGHTRED, "glTexCoord4"),                   //
+    EDI_SYNTAX(LIGHTRED, "glTexCoord3"),                   //
+    EDI_SYNTAX(LIGHTRED, "glTexCoord2"),                   //
+    EDI_SYNTAX(LIGHTRED, "glTexCoord1"),                   //
+    EDI_SYNTAX(LIGHTRED, "glStencilOp"),                   //
+    EDI_SYNTAX(LIGHTRED, "glPopMatrix"),                   //
+    EDI_SYNTAX(LIGHTRED, "glPopAttrib"),                   //
+    EDI_SYNTAX(LIGHTRED, "glPointSize"),                   //
+    EDI_SYNTAX(LIGHTRED, "glPixelZoom"),                   //
+    EDI_SYNTAX(LIGHTRED, "glLineWidth"),                   //
+    EDI_SYNTAX(LIGHTRED, "glIsTexture"),                   //
+    EDI_SYNTAX(LIGHTRED, "glIsEnabled"),                   //
+    EDI_SYNTAX(LIGHTRED, "glIndexMask"),                   //
+    EDI_SYNTAX(LIGHTRED, "glGetTexGen"),                   //
+    EDI_SYNTAX(LIGHTRED, "glGetTexEnv"),                   //
+    EDI_SYNTAX(LIGHTRED, "glGetString"),                   //
+    EDI_SYNTAX(LIGHTRED, "glGetDouble"),                   //
+    EDI_SYNTAX(LIGHTRED, "glFrontFace"),                   //
+    EDI_SYNTAX(LIGHTRED, "glDepthMask"),                   //
+    EDI_SYNTAX(LIGHTRED, "glDepthFunc"),                   //
+    EDI_SYNTAX(LIGHTRED, "glColorMask"),                   //
+    EDI_SYNTAX(LIGHTRED, "glClipPlane"),                   //
+    EDI_SYNTAX(LIGHTRED, "glCallLists"),                   //
+    EDI_SYNTAX(LIGHTRED, "glBlendFunc"),                   //
+    EDI_SYNTAX(LIGHTRED, "glAlphaFunc"),                   //
     EDI_SYNTAX(LIGHTRED, "fxGetNumTmu"),                   //
     EDI_SYNTAX(LIGHTRED, "fxDrawPoint"),                   //
     EDI_SYNTAX(LIGHTRED, "fxDepthMask"),                   //
@@ -264,6 +361,19 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "CreateScene"),                   //
     EDI_SYNTAX(LIGHTRED, "ClearScreen"),                   //
     EDI_SYNTAX(LIGHTRED, "ApplyMatrix"),                   //
+    EDI_SYNTAX(LIGHTRED, "gluOrtho2D"),                    //
+    EDI_SYNTAX(LIGHTRED, "glViewport"),                    //
+    EDI_SYNTAX(LIGHTRED, "glShutdown"),                    //
+    EDI_SYNTAX(LIGHTRED, "glPixelMap"),                    //
+    EDI_SYNTAX(LIGHTRED, "glMaterial"),                    //
+    EDI_SYNTAX(LIGHTRED, "glListBase"),                    //
+    EDI_SYNTAX(LIGHTRED, "glGetLight"),                    //
+    EDI_SYNTAX(LIGHTRED, "glGetFloat"),                    //
+    EDI_SYNTAX(LIGHTRED, "glGetError"),                    //
+    EDI_SYNTAX(LIGHTRED, "glGenLists"),                    //
+    EDI_SYNTAX(LIGHTRED, "glEdgeFlag"),                    //
+    EDI_SYNTAX(LIGHTRED, "glCullFace"),                    //
+    EDI_SYNTAX(LIGHTRED, "glCallList"),                    //
     EDI_SYNTAX(LIGHTRED, "fxViewport"),                    //
     EDI_SYNTAX(LIGHTRED, "fxShutdown"),                    //
     EDI_SYNTAX(LIGHTRED, "fxGetNumFb"),                    //
@@ -283,10 +393,23 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "InPortLong"),                    //
     EDI_SYNTAX(LIGHTRED, "InPortByte"),                    //
     EDI_SYNTAX(LIGHTRED, "HelloWorld"),                    //
+    EDI_SYNTAX(LIGHTRED, "FileExists"),                    //
     EDI_SYNTAX(LIGHTRED, "DotProduct"),                    //
     EDI_SYNTAX(LIGHTRED, "CustomLine"),                    //
+    EDI_SYNTAX(LIGHTRED, "CurlRandom"),                    //
     EDI_SYNTAX(LIGHTRED, "CompareKey"),                    //
     EDI_SYNTAX(LIGHTRED, "ClearScene"),                    //
+    EDI_SYNTAX(LIGHTRED, "gluLookAt"),                     //
+    EDI_SYNTAX(LIGHTRED, "glVertex4"),                     //
+    EDI_SYNTAX(LIGHTRED, "glVertex3"),                     //
+    EDI_SYNTAX(LIGHTRED, "glVertex2"),                     //
+    EDI_SYNTAX(LIGHTRED, "glScissor"),                     //
+    EDI_SYNTAX(LIGHTRED, "glNormal3"),                     //
+    EDI_SYNTAX(LIGHTRED, "glNewList"),                     //
+    EDI_SYNTAX(LIGHTRED, "glLogicOp"),                     //
+    EDI_SYNTAX(LIGHTRED, "glFrustum"),                     //
+    EDI_SYNTAX(LIGHTRED, "glEndList"),                     //
+    EDI_SYNTAX(LIGHTRED, "glDisable"),                     //
     EDI_SYNTAX(LIGHTRED, "fxFogMode"),                     //
     EDI_SYNTAX(LIGHTRED, "fxDisable"),                     //
     EDI_SYNTAX(LIGHTRED, "ZipPrefix"),                     //
@@ -302,7 +425,17 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "FlicClose"),                     //
     EDI_SYNTAX(LIGHTRED, "FilledBox"),                     //
     EDI_SYNTAX(LIGHTRED, "DrawArray"),                     //
+    EDI_SYNTAX(LIGHTRED, "DirExists"),                     //
     EDI_SYNTAX(LIGHTRED, "CircleArc"),                     //
+    EDI_SYNTAX(LIGHTRED, "glTexGen"),                      //
+    EDI_SYNTAX(LIGHTRED, "glTexEnv"),                      //
+    EDI_SYNTAX(LIGHTRED, "glRotate"),                      //
+    EDI_SYNTAX(LIGHTRED, "glIsList"),                      //
+    EDI_SYNTAX(LIGHTRED, "glFinish"),                      //
+    EDI_SYNTAX(LIGHTRED, "glEnable"),                      //
+    EDI_SYNTAX(LIGHTRED, "glColor4"),                      //
+    EDI_SYNTAX(LIGHTRED, "glColor3"),                      //
+    EDI_SYNTAX(LIGHTRED, "glBitmap"),                      //
     EDI_SYNTAX(LIGHTRED, "fxSplash"),                      //
     EDI_SYNTAX(LIGHTRED, "fxOrigin"),                      //
     EDI_SYNTAX(LIGHTRED, "fxIsBusy"),                      //
@@ -322,6 +455,14 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "FlicPlay"),                      //
     EDI_SYNTAX(LIGHTRED, "FlicOpen"),                      //
     EDI_SYNTAX(LIGHTRED, "CharCode"),                      //
+    EDI_SYNTAX(LIGHTRED, "glScale"),                       //
+    EDI_SYNTAX(LIGHTRED, "glOrtho"),                       //
+    EDI_SYNTAX(LIGHTRED, "glLight"),                       //
+    EDI_SYNTAX(LIGHTRED, "glIndex"),                       //
+    EDI_SYNTAX(LIGHTRED, "glFlush"),                       //
+    EDI_SYNTAX(LIGHTRED, "glClear"),                       //
+    EDI_SYNTAX(LIGHTRED, "glBegin"),                       //
+    EDI_SYNTAX(LIGHTRED, "glAccum"),                       //
     EDI_SYNTAX(LIGHTRED, "fxFlush"),                       //
     EDI_SYNTAX(LIGHTRED, "Resolve"),                       //
     EDI_SYNTAX(LIGHTRED, "Require"),                       //
@@ -337,6 +478,9 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "Include"),                       //
     EDI_SYNTAX(LIGHTRED, "GetBlue"),                       //
     EDI_SYNTAX(LIGHTRED, "Ellipse"),                       //
+    EDI_SYNTAX(LIGHTRED, "glRect"),                        //
+    EDI_SYNTAX(LIGHTRED, "glInit"),                        //
+    EDI_SYNTAX(LIGHTRED, "glHint"),                        //
     EDI_SYNTAX(LIGHTRED, "fxInit"),                        //
     EDI_SYNTAX(LIGHTRED, "VDebug"),                        //
     EDI_SYNTAX(LIGHTRED, "TextXY"),                        //
@@ -349,6 +493,8 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "GetRed"),                        //
     EDI_SYNTAX(LIGHTRED, "Clip3D"),                        //
     EDI_SYNTAX(LIGHTRED, "Circle"),                        //
+    EDI_SYNTAX(LIGHTRED, "glFog"),                         //
+    EDI_SYNTAX(LIGHTRED, "glEnd"),                         //
     EDI_SYNTAX(LIGHTRED, "Sleep"),                         //
     EDI_SYNTAX(LIGHTRED, "SizeY"),                         //
     EDI_SYNTAX(LIGHTRED, "SizeX"),                         //
@@ -356,6 +502,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "Print"),                         //
     EDI_SYNTAX(LIGHTRED, "Noise"),                         //
     EDI_SYNTAX(LIGHTRED, "FXBIT"),                         //
+    EDI_SYNTAX(LIGHTRED, "Dummy"),                         //
     EDI_SYNTAX(LIGHTRED, "Debug"),                         //
     EDI_SYNTAX(LIGHTRED, "CpuId"),                         //
     EDI_SYNTAX(LIGHTRED, "Color"),                         //
@@ -379,11 +526,13 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTGREEN, "COMPort"),      // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "ZBuffer"),      // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "FxState"),      // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "IniFile"),      // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Rawplay"),      // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Sample"),       // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Socket"),       // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Bitmap"),       // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "SQLite"),       // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "PDFGen"),       // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Neural"),       // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "MPEG1"),        // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Font"),         // .ctor()
@@ -396,20 +545,26 @@ const syntax_t edi_wordlist[] = {
     // Methods
     EDI_SYNTAX(RED, "SetCertificatePassword"),  //
     EDI_SYNTAX(RED, "SetUnrestrictedAuth"),     //
+    EDI_SYNTAX(RED, "AddQuadraticBezier"),      //
+    EDI_SYNTAX(RED, "AddFilledRectangle"),      //
     EDI_SYNTAX(RED, "SetFollowLocation"),       //
     EDI_SYNTAX(RED, "SetConnectTimeout"),       //
+    EDI_SYNTAX(RED, "GetFontTextWidth"),        //
     EDI_SYNTAX(RED, "DrawStringCenter"),        //
+    EDI_SYNTAX(RED, "AddFilledPolygon"),        //
     EDI_SYNTAX(RED, "GetResponseCode"),         //
     EDI_SYNTAX(RED, "DrawStringRight"),         //
     EDI_SYNTAX(RED, "SetKeyPassword"),          //
     EDI_SYNTAX(RED, "SetCertificate"),          //
     EDI_SYNTAX(RED, "DrawStringLeft"),          //
     EDI_SYNTAX(RED, "DownloadMipMap"),          //
+    EDI_SYNTAX(RED, "AddCubicBezier"),          //
     EDI_SYNTAX(RED, "SetSocksProxy"),           //
     EDI_SYNTAX(RED, "IsOutputEmpty"),           //
     EDI_SYNTAX(RED, "GetRemotePort"),           //
     EDI_SYNTAX(RED, "GetRemoteHost"),           //
     EDI_SYNTAX(RED, "CurrentSample"),           //
+    EDI_SYNTAX(RED, "AddCustomPath"),           //
     EDI_SYNTAX(RED, "StringHeight"),            //
     EDI_SYNTAX(RED, "SetUserAgent"),            //
     EDI_SYNTAX(RED, "SetSslVerify"),            //
@@ -425,15 +580,19 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "GetLocalPort"),            //
     EDI_SYNTAX(RED, "DrawAdvanced"),            //
     EDI_SYNTAX(RED, "ClearHeaders"),            //
+    EDI_SYNTAX(RED, "AddRectangle"),            //
+    EDI_SYNTAX(RED, "AddImageFile"),            //
     EDI_SYNTAX(RED, "WriteString"),             //
     EDI_SYNTAX(RED, "StringWidth"),             //
+    EDI_SYNTAX(RED, "PageSetSize"),             //
     EDI_SYNTAX(RED, "MemRequired"),             //
     EDI_SYNTAX(RED, "IsInputFull"),             //
     EDI_SYNTAX(RED, "FlushOutput"),             //
     EDI_SYNTAX(RED, "ExtractFile"),             //
     EDI_SYNTAX(RED, "Established"),             //
     EDI_SYNTAX(RED, "CurrentTime"),             //
-    EDI_SYNTAX(RED, "DeleteFile"),              //
+    EDI_SYNTAX(RED, "AddTextWrap"),             //
+    EDI_SYNTAX(RED, "AddBookmark"),             //
     EDI_SYNTAX(RED, "WriteBytes"),              //
     EDI_SYNTAX(RED, "SetTimeout"),              //
     EDI_SYNTAX(RED, "SetReferer"),              //
@@ -447,6 +606,11 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "GetComment"),              //
     EDI_SYNTAX(RED, "GetAllData"),              //
     EDI_SYNTAX(RED, "FlushInput"),              //
+    EDI_SYNTAX(RED, "DeleteFile"),              //
+    EDI_SYNTAX(RED, "AppendPage"),              //
+    EDI_SYNTAX(RED, "AddPolygon"),              //
+    EDI_SYNTAX(RED, "AddEllipse"),              //
+    EDI_SYNTAX(RED, "AddBarcode"),              //
     EDI_SYNTAX(RED, "WriteLine"),               //
     EDI_SYNTAX(RED, "WriteInts"),               //
     EDI_SYNTAX(RED, "WriteByte"),               //
@@ -463,6 +627,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "DoRequest"),               //
     EDI_SYNTAX(RED, "DataReady"),               //
     EDI_SYNTAX(RED, "AddHeader"),               //
+    EDI_SYNTAX(RED, "AddCircle"),               //
     EDI_SYNTAX(RED, "ToString"),                //
     EDI_SYNTAX(RED, "SetProxy"),                //
     EDI_SYNTAX(RED, "ReadLine"),                //
@@ -472,8 +637,11 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "GetPixel"),                //
     EDI_SYNTAX(RED, "ToArray"),                 //
     EDI_SYNTAX(RED, "SetPost"),                 //
+    EDI_SYNTAX(RED, "SetFont"),                 //
     EDI_SYNTAX(RED, "NoFlush"),                 //
     EDI_SYNTAX(RED, "GetSize"),                 //
+    EDI_SYNTAX(RED, "AddText"),                 //
+    EDI_SYNTAX(RED, "AddLine"),                 //
     EDI_SYNTAX(RED, "AddFile"),                 //
     EDI_SYNTAX(RED, "Source"),                  //
     EDI_SYNTAX(RED, "SetPut"),                  //
@@ -481,11 +649,13 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "SetGet"),                  //
     EDI_SYNTAX(RED, "Rewind"),                  //
     EDI_SYNTAX(RED, "Append"),                  //
+    EDI_SYNTAX(RED, "AddRgb"),                  //
     EDI_SYNTAX(RED, "Train"),                   //
     EDI_SYNTAX(RED, "Shift"),                   //
     EDI_SYNTAX(RED, "Flush"),                   //
     EDI_SYNTAX(RED, "Close"),                   //
     EDI_SYNTAX(RED, "Clear"),                   //
+    EDI_SYNTAX(RED, "Tell"),                    //
     EDI_SYNTAX(RED, "Stop"),                    //
     EDI_SYNTAX(RED, "Seek"),                    //
     EDI_SYNTAX(RED, "Save"),                    //

@@ -95,7 +95,7 @@ static void new_Com(js_State *J) {
         return;
     }
 
-    comport_t *p = malloc(sizeof(comport_t));
+    comport_t *p = calloc(1, sizeof(comport_t));
     if (!p) {
         JS_ENOMEM(J);
         return;

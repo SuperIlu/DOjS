@@ -53,9 +53,13 @@ SOFTWARE.
 #include "zipfile.h"
 #include "lowlevel.h"
 #include "intarray.h"
+#include "bytearray.h"
 #include "blender.h"
+#include "ini.h"
+#include "inifile.h"
 
 #define AUTOSTART_FILE "=MAIN.JS"
+#define DOJS_EXE_NAME "DOJS.EXE"
 
 /**************
 ** Variables **
@@ -78,7 +82,7 @@ END_OF_FUNCTION(tick_handler)
  * @brief show usage on console
  */
 static void usage() {
-    fputs("Usage: DOjS.EXE [-r] [-l] [-s] [-f] [-a] <script> [script parameters]\n", stderr);
+    fputs("Usage: DOjS.EXE [<flags>] <script> [script parameters]\n", stderr);
     fputs("    -r             : Do not invoke the editor, just run the script.\n", stderr);
     fputs("    -l             : Use 50-line mode in the editor.\n", stderr);
     fputs("    -w <width>     : Screen width: 320 or 640, Default: 640.\n", stderr);
@@ -86,8 +90,8 @@ static void usage() {
     fputs("    -s             : No wave sound.\n", stderr);
     fputs("    -f             : No FM sound.\n", stderr);
     fputs("    -a             : Disable alpha (speeds up rendering).\n", stderr);
-    fputs("    -x             : Allow raw disk write (CAUTION!)\n", stderr);
-    fputs("    -t             : Disable TCP-stack\n", stderr);
+    fputs("    -x             : Allow raw disk write (CAUTION!).\n", stderr);
+    fputs("    -t             : Disable TCP-stack.\n", stderr);
     fputs("    -n             : Disable JSLOG.TXT.\n", stderr);
     fputs("    -j <file>      : Redirect JSLOG.TXT to <file>.\n", stderr);
     fputs("\n", stderr);
@@ -268,16 +272,20 @@ static void dojs_loadfile_zip(js_State *J, const char *fname) {
  * @param J VM state.
  */
 static void dojs_load_jsboot(js_State *J) {
-    if (ut_file_exists(JSBOOT_ZIP)) {
-        DEBUG("JSBOOT.ZIP found, using archive\n");
-        PROPDEF_S(J, JSBOOT_ZIP ZIP_DELIM_STR JSBOOT_DIR, JSBOOT_VAR);
-        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_FUNC);
-        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_COLOR);
-        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_FILE);
-        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_3DFX);
-        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_SOCKET);
+    if (ut_file_exists(DOjS.jsboot)) {
+        DEBUGF("%s found, using archive\n", DOjS.jsboot);
+
+        char buffer[1024];  // this is a hack, I'm to lazy to calculate an appropriate buffer
+        snprintf(buffer, sizeof(buffer), "%s%s", DOjS.jsboot, ZIP_DELIM_STR JSBOOT_DIR);
+        PROPDEF_S(J, buffer, JSBOOT_VAR);
+
+        dojs_do_zipfile(J, DOjS.jsboot, JSINC_FUNC);
+        dojs_do_zipfile(J, DOjS.jsboot, JSINC_COLOR);
+        dojs_do_zipfile(J, DOjS.jsboot, JSINC_FILE);
+        dojs_do_zipfile(J, DOjS.jsboot, JSINC_3DFX);
+        dojs_do_zipfile(J, DOjS.jsboot, JSINC_SOCKET);
     } else {
-        DEBUG("JSBOOT.ZIP NOT found, using plain files\n");
+        DEBUGF("%s NOT found, using plain files\n", DOjS.jsboot);
         PROPDEF_S(J, JSBOOT_DIR, JSBOOT_VAR);
         dojs_do_file(J, JSINC_FUNC);
         dojs_do_file(J, JSINC_COLOR);
@@ -367,7 +375,7 @@ static void dojs_shutdown_libraries() {
  * @param fname name of the script file
  * @return true if all required functions are defined, false if at least one required is missing.
  */
-static bool check_functions(js_State *J, char *fname) {
+static bool check_functions(js_State *J, const char *fname) {
     bool ret = true;
     js_pushglobal(J);
 
@@ -477,7 +485,9 @@ static void run_script(int argc, char **argv, int args) {
     init_socket(J);
     init_zipfile(J);
     init_intarray(J);
+    init_bytearray(J);
     init_flic(J);
+    init_inifile(J);
 
     // create canvas
     bool screenSuccess = true;
@@ -609,6 +619,21 @@ static void run_script(int argc, char **argv, int args) {
 ** exported functions **
 ***********************/
 /**
+ * @brief load and parse a file from ZIP.
+ *
+ * @param J VM state.
+ * @param zipname the name of the zip to read from.
+ * @param fname the name of the file.
+ *
+ * @return int TRUE if successfull, FALSE if not.
+ */
+int dojs_do_zipfile(js_State *J, const char *zipname, const char *fname) {
+    char buffer[1024];  // this is a hack, I'm to lazy to calculate an appropriate buffer
+    snprintf(buffer, sizeof(buffer), "%s" ZIP_DELIM_STR "%s", DOjS.jsboot, fname);
+    return dojs_do_file(J, buffer);
+}
+
+/**
  * @brief load and parse a file from filesystem or ZIP.
  *
  * @param J VM state.
@@ -622,6 +647,7 @@ int dojs_do_file(js_State *J, const char *fname) {
         DEBUGF("Parsing plain file '%s'\n", fname);
         return js_dofile(J, fname);
     } else {
+        DEBUGF("Parsing ZIP file '%s'\n", fname);
         if (js_try(J)) {
             js_report(J, js_trystring(J, -1, "Error"));
             js_pop(J, 1);
@@ -789,17 +815,81 @@ void dojs_logflush() {
  * @return int exit code.
  */
 int main(int argc, char **argv) {
+    const char *script_param = NULL;
+
     // initialize DOjS main structure
     bzero(&DOjS, sizeof(DOjS));
     DOjS.params.width = DOJS_FULL_WIDTH;
     DOjS.params.bpp = 32;
     DOjS.do_logfile = true;
     DOjS.logfile_name = LOGFILE;
+    DOjS.jsboot = JSBOOT_ZIP;
     init_last_error();
 
-    int opt;
+    ini_t *config = ini_load("dojs.ini");
+    if (config) {
+        const char *value;
 
-    // check parameters
+        value = ini_get(config, NULL, "w");
+        if (value) {
+            DOjS.params.width = atoi(value);
+        }
+
+        value = ini_get(config, NULL, "b");
+        if (value) {
+            DOjS.params.bpp = atoi(value);
+        }
+
+        value = ini_get(config, NULL, "r");
+        if (value) {
+            DOjS.params.run = true;
+        }
+
+        value = ini_get(config, NULL, "l");
+        if (value) {
+            DOjS.params.highres = true;
+        }
+
+        value = ini_get(config, NULL, "s");
+        if (value) {
+            DOjS.params.no_sound = true;
+        }
+
+        value = ini_get(config, NULL, "t");
+        if (value) {
+            DOjS.params.no_tcpip = true;
+        }
+
+        value = ini_get(config, NULL, "f");
+        if (value) {
+            DOjS.params.no_fm = true;
+        }
+
+        value = ini_get(config, NULL, "a");
+        if (value) {
+            DOjS.params.no_alpha = true;
+        }
+
+        value = ini_get(config, NULL, "x");
+        if (value) {
+            DOjS.params.raw_write = true;
+        }
+
+        value = ini_get(config, NULL, "n");
+        if (value) {
+            DOjS.do_logfile = false;
+        }
+
+        value = ini_get(config, NULL, "j");
+        if (value) {
+            DOjS.logfile_name = value;
+        }
+
+        script_param = ini_get(config, NULL, "script");
+    }
+
+    // check command line parameters
+    int opt;
     while ((opt = getopt(argc, argv, "tnxlrsfahw:b:j:")) != -1) {
         switch (opt) {
             case 'w':
@@ -847,41 +937,78 @@ int main(int argc, char **argv) {
         DOjS.logfile_name = NULL;
     }
 
-    if (optind >= argc) {
-        // no script name supplied, try autostart with xxx.EXE->xxx.ZIP and JSBOOT.ZIP
-        int autostart_len = strlen(argv[0]);
-        char *autostart_zip = malloc(autostart_len + 1);
-        if (!autostart_zip) {
-            fprintf(stderr, "Out of memory.\n\n");
-            exit(EXIT_FAILURE);
-        }
-        strcpy(autostart_zip, argv[0]);
-        autostart_zip[autostart_len - 3] = 'Z';
-        autostart_zip[autostart_len - 2] = 'I';
-        autostart_zip[autostart_len - 1] = 'P';
-        autostart_zip[autostart_len] = 0;
-        // try autostart
-        char *autostart_script = malloc(autostart_len + 1 + strlen(AUTOSTART_FILE));
-        if (!autostart_script) {
-            fprintf(stderr, "Out of memory.\n\n");
-            exit(EXIT_FAILURE);
-        }
-        strcpy(autostart_script, autostart_zip);
-        strcat(autostart_script, AUTOSTART_FILE);
-        free(autostart_zip);
-        if (check_zipfile1(autostart_script)) {
-            // we found a ZIP file with the name of the EXE and it has a MAIN.JS
-            DOjS.params.script = autostart_script;
-            DOjS.params.run = true;
-        } else if (check_zipfile1(JSBOOT_ZIP AUTOSTART_FILE)) {
-            // we found MAIN.JS inside JSBOOT.ZIP
-            DOjS.params.script = JSBOOT_ZIP AUTOSTART_FILE;
-            DOjS.params.run = true;
+    if (optind < argc) {
+        script_param = argv[optind];
+    }
+
+    if (!script_param) {
+        // we got no script parameter, this means Usage or try to run script from a ZIP file with our EXE name
+        if (!ut_endsWith(argv[0], DOJS_EXE_NAME)) {
+            // exe name was changed --> try to run xxx.ZIP=MAIN.JS
+            char *autostart_zip = ut_clone_string(argv[0]);
+            size_t autostart_len = strlen(autostart_zip);
+            if (!autostart_zip) {
+                fprintf(stderr, "Out of memory.\n\n");
+                exit(EXIT_FAILURE);
+            }
+            strcpy(autostart_zip, argv[0]);
+            autostart_zip[autostart_len - 2] = 'Z';
+            autostart_zip[autostart_len - 1] = 'I';
+            autostart_zip[autostart_len] = 'P';
+
+            // try autostart
+            char *autostart_script = malloc(autostart_len + 1 + strlen(AUTOSTART_FILE));
+            if (!autostart_script) {
+                fprintf(stderr, "Out of memory.\n\n");
+                exit(EXIT_FAILURE);
+            }
+            strcpy(autostart_script, autostart_zip);
+            strcat(autostart_script, AUTOSTART_FILE);
+            if (check_zipfile1(autostart_script)) {
+                // !!! we found a ZIP file with the name of the EXE and it has a MAIN.JS -> run MAIN.JS from this ZIP
+                DOjS.params.script = autostart_script;
+                DOjS.params.run = true;
+                DOjS.jsboot = autostart_zip;
+            }
+        } else {
+            // !!! someone called dojs.exe w/o parameters -> try JSBOOT.ZIP=MAIN.JS
+            if (check_zipfile1(JSBOOT_ZIP AUTOSTART_FILE)) {
+                // !!! we found a ZIP file with the name of the EXE and it has a MAIN.JS -> run MAIN.JS from this ZIP
+                DOjS.params.script = JSBOOT_ZIP AUTOSTART_FILE;
+                DOjS.params.run = true;
+            }
         }
     } else {
-        // script is normal command line parameters
-        DOjS.params.script = argv[optind];
+        // we got a parameter, check if it is a JS, a ZIP or a JS in a ZIP
+        if (check_zipfile1(script_param)) {
+            // !!! we found the specified JS in a ZIP
+            DOjS.params.script = script_param;
+            DOjS.params.run = true;
+            DOjS.jsboot = ut_clone_string(script_param);
+            char *delim = strchr(DOjS.jsboot, ZIP_DELIM);
+            *delim = 0;
+        } else {
+            // try if this is a ZIP file with a MAIN.JS in it
+            char *autostart_zip = malloc(strlen(script_param) + 1 + strlen(AUTOSTART_FILE));
+            if (!autostart_zip) {
+                fprintf(stderr, "Out of memory.\n\n");
+                exit(EXIT_FAILURE);
+            }
+            strcpy(autostart_zip, script_param);
+            strcat(autostart_zip, AUTOSTART_FILE);
+            if (check_zipfile1(autostart_zip)) {
+                // !!! ZIP with MAIN.JS in it
+                DOjS.params.script = autostart_zip;
+                DOjS.params.run = true;
+                DOjS.jsboot = script_param;
+            } else {
+                // !!! this should be a plain JS file
+                DOjS.params.script = script_param;
+            }
+        }
     }
+
+    // fprintf(stderr, "argv0=%s, script=%s, jsboot=%s.\n\n", argv[0], DOjS.params.script, DOjS.jsboot);
 
     // check if the above yielded a script name and if the combination is valid
     if (!DOjS.params.script) {
@@ -933,6 +1060,11 @@ int main(int argc, char **argv) {
     if (DOjS.exitMessage) {
         free(DOjS.exitMessage);
         DOjS.exitMessage = NULL;
+    }
+
+    // free INI files (if any)
+    if (config) {
+        ini_free(config);
     }
 
     exit(0);

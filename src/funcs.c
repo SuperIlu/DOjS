@@ -107,6 +107,31 @@ static void f_List(js_State *J) {
 }
 
 /**
+ * @brief Check if a directory exists.
+ * DirExists(dname:string):bool
+ *
+ * @param J the JS context.
+ */
+static void f_DirExists(js_State *J) {
+    const char *dirname = js_tostring(J, 1);
+    DIR *dir = opendir(dirname);
+    if (!dir) {
+        js_pushboolean(J, false);
+    } else {
+        closedir(dir);
+        js_pushboolean(J, true);
+    }
+}
+
+/**
+ * @brief Check if a file exists.
+ * FileExists(fname:string):bool
+ *
+ * @param J the JS context.
+ */
+static void f_FileExists(js_State *J) { js_pushboolean(J, ut_file_exists(js_tostring(J, 1))); }
+
+/**
  * @brief RmFile(name:string)
  *
  * @param J the JS context.
@@ -759,11 +784,11 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     js_pushglobal(J);
     js_setglobal(J, "global");
 
-    PROPDEF_N(J, DOSJS_VERSION, "DOJS_VERSION");
+    PROPDEF_S(J, DOSJS_VERSION_STR, "DOJS_VERSION");  // global: DOjS version
+    PROPDEF_B(J, _USE_LFN, "LFN_SUPPORTED");          // global: LFN is supported
+    PROPDEF_S(J, DOjS.jsboot, "JSBOOT_ZIP");          // global: JSBOOT.ZIP filename
 
-    PROPDEF_B(J, _USE_LFN, "LFN_SUPPORTED");
-
-    //
+    // global: command line arguments
     js_newarray(J);
     int idx = 0;
     for (int i = args; i < argc; i++) {
@@ -774,6 +799,8 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     js_setglobal(J, "ARGS");
 
     // define global functions
+    NFUNCDEF(J, DirExists, 1);
+    NFUNCDEF(J, FileExists, 1);
     NFUNCDEF(J, Read, 1);
     NFUNCDEF(J, ReadZIP, 2);
     NFUNCDEF(J, List, 1);

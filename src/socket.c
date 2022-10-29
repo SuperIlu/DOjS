@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2022 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@ SOFTWARE.
 #include "socket.h"
 
 #include "watt.h"
-#include "intarray.h"
+#include "bytearray.h"
 
 /************
 ** defines **
@@ -114,14 +114,14 @@ static void new_Socket(js_State *J) {
         return;
     }
 
-    socket_t *s = malloc(sizeof(socket_t));
+    socket_t *s = calloc(1, sizeof(socket_t));
     if (!s) {
         JS_ENOMEM(J);
         return;
     }
     s->server = false;
 
-    s->socket = malloc(sizeof(tcp_Socket) > sizeof(udp_Socket) ? sizeof(tcp_Socket) : sizeof(udp_Socket));
+    s->socket = calloc(1, sizeof(tcp_Socket) > sizeof(udp_Socket) ? sizeof(tcp_Socket) : sizeof(udp_Socket));
     if (!s->socket) {
         free(s);
         JS_ENOMEM(J);
@@ -350,29 +350,18 @@ static void Socket_WriteBytes(js_State *J) {
 
 /**
  * @brief send binary data.
- * socket.WriteInts(data:IntArray)
+ * socket.WriteInts(data:ByteArray)
  *
  * @param J VM state.
  */
 static void Socket_WriteInts(js_State *J) {
     SOCK_USER_DATA(s);
-    JS_CHECKTYPE(J, 1, TAG_INT_ARRAY);
+    JS_CHECKTYPE(J, 1, TAG_BYTE_ARRAY);
 
-    if (js_isuserdata(J, 1, TAG_INT_ARRAY)) {
-        int_array_t *ia = js_touserdata(J, 1, TAG_INT_ARRAY);
+    if (js_isuserdata(J, 1, TAG_BYTE_ARRAY)) {
+        byte_array_t *ba = js_touserdata(J, 1, TAG_BYTE_ARRAY);
 
-        BYTE *data = malloc(ia->size);
-        if (!data) {
-            JS_ENOMEM(J);
-            return;
-        }
-
-        for (int i = 0; i < ia->size; i++) {
-            data[i] = ia->data[i];
-        }
-        sock_write(s->socket, data, ia->size);
-
-        free(data);
+        sock_write(s->socket, ba->data, ba->size);
     } else {
         JS_ENOARR(J);
     }
@@ -591,8 +580,8 @@ static void Socket_ReadBytes(js_State *J) {
 }
 
 /**
- * @brief return data as IntArray
- * socket.ReadInts(len:number):IntArray
+ * @brief return data as ByteArray
+ * socket.ReadInts(len:number):ByteArray
  *
  * @param J VM state.
  */
@@ -613,7 +602,7 @@ static void Socket_ReadInts(js_State *J) {
 
     int read = sock_read(s->socket, (BYTE *)buff, len);
     if (read) {
-        IntArray_fromBytes(J, (uint8_t *)buff, read);
+        ByteArray_fromBytes(J, (uint8_t *)buff, read);
     } else {
         js_pushnull(J);
     }

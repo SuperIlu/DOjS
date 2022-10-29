@@ -677,8 +677,8 @@ static void f_IpxGetLocalAddress(js_State *J) {
 void init_ipx(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
 
-    if (ut_file_exists(JSBOOT_ZIP)) {
-        dojs_do_file(J, JSBOOT_ZIP ZIP_DELIM_STR JSINC_IPX);
+    if (ut_file_exists(DOjS.jsboot)) {
+        dojs_do_zipfile(J, DOjS.jsboot, JSINC_IPX);
     } else {
         dojs_do_file(J, JSINC_IPX);
     }

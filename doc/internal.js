@@ -59,6 +59,11 @@ LFN_SUPPORTED = false;
 ARGS = [];
 
 /**
+* @property {string} JSBOOT_ZIP path/name of the JSBOOT.ZIP
+*/
+JSBOOT_ZIP = null;
+
+/**
  * Load and initialize a native library (DXE). Native libraries must reside in the directory jSH.EXE was started from!
  * 
  * @param {string} name the base name of the library (e.g. if the library is called "foo.dxe" on disk you need to call LoadLibrary("foo")).
@@ -545,11 +550,25 @@ function Sleep(ms) { }
 function MsecTime() { }
 
 /**
- * Load the contents of a file into a string. Throws exception if loading fails.
- * @param {string} filename name of file to read.
- * @returns {string} the contents of the file.
- * @throws Throws an error if reading fails.
+ * check for existence of a file.
+ * @param {string} filename name of file to check.
+ * @returns {boolean} true if the file exists, else false.
  */
+function FileExists(filename) { }
+
+/**
+* check for existence of a directory.
+* @param {string} dirname name of directory to check.
+* @returns {boolean} true if the directory exists, else false.
+*/
+function DirExists(dirname) { }
+
+/**
+* Load the contents of a file into a string. Throws exception if loading fails.
+* @param {string} filename name of file to read.
+* @returns {string} the contents of the file.
+* @throws Throws an error if reading fails.
+*/
 function Read(filename) { }
 
 /**

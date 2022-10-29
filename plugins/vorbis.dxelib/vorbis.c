@@ -93,7 +93,7 @@ static void VORBIS_Finalize(js_State *J, void *data) {
 static void new_Ogg(js_State *J) {
     NEW_OBJECT_PREP(J);
 
-    vorbis_t *ov = malloc(sizeof(vorbis_t));
+    vorbis_t *ov = calloc(1, sizeof(vorbis_t));
     if (!ov) {
         JS_ENOMEM(J);
         return;

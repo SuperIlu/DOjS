@@ -170,7 +170,7 @@ Curl.prototype.SetPost = function (post_data) { };
  * Switch this Curl instance to HTTP_PUT. 
  * This data will be sent with every request until either HTTP_PUT is disabled using SetGet() or new data ist set using this method.
  * 
- * @param {IntArray} put_data the PUT data to send.
+ * @param {ByteArray} put_data the PUT data to send.
  */
 Curl.prototype.SetPut = function (put_data) { };
 /**
@@ -186,6 +186,6 @@ Curl.prototype.GetResponseCode = function () { };
  * 
  * @param {string} url the URL to connect to.
  * 
- * @returns {IntArray[]} An array with two IntArrays and the response code. The first (index 0) contains the request body, the second (index 1) the request headers and the third (index 2) the response code.
+ * @returns {ByteArray[]} An array with two IntArrays and the response code. The first (index 0) contains the request body, the second (index 1) the request headers and the third (index 2) the response code.
  */
 Curl.prototype.DoRequest = function (url) { };

@@ -29,7 +29,7 @@ SOFTWARE.
 /*********************
 ** static functions **
 *********************/
-extern edi_t* lin_init(char* name);
+extern edi_t* lin_init(const char* name);
 extern void lin_shutdown(edi_t* edi);
 extern line_t* lin_newline(void);
 extern void lin_freeline(line_t* l);

@@ -333,7 +333,7 @@ static void Bitmap_SaveBmpImage(js_State *J) {
     get_palette(pal);
 
     if (save_bmp(fname, bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save Bitmap to BMP file '%s': %s", fname, allegro_error);
+        js_error(J, "Can't save Bitmap to BMP file '%s'", fname);
     }
 }
 
@@ -351,7 +351,7 @@ static void Bitmap_SavePcxImage(js_State *J) {
     get_palette(pal);
 
     if (save_pcx(fname, bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save Bitmap to PCX file '%s': %s", fname, allegro_error);
+        js_error(J, "Can't save Bitmap to PCX file '%s'", fname);
     }
 }
 
@@ -369,7 +369,7 @@ static void Bitmap_SaveTgaImage(js_State *J) {
     get_palette(pal);
 
     if (save_tga(fname, bm, (const struct RGB *)&pal) != 0) {
-        js_error(J, "Can't save Bitmap to TGA file '%s': %s", fname, allegro_error);
+        js_error(J, "Can't save Bitmap to TGA file '%s'", fname);
     }
 }
 

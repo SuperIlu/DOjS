@@ -30,23 +30,23 @@ function Setup() {
 
 	// try simple HTTP-GET
 	var get = new Curl();
-	var resp = get.DoRequest("http://192.168.2.98:8080/basic_test");
+	var resp = get.DoRequest("http://192.168.2.8:8081/basic_test");
 	assert("basic test", resp[2], 200);
 	assert("basic test", resp[0].ToString(), "Basic OK");
 
 	// fail 404
-	var resp = get.DoRequest("http://192.168.2.98:8080/NOTFOUND");
+	var resp = get.DoRequest("http://192.168.2.8:8081/NOTFOUND");
 	assert("fail 404", resp[2], 404);
 
 	// add a header-field
 	get.AddHeader("Foo: Bar");
-	var resp = get.DoRequest("http://192.168.2.98:8080/header_test");
+	var resp = get.DoRequest("http://192.168.2.8:8081/header_test");
 	assert("header test", resp[2], 200);
 	assert("header test", resp[0].ToString(), "Header OK: Bar");
 
 	// try get with parameters
 	var get = new Curl();
-	var resp = get.DoRequest("http://192.168.2.98:8080/get_test?foo=bar");
+	var resp = get.DoRequest("http://192.168.2.8:8081/get_test?foo=bar");
 	assert("post test", resp[2], 200);
 	assert("post test", resp[0].ToString(), "Get OK: {'foo': 'bar'}");
 
@@ -54,7 +54,7 @@ function Setup() {
 	var POST_TST_STR = "foo=976765crcvrf(&*^&^78tyug65%$ytfTYr(TGUih";
 	var post = new Curl();
 	post.SetPost("foo=" + urlencode(POST_TST_STR));
-	var resp = post.DoRequest("http://192.168.2.98:8080/post_test");
+	var resp = post.DoRequest("http://192.168.2.8:8081/post_test");
 	assert("post test", resp[2], 200);
 	assert("post test", resp[0].ToString(), "Post OK: {'foo': '" + POST_TST_STR + "'}");
 

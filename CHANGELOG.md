@@ -1,3 +1,6 @@
+# Version 1.9.1 (The diSSLaster) / November 5th, 2022
+* reverted back to cURL 7.80.0 because 7.84.0 crashes when using HTTPS
+
 # Version 1.9.0 (The Portable DOS Format) / October 29th, 2022
 * Modules can now provide version information with `__VERSION__`
 * `DPM` will automatically update modules that are installed if there are more recent versions in the index.

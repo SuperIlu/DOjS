@@ -16,7 +16,7 @@ ZLIB		= $(THIRDPARTY)/zlib-1.2.12
 KUBAZIP		= $(THIRDPARTY)/zip-0.2.5
 ALPNG		= $(THIRDPARTY)/alpng13
 OPENSSL		= $(THIRDPARTY)/openssl-1.1.1q
-CURL		= $(THIRDPARTY)/curl-7.84.0
+CURL		= $(THIRDPARTY)/curl-7.80.0
 MESA3		= $(THIRDPARTY)/MesaFX-3.4-master
 BZIP2		= $(THIRDPARTY)/bzip2-1.0.8
 INI			= $(THIRDPARTY)/ini-20220806/src
@@ -202,16 +202,17 @@ fntconv.exe:
 	$(MAKE) -C $(FONTCONV) clean all
 	cp $(FONTCONV)/fntconv.exe .
 
-zip: all doc
+cacert.pem:
+	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
+
+zip: all cacert.pem doc
 	rm -f $(RELZIP)
 	rm -f dxetest.DXE dxetest2.DXE
-	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
 	zip -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe DPM.BAT V_*.BAT texus.exe fntconv.exe cacert.pem *.DXE
 
-devzip: all doc
+devzip: all cacert.pem doc
 	rm -f $(RELZIP)
-	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
 	cp $(OPENSSL)/apps/openssl.exe .
 	zip -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT texus.exe fntconv.exe cacert.pem openssl.exe *.DXE

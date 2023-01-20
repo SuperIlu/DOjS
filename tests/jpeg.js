@@ -29,7 +29,11 @@ function Setup() {
 	SetFramerate(30);
 	MouseShowCursor(false);
 
-	img = new Bitmap("tests/test.jpg");
+	i1 = new Bitmap("tests/testdata/test.jpg");
+	i2 = new Bitmap("tests/testdata/normal.jpg");
+	i3 = new Bitmap("tests/testdata/progressive.jpg");
+
+	img = i1;
 }
 
 /*
@@ -47,4 +51,13 @@ function Loop() {
 ** This function is called on any input.
 */
 function Input(e) {
+	if (CompareKey(e.key, '1')) {
+		img = i1;
+	}
+	if (CompareKey(e.key, '2')) {
+		img = i2;
+	}
+	if (CompareKey(e.key, '3')) {
+		img = i3;
+	}
 }

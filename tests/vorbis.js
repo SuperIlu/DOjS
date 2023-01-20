@@ -25,7 +25,7 @@ LoadLibrary("vorbis");
 function Setup() {
 	MouseShowCursor(false);
 
-	m = new Ogg("tests/test.ogg");
+	m = new Ogg("tests/testdata/test.ogg");
 
 	Println(m.filename);
 	Println(m.channels);

@@ -176,7 +176,7 @@ else
    ifdef TARGET_ARCH_EXCL
       TARGET_ARCH = -march=$(TARGET_ARCH_EXCL)
    else
-      TARGET_ARCH = $(GCC_MTUNE)=i586
+      TARGET_ARCH = $(GCC_MTUNE)=i586 -march=i386
    endif
 endif
 

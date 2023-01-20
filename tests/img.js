@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+LoadLibrary("qoi");
 LoadLibrary("png");
 LoadLibrary("jpeg");
 
@@ -37,6 +38,9 @@ function Setup() {
 	i7 = new Bitmap("examples/3dfx_s.jpg");
 	i8 = new Bitmap("examples/3dfx.jpg");
 	i9 = new Bitmap("examples/3dfx_bw.jpg");
+
+	i10 = new Bitmap("LEHLh[WB2yk8pyoJadR*.7kCMdnj", 320, 240, 1);
+	// i10 = new Bitmap("L", 320, 240, 1);
 
 	// var dat = [];
 	// for (var x = 0; x < 255; x++) {
@@ -56,7 +60,7 @@ function Setup() {
 
 	i4 = new Bitmap(dat, 256, 32);
 
-	img = i4;
+	img = i10;
 	cnt = 0;
 }
 
@@ -108,11 +112,12 @@ function Input(e) {
 		img.SavePcxImage("5.pcx");
 		img.SaveBmpImage("5.bmp");
 		img.SavePngImage("5.png");
+		img.SavePngImage("5.qoi");
 
 		SaveTgaImage("scr.tga");
 		SavePcxImage("scr.pcx");
 		SaveBmpImage("scr.bmp");
-		SavePngImage("scr.png");
+		SavePngImage("scr.qoi");
 	}
 	if (CompareKey(e.key, '6')) {
 		img = i6;
@@ -128,6 +133,10 @@ function Input(e) {
 	}
 	if (CompareKey(e.key, '9')) {
 		img = i9;
+		Println(img.constructor.toString());
+	}
+	if (CompareKey(e.key, '0')) {
+		img = i10;
 		Println(img.constructor.toString());
 	}
 }

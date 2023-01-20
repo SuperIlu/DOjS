@@ -25,9 +25,9 @@ LoadLibrary("mpeg1");
 function Setup() {
 	MouseShowCursor(false);
 
-	m = new MPEG1("tests/deuwe320.mpg", true);
-	// m = new MPEG1("tests/bjork100.mpg", true);
-	// m = new MPEG1("tests/bjork320.mpg", true);
+	// m = new MPEG1("tests/testdata/dojs.mpg", true);
+	// m = new MPEG1("tests/testdata/bjork100.mpg", true);
+	m = new MPEG1("tests/testdata/bjork320.mpg", true);
 
 	Println(m.filename);
 	Println(m.width);
@@ -44,11 +44,11 @@ function Setup() {
 function Loop() {
 	//ClearScreen(EGA.DARK_GRAY);
 
-	m.Play(100, 100);
+	m.Play(20, 20);
 
-	Box(100, 100, 100 + m.width, 100 + m.height, EGA.RED);
+	Box(20, 20, 20 + m.width, 20 + m.height, EGA.RED);
 
-	FilledBox(10, 10, 10 + 300, 10 + 20, EGA.BLACK);
+	FilledBox(10, 10, 10 + 300, 10 + 10, EGA.BLACK);
 	TextXY(10, 10, "" + m.CurrentTime(), EGA.RED, NO_COLOR);
 
 	//Println(GetFramerate());

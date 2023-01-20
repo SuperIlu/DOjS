@@ -1,0 +1,28 @@
+; SCO-AT.KBD
+;
+; Keyboard driver for AT 101 keyboard to emulate an SCO UNIX/ZENIX "ANSI"
+; keyboard.  Based on the TERMCAP entry that comes with the SCO package.
+
+Up        = "^[[A"
+Down      = "^[[B"
+Right     = "^[[C"
+Left      = "^[[D"
+Shift-Tab = "^[Z"
+Home      = "^[[H"
+Ins       = "^[[L"
+End       = "^[[F"
+PgUp      = "^[[I"
+PgDn      = "^[[G"
+F1        = "^[[M"
+F2        = "^[[N"
+F3        = "^[[O"
+F4        = "^[[P"
+F5        = "^[[Q"
+F6        = "^[[R"
+F7        = "^[[S"
+F8        = "^[[T"
+F9        = "^[[U"
+F10       = "^[[V"
+F11       = "^[[W"
+F12       = "^[[X"
+

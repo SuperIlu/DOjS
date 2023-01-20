@@ -1,0 +1,44 @@
+#
+#  GNU Makefile for Watt-32 Telnet (djgpp)
+#
+
+MAKE_MAP  = 0
+STRIP_EXE = 0
+DPMI_STUB = 0
+USE_SSL   = 0
+SSL_ROOT ?= /net/openssl.110
+
+SRC = config.c keyb.c main.c telnet.c int29.c screen.c vt102.c \
+      xmodem.c script.c timer.c ssh.c md5.c rsa.c des.c blowfish.c
+
+DJGPP_EXE = telnet32.exe
+
+include ../djcommon.mak
+
+CFLAGS += -DSTRUCT_CALLOUT_DEFINED
+
+ifeq ($(USE_SSL),1)
+  CFLAGS  += -DUSE_SSL -I$(SSL_ROOT)/openssl -I$(SSL_ROOT)
+  LDFLAGS += $(SSL_ROOT)/lib/libcrypt.a
+endif
+
+keyb32.exe: keyb.c
+	$(CC) -DTEST $(CFLAGS) -o $@ $^
+
+
+# DO NOT DELETE THIS LINE
+config.o: config.c telnet.h config.h
+keyb.o: keyb.c telnet.h keyb.h nochkstk.h
+main.o: main.c telnet.h config.h keyb.h screen.h script.h nochkstk.h
+telnet.o: telnet.c telnet.h screen.h config.h keyb.h ssh.h
+int29.o: int29.c keyb.h screen.h
+screen.o: screen.c telnet.h keyb.h config.h screen.h
+vt102.o: vt102.c telnet.h config.h screen.h
+xmodem.o: xmodem.c telnet.h xmodem.h
+script.o: script.c telnet.h timer.h config.h script.h
+timer.o: timer.c telnet.h
+ssh.o: ssh.c telnet.h config.h screen.h ssh.h
+md5.o: md5.c telnet.h ssh.h
+rsa.o: rsa.c telnet.h ssh.h
+des.o: des.c telnet.h ssh.h
+blowfish.o: blowfish.c telnet.h ssh.h

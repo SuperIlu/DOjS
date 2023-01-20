@@ -1,0 +1,11 @@
+#
+# Watt-32 TCP/IP: IPv6 Host file.
+#
+
+::1                     localhost ip6-localhost loopback
+::                      null
+::FFFF:10.0.0.1         foo     # 10.0.0.1 ipv4-mapped
+::FFFF:255.255.255.255  bcast   # !0 ipv4-mapped
+
+2003:836b:24:151::      teredo.ipv6.microsoft.com  teredo
+

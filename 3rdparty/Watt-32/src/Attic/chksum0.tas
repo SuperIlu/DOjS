@@ -1,0 +1,177 @@
+_TEXT	segment dword use32 public 'CODE'	;size is 338
+_TEXT	ends
+_DATA	segment dword use32 public 'DATA'	;size is 128
+_DATA	ends
+FLAT	group	
+DGROUP	group	_DATA
+
+	public	__w32_in_checksum_fast
+	public	_w32_in_checksum_fast
+_TEXT	segment
+	assume	CS:_TEXT
+L0:		jmp	near ptr L123
+L5:		jmp	near ptr L132
+LA:		jmp	near ptr L11A
+__w32_in_checksum_fast:
+_w32_in_checksum_fast:
+		push	EBX
+		push	ESI
+		mov	ECX,010h[ESP]
+		sub	EAX,EAX
+		test	ECX,ECX
+		je	L5
+		mov	ESI,0Ch[ESP]
+		sub	EDX,EDX
+		test	ESI,1
+		je	L2F
+		mov	AH,[ESI]
+		inc	ESI
+		dec	ECX
+		je	L5
+L2F:		shr	ECX,1
+		jae	L38
+		mov	AL,[ECX*2][ESI]
+		je	L5
+L38:		test	ESI,2
+		je	L49
+		mov	DX,[ESI]
+		add	ESI,2
+		add	EAX,EDX
+		dec	ECX
+L49:		push	ECX
+		shr	ECX,1
+		je	L0
+		mov	EDX,[ESI]
+		add	ESI,4
+		dec	ECX
+		je	LA
+		mov	EBX,ECX
+		add	ECX,01Fh
+		shr	ECX,5
+		and	EBX,01Fh
+		je	L6E
+		lea	ESI,-080h[EBX*4][ESI]
+		jmp	dword ptr FLAT:_DATA[00h][EBX*4]
+L6E:		adc	EAX,EDX
+		mov	EDX,[ESI]
+		adc	EAX,EDX
+		mov	EDX,4[ESI]
+		adc	EAX,EDX
+		mov	EDX,8[ESI]
+		adc	EAX,EDX
+		mov	EDX,0Ch[ESI]
+		adc	EAX,EDX
+		mov	EDX,010h[ESI]
+		adc	EAX,EDX
+		mov	EDX,014h[ESI]
+		adc	EAX,EDX
+		mov	EDX,018h[ESI]
+		adc	EAX,EDX
+		mov	EDX,01Ch[ESI]
+		adc	EAX,EDX
+		mov	EDX,020h[ESI]
+		adc	EAX,EDX
+		mov	EDX,024h[ESI]
+		adc	EAX,EDX
+		mov	EDX,028h[ESI]
+		adc	EAX,EDX
+		mov	EDX,02Ch[ESI]
+		adc	EAX,EDX
+		mov	EDX,030h[ESI]
+		adc	EAX,EDX
+		mov	EDX,034h[ESI]
+		adc	EAX,EDX
+		mov	EDX,038h[ESI]
+		adc	EAX,EDX
+		mov	EDX,03Ch[ESI]
+		adc	EAX,EDX
+		mov	EDX,040h[ESI]
+		adc	EAX,EDX
+		mov	EDX,044h[ESI]
+		adc	EAX,EDX
+		mov	EDX,048h[ESI]
+		adc	EAX,EDX
+		mov	EDX,04Ch[ESI]
+		adc	EAX,EDX
+		mov	EDX,050h[ESI]
+		adc	EAX,EDX
+		mov	EDX,054h[ESI]
+		adc	EAX,EDX
+		mov	EDX,058h[ESI]
+		adc	EAX,EDX
+		mov	EDX,05Ch[ESI]
+		adc	EAX,EDX
+		mov	EDX,060h[ESI]
+		adc	EAX,EDX
+		mov	EDX,064h[ESI]
+		adc	EAX,EDX
+		mov	EDX,068h[ESI]
+		adc	EAX,EDX
+		mov	EDX,06Ch[ESI]
+		adc	EAX,EDX
+		mov	EDX,070h[ESI]
+		adc	EAX,EDX
+		mov	EDX,074h[ESI]
+		adc	EAX,EDX
+		mov	EDX,078h[ESI]
+		adc	EAX,EDX
+		mov	EDX,07Ch[ESI]
+		lea	ESI,080h[ESI]
+		dec	ECX
+		jne	L6E
+L11A:		adc	EAX,EDX
+		mov	EDX,0
+		adc	EAX,EDX
+L123:		pop	ECX
+		test	ECX,1
+		je	L132
+		add	AX,[ESI]
+		adc	EAX,0
+L132:		mov	ECX,EAX
+		ror	ECX,010h
+		add	EAX,ECX
+		mov	EBX,0Ch[ESP]
+		shr	EAX,010h
+		test	EBX,1
+		je	L14C
+		ror	AX,8
+L14C:		pop	ESI
+		adc	EAX,0
+		pop	EBX
+		ret
+_TEXT	ends
+_DATA	segment
+	db	000h,000h,000h,000h
+	dd	offset FLAT:_w32_in_checksum_fast[0F9h]
+	dd	offset FLAT:_w32_in_checksum_fast[0F4h]
+	dd	offset FLAT:_w32_in_checksum_fast[0EFh]
+	dd	offset FLAT:_w32_in_checksum_fast[0EAh]
+	dd	offset FLAT:_w32_in_checksum_fast[0E5h]
+	dd	offset FLAT:_w32_in_checksum_fast[0E0h]
+	dd	offset FLAT:_w32_in_checksum_fast[0DBh]
+	dd	offset FLAT:_w32_in_checksum_fast[0D6h]
+	dd	offset FLAT:_w32_in_checksum_fast[0D1h]
+	dd	offset FLAT:_w32_in_checksum_fast[0CCh]
+	dd	offset FLAT:_w32_in_checksum_fast[0C7h]
+	dd	offset FLAT:_w32_in_checksum_fast[0C2h]
+	dd	offset FLAT:_w32_in_checksum_fast[0BDh]
+	dd	offset FLAT:_w32_in_checksum_fast[0B8h]
+	dd	offset FLAT:_w32_in_checksum_fast[0B3h]
+	dd	offset FLAT:_w32_in_checksum_fast[0AEh]
+	dd	offset FLAT:_w32_in_checksum_fast[0A9h]
+	dd	offset FLAT:_w32_in_checksum_fast[0A4h]
+	dd	offset FLAT:_w32_in_checksum_fast[09Fh]
+	dd	offset FLAT:_w32_in_checksum_fast[09Ah]
+	dd	offset FLAT:_w32_in_checksum_fast[095h]
+	dd	offset FLAT:_w32_in_checksum_fast[090h]
+	dd	offset FLAT:_w32_in_checksum_fast[08Bh]
+	dd	offset FLAT:_w32_in_checksum_fast[086h]
+	dd	offset FLAT:_w32_in_checksum_fast[081h]
+	dd	offset FLAT:_w32_in_checksum_fast[07Ch]
+	dd	offset FLAT:_w32_in_checksum_fast[077h]
+	dd	offset FLAT:_w32_in_checksum_fast[072h]
+	dd	offset FLAT:_w32_in_checksum_fast[06Dh]
+	dd	offset FLAT:_w32_in_checksum_fast[068h]
+	dd	offset FLAT:_w32_in_checksum_fast[063h]
+_DATA	ends
+	end

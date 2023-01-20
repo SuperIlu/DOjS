@@ -50,11 +50,11 @@ zip code is licensed by UNLICENSE
 
 The OpenSSL toolkit stays under a double license, i.e. both the conditions of the OpenSSL License and the original SSLeay license apply to the toolkit.
 
-nanojpeg is licend under MIT license.
-
 AnimatedGIF is licensed under Apache 2.0 license.
 
 See 3rdparty/MesaFX-3.4-master/docs/COPYRIGHT and 3rdparty/MesaFX-3.4-master/docs/COPYING for Mesa 3.4 license.
+
+stb_image.h is distributed under MIT license
 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 

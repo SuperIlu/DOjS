@@ -40,11 +40,11 @@ function Loop() {
 	z.WriteBytes("memfile.bin", StringToBytes("This is a test of the emergency broadcast system!"));
 	z.WriteBytes("test.js", StringToBytes("function x(){}"));
 	z.AddFile("tstfont.fnt", "jsboot/fonts/helv22.fnt");
-	z.AddFile("tstimg.bmp", "tests/testgrad.bmp");
-	z.AddFile("tstimg.pcx", "tests/testgrad.pcx");
-	z.AddFile("tstimg.tga", "tests/testgrad.tga");
-	z.AddFile("tstimg.png", "tests/testgrad.png");
-	z.AddFile("smpl.wav", "tests/mono.wav");
+	z.AddFile("tstimg.bmp", "tests/testdata/testgrad.bmp");
+	z.AddFile("tstimg.pcx", "tests/testdata/testgrad.pcx");
+	z.AddFile("tstimg.tga", "tests/testdata/testgrad.tga");
+	z.AddFile("tstimg.png", "tests/testdata/testgrad.png");
+	z.AddFile("smpl.wav", "tests/testdata/mono.wav");
 	z.AddFile("tst.mid", "examples/d_intro.mid");
 	z.Close();
 	Println("Added files to ZIP");

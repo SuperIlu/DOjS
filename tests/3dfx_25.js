@@ -82,8 +82,8 @@ function Setup() {
 	texVerts.push([0, scrHeight, 255, 1, 0, 0]);
 
 	FxTexMemInit(GR_TMU.TMU0);
-	bgDecal = new TexInfo("tests/miro.3df");
-	triDecal = new TexInfo("tests/matt1.3df");
+	bgDecal = new TexInfo("tests/testdata/miro.3df");
+	triDecal = new TexInfo("tests/testdata/matt1.3df");
 
 	bgDecal.DownloadMipMap(GR_TMU.TMU0, FxTexMemGetStartAddress(GR_TMU.TMU0, bgDecal), GR_MIPMAPLEVELMASK.BOTH);
 	triDecal.DownloadMipMap(GR_TMU.TMU0, FxTexMemGetStartAddress(GR_TMU.TMU0, triDecal), GR_MIPMAPLEVELMASK.BOTH);

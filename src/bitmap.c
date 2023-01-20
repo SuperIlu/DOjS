@@ -32,6 +32,8 @@ SOFTWARE.
 #include "color.h"
 #include "util.h"
 #include "zipfile.h"
+#include "blurhash.h"
+#include "bytearray.h"
 
 #ifdef LFB_3DFX
 #include <glide.h>
@@ -53,7 +55,7 @@ static void Bitmap_Finalize(js_State *J, void *data) {
     // safeguard of someone GCs our current Bitmap
     if (DOjS.current_bm == bm) {
         DOjS.current_bm = DOjS.render_bm;
-        LOG("GC of current render Bitmap!");
+        LOG("GC of current render Bitmap!\n");
     }
 
     destroy_bitmap(bm);
@@ -74,11 +76,12 @@ static void new_Bitmap(js_State *J) {
     const char *fname = "<<buffer>>";
     BITMAP *bm = NULL;
     if (js_isnumber(J, 1) && js_isnumber(J, 2) && js_isnumber(J, 3) && js_isnumber(J, 4) && js_isnumber(J, 5)) {
-        int x = js_tonumber(J, 1);
-        int y = js_tonumber(J, 2);
-        int w = js_tonumber(J, 3);
-        int h = js_tonumber(J, 4);
-        int b = js_tonumber(J, 5);
+        // 3dfx framebuffer
+        uint16_t x = js_touint16(J, 1);
+        uint16_t y = js_touint16(J, 2);
+        uint16_t w = js_touint16(J, 3);
+        uint16_t h = js_touint16(J, 4);
+        uint16_t b = js_touint16(J, 5);
 
         if (x < 0 || x > WIDTH_3DFX || y < 0 || y > HEIGHT_3DFX || w < 0 || h < 0 || x + w > WIDTH_3DFX || y + h > HEIGHT_3DFX) {
             js_error(J, "Bitmap rectangle out of range %dx%d -> %dx%d.", x, y, x + w, y + h);
@@ -114,10 +117,11 @@ static void new_Bitmap(js_State *J) {
 
         free(buf);
     } else if (js_isnumber(J, 1) && js_isnumber(J, 2) && js_isnumber(J, 3) && js_isnumber(J, 4)) {
-        int x = js_tonumber(J, 1);
-        int y = js_tonumber(J, 2);
-        int w = js_tonumber(J, 3);
-        int h = js_tonumber(J, 4);
+        // allegro framebuffer
+        uint16_t x = js_touint16(J, 1);
+        uint16_t y = js_touint16(J, 2);
+        uint16_t w = js_touint16(J, 3);
+        uint16_t h = js_touint16(J, 4);
 
         if (x < 0 || x > DOjS.current_bm->w || y < 0 || y > DOjS.current_bm->w || w < 0 || h < 0 || x + w > DOjS.current_bm->w || y + h > DOjS.current_bm->h) {
             js_error(J, "Bitmap rectangle out of range %dx%d -> %dx%d.", x, y, x + w, y + h);
@@ -133,7 +137,7 @@ static void new_Bitmap(js_State *J) {
         blit(DOjS.current_bm, bm, x, y, 0, 0, w, h);
     } else if (js_isnumber(J, 1) && js_isnumber(J, 2)) {
         // new Bitmap(width, height [, color])
-        bm = create_bitmap_ex(32, js_tonumber(J, 1), js_tonumber(J, 2));
+        bm = create_bitmap_ex(32, js_touint16(J, 1), js_touint16(J, 2));
         if (!bm) {
             DEBUG("No Memory for Bitmap\n");
             JS_ENOMEM(J);
@@ -144,6 +148,77 @@ static void new_Bitmap(js_State *J) {
         // clear with given color
         if (js_isnumber(J, 3)) {
             clear_to_color(bm, js_toint32(J, 3));
+        }
+    } else if (js_isstring(J, 1) && js_isnumber(J, 2) && js_isnumber(J, 3)) {
+        // new Bitmap("blurhash", width, height, [punch])
+        const char *hash = js_tostring(J, 1);
+        uint16_t w = js_touint16(J, 2);
+        uint16_t h = js_touint16(J, 3);
+
+        int punch = 1;
+        if (js_isnumber(J, 4)) {
+            punch = js_toint32(J, 4);
+        }
+
+        if (!isValidBlurhash(hash)) {
+            js_error(J, "No valid blurhash: %s", hash);
+            return;
+        }
+
+        size_t pixel_size = w * h;
+        uint8_t *buf = malloc(pixel_size * 3);
+        if (!buf) {
+            JS_ENOMEM(J);
+            return;
+        }
+
+        bm = create_bitmap_ex(32, w, h);
+        if (!bm) {
+            free(buf);
+            DEBUG("No Memory for Bitmap\n");
+            JS_ENOMEM(J);
+            return;
+        }
+        clear_bitmap(bm);
+
+        if (decodeToArray(hash, w, h, punch, 3, buf) != 0) {
+            free(buf);
+            destroy_bitmap(bm);
+            js_error(J, "No valid blurhash: %s", hash);
+            return;
+        }
+
+        int src = 0;
+        int dst = 0;
+        while (dst < pixel_size) {
+            int red = buf[src++];
+            int grn = buf[src++];
+            int blu = buf[src++];
+
+            uint32_t argb = 0xFF000000 | (red << 16) | (grn << 8) | blu;
+            putpixel(bm, dst % w, dst / w, argb);
+            dst++;
+        }
+        free(buf);
+    } else if (js_isuserdata(J, 1, TAG_BYTE_ARRAY)) {
+        byte_array_t *ba = js_touserdata(J, 1, TAG_BYTE_ARRAY);
+        char *type = ut_getBitmapType(ba);
+        if (!type) {
+            js_error(J, "Unknown image format in ByteArray");
+            return;
+        }
+
+        PACKFILE *pf = open_bytearray(ba);
+        if (!pf) {
+            js_error(J, "Can't load image from ByteArray");
+            return;
+        }
+        bm = load_bitmap_pf(pf, NULL, type);
+        pack_fclose(pf);
+
+        if (!bm) {
+            js_error(J, "Can't load image from ByteArray");
+            return;
         }
     } else if (js_isstring(J, 1)) {
         // new Bitmap("filename")
@@ -173,8 +248,8 @@ static void new_Bitmap(js_State *J) {
         }
     } else if (js_isarray(J, 1) && js_isnumber(J, 2) && js_isnumber(J, 3)) {
         // new Bitmap(data[], width, height)
-        int w = js_tonumber(J, 2);
-        int h = js_tonumber(J, 3);
+        uint16_t w = js_touint16(J, 2);
+        uint16_t h = js_touint16(J, 3);
         bm = create_bitmap_ex(32, w, h);
         if (!bm) {
             DEBUG("No Memory for Bitmap\n");
@@ -217,8 +292,8 @@ static void new_Bitmap(js_State *J) {
  */
 static void Bitmap_Draw(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
-    int x = js_toint16(J, 1);
-    int y = js_toint16(J, 2);
+    uint16_t x = js_touint16(J, 1);
+    uint16_t y = js_touint16(J, 2);
     blit(bm, DOjS.current_bm, 0, 0, x, y, bm->w, bm->h);
 }
 
@@ -230,15 +305,21 @@ static void Bitmap_Draw(js_State *J) {
  */
 static void Bitmap_DrawAdvanced(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
-    int srcX = js_toint16(J, 1);
-    int srcY = js_toint16(J, 2);
-    int srcW = js_toint16(J, 3);
-    int srcH = js_toint16(J, 4);
+    uint16_t srcX = js_touint16(J, 1);
+    uint16_t srcY = js_touint16(J, 2);
+    uint16_t srcW = js_touint16(J, 3);
+    uint16_t srcH = js_touint16(J, 4);
+    if (srcW > bm->w) {
+        srcW = bm->w;
+    }
+    if (srcH > bm->h) {
+        srcH = bm->h;
+    }
 
-    int destX = js_toint16(J, 5);
-    int destY = js_toint16(J, 6);
-    int destW = js_toint16(J, 7);
-    int destH = js_toint16(J, 8);
+    unsigned int destX = js_touint16(J, 5);
+    unsigned int destY = js_touint16(J, 6);
+    unsigned int destW = js_touint16(J, 7);
+    unsigned int destH = js_touint16(J, 8);
     stretch_blit(bm, DOjS.current_bm, srcX, srcY, srcW, srcH, destX, destY, destW, destH);
 }
 
@@ -261,9 +342,13 @@ static void Bitmap_Clear(js_State *J) {
  */
 static void Bitmap_DrawTrans(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
-    int x = js_toint16(J, 1);
-    int y = js_toint16(J, 2);
-    draw_trans_sprite(DOjS.current_bm, bm, x, y);
+    uint16_t x = js_touint16(J, 1);
+    uint16_t y = js_touint16(J, 2);
+    if (DOjS.params.no_alpha) {
+        blit(bm, DOjS.current_bm, 0, 0, x, y, bm->w, bm->h);
+    } else {
+        draw_trans_sprite(DOjS.current_bm, bm, x, y);
+    }
 }
 
 #ifdef LFB_3DFX
@@ -274,8 +359,6 @@ static void Bitmap_FxDrawLfb(js_State *J) {
         JS_ENOMEM(J);
         return;
     }
-
-    // TODO: buffer conversion!
 
     /* Create Source Bitmap to be copied to framebuffer */
     for (int y = 0; y < bm->h; y++) {
@@ -288,8 +371,8 @@ static void Bitmap_FxDrawLfb(js_State *J) {
         }
     }
 
-    int x = js_toint16(J, 1);
-    int y = js_toint16(J, 2);
+    uint16_t x = js_touint16(J, 1);
+    uint16_t y = js_touint16(J, 2);
     int buffer = js_toint16(J, 3);
     bool pPipeline = js_toboolean(J, 4);
 
@@ -313,8 +396,8 @@ static void Bitmap_FxDrawLfb(js_State *J) {
 static void Bitmap_GetPixel(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
 
-    int x = js_toint16(J, 1);
-    int y = js_toint16(J, 2);
+    uint16_t x = js_touint16(J, 1);
+    uint16_t y = js_touint16(J, 2);
 
     js_pushnumber(J, getpixel(bm, x, y) | 0xFF000000);  // no alpha in bitmaps so far
 }

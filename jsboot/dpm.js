@@ -378,6 +378,5 @@ function Setup() {
 }
 function Loop() {
 	con.Draw();
-	CurlRandom();
 }
 function Input(e) { con.HandleInput(e); }

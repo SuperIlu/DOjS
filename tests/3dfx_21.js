@@ -47,9 +47,9 @@ function Setup() {
 
 	/* Load texture data into system ram */
 	FxTexMemInit(GR_TMU.TMU0);
-	texture = new TexInfo("tests/decal1.3df");
-	light = new TexInfo("tests/light.3df");
-	detail = new TexInfo("tests/lava.3df");
+	texture = new TexInfo("tests/testdata/decal1.3df");
+	light = new TexInfo("tests/testdata/light.3df");
+	detail = new TexInfo("tests/testdata/lava.3df");
 	/* Download texture data to TMU */
 	texture.DownloadMipMap(GR_TMU.TMU0, FxTexMemGetStartAddress(GR_TMU.TMU0, texture), GR_MIPMAPLEVELMASK.BOTH);
 	light.DownloadMipMap(GR_TMU.TMU0, FxTexMemGetStartAddress(GR_TMU.TMU0, light), GR_MIPMAPLEVELMASK.BOTH);
@@ -57,14 +57,14 @@ function Setup() {
 
 	zrange = fxGetZDepthMinMax();
 
-    /* Initialize Source 3D data - Rectangle on X/Z Plane 
-       Centered about Y Axis
+	/* Initialize Source 3D data - Rectangle on X/Z Plane 
+	   Centered about Y Axis
 
-       0--1  Z+
-       |  |  |
-       2--3   - X+
+	   0--1  Z+
+	   |  |  |
+	   2--3   - X+
 
-     */
+	 */
 	srcVerts[0][0] = -0.5; srcVerts[0][1] = 0.0; srcVerts[0][2] = 0.5; srcVerts[0][3] = 1.0;
 	srcVerts[1][0] = 0.5; srcVerts[1][1] = 0.0; srcVerts[1][2] = 0.5; srcVerts[1][3] = 1.0;
 	srcVerts[2][0] = -0.5; srcVerts[2][1] = 0.0; srcVerts[2][2] = -0.5; srcVerts[2][3] = 1.0;

@@ -306,7 +306,7 @@ unsigned char comm_port_get_irq_num(comm_port *port) { return port->nIRQ; }
 
 baud_bits comm_port_get_baud_rate(comm_port *port) { return port->nBaud; }
 
-data_bits comm_port_get_data_bits(comm_port *port) { return port->nStop; }
+data_bits comm_port_get_data_bits(comm_port *port) { return port->nData; }
 
 stop_bits comm_port_get_stop_bits(comm_port *port) { return port->nStop; }
 

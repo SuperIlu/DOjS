@@ -23,7 +23,7 @@ function Setup() {
 
 	/* Load texture data into system ram */
 	FxTexMemInit(GR_TMU.TMU0);
-	texture = new TexInfo("tests/alpha.3df");
+	texture = new TexInfo("tests/testdata/alpha.3df");
 	/* Download texture data to TMU */
 	texture.DownloadMipMap(GR_TMU.TMU0, FxTexMemGetStartAddress(GR_TMU.TMU0, texture), GR_MIPMAPLEVELMASK.BOTH);
 	/* Select Texture As Source of all texturing operations */

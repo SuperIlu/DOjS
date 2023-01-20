@@ -22,11 +22,40 @@ SOFTWARE.
 
 LoadLibrary("curl");
 
+function sslTest(url) {
+	Println("+++ Trying " + url)
+
+	var https = new Curl();
+	var resp = https.DoRequest(url);
+	assert("HTTPS test", resp[2], 200);
+	Println(resp[1].ToString());
+
+	Println("+++ DONE " + url)
+}
+
 /*
 ** This function is called once when the script is started.
 */
 function Setup() {
 	SetFramerate(1);
+	Println(">>> date=" + new Date().toISOString());
+
+	// simple https get
+	sslTest("https://mastodon.social/about");
+	sslTest("https://retrochat.online/about");
+	sslTest("https://bitbang.social/about");
+	sslTest("https://raw.githubusercontent.com/SuperIlu/DOjSHPackages/master/dojs/index.json");
+	sslTest("https://curl.se");
+	sslTest("https://www.shdon.com/");
+	sslTest("https://www.heise.de");
+
+	// try https post
+	var post = new Curl();
+	post.SetPost();
+	post.AddPostData('FOO', 'BAR');
+	var resp = post.DoRequest("https://curl.se");
+	assert("HTTPS test", resp[2], 200);
+	Println(resp[1].ToString());
 
 	// try simple HTTP-GET
 	var get = new Curl();
@@ -47,32 +76,16 @@ function Setup() {
 	// try get with parameters
 	var get = new Curl();
 	var resp = get.DoRequest("http://192.168.2.8:8081/get_test?foo=bar");
-	assert("post test", resp[2], 200);
-	assert("post test", resp[0].ToString(), "Get OK: {'foo': 'bar'}");
+	assert("get test", resp[2], 200);
+	assert("get test", resp[0].ToString(), "Get OK: {'foo': 'bar'}");
 
 	// try simple post
 	var POST_TST_STR = "foo=976765crcvrf(&*^&^78tyug65%$ytfTYr(TGUih";
 	var post = new Curl();
-	post.SetPost("foo=" + urlencode(POST_TST_STR));
+	post.SetPost();
 	var resp = post.DoRequest("http://192.168.2.8:8081/post_test");
 	assert("post test", resp[2], 200);
 	assert("post test", resp[0].ToString(), "Post OK: {'foo': '" + POST_TST_STR + "'}");
-
-	// try simple https
-	var https = new Curl();
-	var resp = https.DoRequest("https://curl.se");
-	assert("HTTPS test", resp[2], 200);
-	Println(resp[1].ToString());
-
-	var https = new Curl();
-	var resp = https.DoRequest("https://www.heise.de");
-	assert("HTTPS test", resp[2], 200);
-	Println(resp[1].ToString());
-
-	var https = new Curl();
-	var resp = https.DoRequest("https://www.shdon.com/");
-	assert("HTTPS test", resp[2], 200);
-	Println(resp[1].ToString());
 
 	Stop();
 }

@@ -50,6 +50,20 @@ EvalChain.prototype.Step = function () {
 	}
 };
 
+/**
+ * @returns {int} number of entries in the chain.
+ */
+EvalChain.prototype.Size = function () {
+	return this.chain.length;
+};
+
+/**
+ * empty the chain, regardless of the remaining steps
+ */
+EvalChain.prototype.Clear = function () {
+	return this.chain = [];
+};
+
 // export functions and version
-exports.__VERSION__ = 2;
+exports.__VERSION__ = 3;
 exports.EvalChain = EvalChain;

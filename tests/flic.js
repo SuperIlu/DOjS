@@ -23,9 +23,9 @@ SOFTWARE.
 function Setup() {
     MouseShowCursor(false);
 
-    //FlicOpen("tests/EMCONJ.FLC");
-    //FlicOpen("tests/EMCONJ1.FLI");
-    FlicOpen("tests/GASPRA.FLI");
+    //FlicOpen("tests/testdata/EMCONJ.FLC");
+    //FlicOpen("tests/testdata/EMCONJ1.FLI");
+    FlicOpen("tests/testdata/GASPRA.FLI");
 
     Println(FLIC_WIDTH);
     Println(FLIC_HEIGHT);

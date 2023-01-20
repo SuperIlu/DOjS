@@ -14,7 +14,7 @@ BUILDDIR=build
 # local defines, options, includes
 LCDEFS= -DGLIDE_DIAGS -DHWC_CSIM -DGLIDE3 -DGLIDE3_ALPHA -DGD_DEBUGGING -DGLIDE_SIMULATOR
 
-CFLAGS=-I. -I../v1/include $(LCDEFS)
+CFLAGS += -I. -I../v1/include $(LCDEFS)
 
 PARTS  = \
     $(BUILDDIR)/codec.o \

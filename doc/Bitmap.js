@@ -1,13 +1,21 @@
 /**
-* Load a BMP, TGA, PCX or PNG image.
+* Load a BMP, TGA, PCX, QOI, JPEG or PNG image.
 *
 * **Note: PNG module must be loaded by calling LoadLibrary("png") before using this function with PNG files!**
 * **Note: JPEG module must be loaded by calling LoadLibrary("jpeg") before loading JPEG files!**
+* **Note: JPEG module must be loaded by calling LoadLibrary("qoi") before loading QOI files!**
 * 
 * @see LoadLibrary()
 *
 * @constructor 
 * @param {string} filename name of the file.
+*//**
+* create bitmap for given blurhash (see https://blurha.sh/).
+* @constructor 
+* @param {string} blurhash The blurhash.
+* @param {number} width bitmap width.
+* @param {number} height bitmap width.
+* @param {number} [punch] The factor to improve the contrast, default = 1
 *//**
 * create empty bitmap of given size.
 * @constructor 
@@ -20,6 +28,10 @@
 * @param {number[]} data 32bit integer data interpreted as ARGB.
 * @param {number} width bitmap width.
 * @param {number} height bitmap height.
+*//**
+* create Bitmap from ByteArray (must contain a compatible image file format).
+* @constructor 
+* @param {ByteArray} data image file data like PCX, BMP, etc.
 *//**
 * create Bitmap from current(3dfx) screen.
 * @constructor 
@@ -116,3 +128,12 @@ Bitmap.prototype.SaveTgaImage = function (fname) { };
  * @param {string} fname filename.
  */
 Bitmap.prototype.SavePngImage = function (fname) { };
+/**
+ * Save bitmap to QOI file.
+ * 
+ * **Note: QOI module must be loaded by calling LoadLibrary("qoi") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ */
+Bitmap.prototype.SaveQoiImage = function (fname) { };

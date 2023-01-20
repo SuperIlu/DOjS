@@ -211,6 +211,7 @@ static void new_Texinfo(js_State *J) {
             size_t size;
             if (!read_zipfile1(fname, (void **)&data, &size)) {
                 js_error(J, "Can't load '%s'!", fname);
+                free(ti);
                 return;
             }
 

@@ -26,6 +26,8 @@ SOFTWARE.
 
 #include "DOjS.h"
 
+#include "bytearray.h"
+
 #include "sqlite.h"
 #include "sqlite3.h"
 
@@ -104,7 +106,7 @@ static void new_SQLite(js_State *J) {
         return;
     }
 
-    int rc = sqlite3_open(fname, &sql->db);
+    int rc = sqlite3_open_v2(fname, &sql->db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, "unix-none");
     if (rc) {
         js_error(J, "Can't open database: %s\n", sqlite3_errmsg(sql->db));
         sqlite3_close(sql->db);
@@ -140,20 +142,117 @@ static void SQLite_Close(js_State *J) {
 static void SQLite_Exec(js_State *J) {
     char *zErrMsg = NULL;
     result_t res;
+    int rc;
 
     sqlite_t *sql = js_touserdata(J, 0, TAG_SQLITE);
     if (sql->db) {
-        const char *stmt = js_tostring(J, 1);
+        if (js_isstring(J, 1) && js_isarray(J, 2)) {
+            // LOGF("Prepared statement\n");
+            // statement with parameters
+            const char *stmt = js_tostring(J, 1);
 
-        res.J = J;
-        res.count = 0;
-        js_newarray(J);
-        int rc = sqlite3_exec(sql->db, stmt, SQLite_callback, &res, &zErrMsg);
-        if (rc != SQLITE_OK) {
-            js_pop(J, 1);
-            js_error(J, "SQL error: %s\n", zErrMsg);
-            sqlite3_free(zErrMsg);
-            return;
+            // prepare the statement
+            sqlite3_stmt *prep_stmt;
+            rc = sqlite3_prepare_v2(sql->db, stmt, -1, &prep_stmt, NULL);
+            if (SQLITE_OK != rc) {
+                js_error(J, "Can't prepare statment %s (%i): %s\n", stmt, rc, sqlite3_errmsg(sql->db));
+                return;
+            }
+
+            // add all parameters
+            int len = js_getlength(J, 2);
+            for (int i = 0; i < len; i++) {
+                js_getindex(J, 2, i);
+                if (js_isuserdata(J, -1, TAG_BYTE_ARRAY)) {
+                    byte_array_t *ba = js_touserdata(J, -1, TAG_BYTE_ARRAY);
+                    rc = sqlite3_bind_blob(prep_stmt, i + 1, ba->data, ba->size, SQLITE_STATIC);
+                    // LOGF("Bound ByteArray %d\n", ba->size);
+                } else if (js_isnumber(J, -1)) {
+                    rc = sqlite3_bind_double(prep_stmt, i + 1, js_tonumber(J, -1));
+                    // LOGF("Bound %f\n", js_tonumber(J, -1));
+                } else if (js_isnull(J, -1)) {
+                    rc = sqlite3_bind_null(prep_stmt, i + 1);
+                    // LOGF("Bound NULL\n");
+                } else if (js_isstring(J, -1)) {
+                    rc = sqlite3_bind_text(prep_stmt, i + 1, js_tostring(J, -1), -1, SQLITE_STATIC);
+                    // LOGF("Bound %s\n", js_tostring(J, -1));
+                }
+                js_pop(J, 1);
+
+                if (SQLITE_OK != rc) {
+                    js_error(J, "Can't bind parameter %i (%i): %s\n", i + 1, rc, sqlite3_errmsg(sql->db));
+                    sqlite3_finalize(prep_stmt);
+                    return;
+                }
+            }
+
+            // execute statement and get results
+            js_newarray(J);
+            int count = 0;
+            while (true) {
+                rc = sqlite3_step(prep_stmt);
+                if (rc == SQLITE_DONE) {
+                    // query is done
+                    break;
+                } else if (rc == SQLITE_ROW) {
+                    size_t blen;
+                    const uint8_t *bdata;
+                    // next row of data
+                    int cols = sqlite3_column_count(prep_stmt);
+                    if (cols > 0) {
+                        js_newobject(J);
+                        for (int i = 0; i < cols; i++) {
+                            // LOGF("Column #%d %s is %d\n", i, sqlite3_column_name(prep_stmt, i), sqlite3_column_type(prep_stmt, i));
+                            switch (sqlite3_column_type(prep_stmt, i)) {
+                                case SQLITE_INTEGER:
+                                case SQLITE_FLOAT:
+                                    js_pushnumber(J, sqlite3_column_double(prep_stmt, i));
+                                    // LOGF("Fetched number\n");
+                                    break;
+                                case SQLITE_TEXT:
+                                    js_pushstring(J, (const char *)sqlite3_column_text(prep_stmt, i));
+                                    // LOGF("Fetched string\n");
+                                    break;
+                                case SQLITE_NULL:
+                                    js_pushnull(J);
+                                    // LOGF("Fetched NULL\n");
+                                    break;
+                                case SQLITE_BLOB:
+                                    blen = sqlite3_column_bytes(prep_stmt, i);
+                                    bdata = sqlite3_column_blob(prep_stmt, i);
+                                    ByteArray_fromBytes(J, bdata, blen);
+                                    // LOGF("Fetched ByteArray\n");
+                                    break;
+                            }
+                            js_setproperty(J, -2, sqlite3_column_name(prep_stmt, i));
+                        }
+                        js_setindex(J, -2, count);
+                        count++;
+                    }
+                } else {
+                    js_pop(J, 1);
+                    js_error(J, "Can't execute statement (%i): %s\n", rc, sqlite3_errmsg(sql->db));
+                    sqlite3_finalize(prep_stmt);
+                    return;
+                }
+            }
+
+            sqlite3_finalize(prep_stmt);
+        } else {
+            // LOGF("Regular statement\n");
+            // we assume a plain statement
+            const char *stmt = js_tostring(J, 1);
+
+            res.J = J;
+            res.count = 0;
+            js_newarray(J);
+            rc = sqlite3_exec(sql->db, stmt, SQLite_callback, &res, &zErrMsg);
+            if (rc != SQLITE_OK) {
+                js_pop(J, 1);
+                js_error(J, "SQL error: %s\n", zErrMsg);
+                sqlite3_free(zErrMsg);
+                return;
+            }
         }
     } else {
         js_error(J, "Database was closed");

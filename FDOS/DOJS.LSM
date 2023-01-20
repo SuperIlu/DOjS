@@ -1,10 +1,10 @@
 Begin3
 Title:          DOjS
-Version:        1.9.1
+Version:        1.10.0
 Entered-date:   2021-01-22
 Description:    A DOS JavaScript Canvas with sound
 Summary:        DOjS is a JavaScript-able canvas with WAV and MIDI sound support. DOjS runs in Dosbox and on real hardware or a virtual machine with MS-DOS, FreeDOS or any DOS based Windows like Windows 95/98/ME. If you run it on real hardware you need at least a 80386 with 4MB. I recommend a Pentium class machine (>= 100MHz) with at least 32MB RAM.
-Changes:        V1.9.1 bugfixes
+Changes:        V1.10.0 updates
 Keywords:       java, JavaScript
 Author:         SuperIlu
 Maintained-by:  SuperIlu
@@ -12,5 +12,5 @@ Primary-site:   https://github.com/SuperIlu/DOjS
 Original-site:  https://github.com/SuperIlu/DOjS
 Platforms:      DOS
 Copying-policy: Various Licenses, See LICENSE file
-Modified-date:  2022-11-05
+Modified-date:  2023-01-20
 End

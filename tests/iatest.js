@@ -137,7 +137,7 @@ function Loop() {
 	// file read
 	var sw = new StopWatch();
 	sw.Start();
-	f1 = new File("tests/lava.3df", FILE.READ);
+	f1 = new File("tests/testdata/lava.3df", FILE.READ);
 	f1_a = f1.ReadBytes();
 	f1.Close();
 	sw.Stop();
@@ -145,7 +145,7 @@ function Loop() {
 
 	var sw = new StopWatch();
 	sw.Start();
-	f2 = new File("tests/lava.3df", FILE.READ);
+	f2 = new File("tests/testdata/lava.3df", FILE.READ);
 	f2_a = f2.ReadInts();
 	f2.Close();
 	sw.Stop();

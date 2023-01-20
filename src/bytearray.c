@@ -25,10 +25,9 @@ SOFTWARE.
 #include <allegro.h>
 #include <mujs.h>
 
-#include "DOjS.h"
 #include "zipfile.h"
 
-#define BA_DEFAULT_SIZE 1024
+#define BA_DEFAULT_SIZE (32 * 1024)
 #define BA_INC_FACTOR 13
 #define BA_FACTOR_SCALE 10
 
@@ -480,4 +479,108 @@ int ByteArray_push(byte_array_t *ba, BA_TYPE val) {
     ba->size++;
 
     return ret;
+}
+
+/*----------------------------------------------------------------------*/
+/*                memory vtable                                         */
+/*----------------------------------------------------------------------*/
+
+/* The packfile data for our memory reader. */
+typedef struct __ba_read {
+    byte_array_t *ba;
+    long unsigned int offset;
+} ba_read_t;
+
+static int bytearray_getc(void *userdata) {
+    ba_read_t *info = userdata;
+
+    if (info->offset >= info->ba->size) {
+        return EOF;
+    } else {
+        return info->ba->data[info->offset++];
+    }
+}
+
+static int bytearray_ungetc(int c, void *userdata) {
+    ba_read_t *info = userdata;
+    unsigned char ch = c;
+
+    if ((info->offset > 0) && (info->ba->data[info->offset - 1] == ch)) {
+        return ch;
+    } else {
+        return EOF;
+    }
+}
+
+static int bytearray_putc(int c, void *userdata) { return EOF; }
+
+static long bytearray_fread(void *p, long n, void *userdata) {
+    ba_read_t *info = userdata;
+    size_t actual;
+
+    actual = MIN(n, info->ba->size - info->offset);
+
+    memcpy(p, info->ba->data + info->offset, actual);
+    info->offset += actual;
+
+    return actual;
+}
+
+static long bytearray_fwrite(AL_CONST void *p, long n, void *userdata) { return 0; }
+
+static int bytearray_seek(void *userdata, int offset) {
+    ba_read_t *info = userdata;
+    long actual;
+
+    actual = MIN(offset, info->ba->size - info->offset);
+
+    info->offset += actual;
+
+    if (offset == actual) {
+        return 0;
+    } else {
+        return -1;
+    }
+}
+
+static int bytearray_fclose(void *userdata) {
+    ba_read_t *info = userdata;
+    free(info);
+    return 0;
+}
+
+static int bytearray_feof(void *userdata) {
+    ba_read_t *info = userdata;
+
+    return info->offset >= info->ba->size;
+}
+
+static int bytearray_ferror(void *userdata) {
+    (void)userdata;
+
+    return FALSE;
+}
+
+/* The actual vtable. Note that writing is not supported, the functions for
+ * writing above are only placeholders.
+ */
+static PACKFILE_VTABLE bytearray_vtable = {bytearray_fclose, bytearray_getc, bytearray_ungetc, bytearray_fread, bytearray_putc,
+                                           bytearray_fwrite, bytearray_seek, bytearray_feof,   bytearray_ferror};
+
+/**
+ * @brief create a PACKFILE from a bytearray
+ * note: the memory for the ByteArray and the PACKFILE are shared. Make sure the ByteArray is not free()d while the PACKFILE is still in use!
+ *
+ * @param ba the ByteArray
+ *
+ * @return PACKFILE* a PACKFILE or NULL when out of memory.
+ */
+PACKFILE *open_bytearray(byte_array_t *ba) {
+    ba_read_t *info = malloc(sizeof(ba_read_t));
+    if (!info) {
+        return NULL;
+    }
+    info->offset = 0;
+    info->ba = ba;
+    return pack_fopen_vtable(&bytearray_vtable, info);
 }

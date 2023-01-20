@@ -37,7 +37,7 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION_STR "V1.9.1"  //!< version number as string
+#define DOSJS_VERSION_STR "V1.10"  //!< version number as string
 
 #define JSBOOT_DIR "JSBOOT/"     //!< directory with boot files.
 #define JSBOOT_ZIP "JSBOOT.ZIP"  //!< filename for ZIP of JSBOOT
@@ -201,6 +201,7 @@ typedef struct __library_t {
     void *handle;               //!< open library handle
     void (*init)(js_State *J);  //!< init function
     void (*shutdown)(void);     //!< shutdown function or NULL
+    bool initialized;           //!< indicates initialization status
 } library_t;
 
 typedef struct {

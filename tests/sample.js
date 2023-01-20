@@ -26,8 +26,8 @@ var mono, stereo, xPos, lastY, playing, voice;
 ** This function is called once when the script is started.
 */
 function Setup() {
-	mono = new Sample("tests/mono.wav");
-	stereo = new Sample("tests/stereo.wav");
+	mono = new Sample("tests/testdata/mono.wav");
+	stereo = new Sample("tests/testdata/stereo.wav");
 
 	info(mono);
 	info(stereo);

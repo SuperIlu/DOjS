@@ -27,10 +27,10 @@ DOjS was only possible due to the work of these people/projects:
   * [noise](https://github.com/stegu/perlin-noise) for perlin noise generation
   * [genann](https://github.com/codeplea/genann) for neural network engine
   * [SQLite](https://www.sqlite.org/index.html) for sqlite module
-  * [Watt32](https://www.watt-32.net/) for TCP/IP networking
+  * [Watt32](https://github.com/gvanem/Watt-32.git) for TCP/IP networking
   * [zip](https://github.com/kuba--/zip) for ZIP file access
   * [zlib](http://zlib.net/) for compression
-  * [nanojpeg](http://keyj.emphy.de/nanojpeg/) for JPEG loading
+  * [stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h) for JPEG loading
   * [AnimatedGIF](https://github.com/bitbank2/AnimatedGIF/) for rendering GIF animations.
   * [PL_MPEG](https://github.com/phoboslab/pl_mpeg) for mpeg1 decoding
   * [pdfgen](https://github.com/AndreRenaud/PDFGen) for PDF rendering.
@@ -79,6 +79,8 @@ The following hardware/functions are available:
 <img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_018.png" alt="DOjS example" width="200">
 <img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_026.png" alt="DOjS example" width="200">
 <img src="https://github.com/SuperIlu/DOjS/raw/master/images/ogl02.png" alt="DOjS example" width="200">
+
+See [DOStodon](https://github.com/SuperIlu/DOStodon) for an complex examples. It is a full Mastodon client implemented using DOjS.
 
 ## A minimal script
 You can find the following example in `examples/exampl.js`:
@@ -255,6 +257,7 @@ See the [changelog](/CHANGELOG.md) for the projects history.
   * Stack trace selector in the editor
   * TCP/IP remote logging/debugging.
   * add FFT module
+  * add webp decoder (https://github.com/webmproject/libwebp/blob/main/doc/api.md)
   * Add ZIP file functions (e.g. https://libzip.org/users/ or https://github.com/kuba--/zip).
     * Implement 3df file loading from ZIP
   * add/implement some more math functions

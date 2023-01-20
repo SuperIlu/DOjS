@@ -64,11 +64,11 @@ function Setup() {
     pdf.AddRectangle(58, 800 + 16, 304, -height, 2, EGA.BLACK);
 
     pdf.AppendPage();
-    pdf.AddImageFile(10, 10, 20, 30, "tests/teapot.ppm");
-    pdf.AddImageFile(50, 10, 30, 30, "tests/coal.png");
-    pdf.AddImageFile(100, 10, 30, 30, "tests/bee.bmp");
-    pdf.AddImageFile(150, 10, 30, 30, "tests/bee32.bmp");
-    pdf.AddImageFile(150, 50, 50, 150, "tests/grey.jpg");
+    pdf.AddImageFile(10, 10, 20, 30, "tests/testdata/teapot.ppm");
+    pdf.AddImageFile(50, 10, 30, 30, "tests/testdata/coal.png");
+    pdf.AddImageFile(100, 10, 30, 30, "tests/testdata/bee.bmp");
+    pdf.AddImageFile(150, 10, 30, 30, "tests/testdata/bee32.bmp");
+    pdf.AddImageFile(150, 50, 50, 150, "tests/testdata/grey.jpg");
 
     // create bitmap with X in it and render it to the PDF
     pdf.AppendPage();

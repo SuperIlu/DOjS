@@ -1,0 +1,24 @@
+# ANSI-AT.KBD
+#
+# Keyboard driver for AT 101 keyboard to emulate an ANSI BBS style keyboard
+#
+
+up    = "^[[A"
+down  = "^[[B"
+right = "^[[C"
+left  = "^[[D"
+home  = "^[[H"
+end   = "^[[K"
+f1    = "^[[[A"
+f2    = "^[[[B"
+f3    = "^[[[C"
+f4    = "^[[[D"
+f5    = "^[[[E"
+f6    = "^[[17~"
+f7    = "^[[18~"
+f8    = "^[[19~"
+f9    = "^[[20~"
+f10   = "^[[21~"
+f11   = "^[[[K"
+f12   = "^[[[L"
+

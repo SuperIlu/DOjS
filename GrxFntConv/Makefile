@@ -5,10 +5,10 @@ OBJS = \
 	dumpfna.o \
 	dumpfont.o \
 	dumpgrx.o
-EXE     = fntconv.exe
-CFLAGS  = -std=gnu99 -Wall -I. -O2 #-O0 -g3 -DDEBUG
-LDFLAGS = -s
-LIBS    = -lm
+EXE      = fntconv.exe
+CFLAGS  += -std=gnu99 -Wall -I. -O2 #-O0 -g3 -DDEBUG
+LDFLAGS  = -s
+LIBS     = -lm
 
 all: $(EXE)
 

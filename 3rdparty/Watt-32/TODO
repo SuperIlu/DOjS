@@ -1,0 +1,54 @@
+
+* Make it possible to append to wattcp.dbg files.
+
+* Store PKTDRVR handle value and address of DOS-memory Rx buffers in
+  master environment and optionally release PKTDRVR handle at next
+  startup (in case program exited abnormally).
+
+* Support and test for Pmode/DJ
+
+* Support and test for Zurenava (ZRDX)
+
+* Support for Pharlap extenders with Watcom.
+
+* Support "non-zero base" version of DOS4GW Pro extender (using Watcom).
+
+* DJ_BUG in pcpkt.c: Check if highword of ESP set in the RMCB wrapper is 0
+  (assuming it's a 16bit segment).
+  Check if reserved field in __dpmi_regs (between EBP and EBX) changes
+  in callback.
+
+* Notes on gcc code-generation:
+	`-mcpu=CPU-TYPE'
+	Tune to CPU-TYPE everything applicable about the generated code,
+	except for the ABI and the set of available instructions.
+	...
+	While picking a specific CPU-TYPE will schedule things
+	appropriately for that particular chip, the compiler will not
+	generate any code that does not run on the i386 without the
+	`-march=CPU-TYPE' option being used.
+
+	So -mcpu is a tuning option that does not restrict the
+	instruction set, while -march is a restrictive option, and
+	-march=x also implies -mcpu=x.
+
+
+* Fix IPv4 reassembly; handle frags sent with highest offset first.
+  And move the reassembly up in the protocol chain (to _ip_Handler).
+
+* Better TCP reassembly. Simulate packet-drop in pcpkt2.c.
+
+* Support djgpp near-pointers to the receive buffers.
+
+* USE_FAST_PKT for all targets. Prevents fixup error in large model and
+  with Blinker (which crashes on 16-bit segment in asmpkt4.asm).
+
+* Write a djgpp stub-edit tool that puts build-time and version in the
+  COFF optional header (after the file-header).
+
+* Support default gateway = my_ip and ARP for everything.
+
+* Port Sandia Labs' XTP real-time protocol to Watt-32.  DON'T THINK SO.
+
+* Add support for Win-9x/ME and Win-CE (Dell Axim, ARM processors).
+

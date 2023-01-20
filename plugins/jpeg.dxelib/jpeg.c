@@ -25,13 +25,22 @@ SOFTWARE.
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <setjmp.h>
 
 #include "DOjS.h"
+#include "bitmap.h"
 
-#define _NJ_INCLUDE_HEADER_ONLY
-#include "nanojpeg.c"
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_JPEG
+#define STBI_NO_SIMD
+#define STBI_NO_HDR
+#define STBI_MAX_DIMENSIONS (4 * 640)
+#define STBI_NO_STDIO
+#define STBI_NO_THREAD_LOCALS
+#include "stb_image.h"
 
-#define JPEG_BUFFER_SIZE (4096 * 4)  //!< memory allocation increment while loading file data
+#define JPEG_BUFFER_SIZE (4096 * 16)  //!< memory allocation increment while loading file data
+#define NUM_CHANNELS 4                //!< always use RGBA
 
 void init_jpeg(js_State *J);
 
@@ -44,7 +53,7 @@ void init_jpeg(js_State *J);
  */
 static BITMAP *load_jpg_pf(PACKFILE *f, RGB *pal) {
     BITMAP *bm = NULL;
-    char *buffer = NULL;
+    uint8_t *buffer = NULL;
     unsigned int malloc_size = JPEG_BUFFER_SIZE;
     unsigned int pos = 0;
 
@@ -59,11 +68,11 @@ static BITMAP *load_jpg_pf(PACKFILE *f, RGB *pal) {
         if (ch == EOF) {
             break;  // reading done
         } else {
-            buffer[pos++] = ch;                                   // store byte
-            if (pos >= malloc_size) {                             // check buffer bounds
-                malloc_size += JPEG_BUFFER_SIZE;                  // increase buffer size
-                char *new_buffer = realloc(buffer, malloc_size);  // try re-alloc
-                if (!new_buffer) {                                // bail out on failure
+            buffer[pos++] = ch;                                      // store byte
+            if (pos >= malloc_size) {                                // check buffer bounds
+                malloc_size += JPEG_BUFFER_SIZE;                     // increase buffer size
+                uint8_t *new_buffer = realloc(buffer, malloc_size);  // try re-alloc
+                if (!new_buffer) {                                   // bail out on failure
                     free(buffer);
                     return NULL;
                 } else {
@@ -75,38 +84,34 @@ static BITMAP *load_jpg_pf(PACKFILE *f, RGB *pal) {
     }
     DEBUGF("final   : mem_size = %d, file_size = %d\n", malloc_size, pos);
 
-    njInit();
-    if (njDecode(buffer, pos) == NJ_OK) {
-        DEBUGF("Decode OK, size %dx%d\n", njGetWidth(), njGetHeight());
-        bm = create_bitmap_ex(32, njGetWidth(), njGetHeight());
-        unsigned char *jpgdata = njGetImage();
+    int width;
+    int height;
+    int channels_in_file;
+    uint8_t *rgba = stbi_load_from_memory(buffer, pos, &width, &height, &channels_in_file, NUM_CHANNELS);
 
-        if (njIsColor()) {
-            LOG("Color JPEG\n");
-            for (int y = 0; y < bm->h; y++) {
-                for (int x = 0; x < bm->w; x++) {
-                    int offs = y * bm->w * 3 + x * 3;
-                    bm->line[y][x * 4 + _rgb_r_shift_32 / 8] = jpgdata[0 + offs];
-                    bm->line[y][x * 4 + _rgb_g_shift_32 / 8] = jpgdata[1 + offs];
-                    bm->line[y][x * 4 + _rgb_b_shift_32 / 8] = jpgdata[2 + offs];
-                    bm->line[y][x * 4 + _rgb_a_shift_32 / 8] = 0xFF;
-                }
-            }
-        } else {
-            DEBUGF("BW JPEG\n");
-            for (int y = 0; y < bm->h; y++) {
-                for (int x = 0; x < bm->w; x++) {
-                    int offs = y * bm->w + x;
-                    bm->line[y][x * 4 + _rgb_r_shift_32 / 8] = jpgdata[offs];
-                    bm->line[y][x * 4 + _rgb_g_shift_32 / 8] = jpgdata[offs];
-                    bm->line[y][x * 4 + _rgb_b_shift_32 / 8] = jpgdata[offs];
-                    bm->line[y][x * 4 + _rgb_a_shift_32 / 8] = 0xFF;
-                }
-            }
+    DEBUGF("JPEG is %dx%dx%d\n", width, height, channels_in_file);
+
+    // create bitmap
+    bm = create_bitmap_ex(32, width, height);
+    if (!bm) {
+        stbi_image_free(rgba);
+        return NULL;
+    }
+
+    // copy RGBA data in BITMAP
+    for (int y = 0; y < height; y++) {
+        unsigned int yIdx = y * NUM_CHANNELS * width;
+        for (int x = 0; x < width; x++) {
+            unsigned int xIdx = x * NUM_CHANNELS;
+            bm->line[y][x * 4 + _rgb_r_shift_32 / 8] = rgba[0 + yIdx + xIdx];
+            bm->line[y][x * 4 + _rgb_g_shift_32 / 8] = rgba[1 + yIdx + xIdx];
+            bm->line[y][x * 4 + _rgb_b_shift_32 / 8] = rgba[2 + yIdx + xIdx];
+            bm->line[y][x * 4 + _rgb_a_shift_32 / 8] = rgba[3 + yIdx + xIdx];
         }
     }
+
+    stbi_image_free(rgba);
     free(buffer);
-    njDone();
 
     return bm;
 }
@@ -151,7 +156,7 @@ static BITMAP *load_jpg(AL_CONST char *filename, RGB *pal) {
 ** public functions **
 *********************/
 /**
- * @brief initialize neural subsystem.
+ * @brief initialize subsystem.
  *
  * @param J VM state.
  */

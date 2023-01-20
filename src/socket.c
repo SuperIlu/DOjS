@@ -470,7 +470,13 @@ static void Socket_Established(js_State *J) {
  */
 static void Socket_GetRemoteHost(js_State *J) {
     SOCK_USER_DATA(s);
-    watt_pushipaddr(J, sock_rhost(s->socket));
+    struct watt_sockaddr waddr;
+    int len = sizeof(struct watt_sockaddr);
+    if (_w32__getpeername(s->socket, &waddr, &len) == 0) {
+        watt_pushipaddr(J, waddr.s_ip);
+    } else {
+        js_error(J, "Could not get remote address");
+    }
 }
 
 /**
@@ -481,7 +487,14 @@ static void Socket_GetRemoteHost(js_State *J) {
  */
 static void Socket_GetLocalPort(js_State *J) {
     SOCK_USER_DATA(s);
-    js_pushnumber(J, sock_lport(s->socket));
+
+    struct watt_sockaddr waddr;
+    int len = sizeof(struct watt_sockaddr);
+    if (_w32__getsockname(s->socket, &waddr, &len) == 0) {
+        js_pushnumber(J, waddr.s_port);
+    } else {
+        js_error(J, "Could not get local port");
+    }
 }
 
 /**
@@ -492,7 +505,14 @@ static void Socket_GetLocalPort(js_State *J) {
  */
 static void Socket_GetRemotePort(js_State *J) {
     SOCK_USER_DATA(s);
-    js_pushnumber(J, sock_rport(s->socket));
+
+    struct watt_sockaddr waddr;
+    int len = sizeof(struct watt_sockaddr);
+    if (_w32__getpeername(s->socket, &waddr, &len) == 0) {
+        js_pushnumber(J, waddr.s_port);
+    } else {
+        js_error(J, "Could not get remote port");
+    }
 }
 
 /**

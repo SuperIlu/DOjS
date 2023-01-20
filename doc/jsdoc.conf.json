@@ -50,7 +50,6 @@
 			"../jsboot/p5typo.js",
 			"../jsboot/p5util.js",
 			"../jsboot/p5vect.js",
-			"../jsboot/qoi.js",
 			"../jsboot/qrcode.js",
 			"../jsboot/quadtree.js",
 			"../jsboot/socket.js"
@@ -70,7 +69,7 @@
 			"outputSourceFiles": false
 		},
 		"better-docs": {
-			"name": "DOjS V1.9.0",
+			"name": "DOjS V1.10.0",
 			"hideGenerator": true,
 			"navLinks": [
 				{

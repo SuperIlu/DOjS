@@ -28,15 +28,15 @@ function Setup() {
 	MouseShowCursor(false);
 
 	bm1 = new Bitmap(Width, Height, EGA.DARK_GRAY);
-	bm1.RenderSVG("tests/23.svg");
+	bm1.RenderSVG("tests/testdata/23.svg");
 	bm1.SavePngImage("23.png");
 
 	bm2 = new Bitmap(Width, Height, EGA.DARK_GRAY);
-	bm2.RenderSVG("tests/drawing.svg");
+	bm2.RenderSVG("tests/testdata/drawing.svg");
 	bm2.SavePngImage("drawing.png");
 
 	bm3 = new Bitmap(Width, Height, EGA.DARK_GRAY);
-	bm3.RenderSVG("tests/nano.svg");
+	bm3.RenderSVG("tests/testdata/nano.svg");
 	bm3.SavePngImage("nano.png");
 
 	img = bm1;

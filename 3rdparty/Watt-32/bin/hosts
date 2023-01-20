@@ -1,0 +1,29 @@
+#
+# Watt-32 TCP/IP Host file
+#
+# For IPv4 addresses only; use hosts6 for IPv6
+#
+# ip-address     hostname   [alias(es)..]
+
+127.0.0.1        localhost  loopback
+10.0.0.2         news
+0.0.0.0          null
+
+8.8.8.8          google-public-dns-a.google.com
+8.8.4.4          google-public-dns-b.google.com
+
+198.41.0.4       a.root-servers.net
+
+#
+# Note: if a hostname contains some non-US ASCII (8bit) letters the hosts
+#       matching is CASE-SENSITIVE.  The reason is that stricmp() doesn't
+#       understand non-ASCII upper/lower case letters.
+#       The hostname and alias list must then be repeated with all
+#       casing combinations of the non-US ASCII letter(s).
+# E.g.
+#
+# 128.0.10.20 Üsgard èsgard èSGARD # Ü = Norwegian 'a ring'
+#                                  # è = Norwegian 'A ring'
+#
+# In this example 'èSGARD' is not needed because it's matched by 'èsgard'
+

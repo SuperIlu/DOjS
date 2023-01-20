@@ -363,6 +363,26 @@ static void dojs_shutdown_libraries() {
             if (chain->shutdown) {
                 chain->shutdown();
             }
+            chain->initialized = false;
+            chain = chain->next;
+        }
+    }
+}
+
+/**
+ * @brief call init() on all registered libraries (re-run of the sketch from editor)
+ */
+static void dojs_init_libraries(js_State *J) {
+    if (DOjS.loaded_libraries) {
+        library_t *chain = DOjS.loaded_libraries;
+        while (chain) {
+            DEBUGF("%p: Library init for %s. Shutdown function %p\n", chain, chain->name, chain->init);
+
+            // call init if not already initialized
+            if (chain->init && !chain->initialized) {
+                chain->init(J);
+                chain->initialized = true;
+            }
             chain = chain->next;
         }
     }
@@ -535,6 +555,7 @@ static void run_script(int argc, char **argv, int args) {
                 // call setup()
                 DOjS.keep_running = true;
                 DOjS.wanted_frame_rate = 30;
+                dojs_init_libraries(J);  // re-init all already loaded libraries
                 if (callGlobal(J, CB_SETUP)) {
                     // call loop() until someone calls Stop()
                     while (DOjS.keep_running) {
@@ -696,6 +717,7 @@ bool dojs_register_library(const char *name, void *handle, void (*init)(js_State
     new_entry->handle = handle;
     new_entry->init = init;
     new_entry->shutdown = shutdown;
+    new_entry->initialized = true;
     DEBUGF("%s: Created %p with init=%p and shutdown=%p\n", new_entry->name, new_entry, new_entry->init, new_entry->shutdown);
 
     // insert at start of list
@@ -777,10 +799,12 @@ void dojs_update_transparency() {
     }
 
     if (bfunc) {
+        DEBUGF("Using blender %p\n", bfunc);
         set_blender_mode(bfunc, bfunc, bfunc, 0, 0, 0, 0);
         drawing_mode(DRAW_MODE_TRANS, DOjS.render_bm, 0, 0);
     } else {
-        drawing_mode(DRAW_MODE_SOLID, DOjS.render_bm, 0, 0);
+        DEBUGF("Using solid mode\n");
+        solid_mode();
     }
 }
 
@@ -946,18 +970,18 @@ int main(int argc, char **argv) {
         if (!ut_endsWith(argv[0], DOJS_EXE_NAME)) {
             // exe name was changed --> try to run xxx.ZIP=MAIN.JS
             char *autostart_zip = ut_clone_string(argv[0]);
-            size_t autostart_len = strlen(autostart_zip);
             if (!autostart_zip) {
                 fprintf(stderr, "Out of memory.\n\n");
                 exit(EXIT_FAILURE);
             }
-            strcpy(autostart_zip, argv[0]);
-            autostart_zip[autostart_len - 2] = 'Z';
-            autostart_zip[autostart_len - 1] = 'I';
-            autostart_zip[autostart_len] = 'P';
+            size_t autostart_len = strlen(autostart_zip);
+            autostart_zip[autostart_len - 3] = 'Z';
+            autostart_zip[autostart_len - 2] = 'I';
+            autostart_zip[autostart_len - 1] = 'P';
 
             // try autostart
-            char *autostart_script = malloc(autostart_len + 1 + strlen(AUTOSTART_FILE));
+            size_t script_len = autostart_len + 1 + strlen(AUTOSTART_FILE);
+            char *autostart_script = calloc(1, script_len);
             if (!autostart_script) {
                 fprintf(stderr, "Out of memory.\n\n");
                 exit(EXIT_FAILURE);
@@ -1007,8 +1031,6 @@ int main(int argc, char **argv) {
             }
         }
     }
-
-    // fprintf(stderr, "argv0=%s, script=%s, jsboot=%s.\n\n", argv[0], DOjS.params.script, DOjS.jsboot);
 
     // check if the above yielded a script name and if the combination is valid
     if (!DOjS.params.script) {

@@ -26,6 +26,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <zlib.h>
+#include <setjmp.h>
 
 #include "DOjS.h"
 #include "intarray.h"
@@ -100,6 +101,9 @@ vsnprintf
 vsprintf
 write
 exit
+alarm
+putchar
+select
 
 // time
 clock
@@ -154,6 +158,8 @@ qsort
 raise
 realloc
 signal
+longjmp
+setjmp
 
 // math/random
 __fpclassifyd
@@ -167,6 +173,7 @@ tan
 sqrt
 cos
 sin
+roundf
 
 // gcc/djgpp/lowlevel
 __divdi3
@@ -339,6 +346,7 @@ ByteArray_create
 ByteArray_destroy
 ByteArray_fromStruct
 ByteArray_push
+ByteArray_fromBytes
 
 Bitmap_fromRGBA
 

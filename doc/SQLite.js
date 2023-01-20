@@ -13,6 +13,10 @@ function SQLite(fname) { }
 SQLite.prototype.Close = function () { };
 /**
  * Execute a SQL query on the database. See SQLite documentation for query language details.
+ * Note: you can use ByteArray to pass/retrieve BLOBs. These can be very memory consuming as all data is kept im RAM.
+ * 
+ * @param {string} sql the sql statement
+ * @param {Object[]} [params] bind parameters that will be used if the sql had unbound parameters
  * 
  * @returns {Object[]} returns a list of objects for SQL queries. Each object has the column names as keys and the column contents as values.
  * 
@@ -37,4 +41,4 @@ var res1 = exec(sql, "SELECT * from test;");             // [{"id":"23","name":"
 var res2 = exec(sql, "SELECT * from test WHERE id=23;"); // [{"id":"23","name":"dreiundzwanzig"}]
 
 */
-SQLite.prototype.Exec = function (sql) { };
+SQLite.prototype.Exec = function (sql, params) { };

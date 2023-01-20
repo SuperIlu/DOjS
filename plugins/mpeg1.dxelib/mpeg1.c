@@ -99,7 +99,7 @@ static void MPEG1_audio_decode_callback(plm_t *self, plm_samples_t *samples, voi
 static void MPEG1_video_decode_callback(plm_t *self, plm_frame_t *frame, void *user) {
     mpeg1_t *m = (mpeg1_t *)user;
 
-    plm_frame_to_rgba(frame, (uint8_t *)m->video_buffer->dat, frame->width * sizeof(uint32_t));
+    plm_frame_to_bgra(frame, (uint8_t *)m->video_buffer->dat, frame->width * sizeof(uint32_t));
 
     blit(m->video_buffer, DOjS.current_bm, 0, 0, m->x, m->y, frame->width, frame->height);
 }

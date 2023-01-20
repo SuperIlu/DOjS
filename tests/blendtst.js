@@ -43,7 +43,7 @@ modestr = [
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    img = new Bitmap("tests/rose.jpg");
+    img = new Bitmap("tests/testdata/rose.jpg");
     bmode = 0;
     alpha = 128;
     frameRate(1);

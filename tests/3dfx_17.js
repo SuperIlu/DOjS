@@ -26,7 +26,7 @@ function Setup() {
 
 	/* Load texture data into system ram */
 	FxTexMemInit(GR_TMU.TMU0);
-	miro = new TexInfo("tests/miro.3df");
+	miro = new TexInfo("tests/testdata/miro.3df");
 	/* Download texture data to TMU */
 	miro.DownloadMipMap(GR_TMU.TMU0, FxTexMemGetStartAddress(GR_TMU.TMU0, miro), GR_MIPMAPLEVELMASK.BOTH);
 	/* Select Texture As Source of all texturing operations */

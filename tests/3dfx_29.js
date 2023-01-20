@@ -34,7 +34,7 @@ function Setup() {
 	/* Load texture data into system ram */
 	FxTexMemInit(GR_TMU.TMU0);
 	FxTexMemInit(GR_TMU.TMU1);
-	texture = new TexInfo("tests/decal1.3df");
+	texture = new TexInfo("tests/testdata/decal1.3df");
 	/* Download texture data to TMU */
 	texture.DownloadMipMap(GR_TMU.TMU1, FxTexMemGetStartAddress(GR_TMU.TMU1, texture), GR_MIPMAPLEVELMASK.BOTH);
 	texture.Source(GR_MIPMAPLEVELMASK.BOTH);

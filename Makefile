@@ -7,19 +7,19 @@
 # temp directory for building FreeDOS archive
 TMP=/tmp/FDOS
 
-THIRDPARTY	= 3rdparty/
+THIRDPARTY	= 3rdparty
 MUJS		= $(THIRDPARTY)/mujs-1.0.5
 ALLEGRO		= $(THIRDPARTY)/allegro-4.2.2-xc-master
 DZCOMMDIR	= $(THIRDPARTY)/dzcomm
-WATT32		= $(THIRDPARTY)/watt32-2.2dev.rel.11/
+WATT32		= $(THIRDPARTY)/Watt-32
 ZLIB		= $(THIRDPARTY)/zlib-1.2.12
 KUBAZIP		= $(THIRDPARTY)/zip-0.2.5
 ALPNG		= $(THIRDPARTY)/alpng13
-OPENSSL		= $(THIRDPARTY)/openssl-1.1.1q
-CURL		= $(THIRDPARTY)/curl-7.80.0
+CURL		= $(THIRDPARTY)/curl-7.87.0
 MESA3		= $(THIRDPARTY)/MesaFX-3.4-master
 BZIP2		= $(THIRDPARTY)/bzip2-1.0.8
 INI			= $(THIRDPARTY)/ini-20220806/src
+MBEDTLS		= $(THIRDPARTY)/mbedtls-2.28.1
 
 GLIDE=glide3x
 GLIDESDK=$(GLIDE)/v1
@@ -32,10 +32,10 @@ LIB_ALLEGRO	= $(ALLEGRO)/lib/djgpp/liballeg.a
 LIB_WATT	= $(WATT32)/lib/libwatt.a
 LIB_Z		= $(ZLIB)/msdos/libz.a
 LIB_ALPNG	= $(ALPNG)/libalpng.a
-LIB_SSL		= $(OPENSSL)/libssl.a
 LIB_CURL	= $(CURL)/libcurl.a
 LIB_MESA	= $(MESA3)/lib/libgl.a
 LIB_BZIP2	= $(BZIP2)/libbzip2.a
+LIB_MBEDTLS = $(MBEDTLS)/library/libmbedtls.a
 
 # compiler
 CDEF     = -DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED # -DMEMDEBUG 
@@ -50,7 +50,7 @@ INCLUDES = \
 	-I$(realpath $(ZLIB)) \
 	-I$(realpath $(KUBAZIP))/src \
 	-I$(realpath $(ALPNG))/src \
-	-I$(realpath $(OPENSSL))/include \
+	-I$(realpath $(MBEDTLS))/include \
 	-I$(realpath $(CURL))/include \
 	-I$(realpath $(INI))/
 
@@ -62,6 +62,7 @@ LDFLAGS  = -s \
 	-L$(GLIDE)/v1/lib \
 	-L$(DZCOMMDIR)/lib/djgpp \
 	-L$(WATT32)/lib \
+	-L$(MBEDTLS)/library/ \
 	-L$(ZLIB)
 
 # output
@@ -91,6 +92,7 @@ export
 MPARA=-j8
 
 PARTS= \
+	$(BUILDDIR)/blurhash.o \
 	$(BUILDDIR)/blender.o \
 	$(BUILDDIR)/bytearray.o \
 	$(BUILDDIR)/intarray.o \
@@ -133,13 +135,12 @@ $(LIB_MESA):
 	$(MAKE) $(MPARA) -C $(MESA3) -f Makefile.dja
 
 libcurl: $(LIB_CURL)
-$(LIB_CURL): $(LIB_SSL) $(LIB_Z)
-	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.dj
+$(LIB_CURL): $(LIB_MBEDTLS) $(LIB_Z)
+	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls-watt TRIPLET=i586-pc-msdosdjgpp WATT_ROOT=$(WATT32)
 
-libopenssl: $(LIB_SSL)
-$(LIB_SSL): $(LIB_WATT)
-	$(MAKE) $(MPARA) -C $(OPENSSL) -f Makefile build_libs
-	$(MAKE) $(MPARA) -C $(OPENSSL) -f Makefile apps/openssl.exe
+libmbedtls: $(LIB_MBEDTLS)
+$(LIB_MBEDTLS):
+	$(MAKE) $(MPARA) -C $(MBEDTLS) -f Makefile lib
 
 alpng: $(LIB_ALPNG)
 $(LIB_ALPNG):
@@ -167,10 +168,10 @@ $(LIB_ALLEGRO):
 
 libwatt32: $(LIB_WATT)
 $(LIB_WATT):
-	DJ_PREFIX=$(dir $(shell which $(CC))) $(MAKE) $(MPARA) -C $(WATT32)/src -f DJGPP.MAK
+	DJ_PREFIX=$(dir $(shell which $(CC))) $(MAKE) $(MPARA) -C $(WATT32)/src -f djgpp.mak
 
-$(EXE): $(PARTS)
-	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+$(EXE): $(PARTS) init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3
+	$(CC) $(LDFLAGS) -o $@ $(PARTS) $(LIBS)
 
 $(BUILDDIR)/%.o: src/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -184,7 +185,7 @@ $(BUILDDIR)/zip/src/%.o: $(KUBAZIP)/src/%.c Makefile
 $(BUILDDIR)/ini/%.o: $(INI)/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(DXE_DIRS):
+$(DXE_DIRS): init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3
 	$(MAKE) -C $@
 
 $(DXE_EXPORTS): dxetemplate.txt $(MUJS)/mujs.h
@@ -214,8 +215,7 @@ zip: all cacert.pem doc
 devzip: all cacert.pem doc
 	rm -f $(RELZIP)
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	cp $(OPENSSL)/apps/openssl.exe .
-	zip -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT texus.exe fntconv.exe cacert.pem openssl.exe *.DXE
+	zip -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT texus.exe fntconv.exe cacert.pem *.DXE
 	scp $(RELZIP) smbshare@192.168.2.8:/sata/c64
 
 doc:
@@ -235,10 +235,10 @@ clean:
 		$(MAKE) -C $$dir -f Makefile $@; \
 	done
 
-distclean: clean alclean jsclean dzclean wattclean zclean apclean sslclean curlclean dxeclean mesa3clean
+distclean: clean alclean jsclean dzclean wattclean zclean apclean mbedtlsclean curlclean dxeclean mesa3clean
 	$(MAKE) -C $(TEXUS) clean
 	$(MAKE) -C $(FONTCONV) clean
-	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.* openssl.exe
+	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.*
 	rm -rf $(GLIDE)/*/test $(GLIDE)/texus/*.exe $(GLIDE)/texus/*.EXE $(GLIDE)/texus/build
 
 dzclean:
@@ -251,7 +251,7 @@ alclean:
 	cd $(ALLEGRO) && bash ./xmake.sh clean
 
 wattclean:
-	$(MAKE) -C $(WATT32)/src -f DJGPP.MAK clean
+	$(MAKE) -C $(WATT32)/src -f djgpp.mak clean
 
 zclean:
 	$(MAKE) -C $(ZLIB) -f Makefile.dojs clean
@@ -265,14 +265,14 @@ dxeclean:
 apclean:
 	$(MAKE) -C $(ALPNG) -f Makefile.zlib clean
 
-sslclean:
-	$(MAKE) -C $(OPENSSL) -f Makefile clean
+mbedtlsclean:
+	$(MAKE) -C $(MBEDTLS) -f Makefile clean
 
 mesa3clean:
 	$(MAKE) -C $(MESA3) -f Makefile.dja realclean
 
 curlclean:
-	$(MAKE) -C $(CURL)/lib -f Makefile.dj clean
+	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls-watt TRIPLET=i586-pc-msdosdjgpp WATT_ROOT=$(WATT32) clean
 	rm -f $(CURL)/lib/libcurl.a
 
 muclean:

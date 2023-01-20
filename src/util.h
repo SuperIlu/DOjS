@@ -24,6 +24,7 @@ SOFTWARE.
 #define __UTIL_H__
 
 #include "DOjS.h"
+#include "bytearray.h"
 
 /***********************
 ** exported functions **
@@ -33,5 +34,6 @@ extern const char *ut_getFilenameExt(const char *filename);
 extern bool ut_file_exists(const char *filename);
 extern bool ut_read_file(const char *fname, void **buf, size_t *size);
 extern char *ut_clone_string(const char *str);
+extern char *ut_getBitmapType(byte_array_t *ba);
 
 #endif  // __UTIL_H__

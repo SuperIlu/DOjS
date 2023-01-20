@@ -143,15 +143,19 @@ function Dump(obj) {
  */
 function RequireFile(name, fname) {
 	var content;
-	if (fname.indexOf(ZIP_DELIM) != -1) {
-		var parts = fname.split(ZIP_DELIM);
-		var zname = parts[0];
-		var ename = parts[1];
-		Debug("Require(zip) " + zname + " -> " + ename);
+	try {
+		if (fname.indexOf(ZIP_DELIM) != -1) {
+			var parts = fname.split(ZIP_DELIM);
+			var zname = parts[0];
+			var ename = parts[1];
+			Debug("Require(zip) " + zname + " -> " + ename);
 
-		content = ReadZIP(zname, ename);
-	} else {
-		content = Read(fname);
+			content = ReadZIP(zname, ename);
+		} else {
+			content = Read(fname);
+		}
+	} catch (e) {
+		return null;	// file errors are ignored
 	}
 	var exports = {};
 	Require._cache[name] = exports;
@@ -196,11 +200,14 @@ function Require(name) {
 	for (var i = 0; i < names.length; i++) {
 		var n = names[i];
 		Debug("Require() Trying '" + n + "'");
-		try {
-			return RequireFile(name, n);
-		} catch (e) {
-			Debug("RequireFile() " + n + " Not found" + e);
+
+		// try to load. non-existend files lead to the next filename to be tried, parse errors will result in an error thrown
+		var parsed = RequireFile(name, n);
+		if (!parsed) {
+			Debug("RequireFile() " + n + " Not found");
 			continue;
+		} else {
+			return parsed;
 		}
 	}
 

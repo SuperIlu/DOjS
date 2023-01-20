@@ -20,25 +20,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-Include("qoi");
+LoadLibrary("qoi");
 
 /*
 ** This function is called once when the script is started.
 */
 function Setup() {
-	img = LoadQoi("tests/qoi_test_images/testcard.qoi");
-	// img = LoadQoi("tests/qoi_test_images/qoi_logo.qoi");
+	tc = new Bitmap("tests/testdata/testcard.qoi");
+	logo = new Bitmap("tests/testdata/qoi_logo.qoi");
 }
 
 /*
 ** This function is repeatedly until ESC is pressed or Stop() is called.
 */
 function Loop() {
-	img.Draw(0, 0);
+	tc.Draw(0, 0);
+	logo.DrawTrans(0, 0);
 }
 
 /*
 ** This function is called on any input.
 */
 function Input(e) {
+	if (CompareKey(e.key, '1')) {
+		SaveQoiImage("scr.qoi");
+	}
 }

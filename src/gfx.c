@@ -38,6 +38,9 @@ SOFTWARE.
 #include "gfx.h"
 #include "util.h"
 
+//! used to keep a reference to the bitmap in global context
+#define RENDER_BITMAP "___render___bitmap___"
+
 /************
 ** structs **
 ************/
@@ -660,7 +663,9 @@ static void f_GetPixel(js_State *J) {
  */
 static void f_TransparencyEnabled(js_State *J) {
     DOjS.transparency_available = js_tointeger(J, 1);
-    dojs_update_transparency();
+    if (!DOjS.params.no_alpha) {
+        dojs_update_transparency();
+    }
 }
 
 /**
@@ -672,12 +677,22 @@ static void f_TransparencyEnabled(js_State *J) {
 static void f_SetRenderBitmap(js_State *J) {
     if (js_isundefined(J, 1) || js_isnull(J, 1)) {
         DOjS.current_bm = DOjS.render_bm;
+
+        // remove object from global context
+        js_pushnull(J);
+        js_setglobal(J, RENDER_BITMAP);
+
         DEBUG("Restoring render_bm\n");
     } else {
         JS_CHECKTYPE(J, 1, TAG_BITMAP);
 
         BITMAP *bm = js_touserdata(J, 1, TAG_BITMAP);
         DOjS.current_bm = bm;
+
+        // copy reference into global context to stop the object from being garbage collected
+        js_copy(J, 1);
+        js_setglobal(J, RENDER_BITMAP);
+
         DEBUGF("Setting 0x%p\n", bm);
     }
 }

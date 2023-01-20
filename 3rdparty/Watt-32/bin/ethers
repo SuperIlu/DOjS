@@ -1,0 +1,18 @@
+#
+# Watt-32 ethers file
+#
+# These entries gets added to the static ARP cache.
+#
+
+01:02:03:04:05:06  10.0.10.1 #  host-1
+04:05:06:07:08:09  10.0.10.2 #  host-2
+05:06:07:08:09:0a  10.0.10.3 #  host-3
+
+#
+# To make a network NULL-device, add the IP of a non-existant
+# host to your hosts file. E.g.
+#  10.0.0.10  eth-sink
+#
+DF:00:00:00:00:00   eth-sink
+CF:00:00:00:00:00   eth-loop
+

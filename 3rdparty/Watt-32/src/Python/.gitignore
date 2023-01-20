@@ -1,0 +1,6 @@
+__pycache__/
+_watt32.pyd
+_watt32.res
+check-for-unused-libs.py
+watt32.py
+watt32.pyo

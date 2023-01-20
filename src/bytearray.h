@@ -27,6 +27,8 @@ SOFTWARE.
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "DOjS.h"
+
 /************
 ** defines **
 ************/
@@ -49,5 +51,6 @@ extern byte_array_t *ByteArray_create(void);
 extern int ByteArray_push(byte_array_t *ba, BA_TYPE val);
 extern void ByteArray_destroy(byte_array_t *ba);
 extern void ByteArray_fromStruct(js_State *J, byte_array_t *ba);
+extern PACKFILE *open_bytearray(byte_array_t *ba);
 
 #endif  // __BYTEARRAY_H__

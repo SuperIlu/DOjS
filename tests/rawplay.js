@@ -25,8 +25,8 @@ LoadLibrary("rawplay");
 function Setup() {
 	MouseShowCursor(false);
 
-	m = new Rawplay("tests/sound.zip=sound.raw", 44100, 4096);
-	// m = new Rawplay("tests/sound.raw", 44100, 4096);
+	m = new Rawplay("tests/testdata/sound.zip=sound.raw", 44100, 4096);
+	// m = new Rawplay("tests/testdata/sound.raw", 44100, 4096);
 
 	Println(m.filename);
 	Println(m.length);

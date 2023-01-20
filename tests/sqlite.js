@@ -10,10 +10,10 @@ function dump(s, c) {
 	msg(JSON.stringify(s), c);
 }
 
-function exec(sql, stmt) {
+function exec(sql, stmt, param) {
 	try {
 		msg(stmt);
-		var res = sql.Exec(stmt);
+		var res = sql.Exec(stmt, param);
 		if (res.length > 0) {
 			dump(res, EGA.RED);
 		}
@@ -55,16 +55,31 @@ function Setup() {
 	exec(sql, "INSERT INTO test (id, name) VALUES (42, 'zweiundvierzig');");
 	exec(sql, "INSERT INTO test (id, name) VALUES (23, 'dreiundzwanzig');");
 
+	exec(sql, "INSERT INTO test (id, name) VALUES (?, ?);", [1, 'eins']);
+	exec(sql, "INSERT INTO test (id, name) VALUES (?, ?);", [2]);
+
 	// try duplicate check
 	exec(sql, "INSERT INTO test (id, name) VALUES (23, 'dreiundzwanzig');");
+
+	// datatype error
+	exec(sql, "INSERT INTO test (id, name) VALUES (?, ?);", ['einhundert']);
 
 	// select some data
 	exec(sql, "SELECT * from test;");
 	exec(sql, "SELECT * from test WHERE id=23;");
+	exec(sql, "SELECT * from test WHERE id=?;", [1]);
+	exec(sql, "SELECT COUNT(*) AS CNT from test;");
 
 	// drop table again
 	//exec(sql, "DROP TABLE test;");
 
+
+	var ba = new ByteArray("ABC");
+	//////
+	// create BLOB table
+	exec(sql, "CREATE TABLE blobtab (id INTEGER PRIMARY KEY, data BLOB);");
+	exec(sql, "INSERT INTO blobtab (id, data) VALUES (?, ?);", [1, ba]);
+	exec(sql, "SELECT * from blobtab where id=?;", [1]);
 
 	//////
 	// create, fill and drop a table
@@ -87,7 +102,7 @@ function Setup() {
 
 	exec(sql, "SELECT * from t1 WHERE b='foo' OR b='bar';");
 
-	//exec(sql, "DROP TABLE t1;");
+	// exec(sql, "DROP TABLE t1;");
 
 	sql.Close();
 }

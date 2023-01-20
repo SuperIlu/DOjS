@@ -396,7 +396,6 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "FileExists"),                    //
     EDI_SYNTAX(LIGHTRED, "DotProduct"),                    //
     EDI_SYNTAX(LIGHTRED, "CustomLine"),                    //
-    EDI_SYNTAX(LIGHTRED, "CurlRandom"),                    //
     EDI_SYNTAX(LIGHTRED, "CompareKey"),                    //
     EDI_SYNTAX(LIGHTRED, "ClearScene"),                    //
     EDI_SYNTAX(LIGHTRED, "gluLookAt"),                     //

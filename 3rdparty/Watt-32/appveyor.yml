@@ -1,0 +1,106 @@
+#
+# Skipping commits affecting these files.
+#
+skip_commits:
+   files:
+    - '**/*.md'
+
+environment:
+  matrix:
+    - BUILDER: cygwin
+      CPU:     x86
+    - BUILDER: cygwin
+      CPU:     x64
+    - BUILDER: borland
+      CPU:     x86
+    - BUILDER: visualc
+      CPU:     x86
+    - BUILDER: visualc
+      CPU:     x64
+    - BUILDER: clang
+      CPU:     x86
+    - BUILDER: clang
+      CPU:     x64
+    - BUILDER: mingw64
+      CPU:     x86
+    - BUILDER: mingw64
+      CPU:     x64
+    - BUILDER: djgpp
+      CPU:     x86
+    - BUILDER: watcom
+      CPU:     x86
+      MODEL:   win32
+    - BUILDER: watcom
+      CPU:     x86
+      MODEL:   flat
+    - BUILDER: watcom
+      CPU:     x86
+      MODEL:   large
+
+matrix:
+  #
+  # Immediately finish build if one of the above jobs fails.
+  #
+  fast_finish: true
+  allow_failures:
+     - BUILDER: mingw64
+     - BUILDER: cygwin
+     - BUILDER: borland
+
+install:
+  #
+  # Try to install and configure Npcap
+  #
+  # - cmd: CI-temp\npcap-1.60.exe /loopback_support=yes /winpcap_mode=yes /S
+  #
+  # Installation of the NDIS filter driver from Npcap may have disrupted network connectivity, as explained in
+  # https://github.com/nmap/npcap/issues/215. Also, a restart appears to be necessary to enable the NPF service.
+  # Therefore, we restart the VM as suggested in https://github.com/appveyor/ci/issues/3491.
+  #
+  # - cmd: shutdown /r /f /t 5
+  # - cmd: timeout 30            # Boot-up delay. This should be sufficient for the VM to get ready.
+  # - cmd: route print & ipconfig /all
+  #
+  # Due to the above reboot, all volatile configuration like environment variables is lost here. We need to set it up now.
+  #
+  # - cmd: set PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  # - cmd: echo PATH: %PATH%
+
+  #
+  # Prepend the PATH for 'make' + 'sh' used by 'MinGW', 'djgpp', 'CygWin' etc.
+  #
+  - cmd: set PATH=c:\msys64\usr\bin;%PATH%
+
+  #
+  # Cygwin install option.
+  #
+  - cmd: set CYGWIN_OPT=-qgnNdOA -l c:\cygwin\var\cache\setup -R c:\cygwin -s http://cygwin.mirror.constant.com
+
+  #
+  # Set compiler environment for MSVC/clang-cl first.
+  # (the env-vars for 'BUILDER=watcom' is done in 'appveyor-script.bat').
+  #
+  - cmd: if %BUILDER%. == visualc.           call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %CPU%
+  - cmd: if %BUILDER%. == clang.             call "c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %CPU%
+  - cmd: if %BUILDER%-%CPU%. == mingw64-x86. set PATH=c:\msys64\MinGW32\bin;%PATH%
+  - cmd: if %BUILDER%-%CPU%. == mingw64-x64. set PATH=c:\msys64\MinGW64\bin;%PATH%
+  - cmd: if %BUILDER%-%CPU%. == cygwin-x86.  c:\cygwin\setup-x86.exe %CYGWIN_OPT% > NUL & set PATH=c:\cygwin\bin;%PATH%
+
+build_script:
+    - cmd: appveyor-script.bat build_src
+    - cmd: appveyor-script.bat build_bin
+  # - cmd: appveyor-script.bat build_python
+
+test_script:
+   # - cmd: set PATH=c:\Python34;%PATH% & set USE_CURL=1 & python.exe appveyor-script.py build_tests
+     - cmd: appveyor-script.bat build_tests
+   # - cmd: appveyor-script.bat run_programs
+
+#
+# Try to preserve previously downloaded CI packages, the 'src/build'
+# and 'lib' files.
+#
+cache:
+  - '%APPVEYOR_BUILD_FOLDER%\CI-temp'
+  - 'c:\Program Files (x86)\LLVM'
+

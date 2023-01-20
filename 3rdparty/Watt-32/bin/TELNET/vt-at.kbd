@@ -1,0 +1,78 @@
+; VT-AT.KBD
+;
+; Keyboard driver for AT 101 keyboard to emulate a VT52/VT100/VT200 keyboard.
+; Most ANSI keyboards will also be sufficently emulated with this driver.
+
+; MODES: 0 (Newline Mode)       CR              CR+NL
+;        1 (Arrow Keys)         NORMAL          ANSI            VT52
+;        2 (Keypad Keys)        NORMAL          APPLICATION     VT52
+;        3 (S-Tab & PF Keys)    NORMAL          VT52
+;        * Key is the same in all modes
+
+return          = 0 \013  \013\010
+
+; The arrow keys.  First value is for NORMAL mode, second is for ANSI mode.
+; The third is for VT52 mode.
+up              = 1 ^[[A  ^[OA  ^[A
+down            = 1 ^[[B  ^[OB  ^[B
+right           = 1 ^[[C  ^[OC  ^[C
+left            = 1 ^[[D  ^[OD  ^[D
+
+; Shifted TAB
+lshift-tab      = 3 ^[Z   ^[-
+rshift-tab      = 3 ^[Z   ^[-
+
+; Make BACKSPACE send a DELETE instead.
+backspace       = * \127
+
+; Editing keys.
+home            = * ^[[1~
+insert          = * ^[[2~
+delete          = * ^[[3~
+end             = * ^[[4~
+pageup          = * ^[[5~
+pagedown        = * ^[[6~
+
+; The keypad.
+kp-0            = 2 0     ^[Op  ^[?p
+kp-1            = 2 1     ^[Oq  ^[?q
+kp-2            = 2 2     ^[Or  ^[?r
+kp-3            = 2 3     ^[Os  ^[?s
+kp-4            = 2 4     ^[Ot  ^[?t
+kp-5            = 2 5     ^[Ou  ^[?u
+kp-6            = 2 6     ^[Ov  ^[?v
+kp-7            = 2 7     ^[Ow  ^[?w
+kp-8            = 2 8     ^[Ox  ^[?x
+kp-9            = 2 9     ^[Oy  ^[?y
+kp--            = 2 -     ^[Om  ^[?m
+kp-+            = 2 ,     ^[Ol  ^[?l
+kp-.            = 2 .     ^[On  ^[?n
+kp-enter        = 2 \013  ^[OM  ^[?M
+
+; PF1-PF4
+numlock         = 3 ^[OP  ^[P
+kp-/            = 3 ^[OQ  ^[Q
+kp-*            = 3 ^[OR  ^[R
+scrlock         = 3 ^[OS  ^[S
+
+f6              = * ^[[17~
+f7              = * ^[[18~
+f8              = * ^[[19~
+f9              = * ^[[20~
+f10             = * ^[[21~
+f11             = * ^[[23~
+f12             = * ^[[24~
+control-f1      = * ^[[23~
+control-f2      = * ^[[24~
+; F13-F20
+control-f3      = * ^[[25~
+control-f4      = * ^[[26~
+; F15 is also the HELP key.
+control-f5      = * ^[[28~
+; F16 is also the DO key.
+control-f6      = * ^[[29~
+control-f7      = * ^[[31~
+control-f8      = * ^[[32~
+control-f9      = * ^[[33~
+control-f10     = * ^[[34~
+

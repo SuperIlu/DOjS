@@ -29,9 +29,9 @@ function Setup() {
 	SetFramerate(30);
 	MouseShowCursor(false);
 
-	i1 = new GIFAnim("tests/homer.gif");
-	i2 = new GIFAnim("tests/badger.gif");
-	i3 = new GIFAnim("tests/badger2.gif");
+	i1 = new GIFAnim("tests/testdata/homer.gif");
+	i2 = new GIFAnim("tests/testdata/badger.gif");
+	i3 = new GIFAnim("tests/testdata/badger2.gif");
 
 	img = i1;
 	GifInfo(img);

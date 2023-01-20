@@ -469,6 +469,17 @@ function SaveTgaImage(fname) { }
 function SavePngImage(fname) { }
 
 /**
+ * Save current screen to QOI file.
+ * 
+ * **Note: QOI module must be loaded by calling LoadLibrary("qoi") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * 
+ * @param {string} fname filename.
+ */
+function SaveQoiImage(fname) { }
+
+/**
  * get color of on-screen pixel.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.

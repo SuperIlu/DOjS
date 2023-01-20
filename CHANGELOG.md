@@ -1,3 +1,24 @@
+# Version 1.10.0 (DOStodon FTW!) / January, 20th, 2023
+* Added MIME multipart to cURL POST requests
+* Fixed crash when alpha channel was disabled
+* Fixed missing error messages when Include() was used on files with syntax errors
+* Switched from OpenSSL to mbedTLS
+* Added bluhash decoding to `new Bitmap()`
+* Updated nanosvg
+* Updated cURL to 7.87.0
+* Fixed memory corruption when starting a renamed DOjS with ZIP file (https://github.com/SuperIlu/DOjS/issues/22)
+* Added loading images directly from a ByteArray using `new Bitmap()`
+* Switched from NanoJPEG to `stb_image.h` to support progressive JPEG decoding
+* Fixed a bug with getting the current time/date
+* SQlite3 plugin now supports prepared statements and BLOBs.
+* Fixed DOjS not running on CPUs <i586 because of pentium instructions
+* Fixed a lost reference when using `SetRenderBitmap()`
+* `EvalChain()` has now a function `Size()`
+* Fixed re-initialization of loaded Plugins when running from the editor (https://github.com/SuperIlu/DOjS/issues/41)
+* Switched QOI Loading to C. Added QOI saving. QOI is now handled like BMP or PNG.
+* Fixed red and blue color channel for MPEG1 decoding (https://github.com/SuperIlu/DOjS/issues/42)
+* Added `Clear()` to the `EvalChain`
+
 # Version 1.9.1 (The diSSLaster) / November 5th, 2022
 * reverted back to cURL 7.80.0 because 7.84.0 crashes when using HTTPS
 

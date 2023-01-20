@@ -5,10 +5,10 @@ var pics;
 
 function setup() {
 	pics = [
-		loadImage("tests/testgrad.png"),
-		loadImage("tests/testgrad.tga"),
-		loadImage("tests/testgrad.bmp"),
-		loadImage("tests/testgrad.pcx")
+		loadImage("tests/testdata/testgrad.png"),
+		loadImage("tests/testdata/testgrad.tga"),
+		loadImage("tests/testdata/testgrad.bmp"),
+		loadImage("tests/testdata/testgrad.pcx")
 	];
 }
 

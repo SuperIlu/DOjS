@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+LoadLibrary("png");
+
 fontList = [];
 startIdx = 0;
 endIdx = -1;
@@ -39,10 +41,11 @@ function Setup() {
 			}
 		}
 	});
+	MouseShowCursor(false);
 }
 
 function Loop() {
-	ClearScreen(EGA.GREEN);
+	ClearScreen(EGA.BLACK);
 	var yPos = 0;
 	for (var i = startIdx; i < fontList.length; i++) {
 		if (yPos + fontList[i].height > SizeY()) {
@@ -56,10 +59,14 @@ function Loop() {
 	}
 }
 
+var count = 0;
+
 function Input(e) {
 	// next page if available, else exit
 	if ((e.key & 0xFF) == CharCode(" ")) {
 		Println("SPACE!");
+		SavePngImage("fonts" + count + ".png");
+		count++;
 		if (endIdx == fontList.length - 1) {
 			Stop();
 		} else {

@@ -175,6 +175,12 @@ You can use the included DOS version of `TEXUS.EXE` to convert bitmaps to `3df` 
 3dfx/Glide3 support ONLY works in plain DOS, NOT in the DOS/command window of Windows 9x! Be sure to always boot into a pure DOS prompt before trying to use any of the fx-functions!
 Before using 3dfx/Glide3 support you need to copy the appropriate `GLIDE3X.DXE` into the same directory as `DOJS.EXE`. You can do so by using the `V_XXX.BAT` scripts in the distribution ZIP archive.
 
+# Software created with DOjS
+- DutchTux has created a GUI toolkit for DOjS: https://github.com/dutchtux3000/jiyuai
+- I created a Mastodon client for MS-DOS using DOjS: https://github.com/SuperIlu/DOStodon
+- I made a text adventure with DOjS: https://superilu.itch.io/spacebutton
+- And also a match-numbers-game: https://superilu.itch.io/numgam
+
 # Compilation
 You can compile DOjS on any modern Linux (the instructions below are for Debian based distributions) or on Windows 10 using Windows Subsystem for Linux (WSL).
 Setup Windows Subsystem for Linux (WSL) according to [this](https://docs.microsoft.com/en-us/windows/wsl/install-win10) guide (I used Ubuntu 18.04 LTS).

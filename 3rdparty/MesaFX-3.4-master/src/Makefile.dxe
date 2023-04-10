@@ -1,0 +1,210 @@
+# Mesa 3-D graphics library
+# Version:  3.4.2
+# Copyright (C) 1995-2000  Brian Paul
+#
+# Makefile for fxMesa gl.dxe (DJGPP 2.04 and newer)
+
+INCDIR = ../include
+LIBDIR = ../lib
+G2DIR  = $(DOJSPATH)/glide
+G2LIB  = glide2x.dxe
+G3DIR  = $(DOJSPATH)/glide3x/v3
+G3LIB  = glide3x.dxe
+#build for glide3x :
+GLIDE3 = 1
+
+GL_LIB = libgl.a
+GL_DXE = gl.dxe
+GL_IMP = libigl.a
+LIBNAME="fxMesa-v3.4"
+DXE_EXPORTS= -E _gl -X _gl_ -X _glb
+DXE_EXPORTS+= -E _fxMesa -E _fxQueryHardware -E _fxCloseHardware -E _fxGetScreenGeometry
+
+CC = i586-pc-msdosdjgpp-gcc
+AR = i586-pc-msdosdjgpp-ar
+
+CFLAGS += -DFX
+ifneq ($(GLIDE3),1)
+GLIDEDIR=$(G2DIR)
+GLIDELIB=$(G2LIB)
+else
+GLIDEDIR=$(G3DIR)
+GLIDELIB=$(G3LIB)
+CFLAGS+= -DFX_GLIDE3
+endif
+DXE_DEPS= -P $(GLIDELIB)
+
+#CFLAGS+= -O2 -mtune=i586 -ffast-math -fomit-frame-pointer
+
+CFLAGS+= -O2 -ffast-math -fomit-frame-pointer \
+	-DUSE_X86_ASM -DUSE_MMX_ASM -DUSE_3DNOW_ASM -DUSE_KATMAI_ASM -IFX/X86 \
+	-I$(GLIDEDIR)/include -I. -I$(INCDIR)
+CFLAGS+= -DNDEBUG
+
+ARFLAGS = rus
+
+CORE_SOURCES = \
+	aatriangle.c \
+	accum.c \
+	alpha.c \
+	alphabuf.c \
+	attrib.c \
+	bitmap.c \
+	blend.c \
+	buffers.c \
+	clip.c \
+	colortab.c \
+	context.c \
+	copypix.c \
+	cva.c \
+	debug_xform.c \
+	depth.c \
+	dispatch.c \
+	dlist.c \
+	drawpix.c \
+	enable.c \
+	enums.c \
+	eval.c \
+	extensions.c \
+	feedback.c \
+	fog.c \
+	get.c \
+	glapi.c \
+	glapinoop.c \
+	glthread.c \
+	hash.c \
+	hint.c \
+	image.c \
+	imaging.c \
+	light.c \
+	lines.c \
+	logic.c \
+	masking.c \
+	matrix.c \
+	mem.c \
+	mmath.c \
+	pb.c \
+	pipeline.c \
+	pixel.c \
+	pixeltex.c \
+	points.c \
+	polygon.c \
+	quads.c \
+	rastpos.c \
+	readpix.c \
+	rect.c \
+	scissor.c \
+	shade.c \
+	span.c \
+	stages.c \
+	state.c \
+	stencil.c \
+	texformat.c \
+	teximage.c \
+	texobj.c \
+	texstate.c \
+	texture.c \
+	texutil.c \
+	translate.c \
+	triangle.c \
+	varray.c \
+	vb.c \
+	vbcull.c \
+	vbfill.c \
+	vbindirect.c \
+	vbrender.c \
+	vbxform.c \
+	vector.c \
+	vertices.c \
+	winpos.c \
+	xform.c \
+	zoom.c \
+	X86/x86.c \
+	X86/common_x86.c \
+	X86/3dnow.c \
+	X86/katmai.c
+#	bbox.c 
+#	config.c 
+
+DRIVER_SOURCES = \
+	FX/fxapi.c \
+	FX/fxdos.c \
+	FX/fxclip.c \
+	FX/fxcva.c \
+	FX/fxdd.c \
+	FX/fxddspan.c \
+	FX/fxddtex.c \
+	FX/fxfastpath.c \
+	FX/fxpipeline.c \
+	FX/fxrender.c \
+	FX/fxsanity.c \
+	FX/fxsetup.c \
+	FX/fxtexman.c \
+	FX/fxtrifuncs.c \
+	FX/fxvsetup.c \
+	FX/fxglidew.c
+
+ASM_SOURCES = X86/common_x86_asm.S X86/glapi_x86.S \
+	X86/x86_xform_raw2.S X86/x86_xform_raw3.S \
+	X86/x86_xform_raw4.S X86/x86_xform_masked2.S \
+	X86/x86_xform_masked3.S X86/x86_xform_masked4.S \
+	X86/x86_cliptest.S X86/x86_vertex.S \
+	X86/mmx_blend.S \
+	X86/3dnow_xform_raw1.S X86/3dnow_xform_raw2.S \
+	X86/3dnow_xform_raw3.S X86/3dnow_xform_raw4.S \
+	X86/3dnow_xform_masked1.S X86/3dnow_xform_masked2.S \
+	X86/3dnow_xform_masked3.S X86/3dnow_xform_masked4.S \
+	X86/3dnow_norm_raw.S X86/3dnow_vertex.S \
+	FX/X86/fx_3dnow_fastpath.S \
+	X86/katmai_xform_raw1.S X86/katmai_xform_masked1.S \
+	X86/katmai_xform_raw2.S X86/katmai_xform_masked2.S \
+	X86/katmai_xform_raw3.S X86/katmai_xform_masked3.S \
+	X86/katmai_xform_raw4.S X86/katmai_xform_masked4.S \
+	X86/katmai_norm_raw.S X86/katmai_vertex.S
+
+ADDITIONAL_OBJ =
+
+OBJECTS = $(ASM_SOURCES:.S=.o) \
+	$(CORE_SOURCES:.c=.o) \
+	$(DRIVER_SOURCES:.c=.o) \
+	$(ADDITIONAL_OBJ)
+
+
+##### RULES #####
+
+.c.o:
+	$(CC) -c $(CFLAGS) $< -o $@
+.S.o:
+	$(CC) -c $(CFLAGS) $< -o $@
+
+##### TARGETS #####
+
+# all: $(LIBDIR)/$(GL_LIB) $(LIBDIR)/$(GL_DXE) $(LIBDIR)/$(GL_IMP)
+all: $(LIBDIR)/$(GL_LIB)
+
+clean:
+	rm -f *.o X86/*.o FX/*.o FX/X86/*.o
+realclean: clean
+	rm -f $(LIBDIR)/*.a $(LIBDIR)/*.dxe $(G2LIB) $(G3LIB)
+
+$(LIBDIR):
+	-mkdir $(LIBDIR)
+
+$(LIBDIR)/$(GL_LIB): $(LIBDIR) $(OBJECTS)
+	$(AR) $(ARFLAGS) $@  $(OBJECTS)
+
+$(LIBDIR)/$(GL_DXE) $(LIBDIR)/$(GL_IMP): $(LIBDIR) $(OBJECTS)
+$(LIBDIR)/$(GL_DXE) $(LIBDIR)/$(GL_IMP): $(GLIDELIB)
+	-dxe3gen -o $(LIBDIR)/$(GL_DXE) -Y $(LIBDIR)/$(GL_IMP) -D $(LIBNAME) $(DXE_EXPORTS) $(DXE_DEPS) -U $(OBJECTS)
+
+# dxe3gen needs glide3x.dxe when generating the import lib libigl.a.
+# so we generate a dummy glide3x.dxe to cover common glide3x exports
+# and all possible libc dependencies:
+FX/glide2x_dxe.o: FX/glide2x_dxe.c
+	$(CC) -O0 -Wall -o $@ -c $<
+FX/glide3x_dxe.o: FX/glide3x_dxe.c
+	$(CC) -O0 -Wall -o $@ -c $<
+$(G2LIB): FX/glide2x_dxe.o
+	-dxe3gen -o $(G2LIB) -E _gr -E _gu -E _ConvertAndDownloadRle -U $<
+$(G3LIB): FX/glide3x_dxe.o
+	-dxe3gen -o $(G3LIB) -E _gr -E _gu -U $<

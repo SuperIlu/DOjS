@@ -48,6 +48,7 @@
 * Created a Discord for DOjS and jSH and put the link into `README.md`
 
 # Version 1.8.0 (A package of 3D) / March 19th, 2022
+* Added 3dfx Voodoo accelerated OpenGL/Mesa wrapper through `ogl` plugin.
 * Added `LFN_SUPPORTED` global to indicate if long filenames are supported by the current DOS installation.
 * Fixed some docs
 * Added QOI Image decoder in `jsboot/qoi.js`. See https://qoiformat.org/

@@ -34,9 +34,15 @@ DOjS was only possible due to the work of these people/projects:
   * [AnimatedGIF](https://github.com/bitbank2/AnimatedGIF/) for rendering GIF animations.
   * [PL_MPEG](https://github.com/phoboslab/pl_mpeg) for mpeg1 decoding
   * [pdfgen](https://github.com/AndreRenaud/PDFGen) for PDF rendering.
+  * [Mesa](https://www.mesa3d.org/) for OpenGL
 
 ## Contact
-You can find me on [Twitter](https://twitter.com/dec_hl), [Mastodon](https://mastodon.social/@dec_hl) or in the [DOjS Discord](https://discord.gg/J7MUTap9fM) if you want...
+You can find me on [Mastodon](https://mastodon.social/@dec_hl), in the [DOjS Discord](https://discord.gg/J7MUTap9fM) or on [Twitter](https://twitter.com/dec_hl) if you want...
+
+## Next release / Quick update on the current state of V1.11:
+DOjS isn't dead and I'm working on it in the background. I usually try to release a new version of DOjS every ~3 month. V1.10 was released in February, so V1.11 is quite overdue. I had several features planed for V1.11 which I could not realize/finish up to now (partly because I spent time developing [DOStodon](https://github.com/SuperIlu/DOStodon) and also because life happens. I haven't decided if I want to wait until I finish all planed features or if I (at some point) just push the current state into V1.11 and postpone the remaining stuff to V1.12. But whichever way it turns out: **I don't think I'll manage to release before autumn...**
+
+As some might have noticed, DOStodon is already based on pre-releases of V1.11!
 
 # Download and quick start
 **You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases).** Just extract the contents of the archive and run `DOjS.exe`.
@@ -47,7 +53,7 @@ If you run it on real hardware you need at least a **80386 with 4MB**. I recomme
 
 The following hardware/functions are available:
   * 8/16/24 and 32 bit 2D graphics. On 24/32bit display modes alpha channel transparency is available.
-  * BMP, PCX, TGA and PNG image reading and writing, JPEG and SVG loading
+  * BMP, PCX, TGA, QOI and PNG image reading and writing, JPEG and SVG loading
   * GRX font loading and rendering
   * Keyboard input
   * Mouse input
@@ -58,6 +64,7 @@ The following hardware/functions are available:
   * Audio input/sampling
   * Allegro 3D rendering (software)
   * 3dfx/Glide3 3D rendering output (hardware)
+  * Mesa/OpenGL wrapper with 3dfx based hardware acceleration
   * p5js compatibility
   * direct io-port access (inb, outb, etc)
   * LPT or parallel port access (bi-directional)
@@ -65,6 +72,8 @@ The following hardware/functions are available:
   * IPX and TCP/IP networking
   * ZIP file access
   * GIF-Animation, FLC/FLI, MPEG1 or OggVorbis playback
+  * HTTPS support through libcurl and mbedTLS
+  * PDF generation
 
 ## Examples
 <img src="https://github.com/SuperIlu/DOjS/raw/master/images/dojs_003.png" alt="DOjS example" width="200">

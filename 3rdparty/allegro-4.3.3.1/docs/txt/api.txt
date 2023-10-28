@@ -1,0 +1,348 @@
+     ______   ___    ___
+    /\  _  \ /\_ \  /\_ \
+    \ \ \L\ \\//\ \ \//\ \      __     __   _ __   ___ 
+     \ \  __ \ \ \ \  \ \ \   /'__`\ /'_ `\/\`'__\/ __`\
+      \ \ \/\ \ \_\ \_ \_\ \_/\  __//\ \L\ \ \ \//\ \L\ \
+       \ \_\ \_\/\____\/\____\ \____\ \____ \ \_\\ \____/
+        \/_/\/_/\/____/\/____/\/____/\/___L\ \/_/ \/___/
+                                       /\____/
+                                       \_/__/
+
+
+                API compatibility information.
+
+         See readme.txt for a more general overview.
+
+
+
+======================================
+============ Introduction ============
+======================================
+
+   Once Allegro 4.0 is released, we plan to maintain backward compatibility
+   at the Application Programming Interface level for the subsequent stable
+   releases of the 4.x series, that is for the releases with an even minor
+   version number. For example, that means you will be able to compile your
+   program written for version 4.0.0 with version 4.0.23 or version 4.2.1 of
+   the library. However, in order to fix some minor inconsistencies of the
+   original 4.0 API, we may make exceptions to the rule and break strict
+   backward compatibility in a few cases. But this is guaranteed to never
+   happen in a stable series for which major and minor version numbers are
+   fixed; in other words, two stable versions that differ from each other
+   only by the revision (3rd) number will be strictly backward compatible.
+
+
+================================================================
+============ Changes between 4.2.x and 4.4.x series ============
+================================================================
+
+   The output parameters to gfx_mode_select should be initialized in
+   4.4.x as they are used for the initial selection now.
+
+
+
+================================================================
+============ Changes between 4.0.x and 4.2.x series ============
+================================================================
+
+   The 'aspect' parameter of get_camera_matrix() and get_camera_matrix_f()
+   strictly conforms to the documentation; in particular, setting it to 1
+   instructs the functions to do no scaling. This was not the case before,
+   because the functions multiplied this aspect ratio by 4/3.
+
+   Menus created from a DIALOG array (by using d_menu_proc for the proc pointer)
+   now correctly use the w and h fields as a minimum for their inclusive
+   dimensions (in the same way as all other GUI elements). Before, they would
+   draw the border outside of this dimension (1 pixel overdraw with other GUI
+   elements), and also add an additional 'shadow' to the right and the bottom
+   (2 pixels overdraw with other GUI elements).
+
+   The 'retrace_count' variable and the 'retrace_proc' callback function 
+   take into account the refresh rate (if it is known) when the retrace
+   simulator is not installed. This was not the case before, except under
+   Windows.
+
+   The default value for the mouse configuration variable 'emulate_three'
+   has been changed to 'no' in all cases (even if you have a 2-button mouse).
+
+   The COLORCONV_KEEP_TRANS flag strictly conforms to the documentation now.
+   This was not the case before, because it was ignored when loading bitmaps
+   from datafiles. fixup_datafile() was modified to preserve transparency
+   when this flag is set, which was not guaranteed before in rare cases.
+
+   create_sub_bitmap() is now less tolerant about receiving bad arguments.
+   For example, it used to compensate for negative values for the origin
+   and return NULL if the parent bitmap was NULL. These cases are now
+   ASSERTed in the debug version, but unchecked in the release version.
+
+   install_allegro() and allegro_init() now return an error code if unable to
+   initialise a system driver. Previously they would have aborted the program
+   in such cases. Consequently you should check their return values.
+
+   The preprocessor symbol USE_CONSOLE is deprecated. Define instead the
+   symbol ALLEGRO_USE_CONSOLE prior to including Allegro headers in order
+   to set up Allegro for building a console application.
+
+   The constructors of the fix class from integer and floating point values
+   are now explicit.
+
+   All BeOS gfx driver IDs and constants have been replaced by more meaningful
+   ones. You may have to modify your allegro.cfg to reflect the change, or
+   update and recompile your programs if you used BeOS specific gfx drivers.
+
+   The behaviour of the GFX_SAFE driver has changed: it doesn't try to first
+   set up GFX_AUTODETECTed drivers anymore and is now guaranteed to be a
+   windowed driver when the platform has got a windowing system.
+
+   A datafile object returned by load_datafile_object() used not to contain
+   the properties attached to the object. This has been fixed.
+
+   object_message() now takes care of scaring and unscaring the mouse if the
+   message to be sent is MSG_DRAW.
+
+   file_select_ex() now treats '(+)d' as it does for any other attributes in
+   the extension string which is passed to it: only directories are included
+   and, among them, only those with the correct set of attributes.
+
+   d_ctext_proc() now behaves like d_text_proc() and d_rtext_proc(), that is
+   it takes into account the bounding box to calculate the position which the
+   string is centered around. It previously used only the x field. And, as a
+   consequence, gui_ctext_proc is now expected to behave the same.
+
+   dialog_message() now passes user messages to hidden objects.
+
+   set_volume() doesn't use the hardware mixer anymore to alter the global
+   volume. Use set_hardware_volume() instead to get the old behaviour.
+
+   The default sound volume of Allegro was raised, since there no longer is
+   the risk of wrapping with the new mixer. To restore the volume level to
+   that of previous versions, look at the set_volume_per_voice function.
+   Programs already using set_volume_per_voice are not affected.
+
+   The semantics of rest are clarified so rest(0) does yielding when
+   possible.
+
+   The get_align_matrix[_f] functions would return mirrored matrices in some
+   cases, this was fixed.
+
+   In many places 'unsigned long' variables were used to hold memory
+   addresses. These have been changed to use the 'uintptr_t' type instead.
+
+   15-bit and 16-bit bitmaps used to be arrays of unsigned shorts, and 32-bit
+   bitmaps used to be arrays of unsigned longs. They have been changed to be
+   arrays of 16-bit and 32-bit integers respectively. This makes a difference
+   on platforms where an unsigned long is not 32-bits wide (e.g. some 64-bit
+   platforms).
+
+
+==============================================
+============ Deprecated materials ============
+==============================================
+
+   The following items have been deprecated and the main documentation was
+   purged of any references to them. If you are still using any of those, now
+   might be a good time to get rid of them (within parentheses is the symbol
+   most likely to be a replacement for the obsolete one, if any). However
+   they are still supported for the sake of backwards compatibility, unless
+   you define the symbol ALLEGRO_NO_COMPATIBILITY prior to including Allegro
+   headers.
+
+
+   clear (clear_bitmap).
+
+   cpu_fpu (cpu_capabilities, in combination with CPU_FPU).
+
+   cpu_mmx (cpu_capabilities, in combination with CPU_MMX).
+
+   cpu_3dnow (cpu_capabilities, in combination with CPU_3DNOW).
+
+   cpu_cpuid (cpu_capabilities, in combination with CPU_ID).
+
+   draw_character (draw_character_ex, passing the mode you would have passed
+   to text_mode() as the 'bg' parameter).
+
+   fadd (fixadd).
+
+   fsub (fixsub).
+
+   fmul (fixmul).
+
+   fdiv (fixdiv).
+
+   fceil (fixceil).
+
+   ffloor (fixfloor).
+
+   fcos (fixcos).
+
+   fsin (fixsin).
+
+   ftan (fixtan).
+
+   facos (fixacos).
+
+   fasin (fixasin).
+
+   fatan (fixatan).
+
+   fatan2 (fixatan2).
+
+   fsqrt (fixsqrt).
+
+   fhypot (fixhypot).
+
+   file_size (file_size_ex)
+
+   file_select (file_select_ex, passing the two constants OLD_FILESEL_WIDTH
+   and OLD_FILESEL_HEIGHT if you want the file selector to be displayed with
+   the dimensions of the old file selector).
+
+   fix_filename_path (canonicalize_filename).
+
+   for_each_file (for_each_file_ex).
+
+   gui_textout (gui_textout_ex, passing the mode you would have passed to
+   text_mode() as the 'bg' parameter).
+
+   initialise_joystick (install_joystick).
+
+   joy_x (joy).
+
+   joy_y (joy).
+
+   joy_left (joy).
+
+   joy_right (joy).
+
+   joy_up (joy).
+
+   joy_down (joy).
+
+   joy_b1 (joy).
+
+   joy_b2 (joy).
+
+   joy_b3 (joy).
+
+   joy_b4 (joy).
+
+   joy_b5 (joy).
+
+   joy_b6 (joy).
+
+   joy_b7 (joy).
+
+   joy_b8 (joy).
+
+   joy2_x (joy).
+
+   joy2_y (joy).
+
+   joy2_left (joy).
+
+   joy2_right (joy).
+
+   joy2_up (joy).
+
+   joy2_down (joy).
+
+   joy2_b1 (joy).
+
+   joy2_b2 (joy).
+
+   joy_throttle (joy).
+
+   joy_hat (joy).
+
+   JOY_HAT_CENTER.
+
+   JOY_HAT_CENTRE.
+
+   JOY_HAT_LEFT.
+
+   JOY_HAT_RIGHT.
+
+   JOY_HAT_DOWN.
+
+   JOY_HAT_UP.
+
+   KB_EXTENDED.
+
+   KB_NORMAL.
+
+   SEND_MESSAGE (object_message).
+
+   set_window_close_button.
+
+   set_window_close_hook (set_close_button_callback).
+
+   text_mode.
+
+   textout (textout_ex, passing the mode you would have passed to text_mode()
+   as the 'bg' parameter).
+
+   textout_centre (textout_centre_ex, passing the mode you would have passed
+   to text_mode() as the 'bg' parameter).
+
+   textout_right (textout_right_ex, passing the mode you would have passed to
+   text_mode() as the 'bg' parameter).
+
+   textout_justify (textout_justify_ex, passing the mode you would have
+   passed to text_mode() as the 'bg' parameter).
+
+   textprintf (textprintf_ex, passing the mode you would have passed to
+   text_mode() as the 'bg' parameter).
+
+   textprintf_centre (textprintf_centre_ex, passing the mode you would have
+   passed to text_mode() as the 'bg' parameter).
+
+   textprintf_right (textprintf_right_ex, passing the mode you would have
+   passed to text_mode() as the 'bg' parameter).
+
+   textprintf_justify (textprintf_justify_ex, passing the mode you would have
+   passed to text_mode() as the 'bg' parameter).
+
+   PALLETE (PALETTE).
+
+   DAT_PALLETE (DAT_PALETTE).
+
+   black_pallete (black_palette).
+
+   desktop_pallete (desktop_palette)
+
+   get_pallete (get_palette).
+
+   set_pallete (set_palette).
+
+   get_pallete_range (get_palette_range)
+
+   set_pallete_range (set_palette_range).
+
+   fli_pallete (fli_palette).
+
+   pallete_color (palette_color).
+
+   select_pallete (select_palette).
+
+   set_clip (set_clip_rect).
+
+   unselect_pallete (unselect_palette).
+
+   generate_332_pallete (generate_332_palette).
+
+   generate_optimized_pallete (generate_optimized_palette).
+
+   yield_timeslice (rest, passing 0 as parameter)
+
+   retrace_proc (retrace_count or install_int).
+
+   timer_can_simulate_retrace.
+
+   timer_is_using_retrace.
+
+   timer_simulate_retrace (when enable_triple_buffer is called, the mode-X
+   driver still enables retrace simulation automatically where possible).
+
+   split_modex_screen.
+
+

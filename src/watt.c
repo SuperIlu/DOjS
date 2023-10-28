@@ -176,7 +176,7 @@ void init_watt(js_State *J) {
  * @param J VM state.
  * @param ip IP address in DWORD format
  */
-void watt_pushipaddr(js_State *J, DWORD ip) {
+void watt_pushipaddr(js_State *J, uint32_t ip) {
     DEBUGF("%s(): %08lX\n", __PRETTY_FUNCTION__, ip);
 
     js_newarray(J);
@@ -197,7 +197,7 @@ void watt_pushipaddr(js_State *J, DWORD ip) {
  * @param idx JS stack index.
  * @return DWORD convert IP address in JS stack format to DWORD.
  */
-DWORD watt_toipaddr(js_State *J, int idx) {
+uint32_t watt_toipaddr(js_State *J, int idx) {
     if (!js_isarray(J, idx)) {
         JS_ENOARR(J);
         return 0;

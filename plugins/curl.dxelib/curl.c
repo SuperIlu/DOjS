@@ -24,11 +24,16 @@ SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdlib.h>
+#include <curl/curl.h>
+#include <jsi.h>
+
+#if LINUX != 1
 #include <dos.h>
 #include <pc.h>
-#include <curl/curl.h>
 #include <mbedtls/entropy_poll.h>
-#include <jsi.h>
+#else
+#include "linux/glue.h"
+#endif
 
 #include "DOjS.h"
 #include "bitmap.h"
@@ -81,6 +86,7 @@ SOFTWARE.
         }                                \
     }
 
+#if LINUX != 1
 // add random n data to buffer b and icrement size counter p
 #define CURL_ADD_RANDOM(n, p, b)                        \
     {                                                   \
@@ -89,6 +95,7 @@ SOFTWARE.
             p += sizeof(n);                             \
         }                                               \
     }
+#endif
 
 /************
 ** structs **
@@ -128,6 +135,7 @@ typedef struct __curl {
 /*********************
 ** static functions **
 *********************/
+#if LINUX != 1
 int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t *olen) {
     uint8_t rnd_buff[40];
 
@@ -152,6 +160,7 @@ int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t 
     // always success
     return 0;
 }
+#endif
 
 /**
  * @brief copy the received data into provided ByteArray (header and body data).
@@ -523,7 +532,7 @@ static void Curl_ClearHeaders(js_State *J) {
 }
 
 /**
- * @brief add a header field to the next request.
+ * @brief add POST data to the request.
  *
  * @param J VM state.
  */
@@ -545,8 +554,26 @@ static void Curl_AddPostData(js_State *J) {
         return;
     }
 
+    // set name
     curl_mime_name(part, js_tostring(J, 1));
-    curl_mime_data(part, js_tostring(J, 2), CURL_ZERO_TERMINATED);
+
+    // set data
+    if (js_isuserdata(J, 2, TAG_BYTE_ARRAY)) {
+        byte_array_t *ba = js_touserdata(J, 2, TAG_BYTE_ARRAY);
+        curl_mime_data(part, (const char *)ba->data, ba->size);
+    } else {
+        curl_mime_data(part, js_tostring(J, 2), CURL_ZERO_TERMINATED);
+    }
+
+    // set type if given
+    if (js_isstring(J, 3)) {
+        curl_mime_type(part, js_tostring(J, 3));
+    }
+
+    // set name if given
+    if (js_isstring(J, 4)) {
+        curl_mime_filename(part, js_tostring(J, 4));
+    }
 }
 
 /**

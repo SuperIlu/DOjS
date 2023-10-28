@@ -1,0 +1,18 @@
+
+Micromod (c)2018 mumart@gmail.com
+
+A good-quality player library for the ProTracker MOD music format.
+
+Also included is a powerful command-line tool for the creation of
+MOD files from textual MT files and WAV samples. There is some basic
+documentation built-in to the tool and the JAR file includes some
+simple example MT files. Some knowledge of the ProTracker MOD format,
+audio synthesis and "tracking" is assumed.
+
+To invoke the tool use the command-line "java -jar micromod.jar".
+
+If you have any questions or feedback please feel free to
+contact me at the above email address!
+
+Cheers,
+Martin

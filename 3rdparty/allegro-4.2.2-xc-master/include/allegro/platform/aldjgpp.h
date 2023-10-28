@@ -46,7 +46,9 @@ extern "C" {
 /* memory locking macros */
 void _unlock_dpmi_data(void *addr, int size);
 
-#define END_OF_FUNCTION(x)          void x##_end(void) { }
+#define END_OF_FUNCTION(x)       \
+      void x##_end(void);  \
+      void x##_end(void) { }
 #define END_OF_STATIC_FUNCTION(x)   static void x##_end(void) { }
 #define LOCK_DATA(d, s)             _go32_dpmi_lock_data((void *)d, s)
 #define LOCK_CODE(c, s)             _go32_dpmi_lock_code((void *)c, s)

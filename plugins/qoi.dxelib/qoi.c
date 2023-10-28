@@ -45,7 +45,11 @@ void init_qoi(js_State *J);
  * @param pal pallette (is ignored)
  * @return BITMAP* or NULL if loading fails
  */
+#if LINUX == 1
+BITMAP *load_qoi_pf(PACKFILE *f, RGB *pal) {
+#else
 static BITMAP *load_qoi_pf(PACKFILE *f, RGB *pal) {
+#endif
     BITMAP *bm = NULL;
     uint8_t *buffer = NULL;
     unsigned int malloc_size = QOI_BUFFER_SIZE;
@@ -80,32 +84,37 @@ static BITMAP *load_qoi_pf(PACKFILE *f, RGB *pal) {
 
     qoi_desc desc;
     uint8_t *rgba = qoi_decode(buffer, pos, &desc, NUM_CHANNELS);
+    if (rgba) {
+        DEBUGF("QOI is %dx%d\n", desc.width, desc.height);
 
-    DEBUGF("QOI is %dx%d\n", desc.width, desc.height);
+        // create bitmap
+        bm = create_bitmap_ex(32, desc.width, desc.height);
+        if (!bm) {
+            QOI_FREE(rgba);
+            free(buffer);
+            return NULL;
+        }
 
-    // create bitmap
-    bm = create_bitmap_ex(32, desc.width, desc.height);
-    if (!bm) {
+        // copy RGBA data in BITMAP
+        for (int y = 0; y < desc.height; y++) {
+            unsigned int yIdx = y * NUM_CHANNELS * desc.width;
+            for (int x = 0; x < desc.width; x++) {
+                unsigned int xIdx = x * NUM_CHANNELS;
+                bm->line[y][x * 4 + _rgb_r_shift_32 / 8] = rgba[0 + yIdx + xIdx];
+                bm->line[y][x * 4 + _rgb_g_shift_32 / 8] = rgba[1 + yIdx + xIdx];
+                bm->line[y][x * 4 + _rgb_b_shift_32 / 8] = rgba[2 + yIdx + xIdx];
+                bm->line[y][x * 4 + _rgb_a_shift_32 / 8] = rgba[3 + yIdx + xIdx];
+            }
+        }
+
         QOI_FREE(rgba);
+        free(buffer);
+
+        return bm;
+    } else {
+        free(buffer);
         return NULL;
     }
-
-    // copy RGBA data in BITMAP
-    for (int y = 0; y < desc.height; y++) {
-        unsigned int yIdx = y * NUM_CHANNELS * desc.width;
-        for (int x = 0; x < desc.width; x++) {
-            unsigned int xIdx = x * NUM_CHANNELS;
-            bm->line[y][x * 4 + _rgb_r_shift_32 / 8] = rgba[0 + yIdx + xIdx];
-            bm->line[y][x * 4 + _rgb_g_shift_32 / 8] = rgba[1 + yIdx + xIdx];
-            bm->line[y][x * 4 + _rgb_b_shift_32 / 8] = rgba[2 + yIdx + xIdx];
-            bm->line[y][x * 4 + _rgb_a_shift_32 / 8] = rgba[3 + yIdx + xIdx];
-        }
-    }
-
-    QOI_FREE(rgba);
-    free(buffer);
-
-    return bm;
 }
 
 /**
@@ -151,7 +160,11 @@ static BITMAP *load_qoi(AL_CONST char *filename, RGB *pal) {
  * @param fname file name
  * @return true for success, else false
  */
+#if LINUX == 1
+bool save_qoi(BITMAP *bm, const char *fname) {
+#else
 static bool save_qoi(BITMAP *bm, const char *fname) {
+#endif
     bool ret = false;
 
     uint8_t *rgba = malloc(bm->w * bm->h * NUM_CHANNELS);
@@ -196,6 +209,7 @@ static void f_SaveQoiImage(js_State *J) {
     }
 }
 
+#if LINUX != 1
 /**
  * @brief save Bitmap to file.
  * SavePngImage(fname:string)
@@ -210,6 +224,7 @@ static void Bitmap_SaveQoiImage(js_State *J) {
         js_error(J, "Can't save Bitmap to QOI file '%s'", fname);
     }
 }
+#endif
 
 /*********************
 ** public functions **
@@ -222,15 +237,21 @@ static void Bitmap_SaveQoiImage(js_State *J) {
 void init_qoi(js_State *J) {
     LOGF("%s\n", __PRETTY_FUNCTION__);
 
+#if LINUX == 1
+    register_bitmap_file_type("qoi", load_qoi, NULL);
+#else
     register_bitmap_file_type("qoi", load_qoi, NULL, load_qoi_pf);
+#endif
     register_datafile_object(DAT_ID('Q', 'O', 'I', ' '), load_from_datafile, (void (*)(void *))destroy_bitmap);
 
     NFUNCDEF(J, SaveQoiImage, 1);
 
+#if LINUX != 1
     js_getglobal(J, TAG_BITMAP);
     js_getproperty(J, -1, "prototype");
     js_newcfunction(J, Bitmap_SaveQoiImage, "Bitmap.prototype.SaveQoiImage", 1);
     js_defproperty(J, -2, "SaveQoiImage", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
     NPROTDEF(J, Bitmap, SaveQoiImage, 1);
+#endif
 }

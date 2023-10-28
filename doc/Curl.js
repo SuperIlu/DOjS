@@ -189,3 +189,16 @@ Curl.prototype.GetResponseCode = function () { };
  * @returns {ByteArray[]} An array with two IntArrays and the response code. The first (index 0) contains the request body, the second (index 1) the request headers and the third (index 2) the response code.
  */
 Curl.prototype.DoRequest = function (url) { };
+/**
+ * Add mime multipart POST data to a POST request.
+ * 
+ * @param {String} name name of the mime attachment.
+ * @param {String|ByteArray} data the data to transmit.
+ * @param {String} [mimetype] optional mime type of the data
+ * @param {String} [filename] optional filename of the data
+ */
+Curl.prototype.AddPostData = function (name, data, mimetype, filename) { };
+/**
+ * Clear all currently used POST data previously set using AddPostData().
+ */
+Curl.prototype.ClearPostData = function () { };

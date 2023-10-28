@@ -1,0 +1,123 @@
+
+Addon libraries
+
+
+
+This document contains general information about addon libraries that are
+distributed with Allegro. For more detailed info on API, usage and updates,
+refer to the documentation and web site of the specific addon library.
+
+
+
+
+=========================================
+============ Building addons ============
+=========================================
+
+All available addons are built automatically if all the required dependencies
+are found. To disable building of the specific addon, set the appropriate CMake
+variables to off.  You can use ccmake to browse the list of options.
+
+
+==========================================
+============ Available addons ============
+==========================================
+
+Since Allegro 4.4, several addon libraries are bundled in the Allegro package.
+These are some of the most commonly used addons because they contain some
+handy features that Allegro lacks. Hopefully, with these addons you will need
+less additional libraries for your game.
+
+One advantage of bundled addons is that their build system is integrated with
+Allegro's build system. Addons are automatically configured, built, installed
+and uninstalled with Allegro. However, you can perform these operations
+separately for each addon, if that will better suit your needs.
+
+Finally, if you think that some addons, in your opinion, should be included,
+feel free to contact Allegro developers and we will consider your proposal.
+
+
+   AllegroGL
+  AllegroGL is an Allegro add-on that allows you to use OpenGL alongside
+  Allegro -- you use OpenGL for your rendering to the screen, and Allegro for
+  miscellaneous tasks like gathering input, doing timers, getting
+  cross-platform portability, loading data, and drawing your textures. So
+  this library fills the same hole that things like GLUT do.
+
+  AllegroGL also automatically exposes most, if not all, OpenGL extensions
+  available to user programs. This means you no longer have to manually load
+  them; extension management is already done for you.
+
+  License: dual-licensed under GPL and zlib.
+
+  More info:
+  
+     website:
+       http://allegrogl.sf.net/
+     docs:
+       http://allegrogl.sourceforge.net/wiki/Documentation
+       http://wiki.allegro.cc/AllegroGL
+       From allegro directory: addons/allegrogl/docs/html/index.html
+     examples:
+       From allegro directory: addon/allegrogl/examples/
+  
+
+
+   loadpng
+  PNG (Portable Network Graphics) is a cool raster image file format. libpng is
+  the reference library for working with PNG files. loadpng is some glue that
+  makes it easy to use libpng to load and save bitmaps from Allegro programs.
+
+  loadpng depends on zlib and libpng libraries. Instructions for getting and
+  installing these can be found on loadpng webiste.
+
+  License: public domain
+
+  More info:
+  
+     website:
+       http://tjaden.strangesoft.net/loadpng/
+     docs:
+       http://tjaden.strangesoft.net/loadpng/README.txt
+       From allegro directory: addons/loadpng/README.txt
+     examples:
+       From allegro directory: addon/loadpng/examples/
+  
+
+   logg
+  LOGG is an Allegro  add-on library for playing OGG/Vorbis audio files. It can
+  load OGG/Vorbis files as Allegro SAMPLE's, or it can stream them from disk to
+  save memory.
+  It depends on libogg and libvorbis, available from vorbis.com.
+
+  License: MIT License. See addons/logg/LICENSE.TXT
+
+  More info:
+  
+     website:
+       http://trent.gamblin.ca/logg/
+     examples:
+       From allegro directory: addon/loadpng/
+  
+
+
+   jpgalleg
+  This addon library lets you load baseline and progressive encoded JPG images,
+  and to save baseline JPGs. It is standalone (no dependencies except for
+  Allegro), compact (compiled lib weights 40K!) fast and standard compliant
+  (it'll load almost any JPG you'll throw at it!). Ships with sources,
+  documentation, examples and a Grabber plugin, and supports any platform
+  supported by Allegro.
+
+  License: zlib/libpng. See addons/jpgalleg/license.txt.
+
+  More info:
+  
+     website:
+       http://www.ecplusplus.com/index.php?page=projects&pid=1
+     docs:
+       From allegro directory: addons/jpgalleg/readme.txt
+     examples:
+       From allegro directory: addon/jpgalleg/examples/
+  
+

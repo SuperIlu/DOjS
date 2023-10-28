@@ -15,7 +15,7 @@ DOjS is pronounces like [doge](https://en.wikipedia.org/wiki/Doge_(meme)), but e
 DOjS was only possible due to the work of these people/projects:
   * [MuJS](https://mujs.com/) JavaScript interpreter
   * The [Allegro library](https://liballeg.org/) and [Allegro XC](https://github.com/msikma/allegro-4.2.2-xc)
-  * [DJGPP](http://www.delorie.com/djgpp/) from DJ Delorie and the [Linux compile scripts](https://github.com/andrewwutw/build-djgpp) by Andrew Wu.
+  * [DJGPP](http://www.delorie.com/djgpp/) from DJ Delorie and the [Linux compile scripts](https://github.com/jwt27/build-gcc) by jwt27.
   * The people that contributed to [p5js](https://p5js.org/).
   * The Glide source cleanup of [Ozkan Sezer](https://github.com/sezero/glide).
   * [AllegroPNG](http://alpng.sourceforge.net/) PNG loader for Allegro
@@ -34,15 +34,14 @@ DOjS was only possible due to the work of these people/projects:
   * [AnimatedGIF](https://github.com/bitbank2/AnimatedGIF/) for rendering GIF animations.
   * [PL_MPEG](https://github.com/phoboslab/pl_mpeg) for mpeg1 decoding
   * [pdfgen](https://github.com/AndreRenaud/PDFGen) for PDF rendering.
+  * [micromod](https://github.com/martincameron/micromod) for MOD playback.
+  * [ibxm](https://github.com/martincameron/micromod) for MOD, S3M and XM playback.
+  * [ini](https://github.com/rxi/ini) for INI file reading.
   * [Mesa](https://www.mesa3d.org/) for OpenGL
+  * [libwebp](https://chromium.googlesource.com/webm/libwebp) for WebP decoding/encoding
 
 ## Contact
 You can find me on [Mastodon](https://mastodon.social/@dec_hl), in the [DOjS Discord](https://discord.gg/J7MUTap9fM) or on [Twitter](https://twitter.com/dec_hl) if you want...
-
-## Next release / Quick update on the current state of V1.11:
-DOjS isn't dead and I'm working on it in the background. I usually try to release a new version of DOjS every ~3 month. V1.10 was released in February, so V1.11 is quite overdue. I had several features planed for V1.11 which I could not realize/finish up to now (partly because I spent time developing [DOStodon](https://github.com/SuperIlu/DOStodon) and also because life happens. I haven't decided if I want to wait until I finish all planed features or if I (at some point) just push the current state into V1.11 and postpone the remaining stuff to V1.12. But whichever way it turns out: **I don't think I'll manage to release before autumn...**
-
-As some might have noticed, DOStodon is already based on pre-releases of V1.11!
 
 # Download and quick start
 **You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases).** Just extract the contents of the archive and run `DOjS.exe`.
@@ -195,7 +194,7 @@ You can compile DOjS on any modern Linux (the instructions below are for Debian 
 Setup Windows Subsystem for Linux (WSL) according to [this](https://docs.microsoft.com/en-us/windows/wsl/install-win10) guide (I used Ubuntu 18.04 LTS).
 
 ## Preparation
-Build and install DJGPP 7.2.0 according to [this](https://github.com/andrewwutw/build-djgpp) guide.
+Build and install DJGPP 12.2.0 according to [this](https://github.com/jwt27/build-djgpp) guide.
 Install [NVM](https://github.com/nvm-sh/nvm#installing-and-updating).
 I used the following command lines to update/install my dependencies:
 ```bash
@@ -207,12 +206,11 @@ npm install -g jsdoc
 npm install -g better-docs
 ```
 
-And the following commands to build and install DJGPP to `/home/ilu/djgpp`.:
+And the following commands to build and install DJGPP to `/home/ilu/cross`.:
 ```bash
-git clone https://github.com/andrewwutw/build-djgpp.git
+git clone https://github.com/jwt27/build-djgpp.git
 cd build-djgpp
-export DJGPP_PREFIX=/home/ilu/djgpp
-./build-djgpp.sh 7.2.0
+./build-djgpp.sh --target=i586-pc-msdosdjgpp --prefix=/home/ilu/cross all
 ```
 
 ## Getting & Compiling DOjS
@@ -234,6 +232,9 @@ If you used Windows-Tools to check out DOjS from git you may need to fix the new
 
 Now you are ready to compile DOjS with `make clean all`. This might take some time as the dependencies are quite large.
 `make distclean` will clean dependencies as well. `make zip` will create the distribution ZIP and `make doc` will re-create the HTML help.
+
+## Compile the Linux version of DOjS
+There is an experimental Linux version of DOjS. It only supports a subset of the DOS version and should be considered ALPHA! See [this](README_Linux.md) file for more information.
 
 # Notes
 ## 3dfx/Glide3

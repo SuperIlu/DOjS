@@ -621,8 +621,8 @@ void _restore_vga_mode(void)
 static void sys_dos_yield_timeslice(void)
 {
    #ifdef ALLEGRO_DJGPP
-
-      __dpmi_yield();
+// fix for DOSBox crashes
+//      __dpmi_yield();
 
    #endif
 }

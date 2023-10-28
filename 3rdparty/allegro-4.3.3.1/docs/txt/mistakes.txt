@@ -1,0 +1,76 @@
+
+Common mistakes
+
+
+
+
+   Ignoring this manual.
+      Most problems are addressed in this manual. If you aren't sure about
+      some parts of Allegro check particular section of manual. The FAQ
+      section can also be very useful.
+
+   main() not returning int.
+      On platforms that need it, Allegro uses END_OF_MAIN to
+      mangle your main() function and supply its own that is required by the
+      platform. Allegro assumes that main() returns an integer, as required
+      by various C standards. If you change the return type of your main() to
+      something else Allegro's main() will get confused and return some
+      nonsense value which some system can recognize as an error and crash
+      your program.
+
+   Semicolon at END_OF_MAIN.
+
+         int main(void)
+         {
+            allegro_init();
+            /* more stuff goes here */
+            ...
+            return 0;
+         }
+         END_OF_MAIN(); /* wrong */ 
+
+      The semicolon is not only unnecessary after END_OF_MAIN(), but it can
+      also cause some compilers to issue a warning.
+
+   Getting bitmap's size.
+      Many people don't know how to get the dimensions of a bitmap. This can
+      be done by accessing the `w' and `h' fields of the BITMAP structure:
+
+         BITMAP *image;
+         ...
+         allegro_message("Bitmap size: %d x %d\n",
+                         image->w, image->h);
+
+   Creating bitmaps before loading.
+
+         BITMAP *image = create_bitmap(width, height);
+         image = load_bitmap("image.bmp", pal);
+
+      When loading a bitmap, Allegro will automatically create a bitmap big
+      enough to store it. In the above code the address returned by
+      create_bitmap() is overwritten by the second assignment statement, to
+      the return value of the call to load_bitmap().  Since the address of
+      the first (unnecessary) bitmap has been lost, there is no way to
+      destroy it so there is a memory leak.
+
+   Loading a bitmap/font/sound inside a global object constructor.
+      Almost all Allegro functions require Allegro to be initialized first,
+      before they can be used. Since global object constructors are called
+      before main() (from where allegro_init() would be called) this
+      condition is violated.  You need to postpone calls to Allegro functions
+      to after initializing Allegro.
+
+   Calling set_color_depth without resetting graphic mode.
+      set_color_depth() tells Allegro which color depth to use the next time a
+      graphic mode is set or bitmap is created or loaded. It doesn't change
+      the color depth of the current graphic mode or existing bitmaps.  You
+      need to be sure that all your bitmaps and/or graphic mode are in the
+      same color depth or Allegro will be forced to do slow color conversions
+      between them.
+
+   Destroying global objects like `screen'.
+      Unlike other bitmaps `screen' is created by calling set_gfx_mode() and
+      must not be destroyed by calling destroy_bitmap(). The proper way to
+      destroy `screen' is calling set_gfx_mode(GFX_TEXT, 0, 0, 0, 0).
+
+

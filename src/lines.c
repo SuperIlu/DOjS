@@ -28,8 +28,10 @@ SOFTWARE.
 #include <string.h>
 
 #include <conio.h>
+#if LINUX != 1
 #include <keys.h>
 #include <pc.h>
+#endif
 
 #include "DOjS.h"
 #include "dialog.h"
@@ -47,6 +49,13 @@ edi_t* lin_init(const char* name) {
     edi_t* edi = calloc(1, sizeof(edi_t));
     if (edi) {
         gettextinfo(&edi->scr);
+
+        EDIF("edi->scr.screenwidth=%d\n", edi->scr.screenwidth);
+        EDIF("edi->scr.screenheight=%d\n", edi->scr.screenheight);
+        EDIF("edi->scr.winleft=%d\n", edi->scr.winleft);
+        EDIF("edi->scr.wintop=%d\n", edi->scr.wintop);
+        EDIF("edi->scr.winright=%d\n", edi->scr.winright);
+        EDIF("edi->scr.winbottom=%d\n", edi->scr.winbottom);
 
         line_t* l = lin_newline();
 

@@ -23,11 +23,20 @@ SOFTWARE.
 #include "bitmap.h"
 #include "ogl.h"
 
+#if LINUX != 1
 #include <GL/gl.h>
-
-#include <GL/fxmesa.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+
+#include <GL/fxmesa.h>
+#else
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+#endif
 
 #define OGL_BBP 16  //!< bit depth of 3dfx screen
 
@@ -95,7 +104,11 @@ SOFTWARE.
     }
 
 //! OpenGL context from the used library
+#if LINUX != 1
 static fxMesaContext fc = NULL;
+#else
+static GLFWwindow *window;
+#endif
 
 void init_ogl(js_State *J);
 void shutdown_ogl(void);
@@ -107,6 +120,7 @@ void shutdown_ogl(void);
 //////
 // 0 param
 static void f_glInit(js_State *J) {
+#if LINUX != 1
     GLint attribs[32];
 
     attribs[0] = FXMESA_DOUBLEBUFFER;
@@ -130,6 +144,31 @@ static void f_glInit(js_State *J) {
     LOGF("  OpenGL Extensions: %s\n", glGetString(GL_EXTENSIONS));
     LOGF("  GLU Version      : %s\n", gluGetString(GLU_VERSION));
     LOGF("  GLU Extensions   : %s\n", gluGetString(GLU_EXTENSIONS));
+#else
+    glewExperimental = true;  // Needed for core profile
+    if (!glfwInit()) {
+        js_error(J, "Failed to initialize GLFW");
+        return;
+    }
+
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+
+    // Open a window and create its OpenGL context
+    window = glfwCreateWindow(640, 480, "DOjS GL", NULL, NULL);
+    if (window == NULL) {
+        js_error(J, "Failed to open GLFW window.");
+        glfwTerminate();
+        return;
+    }
+    glfwMakeContextCurrent(window);  // Initialize GLEW
+    glewExperimental = true;         // Needed in core profile
+    if (glewInit() != GLEW_OK) {
+        js_error(J, "Failed to initialize GLEW");
+        return;
+    }
+#endif
 }
 
 static void f_glShutdown(js_State *J) { shutdown_ogl(); }
@@ -137,7 +176,11 @@ static void f_glShutdown(js_State *J) { shutdown_ogl(); }
 static void f_glFlush(js_State *J) {
     glFlush();
 
+#if LINUX != 1
     fxMesaSwapBuffers();
+#else
+    glfwSwapBuffers(window);
+#endif
 }
 
 static void f_glEnd(js_State *J) { glEnd(); }
@@ -792,6 +835,7 @@ static void f_dummy_glInit(js_State *J) {
 void init_ogl(js_State *J) {
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
 
+#if LINUX != 1
     FILE *f = fopen("GLIDE3X.DXE", "r");
     if (!f) {
         LOG("GLIDE3X.DXE missing, please run one of the V_x.BAT scripts to get the driver matching your hardware! All OpenGL functions are disabled!\n");
@@ -801,7 +845,7 @@ void init_ogl(js_State *J) {
     } else {
         fclose(f);
         // define global functions
-
+#endif
         // 0 param
         NFUNCDEF(J, glInit, 0);
         NFUNCDEF(J, glShutdown, 0);
@@ -968,16 +1012,22 @@ void init_ogl(js_State *J) {
 
         // opengl constants
         ogl_create_constants(J);
+#if LINUX != 1
     }
+#endif
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }
 
 void shutdown_ogl() {
+#if LINUX != 1
     if (fc) {
         fxMesaDestroyContext(fc);
         fc = NULL;
     }
+#else
+    glfwTerminate();
+#endif
 }
 
 // TODO:

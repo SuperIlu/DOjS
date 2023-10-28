@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2023 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,19 +22,26 @@ SOFTWARE.
 
 #include "DOjS.h"
 
+#if LINUX == 1
+#include "linux/conio.h"
+#include "linux/glue.h"
+#else
 #include <conio.h>
 #include <glide.h>
-#include <jsi.h>
 #include <dos.h>
+#include "3dfx-glide.h"
+#include "3dfx-state.h"
+#include "3dfx-texinfo.h"
+#include "lowlevel.h"
+#endif
+
+#include <jsi.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
 #include <dlfcn.h>
 
-#include "3dfx-glide.h"
-#include "3dfx-state.h"
-#include "3dfx-texinfo.h"
 #include "bitmap.h"
 #include "color.h"
 #include "edit.h"
@@ -51,12 +58,12 @@ SOFTWARE.
 #include "watt.h"
 #include "zip.h"
 #include "zipfile.h"
-#include "lowlevel.h"
 #include "intarray.h"
 #include "bytearray.h"
 #include "blender.h"
 #include "ini.h"
 #include "inifile.h"
+#include "vgm.h"
 
 #define AUTOSTART_FILE "=MAIN.JS"
 #define DOJS_EXE_NAME "DOJS.EXE"
@@ -70,7 +77,6 @@ dojs_t DOjS;  //!< global data structure
 ** function prototypes **
 ************************/
 static void tick_handler(void);
-static void tick_handler_end(void);
 
 /*********************
 ** static functions **
@@ -193,8 +199,18 @@ static bool callInput(js_State *J) {
         ret = ((key >> 8) == DOjS.exit_key);
     } else {
         key = -1;
-        ret = FALSE;
+        ret = false;
     }
+
+#if LINUX == 1
+    // check for CTRL_ENTER
+    if (key_shifts & KB_CTRL_FLAG) {
+        if (key == 0x430D) {
+            key = 0x430A;
+        }
+    }
+
+#endif
 
     // do not call JS if nothing changed or no input function
     if (!DOjS.input_available || ((key == -1) && (DOjS.last_mouse_x == mouse_x) && (DOjS.last_mouse_y == mouse_y) && (DOjS.last_mouse_b == mouse_b))) {
@@ -282,7 +298,9 @@ static void dojs_load_jsboot(js_State *J) {
         dojs_do_zipfile(J, DOjS.jsboot, JSINC_FUNC);
         dojs_do_zipfile(J, DOjS.jsboot, JSINC_COLOR);
         dojs_do_zipfile(J, DOjS.jsboot, JSINC_FILE);
+#if LINUX != 1
         dojs_do_zipfile(J, DOjS.jsboot, JSINC_3DFX);
+#endif
         dojs_do_zipfile(J, DOjS.jsboot, JSINC_SOCKET);
     } else {
         DEBUGF("%s NOT found, using plain files\n", DOjS.jsboot);
@@ -290,7 +308,9 @@ static void dojs_load_jsboot(js_State *J) {
         dojs_do_file(J, JSINC_FUNC);
         dojs_do_file(J, JSINC_COLOR);
         dojs_do_file(J, JSINC_FILE);
+#if LINUX != 1
         dojs_do_file(J, JSINC_3DFX);
+#endif
         dojs_do_file(J, JSINC_SOCKET);
     }
 }
@@ -350,6 +370,7 @@ static void *dojs_alloc(void *actx, void *ptr, int size) {
 }
 #endif
 
+#if LINUX != 1
 /**
  * @brief call shutdown() on all registered libraries
  */
@@ -387,6 +408,7 @@ static void dojs_init_libraries(js_State *J) {
         }
     }
 }
+#endif
 
 /**
  * @brief check Input(), Loop() and Setup() are defined.
@@ -399,11 +421,17 @@ static bool check_functions(js_State *J, const char *fname) {
     bool ret = true;
     js_pushglobal(J);
 
-    if (!js_hasproperty(J, 0, CB_INPUT)) {
+    if (js_hasproperty(J, 0, CB_INPUT)) {
         DOjS.input_available = true;
-        LOGF("Function %s not found in %s -> input disabled\n", CB_INPUT, fname);
     } else {
-        DOjS.input_available = true;
+        DOjS.input_available = false;
+        LOGF("Function %s not found in %s -> input disabled\n", CB_INPUT, fname);
+    }
+
+    if (js_hasproperty(J, 0, CB_ONEXIT)) {
+        DOjS.onexit_available = true;
+    } else {
+        DOjS.onexit_available = false;
     }
 
     if (!js_hasproperty(J, 0, CB_LOOP)) {
@@ -479,7 +507,7 @@ static void run_script(int argc, char **argv, int args) {
     install_int(tick_handler, TICK_DELAY);
     install_keyboard();
     if (install_mouse() >= 0) {
-        LOG("Mouse detected\n");
+        LOGF("Mouse detected: %s\n", mouse_driver->name);
         enable_hardware_cursor();
         select_mouse_cursor(MOUSE_CURSOR_ARROW);
         DOjS.mouse_available = true;
@@ -491,15 +519,11 @@ static void run_script(int argc, char **argv, int args) {
     init_sound(J);  // sound init must be before midi init!
     init_midi(J);
     init_funcs(J, argc, argv, args);  // must be called after initalizing the booleans above!
-    init_lowlevel(J);
     init_gfx(J);
     init_color(J);
     init_bitmap(J);
     init_font(J);
     init_file(J);
-    init_3dfx(J);
-    init_texinfo(J);
-    init_fxstate(J);
     init_joystick(J);
     init_watt(J);
     init_socket(J);
@@ -508,19 +532,31 @@ static void run_script(int argc, char **argv, int args) {
     init_bytearray(J);
     init_flic(J);
     init_inifile(J);
+#if LINUX != 1
+    init_vgm(J);
+    init_lowlevel(J);
+    init_3dfx(J);
+    init_texinfo(J);
+    init_fxstate(J);
+#endif
 
     // create canvas
     bool screenSuccess = true;
+#if LINUX == 1
+    int gfx_mode = GFX_AUTODETECT_WINDOWED;
+#else
+    int gfx_mode = GFX_AUTODETECT;
+#endif
     while (true) {
         set_color_depth(DOjS.params.bpp);
         if (DOjS.params.width == DOJS_FULL_WIDTH) {
-            if (set_gfx_mode(GFX_AUTODETECT, DOJS_FULL_WIDTH, DOJS_FULL_HEIGHT, 0, 0) != 0) {
+            if (set_gfx_mode(gfx_mode, DOJS_FULL_WIDTH, DOJS_FULL_HEIGHT, 0, 0) != 0) {
                 LOGF("Couldn't set a %d bit color resolution at 640x480: %s\n", DOjS.params.bpp, allegro_error);
             } else {
                 break;
             }
         } else {
-            if (set_gfx_mode(GFX_AUTODETECT, DOJS_HALF_WIDTH, DOJS_HALF_HEIGHT, 0, 0) != 0) {
+            if (set_gfx_mode(gfx_mode, DOJS_HALF_WIDTH, DOJS_HALF_HEIGHT, 0, 0) != 0) {
                 LOGF("Couldn't set a %d bit color resolution at 320x240: %s\n", DOjS.params.bpp, allegro_error);
             } else {
                 break;
@@ -555,7 +591,11 @@ static void run_script(int argc, char **argv, int args) {
                 // call setup()
                 DOjS.keep_running = true;
                 DOjS.wanted_frame_rate = 30;
+#if LINUX != 1
                 dojs_init_libraries(J);  // re-init all already loaded libraries
+#else
+                glue_init(J);
+#endif
                 if (callGlobal(J, CB_SETUP)) {
                     // call loop() until someone calls Stop()
                     while (DOjS.keep_running) {
@@ -578,14 +618,19 @@ static void run_script(int argc, char **argv, int args) {
                         if (callInput(J)) {
                             DOjS.keep_running = false;
                         }
+#if LINUX != 1
                         if (DOjS.glide_enabled) {
                             grBufferSwap(1);
                         } else {
+#endif
+                            show_mouse(NULL);
                             blit(DOjS.render_bm, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
                             if (DOjS.mouse_visible) {
                                 show_mouse(screen);
                             }
+#if LINUX != 1
                         }
+#endif
                         long end = DOjS.sys_ticks;
                         long runtime = (end - start) + 1;
                         DOjS.current_frame_rate = 1000 / runtime;
@@ -596,6 +641,9 @@ static void run_script(int argc, char **argv, int args) {
                         end = DOjS.sys_ticks;
                         runtime = (end - start) + 1;
                         DOjS.current_frame_rate = 1000 / runtime;
+                    }
+                    if (DOjS.onexit_available) {
+                        callGlobal(J, CB_ONEXIT);
                     }
                 }
             } else {
@@ -611,12 +659,17 @@ static void run_script(int argc, char **argv, int args) {
     }
     LOG("DOjS Shutdown...\n");
     js_freestate(J);
+#if LINUX != 1
     dojs_shutdown_libraries();
+    shutdown_3dfx();
+    shutdown_vgm();
+#else
+    glue_shutdown();
+#endif
     shutdown_flic();
     shutdown_midi();
     shutdown_sound();
     shutdown_joystick();
-    shutdown_3dfx();
     if (DOjS.logfile) {
         fclose(DOjS.logfile);
     }
@@ -683,6 +736,7 @@ int dojs_do_file(js_State *J, const char *fname) {
     }
 }
 
+#if LINUX != 1
 /**
  * @brief register a library.
  *
@@ -747,6 +801,7 @@ bool dojs_check_library(const char *name) {
     }
     return false;
 }
+#endif
 
 /**
  * @brief set the active blender func from DOjS.transparency_available
@@ -1058,8 +1113,10 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
     }
 
+#if LINUX != 1
     // ignore ctrl-c, we need it in the editor!
     signal(SIGINT, SIG_IGN);
+#endif
 
     while (true) {
         edi_exit_t exit = EDI_KEEPRUNNING;

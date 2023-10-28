@@ -23,7 +23,11 @@ SOFTWARE.
 #ifndef __WATT_H__
 #define __WATT_H__
 
+#if LINUX == 1
+#include "linux/glue.h"
+#else
 #include <tcp.h>
+#endif
 #include "DOjS.h"
 
 /************
@@ -40,7 +44,7 @@ SOFTWARE.
 ** exported functions **
 ***********************/
 extern void init_watt(js_State *J);
-void watt_pushipaddr(js_State *J, DWORD ip);
-DWORD watt_toipaddr(js_State *J, int idx);
+extern void watt_pushipaddr(js_State *J, uint32_t ip);
+extern uint32_t watt_toipaddr(js_State *J, int idx);
 
 #endif  // __WATT_H__

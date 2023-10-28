@@ -27,7 +27,6 @@ SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "3dfx-glide.h"
 #include "DOjS.h"
 #include "color.h"
 #include "util.h"
@@ -35,8 +34,16 @@ SOFTWARE.
 #include "blurhash.h"
 #include "bytearray.h"
 
+#if LINUX == 1
+#include "loadpng.h"
+#include "qoi.h"
+#include "webp.h"
+#include "linux/glue.h"
+#else
+#include "3dfx-glide.h"
 #ifdef LFB_3DFX
 #include <glide.h>
+#endif
 #endif
 
 /*********************
@@ -75,6 +82,8 @@ static void new_Bitmap(js_State *J) {
     NEW_OBJECT_PREP(J);
     const char *fname = "<<buffer>>";
     BITMAP *bm = NULL;
+
+#if LINUX != 1
     if (js_isnumber(J, 1) && js_isnumber(J, 2) && js_isnumber(J, 3) && js_isnumber(J, 4) && js_isnumber(J, 5)) {
         // 3dfx framebuffer
         uint16_t x = js_touint16(J, 1);
@@ -116,7 +125,9 @@ static void new_Bitmap(js_State *J) {
         }
 
         free(buf);
-    } else if (js_isnumber(J, 1) && js_isnumber(J, 2) && js_isnumber(J, 3) && js_isnumber(J, 4)) {
+    } else
+#endif
+        if (js_isnumber(J, 1) && js_isnumber(J, 2) && js_isnumber(J, 3) && js_isnumber(J, 4)) {
         // allegro framebuffer
         uint16_t x = js_touint16(J, 1);
         uint16_t y = js_touint16(J, 2);
@@ -146,8 +157,10 @@ static void new_Bitmap(js_State *J) {
         DEBUGF("new Bitmap 0x%p with data=%p\n", bm, bm->dat);
 
         // clear with given color
-        if (js_isnumber(J, 3)) {
+        if (js_isdefined(J, 3)) {
             clear_to_color(bm, js_toint32(J, 3));
+        } else {
+            clear_to_color(bm, 0);
         }
     } else if (js_isstring(J, 1) && js_isnumber(J, 2) && js_isnumber(J, 3)) {
         // new Bitmap("blurhash", width, height, [punch])
@@ -210,14 +223,14 @@ static void new_Bitmap(js_State *J) {
 
         PACKFILE *pf = open_bytearray(ba);
         if (!pf) {
-            js_error(J, "Can't load image from ByteArray");
+            js_error(J, "Can't load image from ByteArray(1): %s", type);
             return;
         }
         bm = load_bitmap_pf(pf, NULL, type);
         pack_fclose(pf);
 
         if (!bm) {
-            js_error(J, "Can't load image from ByteArray");
+            js_error(J, "Can't load image from ByteArray(2): %s", type);
             return;
         }
     } else if (js_isstring(J, 1)) {
@@ -438,6 +451,56 @@ static void Bitmap_SavePcxImage(js_State *J) {
     }
 }
 
+#if LINUX == 1
+/**
+ * @brief save Bitmap to file.
+ * SavePngImage(fname:string)
+ *
+ * @param J the JS context.
+ */
+static void Bitmap_SavePngImage(js_State *J) {
+    BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
+    const char *fname = js_tostring(J, 1);
+
+    PALETTE pal;
+    get_palette(pal);
+
+    if (save_png(fname, bm, (const struct RGB *)&pal) != 0) {
+        js_error(J, "Can't save Bitmap to PNG file '%s'", fname);
+    }
+}
+
+/**
+ * @brief save Bitmap to file.
+ * SaveWoiImage(fname:string)
+ *
+ * @param J the JS context.
+ */
+static void Bitmap_SaveQoiImage(js_State *J) {
+    BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
+    const char *fname = js_tostring(J, 1);
+
+    if (!save_qoi(bm, fname)) {
+        js_error(J, "Can't save Bitmap to QOI file '%s'", fname);
+    }
+}
+
+/**
+ * @brief save Bitmap to file.
+ * SaveWebpImage(fname:string)
+ *
+ * @param J the JS context.
+ */
+static void Bitmap_SaveWebpImage(js_State *J) {
+    BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
+    const char *fname = js_tostring(J, 1);
+
+    if (!save_webp(bm, fname)) {
+        js_error(J, "Can't save Bitmap to WEBP file '%s'", fname);
+    }
+}
+#endif
+
 /**
  * @brief save Bitmap to file.
  * SaveTgaImage(fname:string)
@@ -524,6 +587,11 @@ void init_bitmap(js_State *J) {
         NPROTDEF(J, Bitmap, SaveBmpImage, 1);
         NPROTDEF(J, Bitmap, SavePcxImage, 1);
         NPROTDEF(J, Bitmap, SaveTgaImage, 1);
+#if LINUX == 1
+        NPROTDEF(J, Bitmap, SavePngImage, 1);
+        NPROTDEF(J, Bitmap, SaveQoiImage, 1);
+        NPROTDEF(J, Bitmap, SaveWebpImage, 1);
+#endif
 #ifdef LFB_3DFX
         NPROTDEF(J, Bitmap, FxDrawLfb, 4);
 #endif

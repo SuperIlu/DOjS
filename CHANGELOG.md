@@ -1,9 +1,27 @@
-# Version 1.10.0 (DOStodon FTW!) / January, 20th, 2023
+# Version 1.11.0 (The delayed distribution) / October 28th, 2023
+* Added port of https://github.com/DhrBaksteen/ArduinoOPL2 to `jsboot/`
+* Added optional `OnExit()` callback
+* Fixed input callback detection
+* Fixed mouse when using `DOSBox-X` and `DOSBox-staging`
+* Fixed on screen garbage when creating a `Bitmap` with black background color
+* Added `GetEnv()`
+* Updated to mbedTLS 2.28.5
+* Updated cURL to 8.4.0
+* Added a minimal port to Linux
+* Added micromod MOD playback plugin
+* Added ibxm MOD, S3M and XM playback plugin
+* Added a very simple OPL2 VGM player
+* Added ByteArray post data in curl.DXE
+* Added MIME type for post data in curl.DXE
+* Added GetDrive() (DOS INT21, 19h) and SetDrive() (DOS21, 0Eh)
+* Added WebP decoding/encoding
+
+# Version 1.10.0 (DOStodon FTW!) / January 20th, 2023
 * Added MIME multipart to cURL POST requests
 * Fixed crash when alpha channel was disabled
 * Fixed missing error messages when Include() was used on files with syntax errors
 * Switched from OpenSSL to mbedTLS
-* Added bluhash decoding to `new Bitmap()`
+* Added blurhash decoding to `new Bitmap()`
 * Updated nanosvg
 * Updated cURL to 7.87.0
 * Fixed memory corruption when starting a renamed DOjS with ZIP file (https://github.com/SuperIlu/DOjS/issues/22)

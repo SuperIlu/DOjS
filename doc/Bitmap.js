@@ -137,3 +137,12 @@ Bitmap.prototype.SavePngImage = function (fname) { };
  * @param {string} fname filename.
  */
 Bitmap.prototype.SaveQoiImage = function (fname) { };
+/**
+ * Save bitmap to WEBP file.
+ * 
+ * **Note: WEBP module must be loaded by calling LoadLibrary("webp") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ */
+Bitmap.prototype.SaveWebpImage = function (fname) { };

@@ -14,8 +14,10 @@
 			"Font.js",
 			"FxState.js",
 			"GifAnim.js",
+			"Ibxm.js",
 			"IniFile.js",
 			"IntArray.js",
+			"Micromod.js",
 			"Midi.js",
 			"Mpeg1.js",
 			"Neural.js",
@@ -58,8 +60,7 @@
 	},
 	"opts": {
 		"readme": "../README.md",
-		"search": true,
-		"template": "/home/ilu/.nvm/versions/node/v17.4.0/lib/node_modules/better-docs"
+		"search": true
 	},
 	"plugins": [
 		"plugins/markdown"

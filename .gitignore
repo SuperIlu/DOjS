@@ -74,6 +74,8 @@ debug_dosbox.conf
 doc/html/
 DOjS-cppcheck-build-dir/
 dojs-X.Y.Z.zip
+Linux_dojs-X.Y.Z.zip
+FreeDOS_dojs-X.Y.Z.zip
 dojs.map
 dosbox-staging/
 dosbox.conf
@@ -117,3 +119,15 @@ vscode/livedojs/node_modules/
 W32DHCP.TMP
 hosts.txt
 test.db
+DOSBox-staging/
+dosbox.exe - Shortcut.lnk
+exmouse.c
+screen.png
+plugins/sqlite.dxelib/sqlite_3400000/Makefile
+plugins/sqlite.dxelib/sqlite_3400000/sqlite3.c
+plugins/sqlite.dxelib/sqlite_3400000/sqlite3.h
+tests/testdata/dojs_003.mp4
+dojs
+DBS/
+SCR.webp
+SCR.WEP

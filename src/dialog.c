@@ -27,8 +27,10 @@ SOFTWARE.
 #include <string.h>
 
 #include <conio.h>
+#if LINUX != 1
 #include <keys.h>
 #include <pc.h>
+#endif
 
 #include "DOjS.h"
 #include "dialog.h"
@@ -43,6 +45,11 @@ SOFTWARE.
 #define DIA_CONFIRM "<[y] or [n]>"        //!< text for confirm dialog
 #define DIA_MESSAGE "<Press any key>"     //!< text for message dialog
 #define DIA_TEXT "<UP/DOWN, ESC or DEL>"  //!< text for file dialog
+
+#if LINUX == 1
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#endif
 
 /***********
 ** macros **

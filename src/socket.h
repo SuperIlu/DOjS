@@ -25,6 +25,10 @@ SOFTWARE.
 
 #include "DOjS.h"
 
+#if LINUX == 1
+#include "linux/glue.h"
+#endif
+
 /************
 ** defines **
 ************/

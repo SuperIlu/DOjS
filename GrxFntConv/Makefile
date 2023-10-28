@@ -19,4 +19,4 @@ $(EXE): $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 clean:
-	rm -f $(EXE) $(OBJS)
+	rm -f $(EXE) $(OBJS) *.d

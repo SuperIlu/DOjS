@@ -160,6 +160,7 @@ realloc
 signal
 longjmp
 setjmp
+sigaction
 
 // math/random
 __fpclassifyd
@@ -174,6 +175,11 @@ sqrt
 cos
 sin
 roundf
+log
+log10
+
+// other
+bsearch
 
 // gcc/djgpp/lowlevel
 __divdi3

@@ -1,6 +1,6 @@
 ###
 # Makefile for cross compiling DOjS for FreeDOS/MS-DOS
-# All compilation was done with DJGPP 7.2.0 built from https://github.com/andrewwutw/build-djgpp
+# All compilation was done with DJGPP 12.2.0 built from https://github.com/jwt27/build-gcc
 # make sure the DJGPP toolchain is in your path (i586-pc-msdosdjgpp-XXX)!
 ###
 
@@ -15,16 +15,19 @@ WATT32		= $(THIRDPARTY)/Watt-32
 ZLIB		= $(THIRDPARTY)/zlib-1.2.12
 KUBAZIP		= $(THIRDPARTY)/zip-0.2.5
 ALPNG		= $(THIRDPARTY)/alpng13
-CURL		= $(THIRDPARTY)/curl-7.87.0
+CURL		= $(THIRDPARTY)/curl-8.4.0
 MESA3		= $(THIRDPARTY)/MesaFX-3.4-master
 BZIP2		= $(THIRDPARTY)/bzip2-1.0.8
 INI			= $(THIRDPARTY)/ini-20220806/src
-MBEDTLS		= $(THIRDPARTY)/mbedtls-2.28.1
+MBEDTLS		= $(THIRDPARTY)/mbedtls-2.28.5
+WEBP		= $(THIRDPARTY)/libwebp-1.3.2
 
 GLIDE=glide3x
 GLIDESDK=$(GLIDE)/v1
 TEXUS=$(GLIDE)/texus
 FONTCONV=GrxFntConv
+
+JSDOC_TEMPLATES=/home/ilu/.nvm/versions/node/v17.4.0/lib/node_modules/better-docs /home/ilu/.nvm/versions/node/v17.5.0/lib/node_modules/better-docs /usr/lib/node_modules/better-docs
 
 LIB_DZCOMM	= $(DZCOMMDIR)/lib/djgpp/libdzcom.a
 LIB_MUJS	= $(MUJS)/build/release/libmujs.a
@@ -32,10 +35,11 @@ LIB_ALLEGRO	= $(ALLEGRO)/lib/djgpp/liballeg.a
 LIB_WATT	= $(WATT32)/lib/libwatt.a
 LIB_Z		= $(ZLIB)/msdos/libz.a
 LIB_ALPNG	= $(ALPNG)/libalpng.a
-LIB_CURL	= $(CURL)/libcurl.a
+LIB_CURL	= $(CURL)/lib/libcurl.a
 LIB_MESA	= $(MESA3)/lib/libgl.a
 LIB_BZIP2	= $(BZIP2)/libbzip2.a
 LIB_MBEDTLS = $(MBEDTLS)/library/libmbedtls.a
+LIB_WEBP 	= $(WEBP)/src/libwebp.a
 
 # compiler
 CDEF     = -DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED # -DMEMDEBUG 
@@ -52,6 +56,7 @@ INCLUDES = \
 	-I$(realpath $(ALPNG))/src \
 	-I$(realpath $(MBEDTLS))/include \
 	-I$(realpath $(CURL))/include \
+	-I$(realpath $(WEBP))/src \
 	-I$(realpath $(INI))/
 
 # linker
@@ -68,7 +73,7 @@ LDFLAGS  = -s \
 # output
 EXE      = dojs.exe
 RELZIP   = dojs-X.Y.Z.zip
-FDZIP    = $(shell pwd)/FreeDOS_dojs.zip
+FDZIP    = $(shell pwd)/FreeDOS_dojs-X.Y.Z.zip
 
 # dirs/files
 DOJSPATH		= $(realpath .)
@@ -92,6 +97,7 @@ export
 MPARA=-j8
 
 PARTS= \
+	$(BUILDDIR)/vgm.o \
 	$(BUILDDIR)/blurhash.o \
 	$(BUILDDIR)/blender.o \
 	$(BUILDDIR)/bytearray.o \
@@ -128,7 +134,9 @@ PARTS= \
 
 DXE_DIRS := $(wildcard plugins/*.dxelib)
 
-all: init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3 texus.exe fntconv.exe $(EXE) $(DXE_DIRS) JSBOOT.ZIP
+all: dojs $(DXE_DIRS) JSBOOT.ZIP
+
+dojs: init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3 libwebp texus.exe fntconv.exe $(EXE)
 
 mesa3: $(LIB_MESA)
 $(LIB_MESA):
@@ -149,6 +157,10 @@ $(LIB_ALPNG):
 libz: $(LIB_Z)
 $(LIB_Z):
 	$(MAKE) $(MPARA) -C $(ZLIB) -f Makefile.dojs
+
+libwebp: $(LIB_WEBP)
+$(LIB_WEBP):
+	$(MAKE) $(MPARA) -C $(WEBP) -f makefile.djgpp src/libwebp.a sharpyuv/libsharpyuv.a
 
 libbzip2: $(LIB_BZIP2)
 $(LIB_BZIP2):
@@ -221,7 +233,7 @@ devzip: all cacert.pem doc
 doc:
 	rm -rf $(DOCDIR)
 	mkdir -p $(DOCDIR)
-	cd doc && jsdoc --verbose -c jsdoc.conf.json -d ../$(DOCDIR)
+	for i in $(JSDOC_TEMPLATES); do [ -d $$i ] && cd doc && jsdoc --verbose -t $$i -c jsdoc.conf.json -d ../$(DOCDIR) && break; done
 
 init:
 	mkdir -p $(BUILDDIR) $(BUILDDIR)/loadpng $(BUILDDIR)/zip/src $(BUILDDIR)/ini
@@ -235,7 +247,7 @@ clean:
 		$(MAKE) -C $$dir -f Makefile $@; \
 	done
 
-distclean: clean alclean jsclean dzclean wattclean zclean apclean mbedtlsclean curlclean dxeclean mesa3clean
+distclean: clean alclean jsclean dzclean wattclean zclean apclean mbedtlsclean curlclean dxeclean mesa3clean webpclean bzip2clean
 	$(MAKE) -C $(TEXUS) clean
 	$(MAKE) -C $(FONTCONV) clean
 	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.*
@@ -256,6 +268,9 @@ wattclean:
 zclean:
 	$(MAKE) -C $(ZLIB) -f Makefile.dojs clean
 
+webpclean:
+	$(MAKE) -C $(WEBP) -f makefile.djgpp clean
+
 bzip2clean:
 	$(MAKE) -C $(BZIP2) -f Makefile clean
 
@@ -267,16 +282,17 @@ apclean:
 
 mbedtlsclean:
 	$(MAKE) -C $(MBEDTLS) -f Makefile clean
+	find $(MBEDTLS) -name \*.d -exec rm {} +
 
 mesa3clean:
 	$(MAKE) -C $(MESA3) -f Makefile.dja realclean
 
 curlclean:
 	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls-watt TRIPLET=i586-pc-msdosdjgpp WATT_ROOT=$(WATT32) clean
-	rm -f $(CURL)/lib/libcurl.a
+	rm -f $(LIB_CURL)
 
 muclean:
-	rm -f $(MUJS)/build/release/libmujs.a
+	rm -f $(LIB_MUJS)
 
 glideclean:
 	rm -rf glidedxe.c
@@ -372,12 +388,22 @@ fdos: zip
 		tests/ \
 		GrxFntConv/ \
 		$(TMP)/tmp
+	# to be sure remove testdata!
+	rm -rf $(TMP)/tmp/tests/testdata
 	# zip up sources and remove tmp
 	(cd $(TMP)/tmp && zip -9 -r ../SOURCE/DOJS/SOURCES.ZIP * && rm -rf $(TMP)/tmp)
 
 	# ZIP up everything as DOS ZIP and clean afterwards
 	(cd $(TMP) && zip -k -9 -r $(FDZIP) *)
 	rm -rf $(TMP)
+
+distribution:
+	make -f Makefile.linux distclean
+	make -f Makefile.linux zip
+	make -f Makefile.linux distclean
+	make distclean
+	make fdos
+	make distclean
 
 .PHONY: clean distclean init doc zip fdos $(DXE_DIRS)
 

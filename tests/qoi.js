@@ -28,6 +28,10 @@ LoadLibrary("qoi");
 function Setup() {
 	tc = new Bitmap("tests/testdata/testcard.qoi");
 	logo = new Bitmap("tests/testdata/qoi_logo.qoi");
+
+	f = new File("tests/testdata/qoi_logo.qoi", FILE.READ);
+	qoi_bytes = f.ReadInts();
+	bm = new Bitmap(qoi_bytes);
 }
 
 /*

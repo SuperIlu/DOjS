@@ -1,5 +1,5 @@
 BIN_PREFIX = i586-pc-msdosdjgpp-
-W32_BIN2C_ = ../util/linux/bin2c
+W32_BIN2C_ = ../util/bin2c
 W32_NASM_ ?= nasm
 #
 # NB! THIS MAKEFILE WAS AUTOMATICALLY GENERATED FROM Makefile.all.
@@ -216,7 +216,7 @@ install: all
 	@echo Install to $(prefix) done
 
 clean:
-	rm -f $(TARGETS) $(OBJPATH)*.o $(OBJPATH)*.iS $(OBJPATH)*.arg $(PKT_STUB) $(OBJPATH)cflags.h
+	rm -f $(TARGETS) $(OBJPATH)*.o $(OBJPATH)*.iS $(OBJPATH)*.arg $(OBJPATH)cflags.h
 	@echo Cleaning done
 
 -include build/djgpp/watt32.dep

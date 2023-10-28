@@ -3096,3 +3096,7 @@ void nsvgDelete(NSVGimage* image)
 #endif // NANOSVG_IMPLEMENTATION
 
 #endif // NANOSVG_H
+
+#if LINUX==1
+extern void init_nanosvg(js_State *J);
+#endif

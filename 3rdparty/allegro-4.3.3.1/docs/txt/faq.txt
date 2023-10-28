@@ -1,0 +1,808 @@
+                ___  _ _                        _____ ___   ___ 
+               / _ \| | | ___  __ _ _ __ ___   |  ___/ _ \ / _ \ 
+              | |_| | | |/ _ \/ _` | '__/ _ \  | |_ | |_| | | | |
+              |  _  | | |  __/ (_| | | | (_) | |  _||  _  | |_| |
+              |_| |_|_|_|\___|\__, |_|  \___/  |_|  |_| |_|\__\_\
+                              |___/ 
+
+
+
+Note that this FAQ list is rather old, and much of it won't apply to
+Allegro 4.4.  For example, the build system has completely changed.
+Still, you might find some useful hints here.
+
+
+
+==========================================
+============ Trivial problems ============
+==========================================
+
+
+   What is Allegro?
+      See readme.txt.
+
+
+   Where can I get it?
+      From the Allegro homepage, http://alleg.sourceforge.net/.
+
+
+   How do I use it?
+      See allegro.txt.
+
+
+
+
+==============================================
+============ The giftware licence ============
+==============================================
+
+   The Allegro licence is absolutely clear unless you are a lawyer.
+   However, it's written quite informally so this mini-FAQ tries to clarify
+   some things.
+
+
+   Does the licence mean that Allegro is public domain?
+      No. Every Allegro contributor holds the copyright for the code he or
+      she wrote. This means he or she grants you the right to use it for
+      any purpose you want. But the fact that the contributor holds the
+      copyright means that you e.g. cannot claim that you wrote the code.
+
+   Can I use Allegro for commercial purposes?
+      Yes.
+
+   Is Allegro compatible with licence XXX (e.g. GPL)?
+      Because the Allegro licence has no restrictions on use you can combine
+      it with any licence you want.
+
+   Is Allegro open source (OSI) compatible?
+      See the previous question. Since Allegro is compatible with about any
+      license, it also is OSI compatible. It clearly is compatible with all the
+      points in the OSD (open source definition). You can search the OSI
+      mailing list for "Allegro" to see that OSI shares this view. (OSI
+      officials still were reluctant to consider it for approval though and
+      suggested to use an existing license like MIT instead.)
+
+   How are modifications of the library licensed?
+      You can modify Allegro and distribute the modified Allegro under
+      any licence you want, but the original unmodified parts will still
+      be licenced under the Allegro licence. If you offer your
+      modifications to be included in the official Allegro distribution
+      (e.g. by sending them to the Allegro developers mailing list) you
+      automatically agree with licencing the modification under the
+      Allegro licence.
+
+   I took your code. Will you sue me?
+   Your library destroyed my PC. Who do I sue?
+      We are programmers not lawyers. This FAQ represents our current
+      understanding of copyright law (or copyright laws in different
+      countries). But given the license, which allows everything, and
+      the disclaimer, which says we take no responsibility for anything,
+      we really don't see how there could be any problems.
+
+
+
+
+========================================
+============ DJGPP problems ============
+========================================
+
+
+   What is this make program that I'm supposed to run?
+      Make is part of the standard djgpp distribution, in the file 
+      v2gnu/mak*b.zip (whatever the latest version number is).
+      You can get this from http://www.delorie.com/djgpp/.
+
+
+   Make doesn't work properly.
+      Are you sure that you have installed djgpp correctly? Check the 
+      instructions in the djgpp readme.1st file, and in particular confirm
+      that you have set the DJGPP environment variable and added the 
+      djgpp\bin directory to your path.
+
+
+   My djgpp installation is fine, but make still doesn't work properly.
+      Are you sure that you are using the GNU make program, and not some 
+      other version like the Borland one? If in doubt, run make -v and
+      check that the GNU copyright message is displayed.
+
+
+   When I run make, it asks me for some parameters. What do I type?
+      You shouldn't be running make from the Win95 explorer! Bring up a DOS 
+      box, change to your Allegro directory, and type make at the command
+      prompt.
+
+
+   When I run make, it says "makefile has modification time in the future".
+      Are you sure that your system time and date are set correctly?
+      Alternatively you may have downloaded a fresh file made by someone in a
+      more eastern timezone. In the latter case you can either wait a few
+      hours, temporarily set your clock forward, or use a utility such as
+      touch to change the timestamp of the files.
+
+
+   When I run make, it says "virtual memory exhausted".
+
+      As the error message suggests, you need to provide more memory for the 
+      compiler to use. The go32-v2 program will tell you how much is
+      currently available. If you are running under DOS, try to free up more
+      disk space for use as a swapfile. When using win95, increase the DPMI 
+      memory limit in the properties for your DOS session to 65535 (you'll 
+      have to type this in by hand, because the pulldown list doesn't go 
+      above 16384).
+
+
+   When I run make, it says "conflicting types for va_list".
+
+      As the error message suggests, there is a conflict between newer
+      versions of gcc and older versions of the libc. You must upgrade your
+      djdevxxx.zip package to the latest update (timestamp 11 August 2002)
+      of DJGPP-2.03 or above.
+
+
+   When I try to compile a program using Allegro, I get lots of errors like:
+   C:\TEMP\ccdaaaaa(.text+0x9):x.c: undefined reference to `allegro_init'
+   C:\TEMP\ccdaaaaa(.text+0xe):x.c: undefined reference to `install_keyboard'
+
+      You haven't read the docs, have you? :-) You need to link your program 
+      with the library file, liballeg.a. First, make sure you have installed
+      everything properly (running make install should do this for you).
+      Second, if you are compiling from the command prompt or with a makefile,
+      add -lalleg to the end of your gcc command line, or if you are using Rhide,
+      go to the Options/Libraries menu, type alleg into the first empty field,
+      and make sure the box next to it is checked.
+
+
+   I give up: I can't compile this! Can you send me a precompiled version?
+
+      No, sorry. For starters, liballeg.a is about 450k, but you'd probably 
+      also want various utilities like the grabber, sound setup, etc. And
+      what about all the example programs? If we included compiled versions
+      of everything, a binary distribution would be over 7 megs: way too big
+      to be practical! More seriously though, there just isn't any reason
+      why you can't build it yourself. A compiler is a deterministic
+      process: given a particular input file and command line, it will always
+      produce the same output. If this isn't working, you either have the
+      wrong input files (ie. your copy of Allegro is broken in some way), or
+      the wrong command line (it is hard to see how that could happen, since
+      all you have to do is type make...) or your compiler is broken, ie. you
+      didn't install djgpp properly. You need to find and fix the problem,
+      not just sweep it under the carpet by getting someone else to compile
+      Allegro for you...
+
+
+   Compile errors scroll off the screen too quickly for me to read them!
+
+      GNU tools write their error messages to the error stream, stderr. 
+      Unfortunately command.com is too stupid to know how to redirect this, 
+      but fortunately DJ was smart enough to work around that, so you can 
+      use his redir program to capture the output messages, for example 
+      
+         redir -eo make > logfile.txt
+      
+
+
+
+======================================
+============ DOS problems ============
+======================================
+
+
+   Does the DOS version of Allegro work under Windows NT?
+
+      Your mileage may vary. Some people have reported problems, while 
+      others say that it works fine. Use the Windows version of Allegro
+      if you want to make Windows programs. If you want to run DOS
+      programs, use DOS!
+
+
+   Does Allegro work under OpenDOS?
+
+      Yes, but with some caveats. If you are using the OpenDOS version of 
+      EMM386, you must disable their DPMI implementation (specify DPMI=OFF
+      on the EMM386.EXE device line in your config.sys). You should also
+      make sure the PIC=OFF flag is set, but this is the default so it won't
+      be a problem unless you have specifically enabled it.
+
+
+   How can I extend the 256k limit on Mode-X video memory?
+   I have two megs in my card.
+
+      You can't. The limit is imposed by the VGA hardware, not by Allegro. 
+      To access more than 256k of video memory you need to use an SVGA mode, 
+      which means either switching to a higher resolution or getting a copy 
+      of the SciTech Display Doctor, which provides several low resolution
+      SVGA modes.
+
+
+   Does DOS Allegro work with the SB-Live soundcard?
+
+      It does for some people, but not for others. The problem is that 
+      Creative Labs refuse to release any specs, so we don't know how to 
+      write a driver for it. Complain to them, or buy a different card from 
+      a more reasonable manufacturer.
+
+
+   Why does DOS Allegro play sounds so much quieter than in Windows?
+
+      This might be because you have the volume set very low: try changing 
+      this in the setup program. Also, Allegro is mixing several sounds into 
+      a single output buffer, unlike the Windows sound player that only 
+      plays one sample at a time, so each individual sound can only get a 
+      smaller percentage of the total output volume. This is just the price 
+      you pay for multiple output channels. If you don't like it, use the 
+      setup program to tweak the number of channels: this can be any power 
+      of two less than or equal to 64, and the smaller you make it, the 
+      louder the sound will be. Alternatively, use set_volume_per_voice(),
+      described in the docs. This will enable you to adjust the overall
+      volume of Allegro's digital sound output.
+
+
+   Why doesn't it work with my video card?
+
+      Try using a FreeBE/AF driver (http://www.talula.demon.co.uk/freebe/),
+      or the commercial SciTech Display Doctor (http://www.scitechsoft.com).
+      If it still doesn't work, post a description of your problem to the 
+      Allegro mailing list, along with a copy of the output from running the 
+      afinfo and vesainfo programs.
+
+
+   Why not use some sort of dynamic linking system?
+
+      The VBE/AF interface already provides this for the video drivers: see 
+      the FreeBE/AF project on http://www.talula.demon.co.uk/freebe/.
+      For more general things like the sound, VESA, and mode-X routines, 
+      this would be very difficult to do because the drivers depend on a lot 
+      of helper functions from the core lib. The djgpp DXE format is nowhere 
+      near flexible enough to support this, and we don't want to make Allegro 
+      dependent on any other dynamic linking packages.
+
+
+   I get an "out of environment space" error when I run fix.bat or
+   vcvars32.bat!
+
+      Well duh, you need to increase the size of your environment then :-) 
+      You can do this by changing the settings for your DOS box (click the 
+      system menu and select "properties"), or at startup in your config.sys 
+      file (eg. shell=c:\command.com /e:8192 /p).
+
+
+
+==========================================
+============ Windows problems ============
+==========================================
+
+
+   I get an "out of environment space" error when I run fix.bat or
+   vcvars32.bat!
+
+      Well duh, you need to increase the size of your environment then :-) 
+      You can do this by changing the settings for your DOS box (click the 
+      system menu and select "properties"), or at startup in your config.sys 
+      file (eg. shell=c:\command.com /e:8192 /p).
+
+
+   When I run make, it says "missing separator".
+
+      Make sure that you don't have a semi-colon appended to your MSVCDIR 
+      variable if you are using MSVC, to your MINGDIR variable if you are 
+      using MinGW or to your BCC32DIR variable if you are using BCC.
+      Also run make -v from the command line and make sure you are using
+      GNU make and not Borland make or Microsoft make.
+
+
+   I get lots of compile errors about things like "LPDIRECTDRAWSURFACE2"!
+
+      You need to tell your compiler how to find the DirectX include files
+      and libraries: put the DirectX SDK /include and /lib directories in the
+      compiler/linker path. Alternatively, if you don't want to modify any
+      configuration stuff, you can simply copy the files from the DirectX SDK
+      /include and /lib directories to the corresponding ones for your
+      compiler.
+
+
+   I get lots of compile errors about things like "DDEDM_STANDARDVGAMODES"!
+
+      You need to upgrade to a more recent version of the DirectX SDK, at 
+      least version 5, which you can get from the Microsoft Developer site.
+
+
+   When I run make, it says "windres: no resources".
+
+      If an anti-virus software (Norton or McAfee for example) is running in
+      the background on your computer, try to disable it temporarily.
+
+
+   I get an error about a missing WinMain() or main() function!
+
+      You need to write END_OF_MAIN() just after your main() function.
+      Allegro uses this, along with some preprocessor magic, to turn a normal
+      main() function into a Windows-style WinMain() entry point.
+
+
+   I get an error about an "unresolved external symbol _main"!
+
+      Make sure you're building a Windows GUI Application, and not a Windows
+      Console Application. This is a setting when you create the project in
+      MSVC, Dev-C++ or Borland C++ Builder. Alternatively, this is specified
+      on the command line by the -subsystem:windows option for the MSVC
+      linker, by the -Wl,--subsystem,windows option for the MinGW compiler
+      or the -tW option for the Borland C++ compiler. Either that, or define
+      the preprocessor symbol ALLEGRO_USE_CONSOLE prior to including Allegro
+      headers if you really need the console for your program.
+
+
+   I get lots of compile errors about conflicting types for "struct BITMAP"!
+
+      If your program directly includes Win32 API header files, see the
+      "Windows specifics" section of the documentation.
+      
+      If your program only includes header files of the C++ standard library,
+      you're very likely trying to compile it with gcc 3.x for MinGW; if so,
+      define the symbol __GTHREAD_HIDE_WIN32API on the compiler command line:
+      
+         g++ -D__GTHREAD_HIDE_WIN32API program.cpp -lalleg
+      
+
+
+   In windowed mode artifacts are left on the desktop when the window
+   is moved or when another window is placed on top of it.
+
+      Disable direct updating for the DirectX windowed driver by using the
+      dedicated configuration variable. See the 'Configuration routines'
+      section in the docs and the allegro.cfg template file for more
+      detailed informations.
+
+
+   In windowed mode the screen stays black unless the window is placed
+   under another window on the desktop.
+
+      Disable direct updating for the DirectX windowed driver by using the
+      dedicated configuration variable. See the 'Configuration routines'
+      section in the docs and the allegro.cfg template file for more
+      detailed informations.
+
+
+
+=======================================
+============ Unix problems ============
+=======================================
+
+
+   I get an error about "_mangled_main_address" being undefined!
+
+      You need to write END_OF_MAIN() just after your main() function. 
+      Allegro uses this, along with some preprocessor magic, to get a copy 
+      of your argv[] parameters (it needs those for various internal things).
+
+
+   I get an error about a duplicate definition of the "_main" symbol!
+
+      You are probably on a Darwin/MacOS X system. If so, make sure the symbol
+      USE_CONSOLE is not defined in your program: it is a deprecated symbol
+      that must be replaced by ALLEGRO_USE_CONSOLE. Also note that the magic
+      main can't be disabled on such a system: you simply can't define the
+      symbol ALLEGRO_NO_MAGIC_MAIN in a program linked against Allegro.
+
+
+   Compile errors scroll off the screen way too quickly for me to read them!
+
+      You need to redirect stderr into a file, so you can view them later. 
+      The method for doing this depends on your shell: if you are using a 
+      Bourne-style shell like bash, try make 2> logfile.txt
+
+
+   When I try to run Allegro programs, I get "error while loading shared libraries:
+   liballeg.so.4.1: cannot open shared object file: No such file or directory".
+
+      You need to teach the dynamic linker where to find the Allegro shared library.
+      See docs/build/unix.txt, near the end of the 'Installing Allegro' section.
+
+
+   When I try to use DGA2, I get "resolution not supported", but the
+   X server does actually support that resolution !
+
+      There are two possible reasons:
+      1) DGA2 may support different resolutions/color depths than X, 
+         run the gfxinfo program to know what combinations you can use, 
+      2) You may have a buggy DGA2 implementation, see next question.
+
+
+   When I try to use DGA2, the screen goes black and the PC completely
+   halts!
+
+      You are probably using a XFree86 server with a very buggy DGA2 
+      implementation, such as 4.0.3 (shipped with Red Hat 7.1 for example). 
+      Upgrading to 4.1.0 will probably solve your problem. You can obtain 
+      it from ftp://ftp.xfree86.org/pub/XFree86/4.1.0/binaries/ selecting 
+      the directory suited to your platform and following the instructions 
+      you find in the Install file.
+
+
+
+==========================================
+============ General problems ============
+==========================================
+
+
+   I'm trying to compile the grabber, but it doesn't work!
+
+      The grabber needs to be linked with the code in datedit.c. But you 
+      shouldn't have to worry about doing this by hand: just run make and 
+      that will build everything for you.
+
+
+   When I compile Allegro, make fails with something like `Error: operands
+   given don't match any known 386 instruction' or `Error: no such
+   instruction `maskmovq %mm3, %mm1''.
+
+      You need to update your version of GNU binutils. See readme.txt to
+      find out what the minimum required version you need is.
+
+
+   Can I use Allegro with my <foobar> compiler?
+
+      Not unless <foobar> is mentioned in readme.txt as one of the 
+      supported platforms. You could port it, but that is usually a lot of 
+      work. If <foobar> is a 16 bit DOS compiler like Borland C, you 
+      might as well just forget the idea :-)
+
+
+   What is this "Allegro WIP" that I see people talking about?
+
+      WIP stands for "work in progress", and refers to any changes that are 
+      more recent than the last official release. WIP versions of the 
+      library can be obtained as patches from the Allegro website 
+      (http://alleg.sourceforge.net/), and are usually
+      quite stable, although obviously not so well tested as a final release 
+      version.
+
+
+   I got the WIP patch, but I can't apply it.
+
+      Do you have a copy of patch.exe? If not, go and get it from the same 
+      place that you downloaded the rest of djgpp: this tool is a standard 
+      part of the compiler distribution. Similarly, you can get the Mingw
+      compiled version from http://sourceforge.net/projects/gnuwin32/.
+      
+      If you do have the patch program but it isn't working properly, make
+      sure that you are installing the patch over the top of an unmodified
+      copy of whatever Allegro version it is intended to update (this will
+      usually be the most recent official release from before the WIP was
+      made, but check the text file that comes with the WIP to be sure).
+
+
+   How can I display several different images at the same time?
+   When I show the second one it messes up the palette for the first.
+
+      This is just the way that the video hardware works: there can only be 
+      one palette in use at any given moment. Either convert your images so 
+      they all use the same palette, or switch to a truecolor graphics mode.
+
+
+   How can I convert my graphics to all use the same 256 color palette?
+
+      See the Allegro.cc homepage (http://www.allegro.cc/)
+      for some utilities, for example FixPal and Smacker.
+
+
+   My colors always come out wrong. And how can I make a greyscale palette
+   with 256 different shades?
+
+      The VGA hardware only uses 6 bits for each color component, which 
+      means the red, green, and blue values in the palette structure range 
+      from 0 to 63, not all the way up to 255. That gives you a potential 
+      2^18 = 262144 different colors, or 64 shades of grey. If you need more 
+      than this you could try using VESA function 0x4F08 to select an 8 bit 
+      wide DAC, but Allegro doesn't support this directly and I don't know 
+      how reliable it will be across different hardware.
+
+
+   Why do I have a funny color border at the edges of my monitor?
+
+      When you are in a 256 color mode, the VGA card displays color #0 
+      around the border of the display area (in truecolor modes it displays 
+      black). Your funny color will go away if you change the palette so 
+      that color #0 is black.
+
+
+   How can I fade the screen in a truecolor graphics mode?
+
+      With great difficulty :-) There is no such easy trick as just altering 
+      the palette, so you will have to repeatedly redraw the image in a 
+      lighter or darker form. You could draw black translucent rectangles 
+      over the screen to darken it down, or use draw_lit_sprite() to tint a 
+      bitmap while copying it to the screen, but be warned that these 
+      operations are expensive and will require a fast PC!
+      
+      Also, have a look at http://www.allegro.cc/ for add-on packages
+      (notably FBlend v0.5) that attempt to make this operation as fast as
+      possible.
+
+
+   I tried using fade_in() and fade_out() with truecolor modes but nothing
+   happened. What am I doing wrong?
+
+      fade_in() and fade_out() only work in 8-bit paletted modes.
+      See the previous question for details.
+
+
+   How can I generate FLI or FLC format animations?
+
+      See the Allegro.cc homepage (http://www.allegro.cc/)
+      for some utilities, for example DTA and Smacker. Also, you can use ASE
+      (Allegro Sprite Editor, http://ase.sourceforge.net/), which allows
+      drawing/editing each frame of the animation and save it as a FLI. Or
+      you can use The GIMP (http://www.gimp.org/) along with it's GFli
+      plugin, using layers as frames, and saving your work as file.fli.
+      The GIMP allows you to edit existent FLI files too.
+
+
+   How can I make parts of my sprite transparent in truecolor modes?
+   I don't understand what the docs mean by "bright pink"...
+
+      In your favourite paint program, get hold of the RGB sliders and drag 
+      the red and blue ones up as far as they go (usually to 255, but this 
+      will depend on what units your software uses), and the green one right 
+      down to zero. The result is a special shade of Magic Pink, or as some 
+      people prefer to call it, magenta.
+
+
+   I can't get the 3D polygon functions to work!
+
+      Remember that the vertex positions are stored in fixed point format, 
+      so you must use the itofix() macro or shift your coordinates 16 bits 
+      to the left.
+
+
+   I can't get the rotate_sprite() function to work!
+
+      Remember that the angle of rotation is stored in fixed point format, 
+      so you must use the itofix() macro or shift your coordinates 16 bits 
+      to the left. For example, rotate_sprite(bmp, spr, x, y, itofix(32))
+      will rotate the graphic by 45 degrees.
+
+
+   I can't get the d_bitmap_proc() or d_icon_proc() GUI object to work!
+
+      You are probably trying to initialise the dialog structure with a 
+      pointer to your bitmap, right? That won't work because the dialog is 
+      created at compile time, but the bitmap is only loaded at runtime, so 
+      the compiler doesn't yet know where it will be located. You need to 
+      fill in the dialog structure with a NULL pointer, and then copy the 
+      real bitmap pointer into the dp field as part of your program init 
+      code, after you've loaded the bitmap into memory.
+
+
+   Should I use regular bitmaps, RLE sprites, or compiled sprites?
+
+      It depends on exactly what you are doing. If your images are totally 
+      opaque, there is no advantage to using an RLE sprite, and it will 
+      probably be faster to use a regular bitmap with the blit() function. 
+      If your graphics contain masked areas, an RLE sprite may be both smaller
+      and faster than the draw_sprite() function, depending on your CPU
+      and your bitmaps.
+      Compiled sprites are in general quite a bit faster than both the 
+      others for masked images, and slightly faster for opaque graphics, but 
+      this is far more variable. They are at their best with small sprites, 
+      on older machines and in mode-X, and may actually be slower than 
+      blit() when using SVGA modes on a pentium (the large size of a 
+      compiled sprite is very bad for the cache performance).
+
+
+   How can I make my game run at the same speed on any computer?
+
+      You need to make sure the game logic gets updated at a regular rate, 
+      but skip the screen refresh every now and then if the computer is too 
+      slow to keep up. This can be done by installing a timer handler that 
+      will increment a global variable at your game logic speed, eg:
+
+      volatile int speed_counter = 0;
+
+      void increment_speed_counter()
+      {
+         speed_counter++;
+      }
+
+      END_OF_FUNCTION(increment_speed_counter)
+
+      void play_the_game()
+      {
+         LOCK_VARIABLE(speed_counter);
+         LOCK_FUNCTION(increment_speed_counter);
+
+         install_int_ex(increment_speed_counter, BPS_TO_TIMER(60));
+
+         while (!game_over) {
+            while (speed_counter > 0) {
+               update_game_logic();
+               speed_counter--;
+            }
+
+            update_display();
+         }
+      }
+
+
+   How can I take a screenshot of my Allegro program?
+
+      Add a call to save_bitmap() somewhere in your code. See the 
+      save_bitmap() documentation for a discussion of one common pitfall 
+      when doing this, and some example code.
+
+
+   How can I generate a random number?
+
+      Call srand(time(NULL)) at the beginning of your program, and then use 
+      rand()%limit to obtain a pseudo-random number between 0 and limit-1.
+
+
+   Why not make a "lite" version of Allegro?
+   I don't need any of the sound, maths, or GUI routines...
+
+      There is no need. The linker will only include the parts of the 
+      library that you actually use, so if you don't call any of, say, the 
+      texture mapping or FLIC playing functions, they will be left out of 
+      your executable. This doesn't work perfectly because a lot of the 
+      Allegro code uses tables of function pointers that cause some 
+      unnecessary routines to be linked in, so the majority of the graphics 
+      functions will be included in every executable, but I have tried to 
+      keep this to a minimum. See allegro.txt for information about more 
+      precise ways to remove some of the graphics and sound drivers.
+
+
+   Will you ever add support for 3D accelerator hardware?
+
+      No. This sort of hardware support would be most useful as part of a 
+      proper 3D API, which Allegro is not, and will never be. If you want
+      to do some work on this, the MESA library (a free implementation 
+      of OpenGL) is IMHO the place to start.
+      
+      However, if you are interested in using OpenGL for graphics and Allegro
+      for everything else, you can try the various add-ons libraries linked
+      from http://www.allegro.cc/ such as AllegroGL.
+
+
+   Why not add a MOD playing function?
+
+      Several very good ones already exist, for instance the JGMOD or DUMB
+      packages. See the audio library extensions section on the Allegro.cc
+      website (http://www.allegro.cc/). You are not allowed to suggest
+      that one of these libraries be merged into Allegro, because this topic
+      has already been done to death on the mailing list and we are tired of it.
+
+
+   Why not add networking support?
+
+      There are several networking packages currently in development or 
+      floating around on the net, though, and in our opinion this sort of 
+      code is more useful as an external library than it would be as part of 
+      Allegro.
+
+
+   Why can't Allegro read GIF files?
+
+      Unisys has a patent on the LZW compression algorithm that is used by 
+      the GIF format. We want everything in Allegro to be freely usable 
+      without any restrictions whatsoever, which means we can't include any 
+      code that is subject to licensing or the payment of royalties.
+
+
+   My program crashes all the time. Could this be a bug in Allegro?
+
+      Perhaps. Try to isolate the smallest fragment of code that is able to 
+      reproduce the problem, and we'll have a look at it. If you can send us 
+      a 10 line program, we will fix it. 100 lines, and we can probably fix 
+      it. 1000 lines, and we don't have a chance :-)
+
+
+   Can I use Allegro in my <whatever> commercial application?
+
+      Sure. See the giftware terms in readme.txt. We don't mind what you do 
+      with it, and there are no problems with commercial usage.
+
+
+   When will <foobar> be finished? I can't wait...
+
+      Whenever it is done! A little encouragement is always welcome, but we 
+      don't have any completion deadlines and we're not going to make one up 
+      for you :-) As soon as it is finished, it will be released.
+
+
+   Where can I get some fonts to use with Allegro?
+
+      The grabber can import directly from GRX or BIOS format .fnt files, or 
+      you can draw them onto a .pcx image using any paint program. See 
+      http://www.talula.demon.co.uk/ttf2pcx/ for a utility that 
+      will convert Windows TrueType fonts into this .pcx format.
+
+
+   Where can I find a set of instrument samples for the DIGMID driver?
+
+      See the Allegro homepage (http://alleg.sourceforge.net/)
+      for some links. You can use Gravis patches (.pat format), or SoundFont 
+      2.0 (.sf2) files, but the latter must be converted into a patches.dat 
+      file with the pat2dat utility.
+
+
+   How can I convert the documentation into Windows Help format?
+
+      You need to download the makertf conversion utility 
+      (http://www.giffer.com/public/win/pwflemgt/Files/MKRTF104.ZIP), and the Windows 
+      Help compiler (ftp://ftp.microsoft.com/Softlib/MSLFILES/HC505.EXE). 
+      Make a temporary directory, copy the allegro.txi file from the 
+      allegro/docs dir, and run the commands makertf --no-warn allegro.txi 
+      -o allegro.rtf -J allegro.hpj followed by hcp allegro.hpj. The 
+      second command will give a lot of warnings, but they can safely be 
+      ignored.
+
+
+   How can I print out the documentation?
+
+      The allegro.rtf file can be read directly into Microsoft Word and 
+      printed from there, but you should right-click and update the table of 
+      contents and index fields to fill them with the correct data first. 
+      Alternatively you can install the TeX package and use the tex and 
+      dvips programs to convert allegro.txi into Postscript format.
+
+
+   Where can I find example source code, add-on packages, and tutorials?
+
+      Check the Allegro.cc homepage, http://www.allegro.cc/.
+      If you have anything to add to this, please post the URL!
+
+
+   Why is it considered good coding practice to define PI as a constant,
+   rather than just using the value 3.141592 in my code?
+
+      It simplifies the maintenance of your program, in case the value of PI 
+      ever needs to be changed. Also it will make your program more portable 
+      to other compilers that use different values of PI.
+
+
+   Why doesn't vsync() seem to work?
+
+      A number of graphics cards have buggy or incomplete VESA
+      implementations, and often the vsync() function is not implemented. For
+      examples on flicker-free drawing, look at the code for the demo game shooter,
+      which uses a variety of methods to draw itself.
+
+
+   Why doesn't busy waiting on the key array work? For example,
+   "while (!key[KEY_ENTER]);" doesn't work.
+
+      If the code works without optimisations, then it could be the
+      compiler's fault. You can try beating the compiler into submission,
+      for example:
+
+      while (!key[KEY_ENTER])
+         rest(0);
+
+      For this case, however, it would be better to use readkey() instead.
+      Or consider upgrading or downgrading your compiler.
+
+
+   I get lots of errors when I try to compile my C++ Allegro program.
+
+      You are probably declaring the use of a namespace before including
+      Allegro headers. For example:
+
+      #include <iostream>
+      using namespace std;
+
+      #include <allegro.h>
+
+      Move the `using' declaration after the `include' directives referring
+      to Allegro headers:
+
+      #include <iostream>
+      #include <allegro.h>
+
+      using namespace std;
+
+
+   I'm still confused. Where can I get help?
+
+      See http://alleg.sourceforge.net/maillist.html.
+
+
+

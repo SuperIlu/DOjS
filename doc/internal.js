@@ -83,9 +83,16 @@ function GetLoadedLibraries() { }
 function FlushLog() { }
 
 /**
+ * @param {string} varname the name of the variable
+ * 
+ * @returns {string} the value of the var or NULL if it does not exists.
+ */
+function GetEnv(varname) { }
+
+/**
  * IPX network functions.
  * 
- * **Note: IPS module must be loaded by calling LoadLibrary("ipx") before using!**
+ * **Note: IPX module must be loaded by calling LoadLibrary("ipx") before using!**
  * 
  * @module ipx
  */
@@ -480,6 +487,17 @@ function SavePngImage(fname) { }
 function SaveQoiImage(fname) { }
 
 /**
+ * Save current screen to WEBP file.
+ * 
+ * **Note: WEBP module must be loaded by calling LoadLibrary("webp") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * 
+ * @param {string} fname filename.
+ */
+function SaveWebpImage(fname) { }
+
+/**
  * get color of on-screen pixel.
  * @param {number} x x coordinate.
  * @param {number} y y coordinate.
@@ -624,7 +642,6 @@ function RmFile(name) { }
  */
 function MkDir(name) { }
 
-
 /**
  * Get information about a file / directory.
  * @param {string} name name of the file to get info for.
@@ -632,6 +649,24 @@ function MkDir(name) { }
  * @throws Throws an error if stat fails.
  */
 function Stat(name) { }
+
+/**
+ * This function determine the current default drive.
+ * This is a wrapper for DOS IN21, ah=0Eh.
+ * 
+ * @returns the current default drive (1=A:, 2=B:, etc.). 
+ */
+function GetDrive() { }
+
+/**
+ * This function set the current default drive based on drive (1=A:, 2=B:, etc.) and determines the number of available logical drives.
+ * This is a wrapper for DOS IN21, ah=19h.
+ * 
+ * @param {number} drive the new default drive.
+ * 
+ * @return the number of available logical drives.
+ */
+function SetDrive(drive) { }
 
 /**
  * Run garbage collector, print statistics to logfile if 'info==true'.

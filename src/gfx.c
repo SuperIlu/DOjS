@@ -22,7 +22,6 @@ SOFTWARE.
 
 #include <allegro.h>
 #include <dirent.h>
-#include <dpmi.h>
 #include <errno.h>
 #include <mujs.h>
 #include <stdio.h>

@@ -31,13 +31,13 @@ function Setup() {
 	SetFramerate(30);
 	MouseShowCursor(false);
 
-	i1 = new Bitmap("examples/dojs.bmp");
-	i2 = new Bitmap("examples/3dfx.tga");
-	i3 = new Bitmap("examples/glow.pcx");
-	i6 = new Bitmap("examples/3dfx.png");
-	i7 = new Bitmap("examples/3dfx_s.jpg");
-	i8 = new Bitmap("examples/3dfx.jpg");
-	i9 = new Bitmap("examples/3dfx_bw.jpg");
+	i1 = img_test("examples/dojs.bmp");
+	i2 = img_test("examples/3dfx.tga");
+	i3 = img_test("examples/glow.pcx");
+	i6 = img_test("examples/3dfx.png");
+	i7 = img_test("examples/3dfx_s.jpg");
+	i8 = img_test("examples/3dfx.jpg");
+	i9 = img_test("examples/3dfx_bw.jpg");
 
 	i10 = new Bitmap("LEHLh[WB2yk8pyoJadR*.7kCMdnj", 320, 240, 1);
 	// i10 = new Bitmap("L", 320, 240, 1);
@@ -62,6 +62,18 @@ function Setup() {
 
 	img = i10;
 	cnt = 0;
+}
+
+function img_test(fname) {
+	Println("Trying " + fname);
+
+	// test ByteArray
+	var f = new File(fname, FILE.READ);
+	var bytes = f.ReadInts();
+	var bm = new Bitmap(bytes);
+
+	// test direct file load
+	return new Bitmap(fname);
 }
 
 /*

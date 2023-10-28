@@ -285,13 +285,13 @@ function initDirInfo(dir) {
 	};
 
 	// fill 'list' and 'info' properties
-	dir.list = List(dir.path);
-	dir.list.sort();
-	var self = dir.list.indexOf(".");
-	dir.list.splice(self, 1);
-	for (var l = 0; l < dir.list.length; l++) {
-		var name = dir.list[l];
-		dir.info[name] = Stat(dir.path + "/" + name);
+	ret.list = List(ret.path);
+	ret.list.sort();
+	var self = ret.list.indexOf(".");
+	ret.list.splice(self, 1);
+	for (var l = 0; l < ret.list.length; l++) {
+		var name = ret.list[l];
+		ret.info[name] = Stat(ret.path + "/" + name);
 	}
 
 	return ret;

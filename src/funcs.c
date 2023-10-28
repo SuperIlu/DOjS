@@ -26,7 +26,6 @@ SOFTWARE.
 #include <mujs.h>
 #include <stdio.h>
 #include <sys/stat.h>
-#include <sys/dxe.h>
 #include <dlfcn.h>
 
 #include "util.h"
@@ -35,6 +34,15 @@ SOFTWARE.
 #include "jsi.h"
 #include "jsparse.h"
 #include "jscompile.h"
+
+#if LINUX == 1
+#include <sys/sysinfo.h>
+#else
+#include <sys/dxe.h>
+#include <dos.h>
+#endif
+
+#define LL_BUFFER_SIZE 2014
 
 /*********************
 ** static functions **
@@ -344,6 +352,19 @@ static void f_Gc(js_State *J) {
  * @param J the JS context.
  */
 static void f_MemoryInfo(js_State *J) {
+#if LINUX == 1
+    struct sysinfo info;
+
+    js_newobject(J);
+    {
+        if (sysinfo(&info) == 0) {
+            js_pushnumber(J, info.totalram);
+            js_setproperty(J, -2, "total");
+            js_pushnumber(J, info.freeram);
+            js_setproperty(J, -2, "remaining");
+        }
+    }
+#else
     _go32_dpmi_meminfo info;
 
     js_newobject(J);
@@ -355,6 +376,7 @@ static void f_MemoryInfo(js_State *J) {
             js_setproperty(J, -2, "remaining");
         }
     }
+#endif
 }
 
 /**
@@ -603,6 +625,7 @@ static void f_NamedFunction(js_State *J) {
     js_newfunction(J, fun, J->GE);
 }
 
+#if LINUX != 1
 /**
  * @brief callback function when a symbol can't be found during library loading.
  * This does reporting only and will not provide a fallback implementation.
@@ -614,8 +637,7 @@ static void *dxe_res(const char *symname) {
     LOGF("%s: undefined symbol in dynamic module\n", symname);
     return NULL;
 }
-
-#define LL_BUFFER_SIZE 2014
+#endif
 
 /**
  * @brief load a native library from disk, call it's init function and  register it in the list of loaded libraries.
@@ -623,6 +645,9 @@ static void *dxe_res(const char *symname) {
  * @param J VM state.
  */
 static void f_LoadLibrary(js_State *J) {
+#if LINUX == 1
+    LOGF("Library loading is not supported on Linux: %s\n", js_tostring(J, 1));
+#else
     int needed;
     char mod_name[LL_BUFFER_SIZE];
     char init_name[LL_BUFFER_SIZE];
@@ -671,7 +696,7 @@ static void f_LoadLibrary(js_State *J) {
         void (*to)(js_State *J);
     } func_ptr_cast_init;
     func_ptr_cast_init.from = dlsym(mod, init_name);
-    void (*mod_init)(js_State * J) = func_ptr_cast_init.to;
+    void (*mod_init)(js_State *J) = func_ptr_cast_init.to;
 
     // check for valid pointer
     if (!func_ptr_cast_init.from) {
@@ -705,6 +730,7 @@ static void f_LoadLibrary(js_State *J) {
         js_error(J, "Out of memory while registering native library. System will be unstable now!");
         return;
     }
+#endif
 }
 
 /**
@@ -714,6 +740,7 @@ static void f_LoadLibrary(js_State *J) {
  */
 static void f_GetLoadedLibraries(js_State *J) {
     js_newarray(J);
+#if LINUX != 1
     if (DOjS.loaded_libraries) {
         library_t *chain = DOjS.loaded_libraries;
         int idx = 0;
@@ -724,6 +751,7 @@ static void f_GetLoadedLibraries(js_State *J) {
             chain = chain->next;
         }
     }
+#endif
 }
 
 /**
@@ -752,7 +780,55 @@ static void f_SetExitMessage(js_State *J) {
     }
 }
 
-//#define DUMMY_FUNC
+/**
+ * @brief get environment variable
+ *
+ * @param J VM state.
+ */
+static void f_GetEnv(js_State *J) {
+    const char *var = js_tostring(J, 1);
+
+    const char *val = getenv(var);
+
+    if (val) {
+        js_pushstring(J, val);
+    } else {
+        js_pushnull(J);
+    }
+}
+
+/**
+ * @brief call INT21, ah=0E, SetDrive()
+ *
+ * @param J VM state.
+ */
+static void f_SetDrive(js_State *J) {
+#if LINUX == 1
+    LOGF("SetDrive is not supported on Linux: %d\n", js_touint16(J, 1));
+#else
+    unsigned int num_drives;
+    _dos_setdrive(js_touint16(J, 1), &num_drives);
+    js_pushnumber(J, num_drives);
+#endif
+}
+
+/**
+ * @brief call INT21, ah=19, GetDrive()
+ *
+ * @param J VM state.
+ */
+static void f_GetDrive(js_State *J) {
+#if LINUX == 1
+    LOGF("GetDrive is not supported on Linux\n");
+    js_pushnull(J);
+#else
+    unsigned int drive;
+    _dos_getdrive(&drive);
+    js_pushnumber(J, drive);
+#endif
+}
+
+// #define DUMMY_FUNC
 
 #ifdef DUMMY_FUNC
 #include "zip.h"
@@ -785,8 +861,14 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     js_setglobal(J, "global");
 
     PROPDEF_S(J, DOSJS_VERSION_STR, "DOJS_VERSION");  // global: DOjS version
-    PROPDEF_B(J, _USE_LFN, "LFN_SUPPORTED");          // global: LFN is supported
     PROPDEF_S(J, DOjS.jsboot, "JSBOOT_ZIP");          // global: JSBOOT.ZIP filename
+#if LINUX == 1
+    PROPDEF_B(J, true, "LFN_SUPPORTED");  // global: LFN is supported
+    PROPDEF_B(J, true, "LINUX");          // global: we are running on Linux
+#else
+    PROPDEF_B(J, _USE_LFN, "LFN_SUPPORTED");  // global: LFN is supported
+    PROPDEF_B(J, false, "LINUX");             // global: we are running on DOS
+#endif
 
     // global: command line arguments
     js_newarray(J);
@@ -810,6 +892,8 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     NFUNCDEF(J, Rename, 2);
     NFUNCDEF(J, MakeDir, 1);
     NFUNCDEF(J, System, 2);
+    NFUNCDEF(J, GetDrive, 0);
+    NFUNCDEF(J, SetDrive, 1);
 
     NFUNCDEF(J, Print, 0);
     NFUNCDEF(J, Println, 0);
@@ -823,6 +907,7 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     NFUNCDEF(J, StringToBytes, 1);
     NFUNCDEF(J, BytesToString, 1);
     NFUNCDEF(J, NamedFunction, 3);
+    NFUNCDEF(J, GetEnv, 1);
 
     NFUNCDEF(J, MouseSetSpeed, 2);
     NFUNCDEF(J, MouseSetLimits, 4);

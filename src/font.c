@@ -32,6 +32,10 @@ SOFTWARE.
 #include "color.h"
 #include "zipfile.h"
 
+#if LINUX == 1
+#include "linux/glue.h"
+#endif
+
 /*********************
 ** static functions **
 *********************/

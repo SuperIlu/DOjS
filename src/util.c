@@ -41,7 +41,7 @@ char *ut_clone_string(const char *str) {
     if (!ret) {
         return NULL;
     }
-    strncpy(ret, str, len);
+    memcpy(ret, str, len);
     return ret;
 }
 
@@ -163,18 +163,21 @@ bool ut_read_file(const char *fname, void **buf, size_t *size) {
  * @return file extension for that format or NULL for 'unknown'
  */
 char *ut_getBitmapType(byte_array_t *ba) {
-    if (ba->size < 4) {
+    if (ba->size < 12) {
         return NULL;
     }
 
     if ((ba->data[0] == 0xFF) && (ba->data[1] == 0xD8) && (ba->data[2] == 0xFF)) {
         return "JPG";
+    } else if ((ba->data[0] == 'R') && (ba->data[1] == 'I') && (ba->data[2] == 'F') && (ba->data[3] == 'F') && (ba->data[8] == 'W') && (ba->data[9] == 'E') &&
+               (ba->data[10] == 'B') && (ba->data[11] == 'P')) {
+        return "WEP";  // WEBP
     } else if ((ba->data[0] == 'G') && (ba->data[1] == 'I') && (ba->data[2] == 'F') && (ba->data[3] == '8') && (ba->data[5] == 'a')) {
         return "GIF";
     } else if ((ba->data[0] == 0x89) && (ba->data[1] == 0x50) && (ba->data[2] == 0x4E) && (ba->data[3] == 0x47) && (ba->data[4] == 0x0D) && (ba->data[5] == 0x0A) &&
                (ba->data[6] == 0x1A) && (ba->data[7] == 0x0A)) {
         return "PNG";
-    } else if ((ba->data[0] == 'q') && (ba->data[1] == 'o') && (ba->data[0] == 'i') && (ba->data[1] == 'f')) {
+    } else if ((ba->data[0] == 'q') && (ba->data[1] == 'o') && (ba->data[2] == 'i') && (ba->data[3] == 'f')) {
         return "QOI";
     } else if ((ba->data[0] == 'B') && (ba->data[1] == 'M')) {
         return "BMP";
@@ -182,8 +185,8 @@ char *ut_getBitmapType(byte_array_t *ba) {
         return "PCX";
     } else {
         // try to figure out if TGA
-        if (((ba->data[1] == 0) || (ba->data[1] == 1)) &&  // Color map type must be 0 or 1
-            ((ba->data[2] > 0) && (ba->data[2] < 4))) {    // image type must be 1, 2 or 3
+        if (((ba->data[1] == 0) || (ba->data[1] == 1)) &&                                                   // Color map type must be 0 or 1
+            (((ba->data[2] >= 1) && (ba->data[2] <= 3)) || ((ba->data[2] >= 9) && (ba->data[2] <= 11)))) {  // image type must be 1, 2, 3, 9, 10 or 11
             return "TGA";
         }
     }

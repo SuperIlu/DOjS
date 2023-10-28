@@ -272,9 +272,11 @@ function StartupInfo() {
 	Info("Memory: " + JSON.stringify(MemoryInfo()));
 	Info("Long file names: " + LFN_SUPPORTED);
 	Info("Command line args: " + JSON.stringify(ARGS));
-	Info("SerialPorts: " + JSON.stringify(GetSerialPorts().map(function (e) { return "0x" + e.toString(16) })));
-	Info("ParallelPorts: " + JSON.stringify(GetParallelPorts().map(function (e) { return "0x" + e.toString(16) })));
-	Info("FDD: " + GetNumberOfFDD() + ", HDD: " + GetNumberOfHDD());
+	if (!LINUX) {
+		Info("SerialPorts: " + JSON.stringify(GetSerialPorts().map(function (e) { return "0x" + e.toString(16) })));
+		Info("ParallelPorts: " + JSON.stringify(GetParallelPorts().map(function (e) { return "0x" + e.toString(16) })));
+		Info("FDD: " + GetNumberOfFDD() + ", HDD: " + GetNumberOfHDD());
+	}
 
 	if (DEBUG) {
 		var funcs = [];
@@ -480,7 +482,11 @@ https://web.archive.org/web/20120301022928/http://retired.beyondlogic.org/spp/pa
 https://stanislavs.org/helppc/bios_data_area.html
 */
 
-var _lptPorts = GetParallelPorts();
+if (LINUX) {
+	var _lptPorts = [];
+} else {
+	var _lptPorts = GetParallelPorts();
+}
 
 /**
  * read/write data to LPT data register.

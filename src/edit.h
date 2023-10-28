@@ -35,12 +35,21 @@ SOFTWARE.
 #define EDI_INC_FACTOR 1.4f       //!< factor to increase memory for a line if full
 #define EDI_MAX_LINE_LENGTH 4096  //!< max size when reading a line from disk
 
+#if LINUX == 1
+#define EDI_UL_LINE '+'  //!< GFX upper left corner
+#define EDI_LL_LINE '+'  //!< GFX lower left corner
+#define EDI_UR_LINE '+'  //!< GFX upper right corner
+#define EDI_LR_LINE '+'  //!< GFX upper right corner
+#define EDI_H_LINE '-'   //!< horizontal line
+#define EDI_V_LINE '|'   //!< vertical line
+#else
 #define EDI_UL_LINE 218  //!< GFX upper left corner
 #define EDI_LL_LINE 192  //!< GFX lower left corner
 #define EDI_UR_LINE 191  //!< GFX upper right corner
 #define EDI_LR_LINE 217  //!< GFX upper right corner
 #define EDI_H_LINE 196   //!< horizontal line
 #define EDI_V_LINE 179   //!< vertical line
+#endif
 
 /***********
 ** macros **
@@ -60,8 +69,6 @@ SOFTWARE.
 #endif  // DEBUG_ENABLED
 
 #define EDI_SHIFT_DOWN(s) (s & 0x03)
-#define EDI_CTRL_DOWN(s) (s & 0x04)
-#define EDI_ALT_DOWN(s) (s & 0x08)
 
 #define EDI_IS_SEL(e) (edi->sel_line != -1)
 

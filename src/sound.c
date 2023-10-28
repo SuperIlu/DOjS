@@ -461,6 +461,7 @@ void init_sound(js_State *J) {
     }
     CTORDEF(J, new_Sample, TAG_SAMPLE, 1);
 
+#if LINUX != 1
     // sound input
     DOjS.sndin_available = install_sound_input(DOjS.params.no_sound ? DIGI_NONE : DIGI_AUTODETECT, DOjS.params.no_fm ? MIDI_NONE : MIDI_AUTODETECT) == 0;
     if (!DOjS.sndin_available) {
@@ -468,6 +469,7 @@ void init_sound(js_State *J) {
     } else {
         LOGF("Sound input: OK\n");
     }
+#endif
 
     int cap = get_sound_input_cap_bits();
 

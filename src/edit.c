@@ -27,10 +27,12 @@ SOFTWARE.
 #include <string.h>
 #include <sys/types.h>
 
-#include <bios.h>
 #include <conio.h>
+#if LINUX != 1
+#include <bios.h>
 #include <keys.h>
 #include <pc.h>
+#endif
 
 #include "DOjS.h"
 #include "dialog.h"

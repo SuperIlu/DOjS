@@ -36,4 +36,7 @@ SOFTWARE.
 ***********************/
 extern void ogl_create_constants(js_State *J);
 
+extern void init_ogl(js_State *J);
+extern void shutdown_ogl(void);
+
 #endif  // _OGL_H__

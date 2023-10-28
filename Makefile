@@ -398,12 +398,7 @@ fdos: zip
 	rm -rf $(TMP)
 
 distribution:
-	make -f Makefile.linux distclean
-	make -f Makefile.linux zip
-	make -f Makefile.linux distclean
-	make distclean
-	make fdos
-	make distclean
+	make -f Makefile.linux distclean && make -f Makefile.linux zip && make -f Makefile.linux distclean && make distclean && make fdos && make distclean
 
 .PHONY: clean distclean init doc zip fdos $(DXE_DIRS)
 

@@ -1,3 +1,6 @@
+# Version 1.12.1 (The puny port) / February 2nd, 2024
+* repaired mbedTLS config
+
 # Version 1.12.0 (The puny port) / February 2nd, 2024
 * Updated `Zip` to 0.3.1
 * Updated to mbedTLS 2.28.7

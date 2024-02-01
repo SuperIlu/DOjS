@@ -2,7 +2,7 @@ THIRDPARTY	= 3rdparty
 PLUGINS     = plugins
 MUJS		= $(THIRDPARTY)/mujs-1.0.5
 ALLEGRO		= $(THIRDPARTY)/allegro-4.3.3.1
-KUBAZIP		= $(THIRDPARTY)/zip-0.2.5
+KUBAZIP		= $(THIRDPARTY)/zip-0.3.1
 INI			= $(THIRDPARTY)/ini-20220806/src
 WEBP		= $(THIRDPARTY)/libwebp-1.3.2
 
@@ -63,7 +63,7 @@ RELZIP   = Linux_dojs-X.Y.Z.zip
 
 # dirs/files
 DOJSPATH		= $(realpath .)
-BUILDDIR		= build
+BUILDDIR		= build_linux
 DOCDIR			= doc/html
 
 CROSS=
@@ -251,6 +251,9 @@ webpclean:
 
 distclean: clean alclean jsclean webpclean
 	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.*
+
+linuxtest: linuxtest.c
+	$(CC) $(CFLAGS) $< -o linuxtest
 
 .PHONY: distclean clean init doc zip alclean jsclean
 

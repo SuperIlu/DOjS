@@ -1,5 +1,9 @@
 /**
  * Load a '.FNT' file for GRX.
+ * 
+ * Please note that text rendering uses UTF8, but not all fonts provide all code points.
+ * @see SetMissingCharacter()
+ * 
  * @class
  * @param {*} filename name of the font file.
  */
@@ -14,6 +18,11 @@ function Font(filename) {
 	 * @member {number}
 	 */
 	this.height = 0;
+	/**
+	 * Font character ranges. An array of ranges (two entry arrays with start/end codepoints)
+	 * @member {number[][]}
+	 */
+	this.ranges = [];
 }
 /**
  * Draw a left aligned string to the canvas.

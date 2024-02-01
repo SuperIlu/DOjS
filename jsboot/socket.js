@@ -250,7 +250,7 @@ function http_string_content(res) {
  * 
  * @param {HTTPResult} res The array returned from http_get().
  * 
- * @returns {bool} TRUE is the request returned code 200.
+ * @returns {boolean} TRUE is the request returned code 200.
  * @see Curl
  */
 function http_ok(res) {

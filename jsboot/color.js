@@ -67,7 +67,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  * @property {Color} YELLOW EGA color.
  * @property {Color} WHITE EGA color.
  */
-EGA = {
+var EGA = {
 	BLACK: Color(0, 0, 0, 255),
 	BLUE: Color(0, 0, 170, 255),
 	GREEN: Color(0, 170, 0, 255),
@@ -91,7 +91,7 @@ EGA = {
 /**
 * @property {Color} NO_COLOR the transparent Color.
 */
-NO_COLOR = -1;
+var NO_COLOR = -1;
 
 /**
  * blend mode definitions for TransparencyEnabled()
@@ -110,7 +110,7 @@ NO_COLOR = -1;
  * @property {number} DOGE divides the bottom layer by the inverted top layer
  * @property {number} BURN inverted doge
  */
-BLEND = {
+var BLEND = {
 	REPLACE: 0,
 	ALPHA: 1,
 	ADD: 2,

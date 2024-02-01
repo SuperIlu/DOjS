@@ -2,6 +2,9 @@
 Since DOjS v1.11 it is possible to compile parts of DOjS for Linux as well.
 It will create a native Linux binary based on Allegro 4.3.3.1 and without any of the hardware support available for DOS.
 
+The linux version has the additional `-u` command line parameter which will switch DOjS to fullscreen when running.
+**Beware:** Keyboard input did not work for me on WLS2/Ubuntu when running in fullscreen mode.
+
 Please note the this feature is not thoroughly tested.
 The following functionality should work:
 - The editor
@@ -18,9 +21,9 @@ The following functionality should work:
 - PDFGen
 - Vorbis
 - GIFAnim
+- Sockets
 
 Work in progress
-- Sockets (needs some API changes on Javascript side)
 - OpenGL (DOjS segfaults when exiting)
 
 ## Compilation

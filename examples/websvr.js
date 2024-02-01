@@ -425,7 +425,7 @@ function web_server() {
 			svr = null;
 		}
 	} else {
-		svr = ServerSocket(SOCKET.SERVER.ANY, 80);
-		print_msg("Listening on " + JSON.stringify(GetLocalIpAddress()) + ", port 80");
+		svr = ServerSocket(SOCKET.SERVER.ANY, 8080);
+		print_msg("Listening on " + JSON.stringify(SOCKET.SERVER.ANY) + ", port 8080");
 	}
 }

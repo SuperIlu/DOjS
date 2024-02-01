@@ -22,6 +22,10 @@ SOFTWARE.
 
 #include "watt.h"
 
+#if LINUX == 1
+#include <ifaddrs.h>
+#endif  // LINUX == 1
+
 #define WATT_NAME_BUFFER_SIZE 1024
 
 /**************
@@ -43,20 +47,68 @@ static void f_IpDebug(js_State *J) { watt_pushipaddr(J, watt_toipaddr(J, 1)); }
 #endif
 
 /**
- * @brief get the local IP address.
- * GetLocalIpAddress():number[]
+ * @brief create a map of all known ipv4 interfaces with their ip-addresses. DOS only knows a single fake 'eth0' interface containing he IP settings of Watt and a fake 'lo'
+ * interface.
  *
- * @param J VM state.
+ * GetNetworkInterfaces(): {"eth0":{"inet":[192.168.1.2], "netmask":[255,255,255,0]}, "lo":{"inet":[127.0.0.1], "netmask":[255,0,0,0]}}
  */
-static void f_GetLocalIpAddress(js_State *J) { watt_pushipaddr(J, _gethostid()); }
+static void f_GetNetworkInterfaces(js_State *J) {
+#if LINUX == 1
+    struct ifaddrs *ifaddr;
+    if (getifaddrs(&ifaddr) == -1) {
+        js_error(J, "getifaddrs() failed");
+        return;
+    }
 
-/**
- * @brief get the netmask.
- * GetNetworkMask():number[]
- *
- * @param J VM state.
- */
-static void f_GetNetworkMask(js_State *J) { watt_pushipaddr(J, sin_mask); }
+    js_newobject(J);
+    {
+        for (struct ifaddrs *ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next) {
+            if (ifa->ifa_addr == NULL) {
+                continue;
+            }
+
+            int family = ifa->ifa_addr->sa_family;
+
+            if (family == AF_INET) {
+                js_newobject(J);
+                {
+                    struct sockaddr_in *inet = (struct sockaddr_in *)ifa->ifa_addr;
+                    watt_pushipaddr(J, ntohl(inet->sin_addr.s_addr));
+                    js_setproperty(J, -2, "inet");
+
+                    struct sockaddr_in *netmask = (struct sockaddr_in *)ifa->ifa_netmask;
+                    watt_pushipaddr(J, ntohl(netmask->sin_addr.s_addr));
+                    js_setproperty(J, -2, "netmask");
+                }
+                js_setproperty(J, -2, ifa->ifa_name);
+            }
+        }
+    }
+
+    freeifaddrs(ifaddr);
+#else
+    js_newobject(J);
+    {
+        js_newobject(J);
+        {
+            watt_pushipaddr(J, _gethostid());
+            js_setproperty(J, -2, "inet");
+            watt_pushipaddr(J, sin_mask);
+            js_setproperty(J, -2, "netmask");
+        }
+        js_setproperty(J, -2, "eth0");
+
+        js_newobject(J);
+        {
+            watt_pushipaddr(J, IP(127, 0, 0, 1));
+            js_setproperty(J, -2, "inet");
+            watt_pushipaddr(J, IP(255, 0, 0, 0));
+            js_setproperty(J, -2, "netmask");
+        }
+        js_setproperty(J, -2, "lo");
+    }
+#endif
+}
 
 /**
  * @brief resolve an IP address using DNS.
@@ -115,8 +167,11 @@ static void f_GetHostname(js_State *J) {
  */
 static void f_GetDomainname(js_State *J) {
     char buffer[WATT_NAME_BUFFER_SIZE];
-    getdomainname(buffer, sizeof(buffer));
-    js_pushstring(J, buffer);
+    if (getdomainname(buffer, sizeof(buffer)) == 0) {
+        js_pushstring(J, buffer);
+    } else {
+        js_pushnull(J);
+    }
 }
 
 /***********************
@@ -128,8 +183,6 @@ static void f_GetDomainname(js_State *J) {
  * @param J VM state.
  */
 void init_watt(js_State *J) {
-    char buffer[WATT_NAME_BUFFER_SIZE];
-
     DEBUGF("%s\n", __PRETTY_FUNCTION__);
 
     if (!DOjS.params.no_tcpip) {
@@ -139,7 +192,9 @@ void init_watt(js_State *J) {
 #endif
         _watt_do_exit = 0;
         int err = sock_init();
+#if LINUX != 1
         if (!err) {
+            char buffer[WATT_NAME_BUFFER_SIZE];
             LOGF("WATTCP init         : %s\n", sock_init_err(err));
             LOGF("WATTCP Address      : %s\n", _inet_ntoa(NULL, _gethostid()));
             LOGF("WATTCP Network Mask : %s\n", _inet_ntoa(NULL, sin_mask));
@@ -151,10 +206,12 @@ void init_watt(js_State *J) {
         } else {
             LOGF("WATTCP init: %s\n", sock_init_err(err));
         }
+#else   // LINUX != 1
+        (void)err;
+#endif  // LINUX != 1
 
         // functions
-        NFUNCDEF(J, GetLocalIpAddress, 0);
-        NFUNCDEF(J, GetNetworkMask, 0);
+        NFUNCDEF(J, GetNetworkInterfaces, 0);
         NFUNCDEF(J, GetHostname, 0);
         NFUNCDEF(J, GetDomainname, 0);
         NFUNCDEF(J, Resolve, 1);

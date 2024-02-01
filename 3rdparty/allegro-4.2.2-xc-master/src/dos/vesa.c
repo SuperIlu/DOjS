@@ -656,8 +656,8 @@ static GFX_MODE_LIST *vesa_fetch_mode_list(void)
    /* fill in width, height and color depth for each VESA mode */
    mode = 0;
    for (pos = 0; pos < vesa_list_length; pos++) {
-      if (get_mode_info(vesa_mode[pos])) return NULL;
       if (!vesa_mode[pos]) continue;
+      if (get_mode_info(vesa_mode[pos])) return NULL;
       mode_list->mode[mode].width  = mode_info.XResolution;
       mode_list->mode[mode].height = mode_info.YResolution;
       mode_list->mode[mode].bpp    = mode_info.BitsPerPixel;

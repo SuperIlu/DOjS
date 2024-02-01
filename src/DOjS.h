@@ -38,7 +38,7 @@ SOFTWARE.
 
 #define SYSINFO ">>> "  //!< logfile line prefix for system messages
 
-#define DOSJS_VERSION_STR "V1.11"  //!< version number as string
+#define DOSJS_VERSION_STR "V1.12"  //!< version number as string
 
 #define JSBOOT_DIR "JSBOOT/"     //!< directory with boot files.
 #define JSBOOT_ZIP "JSBOOT.ZIP"  //!< filename for ZIP of JSBOOT
@@ -125,6 +125,23 @@ SOFTWARE.
         js_setglobal(j, n); \
     }
 
+#if LINUX == 1
+//! printf-style write info to logfile/console
+#define LOGF(str, ...)                                  \
+    printf(SYSINFO str, ##__VA_ARGS__);                 \
+    if (LOGSTREAM) {                                    \
+        fprintf(LOGSTREAM, SYSINFO str, ##__VA_ARGS__); \
+        fflush(LOGSTREAM);                              \
+    }
+
+//! write info to logfile/console
+#define LOG(str)                       \
+    puts(SYSINFO str);                 \
+    if (LOGSTREAM) {                   \
+        fputs(SYSINFO str, LOGSTREAM); \
+        fflush(LOGSTREAM);             \
+    }
+#else  // LINUX==1
 //! printf-style write info to logfile/console
 #define LOGF(str, ...)                                  \
     if (LOGSTREAM) {                                    \
@@ -138,14 +155,7 @@ SOFTWARE.
         fputs(SYSINFO str, LOGSTREAM); \
         fflush(LOGSTREAM);             \
     }
-
-//! write info to logfile/console
-#define LOGV(str)                  \
-    if (LOGSTREAM) {               \
-        fputs(SYSINFO, LOGSTREAM); \
-        fputs(str, LOGSTREAM);     \
-        fflush(LOGSTREAM);         \
-    }
+#endif  // LINUX==1
 
 #ifdef DEBUG_ENABLED
 //! printf-style debug message to logfile/console
@@ -248,6 +258,8 @@ typedef struct {
     int num_allocs;                       //!< number of allocations for extra GC runs
 #if LINUX != 1
     library_t *loaded_libraries;  //!< linked list of loaded libraries
+#else
+    bool fullscreen;  //!< use fullscreen display
 #endif
     int last_mouse_x;       //!< last reported mouse pos X
     int last_mouse_y;       //!< last reported mouse pos y

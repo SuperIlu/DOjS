@@ -10,7 +10,7 @@
  * @class
  * 
  * @param {string} filename file name of the soundfile to load.
- * @param {bool} [audio] enable audioo playback with true, disable with false (default: false).
+ * @param {boolean} [audio] enable audioo playback with true, disable with false (default: false).
  */
 function MPEG1(filename, audio) {
 	/**

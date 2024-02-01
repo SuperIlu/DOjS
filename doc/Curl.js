@@ -174,11 +174,11 @@ Curl.prototype.SetPost = function (post_data) { };
  */
 Curl.prototype.SetPut = function (put_data) { };
 /**
- * @return {string} return the last effectively used URL.
+ * @returns {string} return the last effectively used URL.
  */
 Curl.prototype.GetLastUrl = function () { };
 /**
- * @return {number} get the last generated response code.
+ * @returns {number} get the last generated response code.
  */
 Curl.prototype.GetResponseCode = function () { };
 /**

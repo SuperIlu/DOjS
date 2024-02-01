@@ -216,6 +216,17 @@ function Require(name) {
 Require._cache = Object.create(null);
 
 /**
+ * Alias of Require()
+ * 
+ * @see Require
+ * 
+ * @param {string} name module file name.
+ * 
+ * @returns the imported module.
+ */
+require = Require;
+
+/**
  * include a module. The exported functions are copied into global scope.
  * @see {@link Require}
  * @param {string} name module file name.
@@ -616,7 +627,7 @@ function LPTStatus(port) {
  * @property {*} CONTROL.LINEFEED pin 14, inverted (out)
  * @property {*} CONTROL.STROBE pin 1, inverted (out)
  */
-PARALLEL = {
+var PARALLEL = {
 	DATA: {
 		ADDR: 0,
 		BIT0: (1 << 0),
@@ -655,7 +666,7 @@ PARALLEL = {
  * @property {*} Bits.BITS8 use 8 bits
  * @property {*} Bits.BITS16 use 16 bits
  */
-SOUND = {
+var SOUND = {
 	Input: {
 		MIC: 1,
 		LINE: 2,
@@ -675,7 +686,7 @@ SOUND = {
  * @property {*} KEYBOARD de/reinit keyboard
  * @property {*} TIMER de/reinit timer
  */
-SYSTEM = {
+var SYSTEM = {
 	MOUSE: 0x01,
 	SOUND: 0x02,
 	JOYSTICK: 0x04,
@@ -695,7 +706,7 @@ SYSTEM = {
  * @property {*} Buttons.RIGHT
  * @property {*} Buttons.MIDDLE
  */
-MOUSE = {
+var MOUSE = {
 	Mode: {
 		NONE: 0,
 		ARROW: 2,
@@ -714,7 +725,7 @@ MOUSE = {
  * keyboard input.
  * @property {*} Code key definitions.
  */
-KEY = {
+var KEY = {
 	Code: {
 		NoKey: -1,		/* no key available */
 		/* Letters and numbers are missing from the definitions but can be obtained by e.g. CharCode('A'). */

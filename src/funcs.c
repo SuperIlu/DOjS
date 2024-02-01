@@ -254,8 +254,12 @@ static void f_Stat(js_State *J) {
         return;
     }
 
+#if LINUX == 1
+    char *drive = "/";
+#else
     char *drive = "A:";
     drive[0] += s.st_dev;
+#endif
 
     js_newobject(J);
     {
@@ -303,6 +307,16 @@ static void f_Println(js_State *J) {
         }
         putc('\n', LOGSTREAM);
     }
+#if LINUX == 1
+    int i, top = js_gettop(J);
+    for (i = 1; i < top; ++i) {
+        const char *s = js_tostring(J, i);
+        if (i > 1) {
+            putchar(' ');
+        }
+        puts(s);
+    }
+#endif
     js_pushundefined(J);
 }
 
@@ -323,6 +337,16 @@ static void f_Print(js_State *J) {
             fputs(s, LOGSTREAM);
         }
     }
+#if LINUX == 1
+    int i, top = js_gettop(J);
+    for (i = 1; i < top; ++i) {
+        const char *s = js_tostring(J, i);
+        if (i > 1) {
+            putchar(' ');
+        }
+        puts(s);
+    }
+#endif
     js_pushundefined(J);
 }
 
@@ -828,6 +852,42 @@ static void f_GetDrive(js_State *J) {
 #endif
 }
 
+/**
+ * @brief convert text from UTF-8 to current encoding
+ *
+ * @param J VM state.
+ */
+static void f_FromUTF8(js_State *J) {
+    const char *input = js_tostring(J, 1);
+    if (need_uconvert(input, U_UTF8, U_CURRENT)) {
+        size_t length = uconvert_size(input, U_UTF8, U_CURRENT);
+        char *converted = malloc(length + 1);
+        do_uconvert(input, U_UTF8, converted, U_CURRENT, length);
+        js_pushstring(J, converted);
+        free(converted);
+    } else {
+        js_copy(J, 1);
+    }
+}
+
+/**
+ * @brief convert text from current encoding to UTF-8
+ *
+ * @param J VM state.
+ */
+static void f_ToUTF8(js_State *J) {
+    const char *input = js_tostring(J, 1);
+    if (need_uconvert(input, U_CURRENT, U_UTF8)) {
+        size_t length = uconvert_size(input, U_CURRENT, U_UTF8);
+        char *converted = malloc(length + 1);
+        do_uconvert(input, U_CURRENT, converted, U_UTF8, length);
+        js_pushstring(J, converted);
+        free(converted);
+    } else {
+        js_copy(J, 1);
+    }
+}
+
 // #define DUMMY_FUNC
 
 #ifdef DUMMY_FUNC
@@ -880,6 +940,28 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     }
     js_setglobal(J, "ARGS");
 
+    // set current text encoding
+    char *text_encoding;
+    switch (get_uformat()) {
+        case U_ASCII:
+            text_encoding = "ASCII";
+            break;
+        case U_ASCII_CP:
+            text_encoding = "ASCII_CP";
+            break;
+        case U_UTF8:
+            text_encoding = "UTF8";
+            break;
+        case U_UNICODE:
+            text_encoding = "UNICODE";
+            break;
+        default:
+            text_encoding = "UNKNOWN";
+            break;
+    }
+    PROPDEF_S(J, text_encoding, "DOJS_ENCODING");
+    DEBUGF("DOJS_ENCODING=%s\n", text_encoding);
+
     // define global functions
     NFUNCDEF(J, DirExists, 1);
     NFUNCDEF(J, FileExists, 1);
@@ -922,6 +1004,9 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     NFUNCDEF(J, GetLoadedLibraries, 0);
 
     NFUNCDEF(J, FlushLog, 0);
+
+    NFUNCDEF(J, ToUTF8, 1);
+    NFUNCDEF(J, FromUTF8, 1);
 
 #ifdef DUMMY_FUNC
     NFUNCDEF(J, Dummy, 0);

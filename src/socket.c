@@ -64,9 +64,11 @@ static int socket_count = 0;
  * @param s the socket.
  */
 static void socket_flush(socket_t *s) {
+#if LINUX != 1
     while (!s->udp && (sock_tbused(s->socket) > 0)) {  // drain
         tcp_tick(s->socket);
     }
+#endif  // LINUX != 1
 }
 
 /**
@@ -214,8 +216,9 @@ static void Socket_Close(js_State *J) {
 
     socket_t *s = js_touserdata(J, 0, TAG_SOCKET);
     if (s->socket) {
+#if LINUX != 1
         DEBUGF("%s() TXbuf=%ld - %ld = %ld\n", __PRETTY_FUNCTION__, sock_tbsize(s->socket), sock_tbused(s->socket), sock_tbleft(s->socket));
-
+#endif  // LINUX != 1
         if (js_isboolean(J, 1) && js_toboolean(J, 1)) {
             sock_flush(s->socket);
             socket_flush(s);
@@ -255,7 +258,9 @@ sock_err:
  */
 static void Socket_WaitFlush(js_State *J) {
     SOCK_USER_DATA(s);
+#if LINUX != 1
     DEBUGF("%s() TXbuf=%ld - %ld = %ld\n", __PRETTY_FUNCTION__, sock_tbsize(s->socket), sock_tbused(s->socket), sock_tbleft(s->socket));
+#endif  // LINUX == 1
     socket_flush(s);
 }
 
@@ -395,7 +400,11 @@ static void Socket_WriteString(js_State *J) {
 static void Socket_Mode(js_State *J) {
     SOCK_USER_DATA(s);
 
+#if LINUX == 1
+    js_error(J, "Modes not supported on Linux");
+#else
     sock_mode(s->socket, js_touint16(J, 1));
+#endif
 }
 
 /**

@@ -26,7 +26,7 @@ function Sample(filename) {
 	this.bits = 0;
 	/**
 	 * mono/stereo indicator.
-	 * @member {bool}
+	 * @member {boolean}
 	 */
 	this.stereo = false;
 

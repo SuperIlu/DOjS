@@ -53,8 +53,8 @@ Rawplay.prototype.CurrentSample = function () { }
 
 /**
  * must be called periodically (e.g. every Loop()) to update the playback buffer
- * @param  {bool} left true to play left channel
- * @param  {bool} right true to play right channel
+ * @param  {boolean} left true to play left channel
+ * @param  {boolean} right true to play right channel
  */
 Rawplay.prototype.Play = function (left, right) { }
 

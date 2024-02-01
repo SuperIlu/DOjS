@@ -1,3 +1,12 @@
+# Version 1.12.0 (The puny port) / February 2nd, 2024
+* Updated `Zip` to 0.3.1
+* Updated to mbedTLS 2.28.7
+* Updated cURL to 8.6.0
+* Replaced `GetLocalIpAddress()` and `GetNetworkMask()` with `GetNetworkInterfaces()`
+* Implemented TCP/IP and sockets for the Linux version
+* Added fullscreen mode to Linux version
+* Fixed `Stat()` for Linux
+
 # Version 1.11.0 (The delayed distribution) / October 28th, 2023
 * Added port of https://github.com/DhrBaksteen/ArduinoOPL2 to `jsboot/`
 * Added optional `OnExit()` callback

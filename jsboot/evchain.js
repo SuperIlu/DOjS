@@ -51,7 +51,7 @@ EvalChain.prototype.Step = function () {
 };
 
 /**
- * @returns {int} number of entries in the chain.
+ * @returns {number} number of entries in the chain.
  */
 EvalChain.prototype.Size = function () {
 	return this.chain.length;

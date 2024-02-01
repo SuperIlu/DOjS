@@ -73,7 +73,7 @@ function LoadLibrary(name) { }
 /**
  * Get a list of loaded native libraries.
  * 
- * @return {string[]} a list of loaded libraries.
+ * @returns {string[]} a list of loaded libraries.
  */
 function GetLoadedLibraries() { }
 
@@ -172,6 +172,11 @@ SNDIN_16BIT = true;
 SNDIN_STEREO = true;
 
 /**
+ * @property {string} DOJS_ENCODING the current text encoding used by DOjS. Usually "UTF8". other possible values are "ASCII", "ASCII_CP", "UNICODE" and "UNKNOWN"
+ */
+DOJS_ENCODING = "UTF8";
+
+/**
  * select sound input source.
  * 
  * @param {*} src a value from {@link SOUND}.
@@ -183,7 +188,7 @@ function SoundInputSource(src) { }
  * 
  * @param {number} rate sample rate.
  * @param {number} bits 8 or 16 bits.
- * @param {bool} stereo true for stereo recording.
+ * @param {boolean} stereo true for stereo recording.
  */
 function SoundStartInput(rate, bits, stereo) { }
 
@@ -447,6 +452,28 @@ function FilledPolygon(points, c) { }
 function TextXY(x, y, text, fg, bg) { }
 
 /**
+ * set the character to print for missing codepoints in the current font. Default is "^".
+ * @param {string} ch a one character string.
+ */
+function SetMissingCharacter(ch) { }
+
+/**
+ * converts the UTF8 string to the internal encoding (only useful if internal encoding is not UTF8).
+ * 
+ * @param {string} str string to convert.
+ * @returns {string} converted string.
+ */
+function FromUTF8(str) { }
+
+/**
+ * converts the internal string encoding to UTF8 (only useful if internal encoding is not UTF8).
+ * 
+ * @param {string} str string to convert.
+ * @returns {string} converted string.
+ */
+function ToUTF8(str) { }
+
+/**
  * Save current screen to BMP file.
  * @param {string} fname filename.
  */
@@ -574,7 +601,7 @@ function Sleep(ms) { }
 
 /**
  * Get ms timestamp.
- * @return {number} ms time.
+ * @returns {number} ms time.
  */
 function MsecTime() { }
 
@@ -664,7 +691,7 @@ function GetDrive() { }
  * 
  * @param {number} drive the new default drive.
  * 
- * @return the number of available logical drives.
+ * @returns the number of available logical drives.
  */
 function SetDrive(drive) { }
 

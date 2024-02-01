@@ -98,6 +98,22 @@ static void new_Font(js_State *J) {
 
     js_pushnumber(J, text_height(f));
     js_defproperty(J, -2, "height", JS_READONLY | JS_DONTCONF);
+
+    js_newarray(J);
+    {
+        int range = get_font_ranges(f);
+        for (int n = 0; n < range; n++) {
+            js_newarray(J);
+            {
+                js_pushnumber(J, get_font_range_begin(f, n));
+                js_setindex(J, -2, 0);
+                js_pushnumber(J, get_font_range_end(f, n));
+                js_setindex(J, -2, 1);
+            }
+            js_setindex(J, -2, n);
+        }
+    }
+    js_defproperty(J, -2, "ranges", JS_READONLY | JS_DONTCONF);
 }
 
 /**
@@ -183,6 +199,18 @@ static void Font_StringHeight(js_State *J) {
     js_pushnumber(J, text_height(f));
 }
 
+/**
+ * @brief set the render charactor for unknown code points
+ *
+ * @param J VM state.
+ */
+static void f_SetMissingCharacter(js_State *J) {
+    const char *missing = js_tostring(J, 1);
+    if (strlen(missing) > 0) {
+        allegro_404_char = missing[0];
+    }
+}
+
 /***********************
 ** exported functions **
 ***********************/
@@ -203,6 +231,8 @@ void init_font(js_State *J) {
         NPROTDEF(J, Font, StringHeight, 1);
     }
     CTORDEF(J, new_Font, TAG_FONT, 1);
+
+    NFUNCDEF(J, SetMissingCharacter, 1);
 
     DEBUGF("%s DONE\n", __PRETTY_FUNCTION__);
 }

@@ -55,7 +55,6 @@ __experiments/
 3rdparty/allegro-4.2.2-xc-master/obj/djgpp/asmcapa.h
 3rdparty/allegro-4.2.2-xc-master/obj/djgpp/asmdef.inc
 3rdparty/allegro-4.2.2-xc-master/obj/djgpp/asmdef.s
-3rdparty/curl-7.87.0/lib/curl_config.h
 3rdparty/dzcomm/obj/djgpp/asmdef.s
 3rdparty/mujs-1.0.5/one.c
 3rdparty/mujs-1.0.5/opnames.h
@@ -66,6 +65,7 @@ __experiments/
 5.TGA
 AUDIO.RAW
 build/
+build_linux/
 cacert.pem
 capture/
 CREDS.JSN
@@ -131,3 +131,5 @@ dojs
 DBS/
 SCR.webp
 SCR.WEP
+linuxtest
+3rdparty/mbedtls-2.28.7/tests/seedfile

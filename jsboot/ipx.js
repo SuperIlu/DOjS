@@ -56,7 +56,7 @@ function IpxAddressToString(addr) {
 /**
  * Convert an address in hex-string notation back to an JS array.
  * 
- * @param {*} addr a string of 6 hex numbers separated by ':'.
+ * @param {string} addr a string of 6 hex numbers separated by ':'.
  * @returns {IpxAddress} An array of six numbers.
  */
 function IpxStringToAddress(addr) {
@@ -78,7 +78,7 @@ function IpxStringToAddress(addr) {
 /**
  * discover nodes on the network.
  * 
- * @param {integer} num total number of nodes to search for (including the local node).
+ * @param {number} num total number of nodes to search for (including the local node).
  * @param {IpxAddress[]} nodes an array to store the discovered nodes in.
  * 
  * @returns {boolean} true if the wanted number of nodes was discovered, else false. The nodes array will contain the addresses of all found nodes.

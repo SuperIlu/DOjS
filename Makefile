@@ -13,13 +13,13 @@ ALLEGRO		= $(THIRDPARTY)/allegro-4.2.2-xc-master
 DZCOMMDIR	= $(THIRDPARTY)/dzcomm
 WATT32		= $(THIRDPARTY)/Watt-32
 ZLIB		= $(THIRDPARTY)/zlib-1.2.12
-KUBAZIP		= $(THIRDPARTY)/zip-0.2.5
+KUBAZIP		= $(THIRDPARTY)/zip-0.3.1
 ALPNG		= $(THIRDPARTY)/alpng13
-CURL		= $(THIRDPARTY)/curl-8.4.0
+CURL		= $(THIRDPARTY)/curl-8.6.0
 MESA3		= $(THIRDPARTY)/MesaFX-3.4-master
 BZIP2		= $(THIRDPARTY)/bzip2-1.0.8
 INI			= $(THIRDPARTY)/ini-20220806/src
-MBEDTLS		= $(THIRDPARTY)/mbedtls-2.28.5
+MBEDTLS		= $(THIRDPARTY)/mbedtls-2.28.7
 WEBP		= $(THIRDPARTY)/libwebp-1.3.2
 
 GLIDE=glide3x
@@ -229,6 +229,9 @@ devzip: all cacert.pem doc
 	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
 	zip -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT texus.exe fntconv.exe cacert.pem *.DXE
 	scp $(RELZIP) smbshare@192.168.2.8:/sata/c64
+
+dostodon: zip
+	cp png.DXE jpeg.DXE sqlite.DXE webp.DXE curl.DXE dojs.exe cacert.pem JSBOOT.ZIP ../GitHub/DOStodon/
 
 doc:
 	rm -rf $(DOCDIR)

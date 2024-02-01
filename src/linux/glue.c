@@ -1,3 +1,8 @@
+#include <string.h>
+#include <netdb.h>
+#include <poll.h>
+#include <sys/ioctl.h>
+
 #include "DOjS.h"
 #include "glue.h"
 #include "allegro/internal/aintern.h"
@@ -200,106 +205,248 @@ int _watt_do_exit = 0;
 
 const char *wattcpVersion(void) { return "v666"; }
 const char *wattcpCapabilities(void) { return "dummy bsd"; }
-
-DWORD resolve(const char *name) { return 0; }
-int resolve_ip(DWORD ip, char *name, int len) { return 0; }
 const char *sock_init_err(int rc) { return "dummy init error"; }
+char *_inet_ntoa(char *s, DWORD x) { return "dummy address"; }
 int sock_init() { return 0; }
 void dbug_init(void) {}
-const char *dom_strerror(int err) { return NULL; }
-char *_inet_ntoa(char *s, DWORD x) { return "dummy address"; }
-const char *sockerr(const sock_type *s) { return "dummy socket error"; } /* UDP / TCP */
 
-int sock_puts(sock_type *s, const BYTE *dp) { return 0; }
-int sock_write(sock_type *s, const BYTE *dp, int len) { return 0; }
-int sock_read(sock_type *s, BYTE *dp, size_t len) { return 0; }
-int sock_established(sock_type *s) { return 0; }
-int sock_close(sock_type *s) { return 0; }
-WORD sock_gets(sock_type *s, BYTE *dp, int n) { return 0; }
-WORD sock_mode(sock_type *s, WORD mode) { return 0; }
-int sock_getc(sock_type *s) { return 0; }
+const char *dom_strerror(int err) { return strerror(err); }
+const char *sockerr(const sock_type *s) { return strerror(s->error); } /* UDP / TCP */
+
+DWORD resolve(const char *hostname) {
+    struct hostent *he;
+
+    if ((he = gethostbyname(hostname)) == NULL) {
+        dom_errno = errno;
+        return 0;
+    }
+    struct in_addr **addr_list = (struct in_addr **)he->h_addr_list;
+    return ntohl(addr_list[0]->s_addr);
+}
+
+int resolve_ip(DWORD inip, char *name, int len) {
+    struct in_addr ip;
+    struct hostent *hp;
+
+    // ip.s_addr = htonl(inip);
+    ip.s_addr = inip;
+
+    if ((hp = gethostbyaddr((const void *)&ip, sizeof(ip), AF_INET)) == NULL) {
+        return 0;
+    } else {
+        strncpy(name, hp->h_name, len);
+        name[len - 1] = 0;
+        return 1;
+    }
+}
+
+int sock_read(sock_type *s, BYTE *dp, size_t len) {
+    ssize_t ret = recv(s->sock_num, dp, len, 0);
+    if (ret < 0) {
+        s->sock_num = -1;
+        return 0;
+    } else {
+        return ret;
+    }
+}
+
+WORD sock_gets(sock_type *s, BYTE *dp, int n) {
+    int read = 0;
+    if (s->type == SOCK_DGRAM) {
+        read = sock_read(s, dp, n);
+    } else {
+        while (true) {
+            if (n <= 0) {
+                break;
+            }
+            int ch = sock_getc(s);
+            if (ch == '\n' || ch == EOF) {
+                break;
+            } else if (ch != '\r') {
+                dp[read] = ch;
+                read++;
+                dp[read] = 0;
+                n--;
+            }
+        }
+    }
+    return read;
+}
+
+int sock_getc(sock_type *s) {
+    BYTE ch = 0;
+    return (sock_read(s, &ch, 1) < 1 ? EOF : ch);
+}
+
+int _w32__getpeername(const sock_type *s, void *dest, int *len) {
+    ((struct watt_sockaddr *)dest)->s_ip = ntohl(s->remote.sin_addr.s_addr);
+    ((struct watt_sockaddr *)dest)->s_port = ntohs(s->remote.sin_port);
+    return 0;
+}
+
+int _w32__getsockname(const sock_type *s, void *dest, int *len) {
+    ((struct watt_sockaddr *)dest)->s_port = ntohs(s->local.sin_port);
+    return 0;
+}
+
+WORD sock_dataready(sock_type *s) {
+    int n = -1;
+    if (ioctl(s->sock_num, FIONREAD, &n) < 0) {
+        s->error = errno;
+        return 0;
+    }
+    return n;
+}
+
+int udp_open(udp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler) {
+    bzero(s, sizeof(udp_Socket));
+    s->type = SOCK_DGRAM;
+    s->sock_num = socket(AF_INET, SOCK_DGRAM, 0);
+    if (s->sock_num < 0) {
+        s->error = errno;
+        return 0;
+    }
+
+    s->server_num = -1;
+
+    s->remote.sin_family = AF_INET;
+    s->remote.sin_addr.s_addr = htonl(ina);
+    s->remote.sin_port = htons(port);  // destination port for incoming packets
+
+    s->local.sin_family = AF_INET;
+    s->local.sin_addr.s_addr = htonl(INADDR_ANY);
+    s->local.sin_port = htons(lport);  // source port for outgoing packets
+
+    if (connect(s->sock_num, (struct sockaddr *)&s->remote, sizeof(struct sockaddr)) < 0) {
+        s->error = errno;
+        close(s->sock_num);
+        return 0;
+    }
+    return -1;
+}
+
+int tcp_open(tcp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler) {
+    bzero(s, sizeof(tcp_Socket));
+    s->type = SOCK_STREAM;
+    s->sock_num = socket(AF_INET, SOCK_STREAM, 0);
+    if (s->sock_num < 0) {
+        s->error = errno;
+        return 0;
+    }
+
+    s->server_num = -1;
+
+    s->remote.sin_family = AF_INET;
+    s->remote.sin_addr.s_addr = htonl(ina);
+    s->remote.sin_port = htons(port);  // destination port for incoming packets
+
+    s->local.sin_family = AF_INET;
+    s->local.sin_addr.s_addr = htonl(INADDR_ANY);
+    s->local.sin_port = htons(lport);  // source port for outgoing packets
+
+    if (connect(s->sock_num, (struct sockaddr *)&s->remote, sizeof(struct sockaddr)) < 0) {
+        s->error = errno;
+        close(s->sock_num);
+        return 0;
+    }
+    return -1;
+}
+
+// server stuff
+int tcp_listen(tcp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler, WORD timeout) {
+    bzero(s, sizeof(tcp_Socket));
+
+    s->type = SOCK_STREAM;
+    s->server_num = socket(AF_INET, SOCK_STREAM, 0);
+    if (s->server_num < 0) {
+        s->error = errno;
+        return 0;
+    }
+
+    int parm = 1;
+    if (setsockopt(s->server_num, SOL_SOCKET, SO_REUSEADDR, (char *)&parm, sizeof(parm)) < 0) {
+        s->error = errno;
+        close(s->server_num);
+        return 0;
+    }
+
+    s->sock_num = -1;
+
+    s->local.sin_family = AF_INET;
+    s->local.sin_addr.s_addr = htonl(ina);  // ip to bind to
+    s->local.sin_port = htons(lport);       // port to bind to
+
+    if (bind(s->server_num, (struct sockaddr *)&s->local, sizeof(struct sockaddr)) < 0) {
+        s->error = errno;
+        close(s->server_num);
+        return 0;
+    }
+
+    if (listen(s->server_num, 1) < 0) {
+        s->error = errno;
+        close(s->server_num);
+        return 0;
+    }
+
+    return -1;
+}
+
+int sock_established(sock_type *s) {
+    if ((s->server_num >= 0) && (s->sock_num < 0)) {
+        struct pollfd pfd = {.fd = s->server_num, .events = POLLIN, .revents = 0};
+        int ret = poll(&pfd, 1, 100);
+
+        if (ret > 0) {  // connection ready
+            socklen_t addrlen = sizeof(struct sockaddr);
+            s->sock_num = accept(s->server_num, (struct sockaddr *)&s->remote, &addrlen);
+        }
+    }
+    return s->sock_num != -1;
+}
+
+int sock_close(sock_type *s) {
+    if (s->sock_num != -1) {
+        close(s->sock_num);
+        s->sock_num = -1;
+    }
+
+    if (s->server_num != -1) {
+        close(s->server_num);
+        s->server_num = -1;
+    }
+
+    return -1;
+}
+
+int sock_write(sock_type *s, const BYTE *dp, int len) { return send(s->sock_num, dp, len, 0); }
+
+int sock_puts(sock_type *s, const BYTE *dp) { return sock_write(s, dp, strlen((char *)dp)); }
+
+BYTE sock_putc(sock_type *s, BYTE c) {
+    sock_write(s, &c, 1);
+    return c;
+}
+
+// wait 'sec' seconds for data on socket
+int _ip_delay1(sock_type *s, int sec, UserHandler fn, int *statusptr) {
+    struct pollfd pfd = {.fd = s->sock_num, .events = POLLIN, .revents = 0};
+    int ret = poll(&pfd, 1, sec + 1000);
+
+    int status;
+    if (ret == 0) {
+        status = -1;  // timeout
+    } else if (ret > 0) {
+        status = 0;  // data ready
+    } else {
+        status = 1;  // error/closed
+    }
+
+    return status;
+}
+
+// op-ops
 void sock_flushnext(sock_type *s) {}
 void sock_noflush(sock_type *s) {}
 void sock_flush(sock_type *s) {}
 WORD tcp_tick(sock_type *s) { return 0; }
-BYTE sock_putc(sock_type *s, BYTE c) { return 0; }
 int sock_abort(sock_type *s) { return 0; }
-int _w32__getpeername(const sock_type *s, void *dest, int *len) { return 0; }
-int _w32__getsockname(const sock_type *s, void *dest, int *len) { return 0; }
-// int getdomainname(char *name, size_t len){}
-
-WORD sock_dataready(sock_type *s) { return 0; }
-
-int udp_open(udp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler) { return 0; }
-int tcp_open(tcp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler) { return 0; }
-int udp_listen(udp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler) { return 0; }
-int tcp_listen(tcp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler, WORD timeout) { return 0; }
-
-size_t sock_tbsize(const sock_type *s) { return 0; }
-size_t sock_tbused(const sock_type *s) { return 0; }
-size_t sock_tbleft(const sock_type *s) { return 0; }
-
-int _ip_delay0(sock_type *s, int sec, UserHandler fn, int *statusptr) { return 0; }
-int _ip_delay1(sock_type *s, int sec, UserHandler fn, int *statusptr) { return 0; }
-int _ip_delay2(sock_type *s, int sec, UserHandler fn, int *statusptr) { return 0; }
-
-#ifdef GNA
-#include <arpa/inet.h>
-#include <ifaddrs.h>
-#include <net/if.h>
-#include <netinet/in.h>
-#include <stdio.h>
-#include <string.h> /* For strncpy */
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-uint32_t _gethostid() {
-    struct ifaddrs *ifAddrStruct = NULL, *ifa = NULL;
-    void *tmpAddrPtr = NULL;
-
-    getifaddrs(&ifAddrStruct);
-    for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-        if (ifa->ifa_addr->sa_family == AF_INET) {  // Check it is IPv4
-            char mask[INET_ADDRSTRLEN];
-            void *mask_ptr = &((struct sockaddr_in *)ifa->ifa_netmask)->sin_addr;
-            inet_ntop(AF_INET, mask_ptr, mask, INET_ADDRSTRLEN);
-            if (strcmp(mask, "255.0.0.0") != 0) {
-                printf("mask:%s\n", mask);
-                // Is a valid IPv4 Address
-                tmpAddrPtr = &((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
-                char addressBuffer[INET_ADDRSTRLEN];
-                inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-                printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-            } else if (ifa->ifa_addr->sa_family == AF_INET6) {  // Check it is
-                // a valid IPv6 Address.
-
-                // Do something
-            }
-        }
-    }
-    if (ifAddrStruct != NULL) freeifaddrs(ifAddrStruct);
-    return 0;
-}
-
-uint32_t resolve(char *hostname) {
-    struct hostent *he;
-    struct in_addr **addr_list;
-    int i;
-
-    if ((he = gethostbyname(hostname)) == NULL) {
-        return 0;
-    }
-
-    addr_list = (struct in_addr **)he->h_addr_list;
-
-    for (i = 0; addr_list[i] != NULL; i++) {
-        // Return the first one;
-        strcpy(ip, inet_ntoa(*addr_list[i]));
-        return 0;
-    }
-
-    return 0;
-}
-#endif

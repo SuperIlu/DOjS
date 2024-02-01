@@ -100,6 +100,9 @@ static void usage() {
     fputs("    -t             : Disable TCP-stack.\n", stderr);
     fputs("    -n             : Disable JSLOG.TXT.\n", stderr);
     fputs("    -j <file>      : Redirect JSLOG.TXT to <file>.\n", stderr);
+#if LINUX == 1
+    fputs("    -u             : Use fullscreen instead of window.\n", stderr);
+#endif
     fputs("\n", stderr);
     fputs("This is DOjS " DOSJS_VERSION_STR "\n", stderr);
     fputs("(c) 2019-2022 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
@@ -472,10 +475,10 @@ static void run_script(int argc, char **argv, int args) {
     } else {
         DOjS.logfile = NULL;
     }
-#ifdef DEBUG_ENABLED
+#if LINUX != 1 && defined(DEBUG_ENABLED)
     (void *)freopen("STDOUT.DJS", "a", stdout);
     (void *)freopen("STDERR.DJS", "a", stderr);
-#endif
+#endif  // LINUX != 1
 
     // (re)init out DOjS struct
     DOjS.num_allocs = 0;
@@ -543,7 +546,12 @@ static void run_script(int argc, char **argv, int args) {
     // create canvas
     bool screenSuccess = true;
 #if LINUX == 1
-    int gfx_mode = GFX_AUTODETECT_WINDOWED;
+    int gfx_mode;
+    if (DOjS.fullscreen) {
+        gfx_mode = GFX_AUTODETECT_FULLSCREEN;
+    } else {
+        gfx_mode = GFX_AUTODETECT_WINDOWED;
+    }
 #else
     int gfx_mode = GFX_AUTODETECT;
 #endif
@@ -969,7 +977,11 @@ int main(int argc, char **argv) {
 
     // check command line parameters
     int opt;
+#if LINUX == 1
+    while ((opt = getopt(argc, argv, "utnxlrsfahw:b:j:")) != -1) {
+#else
     while ((opt = getopt(argc, argv, "tnxlrsfahw:b:j:")) != -1) {
+#endif
         switch (opt) {
             case 'w':
                 DOjS.params.width = atoi(optarg);
@@ -1004,6 +1016,11 @@ int main(int argc, char **argv) {
             case 'j':
                 DOjS.logfile_name = optarg;
                 break;
+#if LINUX == 1
+            case 'u':
+                DOjS.fullscreen = true;
+                break;
+#endif
             case 'h':
             default: /* '?' */
                 usage();

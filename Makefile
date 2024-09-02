@@ -27,7 +27,7 @@ GLIDESDK=$(GLIDE)/v1
 TEXUS=$(GLIDE)/texus
 FONTCONV=GrxFntConv
 
-JSDOC_TEMPLATES=/home/ilu/.nvm/versions/node/v17.4.0/lib/node_modules/better-docs /home/ilu/.nvm/versions/node/v17.5.0/lib/node_modules/better-docs /usr/lib/node_modules/better-docs
+JSDOC_TEMPLATES ?= $(shell npm root)/better-docs $(shell npm root -g)/better-docs
 
 LIB_DZCOMM	= $(DZCOMMDIR)/lib/djgpp/libdzcom.a
 LIB_MUJS	= $(MUJS)/build/release/libmujs.a
@@ -236,6 +236,7 @@ dostodon: zip
 doc:
 	rm -rf $(DOCDIR)
 	mkdir -p $(DOCDIR)
+	# if this fails add JSDOC_TEMPLATES='<location(s) to look for templates>' to your make invocation
 	for i in $(JSDOC_TEMPLATES); do [ -d $$i ] && cd doc && jsdoc --verbose -t $$i -c jsdoc.conf.json -d ../$(DOCDIR) && break; done
 
 init:

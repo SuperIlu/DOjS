@@ -1,0 +1,110 @@
+/*!
+
+\mainpage Overview
+
+\section overview__intro Introduction
+
+JasPer is a collection
+of software (i.e., a library and application programs) for the
+coding and manipulation of images.  This software can handle image
+data in a variety of formats.  One such format supported by JasPer
+is the JPEG-2000 format defined in ISO/IEC 15444-1.
+This software was developed by
+<a href="https://www.ece.uvic.ca/~mdadams">Michael Adams</a>
+from the Department of Electrical and Computer Engineering at the 
+University of Victoria, Victoria, BC, Canada.
+
+\section overview__features Features
+
+Some of the features of the JasPer library are as follows:
+
+  - has multithreading support (e.g., the JasPer library can be used
+    concurrently in multiple threads)
+  - has native support for several image codecs, including:
+      - JPEG-2000 JP2 File Format Syntax (ISO/IEC 15444-1)
+      - JPEG-2000 Code Stream Syntax (ISO/IEC 15444-1)
+      - Portable Graymap/Pixmap (PNM)
+      - Microsoft Bitmap (BMP)
+      - Sun Rasterfile (RAS)
+      - JPEG-2000 VM Format (PGX)
+  - has non-native support for the following image codecs:
+      - JPEG (ISO/IEC 10918-1) via IJG JPEG Library
+      - HEIC (ISO/IEC 23008-12) via the libheif Library
+  - can add new codecs (or enable/disable codecs) at run time
+  - can specify a memory allocator to be used by the library
+  - can specify a logging function to be used by the library for
+    error, warning, informational, and debugging messages
+  - can place an upper limit on the total amount of memory that can be
+    used by the library (which is useful in protecting against malicious
+    image streams during decoding)
+  - can decode from a non-seekable source stream (which is useful for
+    filtering pipelines)
+  - can manage ICC profiles
+  - portable code, known to work on many platforms
+    (e.g., Linux, Windows, MacOS, BSD, etc.)
+  - can autodetect the image format during decoding
+
+Several application programs are also provided:
+
+  - `jasper`, an image transcoder program for converting between image formats
+  - `imginfo`, a program for querying the properties of an image, such as:
+    width, height, number of components, and the number of bits per sample
+  - `imgcmp`, a program for comparing two images using various distance
+    metrics, such as peak absolute error (PAE), mean absolute error (MAE), and
+    peak signal to noise ratio (PSNR)
+  - `jiv`, an image viewer
+
+\section overview__news News
+
+In release 3.0.0 of JasPer, the following notable changes were made to the API
+and/or behavior of the library relative to earlier releases (and therefore
+impact backward compatibility):
+
+  - The `jas_init()` and `jas_cleanup()` functions have been marked as
+    deprecated.
+    The replacements for these functions are described in
+    \ref lib_init.
+
+  - The `jas_init()` function no longer registers `jas_cleanup()` as an atexit
+    handler.
+    So, the library user is now responsible for invoking `jas_cleanup()` at
+    an appropriate time.
+    This change was needed in order to better support the use of the JasPer
+    library on some platforms.
+
+  - In the I/O streams API, some of the integral types used in the
+    parameter/return types of the following functions were changed to use
+    @c size_t/@c ssize_t in order to address some longstanding API issues:
+
+      - `jas_stream_memopen()`
+      - `jas_stream_read()`
+      - `jas_stream_write()`
+      - `jas_stream_copy()`
+      - `jas_stream_gobble()`
+      - `jas_stream_copy()`
+      - `jas_stream_pad()`
+
+  - In the I/O streams API, in some cases where the integral type
+    used was changed from a signed to unsigned type, deprecated
+    behavior that allowed for negative values was removed.
+
+  - The `jas_stream_memopen2()` function has been deprecated.
+
+  - More effort has been made to hide functions/macros that are
+    internal to the JasPer library in an effort to prevent applications
+    using such functions/macros (which can lead to many types of
+    problems).
+
+As part of the work done in preparing the JasPer 3.0.0 release, support
+for JasPer 3.0.0 was merged into the popular XV software, which can be
+obtained at:
+
+  - https://github.com/jasper-software/xv.git
+
+\verbinclude @CMAKE_SOURCE_DIR@/NEWS.txt
+
+*/
+
+// backslash mainpage notitle
+
+

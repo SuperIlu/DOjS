@@ -1,0 +1,198 @@
+#! /usr/bin/env bash
+
+# Copyright (c) 2021 Michael David Adams.
+# All rights reserved.
+
+################################################################################
+# Some helper functions.
+################################################################################
+
+# Terminate with error.
+panic()
+{
+	echo "ERROR: $@" 1>&2
+	exit 1
+}
+
+eecho()
+{
+	echo "$@" 1>&2
+}
+
+dir_to_version()
+{
+	local dir="$1"
+	case "$dir" in
+	version-*)
+		sed -e 's/^version-//' <<< "$dir"
+		;;
+	manual-version-*)
+		sed -e 's/^manual-version-//' <<< "$dir"
+		;;
+	*)
+		echo "$dir"
+		;;
+	esac
+}
+
+get_realpath()
+{
+	if [ $# -ne 1 ]; then
+		return 1
+	fi
+	local path="$1"
+	python -c 'import os,sys;print(os.path.realpath(sys.argv[1]))' "$path"
+}
+
+################################################################################
+# Usage information.
+################################################################################
+
+# Print usage information and exit.
+usage()
+{
+	echo "bad usage: $@"
+	cat <<- EOF
+	Options
+	=======
+
+	-v
+	    Enable verbose mode.
+
+	-d \$in_dir
+	    Set input directory to \$in_dir.
+
+	Examples
+	========
+
+	$0 -d manual_working_tree_root
+	EOF
+	exit 2
+}
+
+################################################################################
+# Parse command line.
+################################################################################
+
+verbose=0
+in_dir=
+
+while getopts d:o:hv option; do
+	case $option in
+	d)
+		in_dir="$OPTARG";;
+	h|*)
+		usage;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ ! -d "$in_dir" ]; then
+	usage "no input directory specified"
+fi
+
+releases_dir="$in_dir/releases"
+
+official_list=()
+other_list=()
+for path in $releases_dir/*; do
+
+	if [ -d "$path" ]; then
+		base=$(basename "$path") || panic
+		case "$base" in
+		version-*.*.*-*)
+			#other_list+=("$base")
+			other_list=("$base" "${other_list[@]}")
+			;;
+		version-*)
+			#official_list+=("$base")
+			official_list=("$base" "${official_list[@]}")
+			;;
+		*)
+			#other_list+=("$base")
+			other_list=("$base" "${other_list[@]}")
+			;;
+		esac
+	fi
+
+done
+dir_list=("${official_list[@]}" "${other_list[@]}")
+
+title="JasPer Reference Manual"
+
+#index_html_data='
+#<head>
+#  <meta http-equiv="refresh" content="0; URL=https://jasper-software.github.io/jasper-manual/latest/" />
+#</head>
+#<body>
+#  <p>If you are not redirected in five seconds, <a href="https://jasper-software.github.io/jasper-manual/latest/">click here</a>.</p>
+#</body>
+#'
+
+dquote='"'
+cat <<- EOF
+<!DOCTYPE html PUBLIC"ISO/IEC 15445:2000//DTD HTML//EN">
+<html>
+<head>
+<title>$title</title>
+</head>
+<body>
+<h1>$title</h1>
+EOF
+[ $? -eq 0 ] || panic "cat failed"
+
+cat <<- EOF
+<h2>Official Releases</h2>
+EOF
+[ $? -eq 0 ] || panic "cat failed"
+
+printf "The following official versions of the manual are available:\n\n" || \
+  panic "printf failed"
+printf "<ul>\n"
+
+buffer=$(get_realpath "$in_dir/latest") || \
+  panic "cannot get realpath"
+buffer=$(basename "$buffer") || \
+  panic "cannot get basename"
+latest_version=$(dir_to_version "$buffer") || \
+  panic "cannot get latest version"
+if [ "$verbose" -ge 1 ]; then
+	eecho "latest version: $latest_version"
+fi
+
+version="latest release (i.e., $latest_version)"
+url="latest/html/index.html"
+printf "    <li><a href=$dquote$url$dquote>$version</a>\n" || \
+  panic "printf failed"
+
+for dir in "${official_list[@]}"; do
+	version=$(dir_to_version "$dir") || panic
+	url="releases/$dir/html/index.html"
+	printf "    <li><a href=$dquote$url$dquote>$version</a>\n" || \
+	  panic "printf failed"
+done
+printf "</ul>\n" || panic "printf failed"
+
+cat <<- EOF
+<h2>Draft Versions</h2>
+EOF
+[ $? -eq 0 ] || panic "cat failed"
+
+if [ "${#other_list[@]}" -gt 0 ]; then
+	printf "The following other versions of the manual are available:\n\n"
+	printf "<ul>\n"
+	for dir in "${other_list[@]}"; do
+		version=$(dir_to_version "$dir") || panic
+		url="releases/$dir/html/index.html"
+		printf "    <li><a href=$dquote$url$dquote>$version</a>\n"
+	done
+	printf "</ul>\n"
+else
+	echo "No draft versions are available."
+fi
+
+cat <<- EOF
+</body>
+</html>
+EOF
+[ $? -eq 0 ] || panic "cat failed"

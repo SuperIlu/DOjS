@@ -29,9 +29,14 @@ SOFTWARE.
 #include <stdbool.h>
 #include <allegro.h>
 
+#if WINDOWS==1
+#include <winalleg.h>
+#include <winsock2.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#endif
 
 //////
 // DJGPP
@@ -52,10 +57,12 @@ extern struct BITMAP *load_bitmap_pf(PACKFILE *f, struct RGB *pal, const char *a
 
 #define EOF (-1)
 
+#if WINDOWS!=1
 typedef uint32_t DWORD;
 typedef uint16_t WORD;
 typedef uint8_t BYTE;
 typedef bool BOOL;
+#endif
 
 struct watt_sockaddr { /* for _getpeername, _getsockname */
     WORD s_type;

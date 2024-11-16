@@ -514,6 +514,49 @@ function SavePngImage(fname) { }
 function SaveQoiImage(fname) { }
 
 /**
+ * Save current screen to TIFF file.
+ * 
+ * **Note: TIFF module must be loaded by calling LoadLibrary("tiff") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * 
+ * @param {string} fname filename.
+ */
+function SaveTiffImage(fname) { }
+
+/**
+ * Save bitmap to JPG file.
+ * 
+ * **Note: JPEG module must be loaded by calling LoadLibrary("jpeg") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ * @param {number} quality between 10 and 100.
+ */
+function SaveJpgImage(fname, quality) { };
+
+/**
+ * Save bitmap to JP2 (Jpeg 2000) file.
+ * 
+ * **Note: JASPER module must be loaded by calling LoadLibrary("jasper") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ * @param {number} quality between 1 and 100.
+ */
+function SaveJp2Image(fname, quality) { };
+
+/**
+ * Save bitmap to RAS (Sun Raster) file.
+ * 
+ * **Note: JASPER module must be loaded by calling LoadLibrary("jasper") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ */
+function SaveRasImage(fname) { };
+
+/**
  * Save current screen to WEBP file.
  * 
  * **Note: WEBP module must be loaded by calling LoadLibrary("webp") before using this function!**
@@ -521,8 +564,9 @@ function SaveQoiImage(fname) { }
  * @see LoadLibrary()
  * 
  * @param {string} fname filename.
+ * @param {number} quality between 10 and 100.
  */
-function SaveWebpImage(fname) { }
+function SaveWebpImage(fname, quality) { }
 
 /**
  * get color of on-screen pixel.
@@ -686,6 +730,20 @@ function Stat(name) { }
 function GetDrive() { }
 
 /**
+ * This function canonicalizes the input path.
+ * The path is canonicialized by removing consecutive and trailing slashes, 
+ * making the path absolute if it's relative by prepending the current drive
+ * letter and working directory, removing "." components, collapsing ".." 
+ * components, adding a drive specifier if needed, and converting all slashes to '/'. 
+ * DOS-style 8+3 names of directories which are part of the pathname, as well as its
+ * final filename part, are returned lower-cased, but long filenames are left intact.
+ * 
+ * @param {string} path 
+ * @returns a path.
+ */
+function RealPath(path) { }
+
+/**
  * This function set the current default drive based on drive (1=A:, 2=B:, etc.) and determines the number of available logical drives.
  * This is a wrapper for DOS IN21, ah=19h.
  * 
@@ -720,10 +778,17 @@ function SetFramerate(rate) { }
 function GetFramerate() { }
 
 /**
- * Change the exit key from ESCAPE to any other keycode from {@link KEY}}.
- * @param {number} key 
+ * Change the exit key from ESCAPE to any other keycode from {@link KEY}.
+ * @param {number} key the new exit key
  */
 function SetExitKey(key) { }
+
+/**
+ * Check if key with keycode from {@link KEY} is pressed.
+ * @param {number} key the key to check
+ * @returns {boolean} tru if the key is currently pressed, else false.
+ */
+function KeyIsPressed(key) { }
 
 /**
  * set a console message to display at shutdown of DOjS.

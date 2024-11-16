@@ -124,6 +124,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "fxConstantColorValue"),          //
     EDI_SYNTAX(LIGHTRED, "fxAlphaBlendFunction"),          //
     EDI_SYNTAX(LIGHTRED, "GetTranslationMatrix"),          //
+    EDI_SYNTAX(LIGHTRED, "GetNetworkInterfaces"),          //
     EDI_SYNTAX(LIGHTRED, "glutWireTetrahedron"),           //
     EDI_SYNTAX(LIGHTRED, "glutWireIcosahedron"),           //
     EDI_SYNTAX(LIGHTRED, "glutSolidOctahedron"),           //
@@ -135,6 +136,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "fxDisableAllEffects"),           //
     EDI_SYNTAX(LIGHTRED, "fxAlphaTestFunction"),           //
     EDI_SYNTAX(LIGHTRED, "TransparencyEnabled"),           //
+    EDI_SYNTAX(LIGHTRED, "SetMissingCharacter"),           //
     EDI_SYNTAX(LIGHTRED, "glutWireOctahedron"),            //
     EDI_SYNTAX(LIGHTRED, "glPushClientAttrib"),            //
     EDI_SYNTAX(LIGHTRED, "fxTexDetailControl"),            //
@@ -161,8 +163,8 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "NGetXRotateMatrix"),             //
     EDI_SYNTAX(LIGHTRED, "JoystickCalibrate"),             //
     EDI_SYNTAX(LIGHTRED, "GetRotationMatrix"),             //
-    EDI_SYNTAX(LIGHTRED, "GetLocalIpAddress"),             //
     EDI_SYNTAX(LIGHTRED, "GetIdentityMatrix"),             //
+    EDI_SYNTAX(LIGHTRED, "ExtractModulePath"),             //
     EDI_SYNTAX(LIGHTRED, "EnableRemoteDebug"),             //
     EDI_SYNTAX(LIGHTRED, "glPolygonStipple"),              //
     EDI_SYNTAX(LIGHTRED, "glDeleteTextures"),              //
@@ -224,12 +226,13 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "ReadSoundInput"),                //
     EDI_SYNTAX(LIGHTRED, "PolygonZNormal"),                //
     EDI_SYNTAX(LIGHTRED, "MouseSetLimits"),                //
+    EDI_SYNTAX(LIGHTRED, "MicromodRewind"),                //
+    EDI_SYNTAX(LIGHTRED, "MicromodDeInit"),                //
     EDI_SYNTAX(LIGHTRED, "IpxSocketClose"),                //
     EDI_SYNTAX(LIGHTRED, "IpxCheckPacket"),                //
     EDI_SYNTAX(LIGHTRED, "GetSerialPorts"),                //
     EDI_SYNTAX(LIGHTRED, "GetNumberOfHDD"),                //
     EDI_SYNTAX(LIGHTRED, "GetNumberOfFDD"),                //
-    EDI_SYNTAX(LIGHTRED, "GetNetworkMask"),                //
     EDI_SYNTAX(LIGHTRED, "GetEmptyMatrix"),                //
     EDI_SYNTAX(LIGHTRED, "GetAlignMatrix"),                //
     EDI_SYNTAX(LIGHTRED, "glutWireTorus"),                 //
@@ -249,6 +252,8 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "fxGetMemoryFb"),                 //
     EDI_SYNTAX(LIGHTRED, "fxBufferClear"),                 //
     EDI_SYNTAX(LIGHTRED, "StringToBytes"),                 //
+    EDI_SYNTAX(LIGHTRED, "SaveWebpImage"),                 //
+    EDI_SYNTAX(LIGHTRED, "SaveTiffImage"),                 //
     EDI_SYNTAX(LIGHTRED, "NamedFunction"),                 //
     EDI_SYNTAX(LIGHTRED, "NPerspProject"),                 //
     EDI_SYNTAX(LIGHTRED, "MouseSetSpeed"),                 //
@@ -299,13 +304,20 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "VectorLength"),                  //
     EDI_SYNTAX(LIGHTRED, "SetFramerate"),                  //
     EDI_SYNTAX(LIGHTRED, "SaveTgaImage"),                  //
+    EDI_SYNTAX(LIGHTRED, "SaveRasImage"),                  //
+    EDI_SYNTAX(LIGHTRED, "SaveQoiImage"),                  //
     EDI_SYNTAX(LIGHTRED, "SavePngImage"),                  //
     EDI_SYNTAX(LIGHTRED, "SavePcxImage"),                  //
+    EDI_SYNTAX(LIGHTRED, "SaveJpgImage"),                  //
+    EDI_SYNTAX(LIGHTRED, "SaveJp2Image"),                  //
     EDI_SYNTAX(LIGHTRED, "SaveBmpImage"),                  //
     EDI_SYNTAX(LIGHTRED, "QScaleMatrix"),                  //
     EDI_SYNTAX(LIGHTRED, "PerspProject"),                  //
     EDI_SYNTAX(LIGHTRED, "NApplyMatrix"),                  //
+    EDI_SYNTAX(LIGHTRED, "MicromodPlay"),                  //
+    EDI_SYNTAX(LIGHTRED, "MicromodInit"),                  //
     EDI_SYNTAX(LIGHTRED, "LPTRawStatus"),                  //
+    EDI_SYNTAX(LIGHTRED, "KeyIsPressed"),                  //
     EDI_SYNTAX(LIGHTRED, "JoystickPoll"),                  //
     EDI_SYNTAX(LIGHTRED, "IpxGetPacket"),                  //
     EDI_SYNTAX(LIGHTRED, "IpxFindNodes"),                  //
@@ -380,6 +392,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "fxFogTable"),                    //
     EDI_SYNTAX(LIGHTRED, "fxDrawLine"),                    //
     EDI_SYNTAX(LIGHTRED, "fxCullMode"),                    //
+    EDI_SYNTAX(LIGHTRED, "VgmDiscard"),                    //
     EDI_SYNTAX(LIGHTRED, "Triangle3D"),                    //
     EDI_SYNTAX(LIGHTRED, "SetExitKey"),                    //
     EDI_SYNTAX(LIGHTRED, "NMatrixMul"),                    //
@@ -440,6 +453,8 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "fxIsBusy"),                      //
     EDI_SYNTAX(LIGHTRED, "fxFinish"),                      //
     EDI_SYNTAX(LIGHTRED, "fxEnable"),                      //
+    EDI_SYNTAX(LIGHTRED, "SetDrive"),                      //
+    EDI_SYNTAX(LIGHTRED, "RealPath"),                      //
     EDI_SYNTAX(LIGHTRED, "RawWrite"),                      //
     EDI_SYNTAX(LIGHTRED, "MsecTime"),                      //
     EDI_SYNTAX(LIGHTRED, "MidiStop"),                      //
@@ -449,7 +464,9 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "HSBColor"),                      //
     EDI_SYNTAX(LIGHTRED, "GetPixel"),                      //
     EDI_SYNTAX(LIGHTRED, "GetGreen"),                      //
+    EDI_SYNTAX(LIGHTRED, "GetDrive"),                      //
     EDI_SYNTAX(LIGHTRED, "GetAlpha"),                      //
+    EDI_SYNTAX(LIGHTRED, "FromUTF8"),                      //
     EDI_SYNTAX(LIGHTRED, "FlushLog"),                      //
     EDI_SYNTAX(LIGHTRED, "FlicPlay"),                      //
     EDI_SYNTAX(LIGHTRED, "FlicOpen"),                      //
@@ -463,6 +480,9 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "glBegin"),                       //
     EDI_SYNTAX(LIGHTRED, "glAccum"),                       //
     EDI_SYNTAX(LIGHTRED, "fxFlush"),                       //
+    EDI_SYNTAX(LIGHTRED, "VgmStop"),                       //
+    EDI_SYNTAX(LIGHTRED, "VgmPlay"),                       //
+    EDI_SYNTAX(LIGHTRED, "VgmLoad"),                       //
     EDI_SYNTAX(LIGHTRED, "Resolve"),                       //
     EDI_SYNTAX(LIGHTRED, "Require"),                       //
     EDI_SYNTAX(LIGHTRED, "ReadZIP"),                       //
@@ -481,7 +501,9 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "glInit"),                        //
     EDI_SYNTAX(LIGHTRED, "glHint"),                        //
     EDI_SYNTAX(LIGHTRED, "fxInit"),                        //
+    EDI_SYNTAX(LIGHTRED, "VgmPos"),                        //
     EDI_SYNTAX(LIGHTRED, "VDebug"),                        //
+    EDI_SYNTAX(LIGHTRED, "ToUTF8"),                        //
     EDI_SYNTAX(LIGHTRED, "TextXY"),                        //
     EDI_SYNTAX(LIGHTRED, "System"),                        //
     EDI_SYNTAX(LIGHTRED, "SNoise"),                        //
@@ -490,10 +512,12 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTRED, "Quad3D"),                        //
     EDI_SYNTAX(LIGHTRED, "PNoise"),                        //
     EDI_SYNTAX(LIGHTRED, "GetRed"),                        //
+    EDI_SYNTAX(LIGHTRED, "GetEnv"),                        //
     EDI_SYNTAX(LIGHTRED, "Clip3D"),                        //
     EDI_SYNTAX(LIGHTRED, "Circle"),                        //
     EDI_SYNTAX(LIGHTRED, "glFog"),                         //
     EDI_SYNTAX(LIGHTRED, "glEnd"),                         //
+    EDI_SYNTAX(LIGHTRED, "Trace"),                         //
     EDI_SYNTAX(LIGHTRED, "Sleep"),                         //
     EDI_SYNTAX(LIGHTRED, "SizeY"),                         //
     EDI_SYNTAX(LIGHTRED, "SizeX"),                         //
@@ -519,6 +543,7 @@ const syntax_t edi_wordlist[] = {
 
     // Classes
     EDI_SYNTAX(LIGHTGREEN, "DoubleArray"),  // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "ByteArray"),    // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "IntArray"),     // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "GIFAnim"),      // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "TexInfo"),      // .ctor()
@@ -538,6 +563,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(LIGHTGREEN, "File"),         // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Curl"),         // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Midi"),         // .ctor()
+    EDI_SYNTAX(LIGHTGREEN, "IBXM"),         // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Zip"),          // .ctor()
     EDI_SYNTAX(LIGHTGREEN, "Ogg"),          // .ctor()
 
@@ -559,10 +585,13 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "DownloadMipMap"),          //
     EDI_SYNTAX(RED, "AddCubicBezier"),          //
     EDI_SYNTAX(RED, "SetSocksProxy"),           //
+    EDI_SYNTAX(RED, "SaveWebpImage"),           //
+    EDI_SYNTAX(RED, "SaveTiffImage"),           //
     EDI_SYNTAX(RED, "IsOutputEmpty"),           //
     EDI_SYNTAX(RED, "GetRemotePort"),           //
     EDI_SYNTAX(RED, "GetRemoteHost"),           //
     EDI_SYNTAX(RED, "CurrentSample"),           //
+    EDI_SYNTAX(RED, "ClearPostData"),           //
     EDI_SYNTAX(RED, "AddCustomPath"),           //
     EDI_SYNTAX(RED, "StringHeight"),            //
     EDI_SYNTAX(RED, "SetUserAgent"),            //
@@ -571,8 +600,12 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "SetProxyPort"),            //
     EDI_SYNTAX(RED, "SetMaxRedirs"),            //
     EDI_SYNTAX(RED, "SaveTgaImage"),            //
+    EDI_SYNTAX(RED, "SaveRasImage"),            //
+    EDI_SYNTAX(RED, "SaveQoiImage"),            //
     EDI_SYNTAX(RED, "SavePngImage"),            //
     EDI_SYNTAX(RED, "SavePcxImage"),            //
+    EDI_SYNTAX(RED, "SaveJpgImage"),            //
+    EDI_SYNTAX(RED, "SaveJp2Image"),            //
     EDI_SYNTAX(RED, "SaveBmpImage"),            //
     EDI_SYNTAX(RED, "IsOutputFull"),            //
     EDI_SYNTAX(RED, "IsInputEmpty"),            //
@@ -591,6 +624,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(RED, "Established"),             //
     EDI_SYNTAX(RED, "CurrentTime"),             //
     EDI_SYNTAX(RED, "AddTextWrap"),             //
+    EDI_SYNTAX(RED, "AddPostData"),             //
     EDI_SYNTAX(RED, "AddBookmark"),             //
     EDI_SYNTAX(RED, "WriteBytes"),              //
     EDI_SYNTAX(RED, "SetTimeout"),              //
@@ -670,9 +704,16 @@ const syntax_t edi_wordlist[] = {
 
     // members
     EDI_SYNTAX(YELLOW, ".hidden_layers"),  //
+    EDI_SYNTAX(YELLOW, ".SaveWebpImage"),  //
+    EDI_SYNTAX(YELLOW, ".SaveTiffImage"),  //
     EDI_SYNTAX(YELLOW, ".maxframesize"),   //
+    EDI_SYNTAX(YELLOW, ".SaveRasImage"),   //
+    EDI_SYNTAX(YELLOW, ".SaveQoiImage"),   //
     EDI_SYNTAX(YELLOW, ".SavePngImage"),   //
+    EDI_SYNTAX(YELLOW, ".SaveJpgImage"),   //
+    EDI_SYNTAX(YELLOW, ".SaveJp2Image"),   //
     EDI_SYNTAX(YELLOW, ".textureSize"),    //
+    EDI_SYNTAX(YELLOW, ".instruments"),    //
     EDI_SYNTAX(YELLOW, ".aspectRatio"),    //
     EDI_SYNTAX(YELLOW, ".samplerate"),     //
     EDI_SYNTAX(YELLOW, ".numsamples"),     //
@@ -684,7 +725,9 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(YELLOW, ".frequency"),      //
     EDI_SYNTAX(YELLOW, ".framerate"),      //
     EDI_SYNTAX(YELLOW, ".RenderSVG"),      //
+    EDI_SYNTAX(YELLOW, ".ticksize"),       //
     EDI_SYNTAX(YELLOW, ".smallLod"),       //
+    EDI_SYNTAX(YELLOW, ".patterns"),       //
     EDI_SYNTAX(YELLOW, ".minDelay"),       //
     EDI_SYNTAX(YELLOW, ".maxDelay"),       //
     EDI_SYNTAX(YELLOW, ".largeLod"),       //
@@ -697,6 +740,7 @@ const syntax_t edi_wordlist[] = {
     EDI_SYNTAX(YELLOW, ".vendor"),         //
     EDI_SYNTAX(YELLOW, ".stereo"),         //
     EDI_SYNTAX(YELLOW, ".server"),         //
+    EDI_SYNTAX(YELLOW, ".ranges"),         //
     EDI_SYNTAX(YELLOW, ".length"),         //
     EDI_SYNTAX(YELLOW, ".inputs"),         //
     EDI_SYNTAX(YELLOW, ".hidden"),         //

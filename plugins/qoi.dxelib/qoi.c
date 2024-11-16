@@ -196,7 +196,7 @@ static bool save_qoi(BITMAP *bm, const char *fname) {
 
 /**
  * @brief save current screen to file.
- * SavePngImage(fname:string)
+ * SaveQoiImage(fname:string)
  *
  * @param J the JS context.
  */
@@ -212,7 +212,7 @@ static void f_SaveQoiImage(js_State *J) {
 #if LINUX != 1
 /**
  * @brief save Bitmap to file.
- * SavePngImage(fname:string)
+ * SaveQoiImage(fname:string)
  *
  * @param J the JS context.
  */

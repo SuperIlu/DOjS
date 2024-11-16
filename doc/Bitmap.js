@@ -1,9 +1,11 @@
 /**
-* Load a BMP, TGA, PCX, QOI, JPEG or PNG image.
+* Load a BMP, TGA, PCX, QOI, JPEG, TIFF, JPG2000, RAS or PNG image.
 *
 * **Note: PNG module must be loaded by calling LoadLibrary("png") before using this function with PNG files!**
 * **Note: JPEG module must be loaded by calling LoadLibrary("jpeg") before loading JPEG files!**
-* **Note: JPEG module must be loaded by calling LoadLibrary("qoi") before loading QOI files!**
+* **Note: QOI module must be loaded by calling LoadLibrary("qoi") before loading QOI files!**
+* **Note: JASPER module must be loaded by calling LoadLibrary("jasper") before loading Jpeg2000 or Sun Raster files!**
+* **Note: TIFF module must be loaded by calling LoadLibrary("tiff") before loading TIFF files! TIFF files can't be loaded from ZIP files!**
 * 
 * @see LoadLibrary()
 *
@@ -129,6 +131,16 @@ Bitmap.prototype.SaveTgaImage = function (fname) { };
  */
 Bitmap.prototype.SavePngImage = function (fname) { };
 /**
+ * Save bitmap to JPG file.
+ * 
+ * **Note: JPEG module must be loaded by calling LoadLibrary("jpeg") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ * @param {number} quality between 10 and 100.
+ */
+Bitmap.prototype.SaveJpgImage = function (fname, quality) { };
+/**
  * Save bitmap to QOI file.
  * 
  * **Note: QOI module must be loaded by calling LoadLibrary("qoi") before using this function!**
@@ -138,11 +150,40 @@ Bitmap.prototype.SavePngImage = function (fname) { };
  */
 Bitmap.prototype.SaveQoiImage = function (fname) { };
 /**
+ * Save bitmap to RAS (Sun Raster) file.
+ * 
+ * **Note: JASPER module must be loaded by calling LoadLibrary("jasper") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ */
+Bitmap.prototype.SaveRasImage = function (fname) { };
+/**
+ * Save bitmap to JP2 (Jpeg 2000) file.
+ * 
+ * **Note: JASPER module must be loaded by calling LoadLibrary("jasper") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ * @param {number} quality between 1 and 100.
+ */
+Bitmap.prototype.SaveJp2Image = function (fname, quality) { };
+/**
+ * Save bitmap to TIFF file.
+ * 
+ * **Note: TIFF module must be loaded by calling LoadLibrary("tiff") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ */
+Bitmap.prototype.SaveTiffImage = function (fname) { };
+/**
  * Save bitmap to WEBP file.
  * 
  * **Note: WEBP module must be loaded by calling LoadLibrary("webp") before using this function!**
  * 
  * @see LoadLibrary()
  * @param {string} fname filename.
+ * @param {number} quality between 10 and 100.
  */
-Bitmap.prototype.SaveWebpImage = function (fname) { };
+Bitmap.prototype.SaveWebpImage = function (fname, quality) { };

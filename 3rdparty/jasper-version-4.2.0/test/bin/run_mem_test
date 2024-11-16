@@ -1,0 +1,111 @@
+#! /usr/bin/env bash
+
+panic()
+{
+	echo "$@"
+	exit 1
+}
+
+program_dir=$(dirname "$0") || exit 1
+
+usage()
+{
+	echo "bad usage: $@"
+	cat <<- EOF
+	Options
+	=======
+
+	-s \$start
+	-e \$end
+	-d \$step
+	-i \$image_file
+	-p \$imginfo_program
+
+	Examples
+	========
+
+	$0 -s 0 -e 1000000 -d 64 -i data/images/test.pnm
+
+	$0 -s 0 -e 1000000 -d 64 -i data/images/test.pnm -m encode -T jp2
+	EOF
+	exit 2
+}
+
+start=0
+step=64
+end=4294967296
+debug_level=0
+op=decode
+out_format=jp2
+
+if [ -n "$JAS_ABS_TOP_BUILDDIR" ]; then
+	imginfo_program="$JAS_ABS_TOP_BUILDDIR/src/app/imginfo"
+	jasper_program="$JAS_ABS_TOP_BUILDDIR/src/app/jasper"
+else
+	imginfo_program="$program_dir/../../tmp_cmake/build/src/app/imginfo"
+	jasper_program="$program_dir/../../tmp_cmake/build/src/app/jasper"
+fi
+export IMGINFO_COMMAND="$imginfo_program"
+export JASPER_COMMAND="$jasper_program"
+image_file=
+
+while getopts s:e:d:p:i:D:m:T:h opt; do
+	case "$opt" in
+	T)
+		out_format="$OPTARG";;
+	m)
+		op="$OPTARG";;
+	D)
+		debug_level="$OPTARG";;
+	s)
+		start="$OPTARG";;
+	e)
+		end="$OPTARG";;
+	d)
+		step="$OPTARG";;
+	i)
+		image_file="$OPTARG";;
+	p)
+		imginfo_program="$OPTARG";;
+	-h|*)
+		usage;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "$image_file" ]; then
+	usage "no image file specified"
+fi
+
+i="$start"
+while [ $i -lt "$end" ]; do
+	echo "max mem $i"
+
+	case "$op" in
+	decode)
+		command=(env ASAN_OPTIONS="exitcode=10" \
+		  "$imginfo_program" --debug-level "$debug_level" --memory-limit "$i")
+		echo "RUN ${command[@]} < $image_file"
+		${command[@]} < "$image_file" > /dev/null
+		status=$?
+		;;
+	encode)
+		command=(env ASAN_OPTIONS="exitcode=10" \
+		  "$jasper_program" \
+		  --debug-level "$debug_level" --memory-limit "$i" -T "$out_format")
+		echo "RUN ${command[@]} < $image_file"
+		${command[@]} < "$image_file" > /dev/null
+		status=$?
+		;;
+	esac
+
+	if [ "$status" -eq 0 ]; then
+		echo "OK"
+		exit 0
+	elif [ "$status" -eq 1 ]; then
+		echo "ERROR"
+	else
+		panic "exit status $status"
+	fi
+	i=$((i + step))
+done

@@ -23,6 +23,9 @@ SOFTWARE.
 #include "bitmap.h"
 
 #include <allegro.h>
+#if WINDOWS==1
+#include <winalleg.h>
+#endif
 #include <mujs.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,6 +41,7 @@ SOFTWARE.
 #include "loadpng.h"
 #include "qoi.h"
 #include "webp.h"
+#include "jpeg.h"
 #include "linux/glue.h"
 #else
 #include "3dfx-glide.h"
@@ -242,20 +246,20 @@ static void new_Bitmap(js_State *J) {
         if (!delim) {
             bm = load_bitmap(fname, NULL);
             if (!bm) {
-                js_error(J, "Can't load image '%s'", fname);
+                js_error(J, "Can't load image{1} '%s'", fname);
                 return;
             }
         } else {
             PACKFILE *pf = open_zipfile1(fname);
             if (!pf) {
-                js_error(J, "Can't load image '%s'", fname);
+                js_error(J, "Can't load image{2} '%s'", fname);
                 return;
             }
             bm = load_bitmap_pf(pf, NULL, ut_getFilenameExt(fname));
             pack_fclose(pf);
 
             if (!bm) {
-                js_error(J, "Can't load image '%s'", fname);
+                js_error(J, "Can't load image{3} '%s'", fname);
                 return;
             }
         }
@@ -487,7 +491,7 @@ static void Bitmap_SaveQoiImage(js_State *J) {
 
 /**
  * @brief save Bitmap to file.
- * SaveWebpImage(fname:string)
+ * SaveWebpImage(fname:string, quality:number)
  *
  * @param J the JS context.
  */
@@ -495,8 +499,33 @@ static void Bitmap_SaveWebpImage(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
     const char *fname = js_tostring(J, 1);
 
-    if (!save_webp(bm, fname)) {
+    int quality = 95;
+    if (js_isnumber(J, 2)) {
+        quality = js_touint16(J, 2);
+    }
+
+    if (!save_webp(bm, fname, quality)) {
         js_error(J, "Can't save Bitmap to WEBP file '%s'", fname);
+    }
+}
+
+/**
+ * @brief save Bitmap to file.
+ * SaveJpgImage(fname:string, quality:number)
+ *
+ * @param J the JS context.
+ */
+static void Bitmap_SaveJpgImage(js_State *J) {
+    BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
+    const char *fname = js_tostring(J, 1);
+
+    int quality = 95;
+    if (js_isnumber(J, 2)) {
+        quality = js_touint16(J, 2);
+    }
+
+    if (!save_jpg(bm, fname, quality)) {
+        js_error(J, "Can't save Bitmap to JPG file '%s'", fname);
     }
 }
 #endif
@@ -590,7 +619,8 @@ void init_bitmap(js_State *J) {
 #if LINUX == 1
         NPROTDEF(J, Bitmap, SavePngImage, 1);
         NPROTDEF(J, Bitmap, SaveQoiImage, 1);
-        NPROTDEF(J, Bitmap, SaveWebpImage, 1);
+        NPROTDEF(J, Bitmap, SaveWebpImage, 2);
+        NPROTDEF(J, Bitmap, SaveJpgImage, 2);
 #endif
 #ifdef LFB_3DFX
         NPROTDEF(J, Bitmap, FxDrawLfb, 4);

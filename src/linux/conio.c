@@ -57,6 +57,8 @@ static uint32_t cio_colors[CIO_NUM_COLORS];
 
 static uint32_t cio_cursor;
 
+static BITMAP *render_bm;
+
 /**
  * @brief Sets just the background of the text attribute. See section textattr.
  */
@@ -131,9 +133,11 @@ int getxkey(void) {
     int key;
     char str[2] = {0x00, 0x00};
 
+    acquire_screen();
+
     // redraw screen
     // CIOF("%s:%d %s()\n", __FILE__, __LINE__, __FUNCTION__);
-    clear_to_color(screen, cio_colors[BLACK]);
+    clear_to_color(render_bm, cio_colors[BLACK]);
     for (int y = 0; y < CIO_NUM_LINES; y++) {
         int yPos = y * cio_fheight;
         for (int x = 0; x < CIO_NUM_COLS; x++) {
@@ -141,17 +145,23 @@ int getxkey(void) {
 
             str[0] = CIO_CHAR(cio_screen[y][x]);
 
-            rectfill(screen, xPos, yPos, xPos + cio_fwidth - 1, yPos + cio_fheight - 1, CIO_BG(cio_screen[y][x]));
-            textout_ex(screen, cio_font, str, xPos, yPos, CIO_FG(cio_screen[y][x]), -1);
+            if(CIO_BG(cio_screen[y][x]) != cio_colors[BLACK]) {
+                rectfill(render_bm, xPos, yPos, xPos + cio_fwidth - 1, yPos + cio_fheight - 1, CIO_BG(cio_screen[y][x]));
+            }
+            textout_ex(render_bm, cio_font, str, xPos, yPos, CIO_FG(cio_screen[y][x]), -1);
         }
     }
 
     int yPos = cio_y * cio_fheight + cio_fheight - 1;
     int xPos = cio_x * cio_fwidth;
 
-    line(screen, xPos, yPos, xPos + cio_fwidth, yPos, cio_cursor);
-    line(screen, xPos, yPos, xPos, yPos - 2, cio_cursor);
-    line(screen, xPos + cio_fwidth, yPos, xPos + cio_fwidth, yPos - 2, cio_cursor);
+    line(render_bm, xPos, yPos, xPos + cio_fwidth, yPos, cio_cursor);
+    line(render_bm, xPos, yPos, xPos, yPos - 2, cio_cursor);
+    line(render_bm, xPos + cio_fwidth, yPos, xPos + cio_fwidth, yPos - 2, cio_cursor);
+
+    blit(render_bm, screen, 0, 0, 0, 0, render_bm->w, render_bm->h);
+    release_screen();
+    vsync();
 
     // wait for keypress with blinking cursor TODO:
     // CIOF("%s:%d %s()\n", __FILE__, __LINE__, __FUNCTION__);
@@ -275,6 +285,12 @@ void textmode(int _mode) {
             exit(1);
         }
 
+        render_bm = create_bitmap(wwidth, wheight);
+        if (!render_bm) {
+            CIOF("Could not open window!\n");
+            exit(1);
+        }
+
         // make colors
         cio_colors[BLACK] = makeacol32(0, 0, 0, 255);
         cio_colors[WHITE] = makeacol32(255, 255, 255, 255);
@@ -335,7 +351,7 @@ void normvideo(void) {
             destroy_font(cio_font);
             cio_font = NULL;
         }
-
+        destroy_bitmap(render_bm);
         allegro_exit();
         cio_window = false;
     }

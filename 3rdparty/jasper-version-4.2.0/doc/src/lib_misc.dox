@@ -1,0 +1,11 @@
+/*!
+
+@if DOXYGEN_EXCLUDE
+
+\page lib_misc Library Miscellany
+
+\tableofcontents
+
+@endif
+
+*/

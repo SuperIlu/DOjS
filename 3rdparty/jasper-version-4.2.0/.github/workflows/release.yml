@@ -1,0 +1,54 @@
+name: release
+
+on:
+  push:
+    tags:
+      - version-[0-9]+.[0-9]+.[0-9]+
+      - version-[0-9]+.[0-9]+.[0-9]+-rc[0-9]+
+      - version-[0-9]+.[0-9]+.[0-9]+-alpha[0-9]+
+      - version-[0-9]+.[0-9]+.[0-9]+-beta[0-9]+
+      - experimental-version-*
+      - mdadams-experimental-version-*
+
+jobs:
+  build:
+    #runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    steps:
+      ############################################################
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+      ############################################################
+      - name: Prebuild
+        shell: bash
+        run: build/github/prebuild
+      ############################################################
+      - name: Build
+        shell: bash
+        run: build/make_release -W 1 -r ${{github.ref}} -w ${{github.workspace}} -t ${{runner.temp}}/tmp -o ${{runner.temp}}/out
+      ############################################################
+      - name: Deploy Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ${{runner.temp}}/out/jasper*.tar.gz
+          body_path: ${{runner.temp}}/out/release_notes.txt
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      ############################################################
+      - name: Deploy GitHub Pages Site for Manual
+        env:
+          DEPLOY_KEY: ${{secrets.MANUAL_DEPLOY_KEY}}
+        shell: bash
+        run: |
+          build/github/deploy_gh_pages \
+            -f \
+            -m key \
+            -t ${{runner.temp}}/deploy_gh_pages \
+            -i ${{runner.temp}}/out/doc \
+            -r jasper-software/jasper-manual \
+            -b gh-pages \
+            -z ${{github.ref}}
+      ############################################################

@@ -159,7 +159,7 @@ static void new_MPEG1(js_State *J) {
         JS_ENOMEM(J);
         return;
     }
-    bzero(m, sizeof(mpeg1_t));
+    memset(m, 0, sizeof(mpeg1_t));
 
     const char *fname = js_tostring(J, 1);
     m->plm = plm_create_with_filename(fname);

@@ -12,20 +12,23 @@ MUJS		= $(THIRDPARTY)/mujs-1.0.5
 ALLEGRO		= $(THIRDPARTY)/allegro-4.2.2-xc-master
 DZCOMMDIR	= $(THIRDPARTY)/dzcomm
 WATT32		= $(THIRDPARTY)/Watt-32
-ZLIB		= $(THIRDPARTY)/zlib-1.2.12
-KUBAZIP		= $(THIRDPARTY)/zip-0.3.1
+ZLIB		= $(THIRDPARTY)/zlib-1.3.1
+KUBAZIP		= $(THIRDPARTY)/zip-0.3.2
 ALPNG		= $(THIRDPARTY)/alpng13
-CURL		= $(THIRDPARTY)/curl-8.6.0
+CURL		= $(THIRDPARTY)/curl-8.11.0
 MESA3		= $(THIRDPARTY)/MesaFX-3.4-master
 BZIP2		= $(THIRDPARTY)/bzip2-1.0.8
 INI			= $(THIRDPARTY)/ini-20220806/src
-MBEDTLS		= $(THIRDPARTY)/mbedtls-2.28.7
+MBEDTLS		= $(THIRDPARTY)/mbedtls-3.6.2
 WEBP		= $(THIRDPARTY)/libwebp-1.3.2
+TIFF		= $(THIRDPARTY)/tiff-4.6.0
+JASPER_SRC	= $(THIRDPARTY)/jasper-version-4.2.0
+JASPER_BIN	= $(THIRDPARTY)/jasper-djgpp
+JPEG		= $(THIRDPARTY)/jpeg-9f
 
-GLIDE=glide3x
-GLIDESDK=$(GLIDE)/v1
-TEXUS=$(GLIDE)/texus
-FONTCONV=GrxFntConv
+GLIDE		= glide3x
+GLIDESDK	= $(GLIDE)/v1
+TEXUS		= $(GLIDE)/texus
 
 JSDOC_TEMPLATES ?= $(shell npm root)/better-docs $(shell npm root -g)/better-docs
 
@@ -40,6 +43,9 @@ LIB_MESA	= $(MESA3)/lib/libgl.a
 LIB_BZIP2	= $(BZIP2)/libbzip2.a
 LIB_MBEDTLS = $(MBEDTLS)/library/libmbedtls.a
 LIB_WEBP 	= $(WEBP)/src/libwebp.a
+LIB_TIFF 	= $(TIFF)/libtiff/.libs/libtiff.a
+LIB_JASPER 	= $(JASPER_BIN)/src/libjasper/libjasper.a
+LIB_JPEG 	= $(JPEG)/libjpeg.a
 
 # compiler
 CDEF     = -DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED # -DMEMDEBUG 
@@ -55,8 +61,13 @@ INCLUDES = \
 	-I$(realpath $(KUBAZIP))/src \
 	-I$(realpath $(ALPNG))/src \
 	-I$(realpath $(MBEDTLS))/include \
+	-I$(realpath $(MBEDTLS))/library \
 	-I$(realpath $(CURL))/include \
 	-I$(realpath $(WEBP))/src \
+	-I$(realpath $(TIFF))/libtiff \
+	-I$(realpath $(JASPER_SRC))/src/libjasper/include \
+	-I$(realpath $(JASPER_BIN))/src/libjasper/include \
+	-I$(realpath $(JPEG)) \
 	-I$(realpath $(INI))/
 
 # linker
@@ -82,6 +93,7 @@ DOCDIR			= doc/html
 DXE_TEMPLATE	= dxetemplate.txt
 DXE_EXPORTS		= src/dexport.c
 
+## compiler and binutils
 CROSS=i586-pc-msdosdjgpp
 CROSS_PLATFORM=i586-pc-msdosdjgpp-
 CC=$(CROSS_PLATFORM)gcc
@@ -93,6 +105,28 @@ RANLIB=$(CROSS_PLATFORM)ranlib
 DXE3GEN = dxe3gen
 DXE3RES = dxe3res
 export
+
+## other tools used in Makefile
+AWKPRG		= awk
+CATPRG		= cat
+CPPRG		= cp
+CUTPRG		= cut
+CURLPRG		= curl
+ECHOPRG		= echo
+EGREPPRG	= egrep
+FINDPRG		= find
+GREPPRG		= grep
+JSDOCPRG	= jsdoc
+MKDIRPRG	= mkdir
+PYTHONPRG	= python3
+RMPRG		= rm
+SEDPRG		= sed
+SHPRG		= bash
+SORTPRG		= sort
+UNIQPRG		= uniq
+ZIPPRG		= zip
+FONTCONV	= GrxFntConv
+NPM_INSTALL = npm install -g
 
 MPARA=-j8
 
@@ -130,13 +164,14 @@ PARTS= \
 	$(BUILDDIR)/zip/src/zip.o \
 	$(BUILDDIR)/zipfile.o \
 	$(BUILDDIR)/dexport.o \
+	$(BUILDDIR)/systime.o \
 	$(BUILDDIR)/ini/ini.o
 
 DXE_DIRS := $(wildcard plugins/*.dxelib)
 
 all: dojs $(DXE_DIRS) JSBOOT.ZIP
 
-dojs: init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3 libwebp texus.exe fntconv.exe $(EXE)
+dojs: init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3 libwebp libtiff libjasper libjpeg texus.exe fntconv.exe $(EXE)
 
 mesa3: $(LIB_MESA)
 $(LIB_MESA):
@@ -176,13 +211,29 @@ $(LIB_MUJS):
 
 liballegro: $(LIB_ALLEGRO)
 $(LIB_ALLEGRO):
-	cd $(ALLEGRO) && bash ./xmake.sh lib
+	cd $(ALLEGRO) && $(SHPRG) ./xmake.sh lib
 
 libwatt32: $(LIB_WATT)
 $(LIB_WATT):
 	DJ_PREFIX=$(dir $(shell which $(CC))) $(MAKE) $(MPARA) -C $(WATT32)/src -f djgpp.mak
 
-$(EXE): $(PARTS) init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3
+configure_tiff: $(TIFF)/Makefile
+$(TIFF)/Makefile:
+	(cd $(TIFF) && HOST=$(CROSS) CFLAGS="$(CFLAGS)" LDFLAGS="" LIBS="" $(SHPRG) ./djgpp-config.sh)
+
+libtiff: $(LIB_TIFF)
+$(LIB_TIFF): $(TIFF)/Makefile
+	$(MAKE) $(MPARA) -C $(TIFF)
+
+libjasper: $(LIB_JASPER)
+$(LIB_JASPER):
+	(cd $(JASPER_SRC) && $(SHPRG) ./cmake-djgpp.sh)
+
+libjpeg: $(LIB_JPEG)
+$(LIB_JPEG):
+	$(MAKE) $(MPARA) -C $(JPEG) -f makefile.dj libjpeg.a
+
+$(EXE): $(PARTS) init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3 libtiff libjasper libjpeg
 	$(CC) $(LDFLAGS) -o $@ $(PARTS) $(LIBS)
 
 $(BUILDDIR)/%.o: src/%.c Makefile
@@ -197,65 +248,65 @@ $(BUILDDIR)/zip/src/%.o: $(KUBAZIP)/src/%.c Makefile
 $(BUILDDIR)/ini/%.o: $(INI)/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(DXE_DIRS): init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3
+$(DXE_DIRS): init libmujs liballegro dzcomm libwatt32 libz alpng libcurl libtiff libjasper libjpeg mesa3
 	$(MAKE) -C $@
 
 $(DXE_EXPORTS): dxetemplate.txt $(MUJS)/mujs.h
-	python3 ./extract_functions.py $(DXE_TEMPLATE) $(MUJS)/mujs.h $@
+	$(PYTHONPRG) ./extract_functions.py $(DXE_TEMPLATE) $(MUJS)/mujs.h $@
 
-JSBOOT.ZIP: $(shell find jsboot/ -type f)
-	rm -f $@
-	zip -9 -r $@ jsboot/
+JSBOOT.ZIP: $(shell $(FINDPRG) jsboot/ -type f)
+	$(RMPRG) -f $@
+	$(ZIPPRG) -9 -r $@ jsboot/
 
 texus.exe:
 	$(MAKE) -C $(TEXUS) clean all
-	cp $(TEXUS)/texus.exe .
+	$(CPPRG) $(TEXUS)/texus.exe .
 
 fntconv.exe:
 	$(MAKE) -C $(FONTCONV) clean all
-	cp $(FONTCONV)/fntconv.exe .
+	$(CPPRG) $(FONTCONV)/fntconv.exe .
 
 cacert.pem:
-	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
+	$(CURLPRG) --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
 
 zip: all cacert.pem doc
-	rm -f $(RELZIP)
-	rm -f dxetest.DXE dxetest2.DXE
-	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	zip -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe DPM.BAT V_*.BAT texus.exe fntconv.exe cacert.pem *.DXE
+	$(RMPRG) -f $(RELZIP)
+	$(RMPRG) -f dxetest.DXE dxetest2.DXE
+	$(CPPRG) $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
+	$(ZIPPRG) -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe DPM.BAT V_*.BAT texus.exe fntconv.exe cacert.pem *.DXE
 
 devzip: all cacert.pem doc
-	rm -f $(RELZIP)
-	cp $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	zip -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT texus.exe fntconv.exe cacert.pem *.DXE
-	scp $(RELZIP) smbshare@192.168.2.8:/sata/c64
+	$(RMPRG) -f $(RELZIP)
+	$(CPPRG) $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
+	$(ZIPPRG) -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT texus.exe fntconv.exe cacert.pem *.DXE
+	$(CPPRG)p $(RELZIP) smbshare@192.168.2.8:/sata/c64
 
 dostodon: zip
-	cp png.DXE jpeg.DXE sqlite.DXE webp.DXE curl.DXE dojs.exe cacert.pem JSBOOT.ZIP ../GitHub/DOStodon/
+	$(CPPRG) png.DXE jpeg.DXE sqlite.DXE webp.DXE curl.DXE dojs.exe cacert.pem JSBOOT.ZIP ../GitHub/DOStodon/
 
 doc:
-	rm -rf $(DOCDIR)
-	mkdir -p $(DOCDIR)
+	$(RMPRG) -rf $(DOCDIR)
+	$(MKDIRPRG) -p $(DOCDIR)
 	# if this fails add JSDOC_TEMPLATES='<location(s) to look for templates>' to your make invocation
-	for i in $(JSDOC_TEMPLATES); do [ -d $$i ] && cd doc && jsdoc --verbose -t $$i -c jsdoc.conf.json -d ../$(DOCDIR) && break; done
+	for i in $(JSDOC_TEMPLATES); do [ -d $$i ] && cd doc && $(JSDOCPRG) --verbose -t $$i -c jsdoc.conf.json -d ../$(DOCDIR) && break; done
 
-init:
-	mkdir -p $(BUILDDIR) $(BUILDDIR)/loadpng $(BUILDDIR)/zip/src $(BUILDDIR)/ini
+init: configure_tiff
+	$(MKDIRPRG) -p $(BUILDDIR) $(BUILDDIR)/loadpng $(BUILDDIR)/zip/src $(BUILDDIR)/ini
 	# make sure compile time is always updated
-	rm -f $(BUILDDIR)/DOjS.o
+	$(RMPRG) -f $(BUILDDIR)/DOjS.o
 
 clean:
-	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) $(ZIP) JSLOG.TXT texus.exe fntconv.exe GLIDE3X.DXE JSBOOT.ZIP cacert.pem W32DHCP.TMP
+	$(RMPRG) -rf $(BUILDDIR)/
+	$(RMPRG) -f $(EXE) $(ZIP) JSLOG.TXT texus.exe fntconv.exe GLIDE3X.DXE JSBOOT.ZIP cacert.pem W32DHCP.TMP
 	for dir in $(DXE_DIRS); do \
 		$(MAKE) -C $$dir -f Makefile $@; \
 	done
 
-distclean: clean alclean jsclean dzclean wattclean zclean apclean mbedtlsclean curlclean dxeclean mesa3clean webpclean bzip2clean
+distclean: clean alclean jsclean dzclean wattclean zclean apclean mbedtlsclean curlclean dxeclean mesa3clean webpclean bzip2clean distclean_tiff jasperclean jpegclean
 	$(MAKE) -C $(TEXUS) clean
 	$(MAKE) -C $(FONTCONV) clean
-	rm -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.*
-	rm -rf $(GLIDE)/*/test $(GLIDE)/texus/*.exe $(GLIDE)/texus/*.EXE $(GLIDE)/texus/build
+	$(RMPRG) -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.*
+	$(RMPRG) -rf $(GLIDE)/*/test $(GLIDE)/texus/*.exe $(GLIDE)/texus/*.EXE $(GLIDE)/texus/build
 
 dzclean:
 	$(MAKE) -C $(DZCOMMDIR) clean
@@ -264,7 +315,7 @@ jsclean:
 	$(MAKE) -C $(MUJS) clean
 
 alclean:
-	cd $(ALLEGRO) && bash ./xmake.sh clean
+	cd $(ALLEGRO) && $(SHPRG) ./xmake.sh clean
 
 wattclean:
 	$(MAKE) -C $(WATT32)/src -f djgpp.mak clean
@@ -279,79 +330,91 @@ bzip2clean:
 	$(MAKE) -C $(BZIP2) -f Makefile clean
 
 dxeclean:
-	rm -f $(DXE_EXPORTS)
+	$(RMPRG) -f $(DXE_EXPORTS)
 
 apclean:
 	$(MAKE) -C $(ALPNG) -f Makefile.zlib clean
 
 mbedtlsclean:
 	$(MAKE) -C $(MBEDTLS) -f Makefile clean
-	find $(MBEDTLS) -name \*.d -exec rm {} +
+	$(FINDPRG) $(MBEDTLS) -name \*.d -exec rm {} +
 
 mesa3clean:
 	$(MAKE) -C $(MESA3) -f Makefile.dja realclean
 
 curlclean:
 	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls-watt TRIPLET=i586-pc-msdosdjgpp WATT_ROOT=$(WATT32) clean
-	rm -f $(LIB_CURL)
+	$(RMPRG) -f $(LIB_CURL)
 
 muclean:
-	rm -f $(LIB_MUJS)
+	$(RMPRG) -f $(LIB_MUJS)
 
 glideclean:
-	rm -rf glidedxe.c
+	$(RMPRG) -rf glidedxe.c
+
+tiffclean:
+	$(MAKE) -C $(TIFF) clean
+
+distclean_tiff:
+	-(cd $(TIFF) && $(MAKE) distclean)
+
+jasperclean:
+	$(RMPRG) -rf $(JASPER_BIN)
+
+jpegclean:
+	$(MAKE) -C $(JPEG) -f makefile.dj clean
 
 fixnewlines:
-	find . -iname "*.sh" -exec dos2unix -v \{\} \;
+	$(FINDPRG) . -iname "*.sh" -exec dos2unix -v \{\} \;
 
 glidedxe.c:
-	dxe3res -o dxetmp_v1.c $(GLIDE)/v1/lib/glide3x.dxe
-	dxe3res -o dxetmp_v2.c $(GLIDE)/v2/lib/glide3x.dxe
-	dxe3res -o dxetmp_v3.c $(GLIDE)/v3/lib/glide3x.dxe
-	dxe3res -o dxetmp_v4.c $(GLIDE)/v4/lib/glide3x.dxe
-	dxe3res -o dxetmp_vr.c $(GLIDE)/vr/lib/glide3x.dxe
-	echo "#include <sys/dxe.h>" >$@
-	cat dxetmp_*.c | grep "extern_asm" | sort | uniq >>$@
-	echo "DXE_EXPORT_TABLE_AUTO (___dxe_eta___glide3x)" >>$@
-	cat dxetmp_*.c | grep "DXE_EXPORT_ASM" | sort | uniq >>$@
-	echo "DXE_EXPORT_END" >>$@
-	rm dxetmp_*.c
+	$(DXE3RES) -o dxetmp_v1.c $(GLIDE)/v1/lib/glide3x.dxe
+	$(DXE3RES) -o dxetmp_v2.c $(GLIDE)/v2/lib/glide3x.dxe
+	$(DXE3RES) -o dxetmp_v3.c $(GLIDE)/v3/lib/glide3x.dxe
+	$(DXE3RES) -o dxetmp_v4.c $(GLIDE)/v4/lib/glide3x.dxe
+	$(DXE3RES) -o dxetmp_vr.c $(GLIDE)/vr/lib/glide3x.dxe
+	$(ECHOPRG) "#include <sys/dxe.h>" >$@
+	$(CATPRG) dxetmp_*.c | $(GREPPRG) "extern_asm" | $(SORTPRG) | $(UNIQPRG) >>$@
+	$(ECHOPRG) "DXE_EXPORT_TABLE_AUTO (___dxe_eta___glide3x)" >>$@
+	$(CATPRG) dxetmp_*.c | $(GREPPRG) "DXE_EXPORT_ASM" | $(SORTPRG) | $(UNIQPRG) >>$@
+	$(ECHOPRG) "DXE_EXPORT_END" >>$@
+	$(RMPRG) dxetmp_*.c
 
 syntaxF:
-	rm -f synC.txt synJ.txt syn.txt
-	grep NFUNCDEF  src/*.c plugins/*.dxelib/*.c | cut -d "," -f 2 | tr -d "_ " | awk '{ print "\"" $$0 "\"" }' >synC.txt
-	egrep "^function " jsboot/3dfx.js  jsboot/a3d.js  jsboot/color.js  jsboot/file.js  jsboot/func.js  jsboot/ipx.js | cut -d " " -f 2 | cut -d "(" -f 1 | tr -d "_ " | awk '{ print "\"" $$0 "\"" }' > synJ.txt
-	cat synC.txt synJ.txt | awk '{ print length, "EDI_SYNTAX(LIGHTRED," $$0 "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
+	$(RMPRG) -f synC.txt synJ.txt syn.txt
+	$(GREPPRG) NFUNCDEF  src/*.c plugins/*.dxelib/*.c | $(CUTPRG) -d "," -f 2 | tr -d "_ " | $(AWKPRG) '{ print "\"" $$0 "\"" }' >synC.txt
+	$(EGREPPRG) "^function " jsboot/3dfx.js  jsboot/a3d.js  jsboot/color.js  jsboot/file.js  jsboot/func.js  jsboot/ipx.js | $(CUTPRG) -d " " -f 2 | $(CUTPRG) -d "(" -f 1 | tr -d "_ " | awk '{ print "\"" $$0 "\"" }' > synJ.txt
+	$(CATPRG) synC.txt synJ.txt | $(AWKPRG) '{ print length, "EDI_SYNTAX(LIGHTRED," $$0 "), //" }' | $(SORTPRG) -nr | $(UNIQPRG) | $(CUTPRG) -d' ' -f2- >syn.txt
 
 syntaxM:
-	rm -f synC.txt syn.txt
-	grep NPROTDEF  src/*.c plugins/*.dxelib/*.c | cut -d "," -f 3 | sed s/^\ \"/\"\./ | tr -d " " | awk '{ print "\"" $$0 "\"" }' >synC.txt
-	cat synC.txt | awk '{ print length, "EDI_SYNTAX(RED," $$0 "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
+	$(RMPRG) -f synC.txt syn.txt
+	$(GREPPRG) NPROTDEF  src/*.c plugins/*.dxelib/*.c | $(CUTPRG) -d "," -f 3 | $(SEDPRG) s/^\ \"/\"\./ | tr -d " " | $(AWKPRG) '{ print "\"" $$0 "\"" }' >synC.txt
+	$(CATPRG) synC.txt | $(AWKPRG) '{ print length, "EDI_SYNTAX(RED," $$0 "), //" }' | $(SORTPRG) -nr | $(UNIQPRG) | $(CUTPRG) -d' ' -f2- >syn.txt
 
 syntaxP:
-	rm -f synC.txt syn.txt
-	grep js_defproperty  src/*.c plugins/*.dxelib/*.c | cut -d "," -f 3 | sed s/^\ \"/\"\./ >synC.txt
-	cat synC.txt | awk '{ print length, "EDI_SYNTAX(YELLOW," $$0 "), //" }' | sort -nr | uniq | cut -d' ' -f2- >syn.txt
+	$(RMPRG) -f synC.txt syn.txt
+	$(GREPPRG) js_defproperty  src/*.c plugins/*.dxelib/*.c | $(CUTPRG) -d "," -f 3 | $(SEDPRG) s/^\ \"/\"\./ >synC.txt
+	$(CATPRG) synC.txt | $(AWKPRG) '{ print length, "EDI_SYNTAX(YELLOW," $$0 "), //" }' | $(SORTPRG) -nr | $(UNIQPRG) | $(CUTPRG) -d' ' -f2- >syn.txt
 
 fdos: zip
 	# clean and re-create  working directories
-	rm -rf $(TMP) $(FDZIP)
-	mkdir -p $(TMP)/APPINFO
-	mkdir -p $(TMP)/DEVEL/DOJS
-	mkdir -p $(TMP)/SOURCE/DOJS
-	mkdir -p $(TMP)/tmp
+	$(RMPRG) -rf $(TMP) $(FDZIP)
+	$(MKDIRPRG) -p $(TMP)/APPINFO
+	$(MKDIRPRG) -p $(TMP)/DEVEL/DOJS
+	$(MKDIRPRG) -p $(TMP)/SOURCE/DOJS
+	$(MKDIRPRG) -p $(TMP)/tmp
 	
 	# copy LSMs
-	cp FDOS/* $(TMP)/APPINFO
+	$(CPPRG) FDOS/* $(TMP)/APPINFO
 
 	# copy glide DXEs
-	cp --parents $(GLIDE)/*/lib/glide3x.dxe $(TMP)/DEVEL/DOJS
+	$(CPPRG) --parents $(GLIDE)/*/lib/glide3x.dxe $(TMP)/DEVEL/DOJS
 
 	# copy html-docs
-	cp -r --parents $(DOCDIR)/ $(TMP)/DEVEL/DOJS
+	$(CPPRG) -r --parents $(DOCDIR)/ $(TMP)/DEVEL/DOJS
 
 	# copy distribution files
-	cp -R \
+	$(CPPRG) -R \
 		$(EXE) \
 		WATTCP.CFG \
 		CWSDPMI.EXE \
@@ -368,11 +431,11 @@ fdos: zip
 		$(TMP)/DEVEL/DOJS
 
 	# ZIP up files with long file names into LFNFILES.ZIP
-	(cd $(TMP)/DEVEL/DOJS && zip -9 -r LFNFILES.ZIP CHANGELOG.md doc/html && rm -rf CHANGELOG.md doc/)
+	(cd $(TMP)/DEVEL/DOJS && $(ZIPPRG) -9 -r LFNFILES.ZIP CHANGELOG.md doc/html && $(RMPRG) -rf CHANGELOG.md doc/)
 
 	# make clean and copy source files
-	make distclean
-	cp -R \
+	$(MAKE) distclean
+	$(CPPRG) -R \
 		*.py \
 		*.md \
 		src/ \
@@ -393,16 +456,24 @@ fdos: zip
 		GrxFntConv/ \
 		$(TMP)/tmp
 	# to be sure remove testdata!
-	rm -rf $(TMP)/tmp/tests/testdata
+	$(RMPRG) -rf $(TMP)/tmp/tests/testdata
 	# zip up sources and remove tmp
-	(cd $(TMP)/tmp && zip -9 -r ../SOURCE/DOJS/SOURCES.ZIP * && rm -rf $(TMP)/tmp)
+	(cd $(TMP)/tmp && $(ZIPPRG) -9 -r ../SOURCE/DOJS/SOURCES.ZIP * && $(RMPRG) -rf $(TMP)/tmp)
 
 	# ZIP up everything as DOS ZIP and clean afterwards
-	(cd $(TMP) && zip -k -9 -r $(FDZIP) *)
-	rm -rf $(TMP)
+	(cd $(TMP) && $(ZIPPRG) -k -9 -r $(FDZIP) *)
+	$(RMPRG) -rf $(TMP)
 
 distribution:
-	make -f Makefile.linux distclean && make -f Makefile.linux zip && make -f Makefile.linux distclean && make distclean && make fdos && make distclean
+	$(MAKE) -f Makefile.linux distclean && $(MAKE) -f Makefile.linux zip && $(MAKE) -f Makefile.linux distclean && $(MAKE) distclean && $(MAKE) fdos && $(MAKE) distclean
+
+node_install:
+	$(NPM_INSTALL) jsdoc
+	$(NPM_INSTALL) better-docs
+	$(NPM_INSTALL) @babel/core @babel/cli
+	$(NPM_INSTALL) @babel/preset-env
+	$(NPM_INSTALL) @babel/plugin-transform-exponentiation-operator
+
 
 .PHONY: clean distclean init doc zip fdos $(DXE_DIRS)
 

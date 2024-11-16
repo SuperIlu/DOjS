@@ -1,0 +1,35 @@
+# version format
+version: 1.0.{build}
+
+# build worker image (VM template)
+image:
+    - Visual Studio 2022
+    #- Visual Studio 2015
+    #- Visual Studio 2013
+
+configuration:
+    - Release
+    - Debug
+
+platform:
+    - Win64
+    #- Win32
+
+# The commands to be run at the very beginning, before repository cloning.
+init:
+    - git config --global core.autocrlf input
+
+# The commands to run just before building.
+#before_build:
+
+#build:
+#  verbosity: detailed
+#  verbosity: minimal
+#  project: INSTALL.vcxproj
+
+#build: disabled
+
+# The command to run for building.
+build_script:
+    - build\appveyor\build.bat
+

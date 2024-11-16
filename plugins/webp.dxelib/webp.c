@@ -158,11 +158,18 @@ static BITMAP *load_webp(AL_CONST char *filename, RGB *pal) {
  * @return true for success, else false
  */
 #if LINUX == 1
-bool save_webp(BITMAP *bm, const char *fname) {
+bool save_webp(BITMAP *bm, const char *fname, int quality) {
 #else
-static bool save_webp(BITMAP *bm, const char *fname) {
+static bool save_webp(BITMAP *bm, const char *fname, int quality) {
 #endif
     bool ret = false;
+
+    if (quality < 10) {
+        quality = 10;
+    }
+    if (quality > 100) {
+        quality = 100;
+    }
 
     uint8_t *rgba = malloc(bm->w * bm->h * NUM_CHANNELS);
     if (!rgba) {
@@ -187,7 +194,7 @@ static bool save_webp(BITMAP *bm, const char *fname) {
 
     uint8_t *output;
     // size_t size = WebPEncodeLosslessRGBA(rgba, bm->w, bm->h, bm->w * NUM_CHANNELS, &output); // this uses to much memory!
-    size_t size = WebPEncodeRGBA(rgba, bm->w, bm->h, bm->w * NUM_CHANNELS, 95, &output);
+    size_t size = WebPEncodeRGBA(rgba, bm->w, bm->h, bm->w * NUM_CHANNELS, quality, &output);
     if (size > 0) {
         FILE *out = fopen(fname, "wb");
         if (out) {
@@ -209,7 +216,7 @@ static bool save_webp(BITMAP *bm, const char *fname) {
 
 /**
  * @brief save current screen to file.
- * SaveWebpImage(fname:string)
+ * SaveWebpImage(fname:string, quality:number)
  *
  * @param J the JS context.
  */
@@ -217,7 +224,12 @@ static void f_SaveWebpImage(js_State *J) {
     BITMAP *bm = DOjS.current_bm;
     const char *fname = js_tostring(J, 1);
 
-    if (!save_webp(bm, fname)) {
+    int quality = 95;
+    if (js_isnumber(J, 2)) {
+        quality = js_touint16(J, 2);
+    }
+
+    if (!save_webp(bm, fname, quality)) {
         js_error(J, "Can't save screen to WEBP file '%s'", fname);
     }
 }
@@ -225,7 +237,7 @@ static void f_SaveWebpImage(js_State *J) {
 #if LINUX != 1
 /**
  * @brief save Bitmap to file.
- * SaveWebpImage(fname:string)
+ * SaveWebpImage(fname:string, quality:number)
  *
  * @param J the JS context.
  */
@@ -233,7 +245,12 @@ static void Bitmap_SaveWebpImage(js_State *J) {
     BITMAP *bm = js_touserdata(J, 0, TAG_BITMAP);
     const char *fname = js_tostring(J, 1);
 
-    if (!save_webp(bm, fname)) {
+    int quality = 95;
+    if (js_isnumber(J, 2)) {
+        quality = js_touint16(J, 2);
+    }
+
+    if (!save_webp(bm, fname, quality)) {
         js_error(J, "Can't save Bitmap to WEBP file '%s'", fname);
     }
 }
@@ -263,14 +280,14 @@ void init_webp(js_State *J) {
     register_datafile_object(DAT_ID('W', 'E', 'B', ' '), load_from_datafile, (void (*)(void *))destroy_bitmap);
     register_datafile_object(DAT_ID('W', 'E', 'B', 'P'), load_from_datafile, (void (*)(void *))destroy_bitmap);
 
-    NFUNCDEF(J, SaveWebpImage, 1);
+    NFUNCDEF(J, SaveWebpImage, 2);
 
 #if LINUX != 1
     js_getglobal(J, TAG_BITMAP);
     js_getproperty(J, -1, "prototype");
-    js_newcfunction(J, Bitmap_SaveWebpImage, "Bitmap.prototype.SaveWebpImage", 1);
+    js_newcfunction(J, Bitmap_SaveWebpImage, "Bitmap.prototype.SaveWebpImage", 2);
     js_defproperty(J, -2, "SaveWebpImage", JS_READONLY | JS_DONTENUM | JS_DONTCONF);
 
-    NPROTDEF(J, Bitmap, SaveWebpImage, 1);
+    NPROTDEF(J, Bitmap, SaveWebpImage, 2);
 #endif
 }

@@ -1,0 +1,349 @@
+/*!
+\page lib JasPer Library
+
+\section lib_intro Introduction
+
+The heart of the JasPer software is the JasPer library.  In fact, most
+of the code in JasPer is associated with this library (as opposed to the
+JasPer sample application programs).  The JasPer library provides classes
+for representing images, color profiles (i.e., color space definitions),
+and other related entities.  Each of these classes has a well-defined
+interface through which an application may interact with class objects.
+The library can be used to manipulate images, import/export image data
+in a variety of formats, and perform basic color management operations.
+
+Conceptually, the JasPer library is structured as shown in
+Figure \ref fig__swstruct.
+The library consists of two distinct types of code:
+
+  1. core code,
+  and
+  2. codec drivers.
+
+The core code provides the basic framework upon which the library is built,
+while the codec drivers only provide the means for encoding/decoding
+image data in various formats.
+All application interfaces are through the core code.
+The codec drivers are only ever directly called by the core code, never by an
+application.
+
+The codec support in the JasPer library is both modular and extensible.
+A well-defined interface exists between the core code and codec drivers.
+Moreover, support for a new image format can be easily added without
+having to modify the library in any way.
+To do so, a codec driver for the new format simply needs to be provided.
+Furthermore, an application need only include codec drivers for the image
+formats that it will use.
+In this way, an application can avoid the cost of increased memory
+consumption for codec drivers that are never to be employed.
+
+\anchor fig__swstruct
+\image latex software.eps "Software structure" width=0.5\textwidth
+\image html software.png "Software structure"
+
+\section lib__core Core Code
+
+To avoid name space collisions, all of the identifiers used by
+the core code are prefixed with either `jas_` or `JAS_`.
+The core code provides a number of key classes.
+Some of these classes include the following:
+
+- Image class (i.e., `jas_image_t`).
+  This class is used to represent an image.
+  Methods are provided for such things as:
+
+    - image creation/destruction,
+    - querying general image properties
+      (e.g., reference grid width and height, color profile),
+    - querying component properties
+      (e.g., width, height, grid offset, grid spacing, component type,
+      sample precision/signedness),
+    - setting various image properties,
+    - loading and saving an image (i.e., encoding/decoding),
+    - copying an image,
+    - adding and deleting components, and
+    - reading and writing component data.
+
+- Color profile class (i.e., `jas_cmprof_t`).
+  This class is used to define a color space.
+  Such a definition is made relative to a reference color space such as
+  CIE XYZ or CIE Lab \cite icc_fffcp.
+
+- Color transform class (i.e., `jas_cmxform_t`).
+  This class is used to apply a color space conversion to image data.
+  A color space transform is created from two or more color profiles.
+
+- Stream class (i.e., `jas_stream_t`).
+  This class provides I/O streams similar to that of standard C
+  library \cite iso9899-2011, but with additional functionality required by
+  other code in the JasPer library.
+  This extra functionality includes:
+
+    - the ability to associate an object other than a file descriptor
+      with a stream (such as a memory buffer), and
+    - multi-character unget.
+
+- Fixed-point number class.
+  This templated class (i.e., a set of macros) provides a fixed-point
+  number class.
+  Support is provided for basic arithmetic operations, type conversion, and
+  rounding.
+
+- Tag-value parser class (i.e., `jas_tvp_t`).
+  This class is used to parse strings containing one or more tag-value pairs.
+  A tag-value pair is a string of the form "tag=value".
+  Tag-value pairs are used by some interfaces within JasPer in order to pass
+  parameters.
+  For example, such pairs are used to pass options to codec drivers
+  for encoding/decoding operations.
+  Methods are provides for such things as:
+
+    - creation/destruction,
+    - finding the next tag-value pair in a string, and
+    - querying the current tag and value.
+
+In addition to the above classes, some other functionality is
+provided, including command line parsing routines
+(similar in spirit to UNIX `getopt`).
+
+\section lib__codecs Codec Drivers
+
+The core code provides a framework for housing codec drivers.
+A codec driver provides the means for encoding/decoding of image data in a
+particular format.
+Each driver provides three methods:
+
+  1. an encoding method,
+  2. a decoding method, and
+  3. a validation method.
+
+The encoding method emits the coded version of an image (i.e.,
+a `jas_image_t` object) to a stream (i.e., a `jas_stream_t` object).
+The decoding method creates an image (i.e., a `jas_image_t` object)
+from the coded data in a stream.
+The validation method is used to quickly test if the data
+in a stream is formatted correctly for the image format in question.
+This particular method is used for the autodetection of image formats.
+
+The codec drivers provided with the JasPer distribution are written in
+order to accommodate streamed data.
+In other words, image data streams are always processed in a single pass.
+This design philosophy eliminates the need for a stream object to be seekable.
+As a result, it is possible to write application programs that receive data
+from, or send data to, pipelines or other entities that do not support
+random access to data.
+
+\section lib__image_model Image Model
+
+The set of applications for which JasPer may be a useful tool is
+dictated, in part, by the image model that JasPer employs.
+Therefore, it is prudent to introduce this model here.
+The image model employed by JasPer is quite general and partially inspired
+by the one used in the JPEG-2000 standard.
+
+An image is comprised of one or more components.
+In turn, each component consists of rectangular array of samples.
+This structure is depicted in Figures \ref fig__imgmodel_a and
+\ref fig__imgmodel_b.
+The sample values for each component are integer valued, and can be signed
+or unsigned with precision from 1 to (nominally) 16 bits/sample.
+The maximum allowable precision is platform dependent.
+Most common platforms, however, should be able to accommodate at least
+16 bits/sample.
+The signedness and precision of the sample data are specified on
+a per-component basis.
+All of the components are associated with same spatial extent in an image,
+but represent different types of information.
+
+\anchor fig__imgmodel_a
+\image latex srcimgmodel.eps "Image model: An image with $N$ components."
+\image html srcimgmodel.png "Image model: An image with $N$ components."
+
+\anchor fig__imgmodel_b
+\image latex comp.eps "Image model: An individual component."
+\image html comp.png "Image model: An individual component."
+
+There is considerable flexibility in the interpretation of components.
+A component may represent spectral information (e.g., a color plane)
+or auxiliary information (e.g., an opacity plane).
+For example, a RGB image would have three components, where one component
+is associated with each of the red, green, and blue color planes.
+A RGBA (i.e., RGB with transparency) image would have four components,
+one associated with each of the red, green, blue, and alpha planes.
+The various components need not be sampled at the same resolution.
+In other words, different components may have different sampling periods.
+For example, when color images are represented in a luminance-chrominance
+color space, it is not uncommon for the luminance information to be more
+finely sampled than the chrominance information.
+
+Since an image can have a number of components, a means must exist
+for specifying how these components are combined together in order to
+form a composite image.
+For this purpose, we employ an integer lattice known as the reference grid.
+The reference grid provides an anchor point for the various components of an
+image, and establishes their alignment relative to one another.
+
+Each component is associated with a rectangular sampling grid.
+Such a grid is uniquely specified by four parameters:
+
+  1. the horizontal offset (HO),
+  2. vertical offset (VO),
+  3. horizontal spacing (HS), and
+  4. vertical spacing (VS).
+
+The samples of a component are then mapped onto the points where the
+sampling grid intersects the reference grid.
+In this way, sample $(i,j)$ of a component is mapped to the position
+$(\text{HO} + i \text{HS}, \text{VO} + j \text{VS})$ on the reference grid.
+
+To clarify the above text, we now present an illustrative example.
+Consider an image with three components.
+For the $k$th component, let us denote the horizontal grid offset,
+vertical grid offset, horizontal grid spacing, and vertical grid spacing,
+as $\text{HO}_k$, $\text{VO}_k$, $\text{HS}_k$, and $\text{VS}_k$,
+respectively.
+Suppose, for example, that these parameters have the following values:
+
+$k$ | $(\text{HO}_k, \text{VO}_k)$ | $(\text{HS}_k, \text{VS}_k)$
+- | ------ | ------
+0 | (0, 0) | (2, 2)
+1 | (2, 3) | (3, 4)
+2 | (3, 2) | (4, 3)
+
+In this scenario, the component samples would be aligned on the reference
+grid as illustrated in Figure \ref fig__refgridex.
+Perhaps, it is worth nothing that the above set of parameter values was
+chosen in order to provide an enlightening example, and is not meant to
+represent a set of values that is likely to be used with great frequency
+by applications.
+
+\anchor fig__refgridex
+\image html refgridex.png "Alignment of components on the reference grid."
+\image latex refgridex.eps "Alignment of components on the reference grid."
+
+From above, we can see that the image model used by JasPer is quite general.
+The main constraint imposed by this model is that rectangular sampling must
+be employed.
+The vast majority of applications, however, use such sampling.
+Also, with JasPer, one can easily accommodate grayscale, color, and other
+multi-band data (with or without opacity information).
+
+Since the image model employed is true color (i.e., not palettized),
+the codec drivers are responsible for palettization and depalettization
+in the case of image formats that utilized palettized representations.
+
+\section lib__headers JasPer Header Files
+
+In order to use the JasPer library, a C source file normally must include
+the main JasPer library header file `jasper/jasper.h`.
+This can be accomplished with the following preprocessor directive:
+
+    #include <jasper/jasper.h>
+
+The main header file includes all of the other library header files.
+Therefore, in order to insulate application code from possible changes
+to the names of the other library header files, one should only ever
+include the main library header directly.
+
+\section lib__init00 Initializing the Library
+
+The first usage of the library must always be to initialize it.
+This is accomplished as described in \ref lib_init.
+If any functionality of the library is used before initialization is
+performed, the resulting behavior is undefined.
+
+\section lib_alloc00 Memory Allocation
+
+All memory allocation in the libjasper library is performed via the
+functions `jas_malloc()`, `jas_realloc()`, `jas_calloc()`, and
+`jas_free()`.
+The underlying memory allocator used by these functions can be controlled
+by the application.
+By default, an alloator based on `malloc()` is used.
+If one is trying to port the JasPer code to an embedded platform,
+it might be necessary to use a custom
+memory allocator instead.
+More detailed information on memory allocators for JasPer can be
+found in \ref init_allocators.
+
+\section lib__adding_codecs Adding Support for a New Image Format
+
+Support for new image formats can be easily added to JasPer.
+In order to add support for a new image format, one must provide
+three functions:
+
+  - an encoding function,
+  - a decoding function, and
+  - a validation function.
+
+The encoding function emits the coded version of an image (i.e., an
+`jas_image_t` object) to a stream (i.e., a `jas_stream_t` object).
+The decoding function creates an image (i.e., a `jas_image_t` object)
+from the coded data in a stream (i.e., a `jas_stream_t` object).
+The validation function is used to quickly test if a data stream is
+formatted correctly for the image format in question.
+(This functionality is necessary for the autodetection of image formats.)
+
+The precise interface provided by each of the encoding, decoding, and
+validation functions is as follows:
+
+  - `int (*encode)(jas_image_t *image, jas_stream_t *out, const char *opts);`
+
+    Encode image data to a stream.
+    The image pointed to by `image` is encoded in accordance with the options
+    specified in the null-terminated string pointed to by `opts` and
+    written to the stream `out`.
+    The options string is a whitespace-delimited sequence of tag-value
+    pairs.
+    If the encoding operation is successful, zero is returned.
+    Otherwise, a nonzero value is returned.
+
+  - `jas_image_t *(*decode)(jas_stream_t *in, const char *opts);`
+
+    Decode an image from a stream.
+    The image data from the stream `in` is decoded in accordance with the
+    options specified in the null-terminated string pointed to by
+    `opts`.
+    The options string is a whitespace-delimited sequence of tag-value
+    pairs.
+    If the decoding operation is successful, a pointer to the decoded
+    image is returned.
+    Otherwise, a null pointer is returned.
+
+  - `int (*validate)(jas_stream_t *in);`
+
+    Determine if stream data is in a particular format.
+    The first few characters of the stream `in` are examined in order to
+    determine if the stream is encoded in the format supported by the codec.
+    The characters examined are not removed from the stream.
+    (In other words, the current read/write position in the stream is left
+    unchanged by this function.)
+    If the format is supported by the codec, zero is returned.
+    Otherwise, a nonzero value is returned.
+
+Numerous examples of these types of function can be found by examining the
+code for the image formats already supported by JasPer
+(e.g., BMP, JP2, JPC, MIF, PGX, PNM, RAS, and JPEG).
+Once the above functions have been written, the JasPer library can be made
+aware of the new image format through a call to `jas_image_addfmt()`.
+This call, of course, must be made after the JasPer library has been
+initialized.
+
+\section Library Topics
+
+  - \subpage lib_init
+  - \subpage lib_images
+  - \subpage lib_iostreams
+  - \subpage lib_log
+@if DOXYGEN_EXCLUDE
+  - \subpage lib_threads
+@endif
+  - \subpage lib_string
+  - \subpage lib_math
+  - \subpage lib_timers
+@if DOXYGEN_EXCLUDE
+  - \subpage lib_misc
+@endif
+
+*/
+

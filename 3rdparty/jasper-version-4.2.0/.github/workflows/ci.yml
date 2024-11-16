@@ -1,0 +1,37 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-20.04, macos-13, macos-12]
+        compiler: [ {cc: gcc, cxx: g++}, {cc: clang, cxx: clang++} ]
+        include:
+          - os: [windows-2022]
+        exclude:
+          # Temporarily disable Ubuntu 20.04 with GCC since linking with
+          # TSan fails due the linker being unable to find libtsan_preinit.o.
+          # This used to work previously.
+          # Perhaps, the cause is related to the following Ubuntu issue:
+          # https://bugs.launchpad.net/ubuntu/+source/gcc-9/+bug/2029910
+          - os: ubuntu-20.04
+            compiler: {cc: gcc, cxx: g++}
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4.1.1
+    ############################################################
+    - name: prebuild
+      shell: bash
+      run: build/github/prebuild-v2 -c '${{runner.temp}}'/commands
+    ############################################################
+    - name: testing
+      env:
+        CC: ${{ matrix.compiler.cc }}
+        CXX: ${{ matrix.compiler.cxx }}
+      shell: bash
+      #run: build/build_all -v -d 2
+      run: build/build_all -C '${{runner.temp}}'/commands
+    ############################################################

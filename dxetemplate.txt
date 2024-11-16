@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include <zlib.h>
 #include <setjmp.h>
+#include <locale.h>
 
 #include "DOjS.h"
 #include "intarray.h"
@@ -104,6 +105,9 @@ exit
 alarm
 putchar
 select
+mkstemp
+setlocale
+_truename
 
 // time
 clock
@@ -113,11 +117,13 @@ gmtime
 localtime
 localtime_r
 sleep
+usleep
 strftime
 time
 
 // copy/move/strings
 atoi
+atof
 bzero
 memchr
 memcmp
@@ -141,6 +147,8 @@ strrchr
 strspn
 strstr
 strtol
+strtok
+strtoull
 strtoll
 strtoul
 stpcpy
@@ -357,6 +365,7 @@ ByteArray_fromBytes
 Bitmap_fromRGBA
 
 // watt32
+_w32_inet_pton
 _watt_do_exit
 accept
 access

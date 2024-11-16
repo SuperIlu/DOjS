@@ -1,0 +1,38 @@
+/*!
+
+\page apps JasPer Application Programs
+
+\section app_intro Introduction
+
+In order to demonstrate how the JasPer library can be used, several sample
+application programs are provided in the JasPer software distribution.
+These programs include the following:
+
+  - `jasper`.
+    The `jasper` program is an image transcoder (i.e., it converts image data
+    from one format to another).
+    For more details, see \subpage apps_jasper.
+
+  - `jiv`.
+    The `jiv` program is a simple image viewer (based on OpenGL).
+    For more details, see \subpage apps_jiv.
+
+  - `imgcmp`
+    The `imgcmp` program is an image comparison utility.
+    It measures the difference between two images using one of numerous
+    distortion metrics (such as peak signal-to-noise ratio, mean squared error,
+    root mean squared error, peak absolute error, and mean absolute error).
+    For more details, see \subpage apps_imgcmp.
+
+  - `imginfo`
+    The `imginfo` program provides basic information about an image,
+    such as its geometry (i.e., number of components, width and height of
+    components, and so on).
+    For more details, see \subpage apps_imginfo.
+
+Although the above-mentioned programs were initially developed for
+demonstration purposes, they have also proven quite useful in their own
+right, especially the `jasper` and `jiv` programs.
+
+
+*/

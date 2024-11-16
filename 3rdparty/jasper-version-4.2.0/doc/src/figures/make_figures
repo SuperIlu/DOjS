@@ -1,0 +1,24 @@
+#! /usr/bin/env bash
+
+panic()
+{
+	echo "ERROR"
+	exit 1
+}
+
+scale=1.5
+
+in_dir=$(dirname "$0")
+out_dir="$in_dir/../figures_generated"
+
+fig2dev -L png -m "$scale" "$in_dir/comp.fig" "$out_dir/comp.png" || panic
+fig2dev -L eps -m "$scale" "$in_dir/comp.fig" "$out_dir/comp.eps" || panic
+
+fig2dev -L png -m "$scale" "$in_dir/refgridex.fig" "$out_dir/refgridex.png" || panic
+fig2dev -L eps -m "$scale" "$in_dir/refgridex.fig" "$out_dir/refgridex.eps" || panic
+
+fig2dev -L png -m "$scale" "$in_dir/software.fig" "$out_dir/software.png" || panic
+fig2dev -L eps -m "$scale" "$in_dir/software.fig" "$out_dir/software.eps" || panic
+
+fig2dev -L png -m "$scale" "$in_dir/srcimgmodel.fig" "$out_dir/srcimgmodel.png" || panic
+fig2dev -L eps -m "$scale" "$in_dir/srcimgmodel.fig" "$out_dir/srcimgmodel.eps" || panic

@@ -150,9 +150,15 @@ Draw the image to the canvas at given coordinates using RGBA transparency.
 get the color of an image pixel.
 
 ### bm.SaveBmpImage(fname:string)
+### bm.SaveJp2Image(fname:string, quality:number)
+### bm.SaveJpgImage(fname:string, quality:number)
 ### bm.SavePcxImage(fname:string)
-### bm.SaveTgaImage(fname:string)
 ### bm.SavePngImage(fname:string)
+### bm.SaveQoiImage(fname:string)
+### bm.SaveRasImage(fname:string)
+### bm.SaveTgaImage(fname:string)
+### bm.SaveTiffImage(fname:string)
+### bm.SaveWebpImage(fname:string, quality:number)
 Save Bitmap to file.
 
 ## Font
@@ -315,9 +321,15 @@ Draw a text with the default font.
 Enable/disable transparency.
 
 ### SaveBmpImage(fname:string)
+### SaveJp2Image(fname:string, quality:number)
+### SaveJpgImage(fname:string, quality:number)
 ### SavePcxImage(fname:string)
-### SaveTgaImage(fname:string)
 ### SavePngImage(fname:string)
+### SaveQoiImage(fname:string)
+### SaveRasImage(fname:string)
+### SaveTgaImage(fname:string)
+### SaveTiffImage(fname:string)
+### SaveWebpImage(fname:string, quality:number)
 Save current screen to file.
 
 ## Keyboard/Mouse Input
@@ -367,6 +379,22 @@ Sleep for the given number of ms.
 ### MsecTime():number
 Get ms timestamp.
 
+### GetEnv(name:key):string
+Get the given environment variable.
+
+### ToUTF8(ch:number):number
+### FromUTF8(ch:number):number
+Convert character to from internal encoding to/from UTF8.
+
+### GetDrive():number
+This function determine the current default drive (1=A:, 2=B:, etc.).
+
+### SetDrive(num:number):number
+This function set the current default drive based on drive (1=A:, 2=B:, etc.) and returns the number of available logical drives.
+
+### RealPath(path:string):string
+This function canonicalizes the input path.
+
 ### Read(filename:string):string
 Load the contents of a file into a string.
 
@@ -409,6 +437,12 @@ Current frame rate.
 
 ### SetExitKey(key:number)
 Change the exit key from ESCAPE to any other keycode from jsboot/func.js.
+
+### SetMissingCharacter(key:number)
+Set the char to render in case of it missing from the current font.
+
+### KeyIsPressed(key:number):boolean
+Check if the given key is currently pressed.
 
 ### CharCode(c:string)
 Can be used to obtain the key code for SetExitKey() for a character, e.g. SetExitKey(CharCode('q')).
@@ -581,8 +615,8 @@ send data to parallel port.
 read parallel port status.
 
 ## TCP/IP
-### GetLocalIpAddress():number[]
-Get the local IP address.
+### GetNetworkInterface():{"<interface>:{"inet": [], "netmask":[]}}
+Get the local IP addresses and netmasks.
 
 ### GetNetworkMask():number[]
 Get the netmask.

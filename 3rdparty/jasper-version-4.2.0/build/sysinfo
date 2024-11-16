@@ -1,0 +1,85 @@
+#! /usr/bin/env bash
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+eecho()
+{
+	echo "$@" 1>&2
+}
+
+all_keys=(os kernel release)
+verbose=0
+keys=()
+
+while getopts avork option; do
+	case "$option" in
+	a)
+		keys=("${all_keys[@]}");;
+	v)
+		verbose=$((verbose + 1));;
+	o)
+		keys+=(os);;
+	k)
+		keys+=(kernel);;
+	r)
+		keys+=(release);;
+	\?)
+		panic "invalid option $option"
+		break;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ "${#keys[@]}" -eq 0 ]; then
+	exit 0
+fi
+
+release="$(uname -r)" || panic "cannot get release name"
+kernel="$(uname)" || panic "cannot get kernel name"
+kernel_lc="$(tr '[:upper:]' '[:lower:]' <<< "$kernel")" || \
+  panic "cannot convert to lowercase"
+
+if [ "$verbose" -ge 1 ]; then
+	eecho "system name: $name"
+	eecho "release name: $release"
+fi
+
+os=
+
+#case "$release" in
+#*[Mm]icrosoft*)
+#	os=windows;;
+#esac
+
+if [ -z "$os" ]; then
+	case "$kernel_lc" in
+	linux*)
+		os=linux;;
+	ming*)
+		os=windows;;
+	darwin*)
+		os=macos;;
+	esac
+fi
+
+if [ -z "$os" ]; then
+	os=unknown
+fi
+
+for key in "${keys[@]}"; do
+	case "$key" in
+	os)
+		value="$os";;
+	kernel)
+		value="$kernel";;
+	release)
+		value="$release";;
+	*)
+		panic;;
+	esac
+	echo "$value" || panic
+done

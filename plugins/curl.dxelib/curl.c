@@ -20,6 +20,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#if LINUX != 1
+#include <dos.h>
+#include <pc.h>
+#include <mbedtls/platform_time.h>
+#include <mbedtls/entropy.h>
+#include "entropy_poll.h"
+#else
+#include "linux/glue.h"
+#endif
+
 #include <mujs.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,20 +37,21 @@ SOFTWARE.
 #include <curl/curl.h>
 #include <jsi.h>
 
-#if LINUX != 1
-#include <dos.h>
-#include <pc.h>
-#include <mbedtls/entropy_poll.h>
-#else
-#include "linux/glue.h"
-#endif
-
 #include "DOjS.h"
 #include "bitmap.h"
 #include "color.h"
 #include "util.h"
 #include "curl.h"
 #include "bytearray.h"
+
+#if WINDOWS == 1
+#include <stdarg.h>
+#include <wincrypt.h>
+#include <mbedtls/platform_time.h>
+#include <mbedtls/entropy.h>
+#include <mbedtls/error.h>
+#include "entropy_poll.h"
+#endif
 
 /************
 ** defines **
@@ -136,31 +147,116 @@ typedef struct __curl {
 ** static functions **
 *********************/
 #if LINUX != 1
+static int poll_noise_sys(void *data, unsigned char *output, size_t len, size_t *olen) {
+    FILE *file;
+    size_t ret, left = len;
+    unsigned char *p = output;
+    ((void)data);
+
+    *olen = 0;
+
+    file = fopen("/dev/urandom$", "rb");
+    if (file == NULL) {
+        return MBEDTLS_ERR_ENTROPY_SOURCE_FAILED;
+    }
+
+    while (left > 0) {
+        /* /dev/random can return much less than requested. If so, try again */
+        ret = fread(p, 1, left, file);
+        if (ret == 0 && ferror(file)) {
+            fclose(file);
+            return MBEDTLS_ERR_ENTROPY_SOURCE_FAILED;
+        }
+
+        p += ret;
+        left -= ret;
+        sleep(1);
+    }
+    fclose(file);
+    *olen = len;
+
+    return 0;
+}
+
 int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t *olen) {
-    uint8_t rnd_buff[40];
+    LOGF("%ld bytes random data requested\n", len);
 
-    unsigned int pos = 0;
-    rnd_buff[pos++] = inportb(0x40);  // PIT timer 0 at ports 40h-43h
-    rnd_buff[pos++] = inportb(0x41);
-    rnd_buff[pos++] = inportb(0x42);
-    rnd_buff[pos++] = inportb(0x43);
-    CURL_ADD_RANDOM(DOjS.sys_ticks, pos, rnd_buff);
-    CURL_ADD_RANDOM(DOjS.current_frame_rate, pos, rnd_buff);
-    CURL_ADD_RANDOM(DOjS.num_allocs, pos, rnd_buff);
-    CURL_ADD_RANDOM(DOjS.last_mouse_x, pos, rnd_buff);
-    CURL_ADD_RANDOM(DOjS.last_mouse_y, pos, rnd_buff);
-    CURL_ADD_RANDOM(DOjS.last_mouse_b, pos, rnd_buff);
+    int noise_ret = poll_noise_sys(data, output, len, olen);
+    if (noise_ret != 0) {
+        LOGF("using fallback pseudo RNG\n");
+        uint8_t rnd_buff[64];
 
-    // find smaller of the two
-    *olen = pos < len ? pos : len;
+        unsigned int pos = 0;
+        rnd_buff[pos++] = inportb(0x40);  // PIT timer 0 at ports 40h-43h
+        rnd_buff[pos++] = inportb(0x41);
+        rnd_buff[pos++] = inportb(0x42);
+        rnd_buff[pos++] = inportb(0x43);
+        CURL_ADD_RANDOM(DOjS.sys_ticks, pos, rnd_buff);
+        CURL_ADD_RANDOM(DOjS.current_frame_rate, pos, rnd_buff);
+        CURL_ADD_RANDOM(DOjS.num_allocs, pos, rnd_buff);
+        CURL_ADD_RANDOM(DOjS.last_mouse_x, pos, rnd_buff);
+        CURL_ADD_RANDOM(DOjS.last_mouse_y, pos, rnd_buff);
+        CURL_ADD_RANDOM(DOjS.last_mouse_b, pos, rnd_buff);
 
-    // copy to output buffer
-    memcpy(output, rnd_buff, *olen);
+        // find smaller of the two
+        *olen = pos < len ? pos : len;
+
+        // copy to output buffer
+        memcpy(output, rnd_buff, *olen);
+    } else {
+        LOGF("using NOISE.SYS\n");
+    }
+
+    LOGF("%ld bytes random data delivered\n", *olen);
 
     // always success
     return 0;
 }
-#endif
+
+mbedtls_ms_time_t mbedtls_ms_time(void) { return DOjS.sys_ticks; }
+#endif // LINUX != 1
+
+#if WINDOWS == 1
+int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t *olen) {
+  memset(output, 0, len);
+
+  {
+    HCRYPTPROV hCryptProv = 0;
+
+    if(!CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL,
+                            CRYPT_VERIFYCONTEXT | CRYPT_SILENT))
+      return CURLE_FAILED_INIT;
+
+    if(!CryptGenRandom(hCryptProv, (DWORD)len, output)) {
+      CryptReleaseContext(hCryptProv, 0UL);
+      return CURLE_FAILED_INIT;
+    }
+
+    CryptReleaseContext(hCryptProv, 0UL);
+  }
+  return CURLE_OK;
+}
+
+mbedtls_ms_time_t mbedtls_ms_time(void) { return DOjS.sys_ticks; }
+
+int vsnprintf_s(char *s, size_t n, size_t count, const char *fmt, va_list arg)
+{
+    int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
+
+    /* Avoid calling the invalid parameter handler by checking ourselves */
+    if (s == NULL || n == 0 || fmt == NULL) {
+        return -1;
+    }
+
+    ret = vsnprintf(s, n, fmt, arg);
+    if (ret < 0 || (size_t) ret == n) {
+        s[n-1] = '\0';
+        ret = -1;
+    }
+
+    return ret;
+}
+#endif // WINDOWS == 1
 
 /**
  * @brief copy the received data into provided ByteArray (header and body data).
@@ -735,8 +831,8 @@ void init_curl(js_State *J) {
         NPROTDEF(J, Curl, ClearHeaders, 0);
         NPROTDEF(J, Curl, AddHeader, 1);
 
-        NPROTDEF(J, Curl, ClearPostData, 2);
-        NPROTDEF(J, Curl, AddPostData, 0);
+        NPROTDEF(J, Curl, ClearPostData, 0);
+        NPROTDEF(J, Curl, AddPostData, 2);
 
         NPROTDEF(J, Curl, SetGet, 0);
         NPROTDEF(J, Curl, SetPost, 0);

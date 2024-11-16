@@ -1,0 +1,354 @@
+# missing symbols in MSVCRT.DLL
+#	vsnprintf_s
+# missing symbols in WS2_32.DLL
+#	WASPoll
+#	freeaddrinfo
+#	getaddrinfo
+
+THIRDPARTY	= 3rdparty
+PLUGINS     = plugins
+MUJS		= $(THIRDPARTY)/mujs-1.0.5
+ALLEGRO		= $(THIRDPARTY)/allegro-4.3.3.1
+ZLIB		= $(THIRDPARTY)/zlib-1.3.1
+PNGLIB		= $(THIRDPARTY)/lpng1644
+KUBAZIP		= $(THIRDPARTY)/zip-0.3.2
+INI			= $(THIRDPARTY)/ini-20220806/src
+WEBP		= $(THIRDPARTY)/libwebp-1.3.2
+JPEG		= $(THIRDPARTY)/jpeg-9f
+TIFF		= $(THIRDPARTY)/tiff-4.6.0
+CURL		= $(THIRDPARTY)/curl-8.11.0
+MBEDTLS		= $(THIRDPARTY)/mbedtls-3.6.2
+
+LIB_ALLEGRO	= $(ALLEGRO)/win32/lib/alleg44.dll
+LIB_Z		= $(ZLIB)/libz.a
+LIB_PNG		= $(PNGLIB)/libpng.a
+LIB_MUJS	= $(MUJS)/build/release/libmujs.a
+LIB_JPEG 	= $(JPEG)/libjpeg.a
+LIB_TIFF 	= $(TIFF)/win32/libtiff/libtiff.a
+LIB_WEBP 	= $(WEBP)/src/libwebp.a
+LIB_CURL	= $(CURL)/lib/libcurl.a
+LIB_MBEDTLS = $(MBEDTLS)/library/libmbedtls.a
+
+# compiler
+SQLITE_CFLAGS	= \
+	-DSQLITE_THREADSAFE=0 \
+	-DSQLITE_DEFAULT_MEMSTATUS=0 \
+	-DSQLITE_MAX_MMAP_SIZE=0 \
+	-DSQLITE_OMIT_WAL=1 \
+	-DSQLITE_OMIT_LOAD_EXTENSION=1 \
+	-DSQLITE_ENABLE_8_3_NAMES=2 \
+	-DSQLITE_ENABLE_LOCKING_STYLE=0
+
+CDEF     = -DLINUX=1 -DWINDOWS=1 -D__LINUX__ -DCURL_STATICLIB -DHTTP_ONLY -D_WIN32_WINNT=0x400 $(SQLITE_CFLAGS) -DGC_BEFORE_MALLOC #-DDEBUG_ENABLED #-DEDI_FAST  # -DMEMDEBUG 
+CFLAGS   = -MMD -Wall -Wno-format -std=gnu99 -O2 -fomit-frame-pointer $(INCLUDES) -fgnu89-inline -Wmissing-prototypes $(CDEF)
+INCLUDES = \
+	-I$(realpath ./src) \
+	-I$(realpath ./src/linux) \
+	-I$(realpath $(PLUGINS))/jpeg.dxelib \
+	-I$(realpath $(PLUGINS))/curl.dxelib \
+	-I$(realpath $(PLUGINS))/qoi.dxelib \
+	-I$(realpath $(PLUGINS))/webp.dxelib \
+	-I$(realpath $(PLUGINS))/sqlite.dxelib \
+	-I$(realpath $(PLUGINS))/neural.dxelib \
+	-I$(realpath $(PLUGINS))/noise.dxelib \
+	-I$(realpath $(PLUGINS))/noise.dxelib/src \
+	-I$(realpath $(PLUGINS))/nanosvg.dxelib \
+	-I$(realpath $(PLUGINS))/mpeg1.dxelib \
+	-I$(realpath $(PLUGINS))/genpdf.dxelib \
+	-I$(realpath $(PLUGINS))/genpdf.dxelib/PDFGen-master/ \
+	-I$(realpath $(PLUGINS))/vorbis.dxelib \
+	-I$(realpath $(PLUGINS))/gifanim.dxelib \
+	-I$(realpath $(PLUGINS))/ogl.dxelib \
+	-I$(realpath $(MUJS)) \
+	-I$(realpath $(ALLEGRO))/include \
+	-I$(realpath $(ALLEGRO))/win32/include \
+	-I$(realpath $(ALLEGRO))/addons/loadpng \
+	-I$(realpath $(ALLEGRO))/addons/jpgalleg/include \
+	-I$(realpath $(KUBAZIP))/src \
+	-I$(realpath $(KUBAZIP))/src/linux \
+	-I$(realpath $(MBEDTLS))/include \
+	-I$(realpath $(MBEDTLS))/library \
+	-I$(realpath $(CURL))/include \
+	-I$(realpath $(TIFF))/libtiff \
+	-I$(realpath $(WEBP))/src \
+	-I$(realpath $(JPEG)) \
+	-I$(realpath $(ZLIB)) \
+	-I$(realpath $(INI))
+
+
+# linker
+LIBS     =  3rdparty/libwebp-1.3.2/src/utils/utils.o -lalleg44.dll -lloadpng.dll -ljpeg -lmujs -lpng -lcurl -lwebp -lsharpyuv -lws2_32 -lmbedtls -lmbedx509 -lmbedcrypto -lm -lz -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lole32 -Wl,-Bstatic -ldinput -lddraw -ldxguid -Wl,-Bdynamic -lwinmm -Wl,-Bstatic -ldsound -Wl,-Bdynamic -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+LDFLAGS  = -s \
+	-L$(MUJS)/build/release \
+	-L$(WEBP)/src \
+	-L$(WEBP)/sharpyuv \
+	-L$(ALLEGRO)/win32/lib \
+	-L$(ZLIB) \
+	-L$(PNGLIB) \
+	-L$(JPEG) \
+	-L$(TIFF)/win32/libtiff \
+	-L$(WEBP)/src \
+	-L$(CURL)/lib \
+	-L$(MBEDTLS)/library
+
+# output
+EXE      = dojs.exe
+RELZIP   = Win32_dojs-X.Y.Z.zip
+
+# dirs/files
+DOJSPATH		= $(realpath .)
+BUILDDIR		= build
+
+## compiler and binutils
+CROSS=i486-w64-mingw32
+CROSS_PLATFORM=$(CROSS)-
+CC=$(CROSS_PLATFORM)gcc
+CXX=$(CROSS_PLATFORM)g++
+AR=$(CROSS_PLATFORM)ar
+LD=$(CROSS_PLATFORM)gcc
+STRIP=$(CROSS_PLATFORM)strip
+RANLIB=$(CROSS_PLATFORM)ranlib
+RC=$(CROSS_PLATFORM)windres
+DXINC=$(MINGWDIR)/$(CROSS)/include
+DXLIB=$(MINGWDIR)/$(CROSS)/lib
+export
+
+## other tools used in Makefile
+AWKPRG		= awk
+CATPRG		= cat
+CPPRG		= cp
+CUTPRG		= cut
+CURLPRG		= curl
+ECHOPRG		= echo
+EGREPPRG	= egrep
+FINDPRG		= find
+GREPPRG		= grep
+JSDOCPRG	= jsdoc
+MKDIRPRG	= mkdir
+PYTHONPRG	= python3
+RMPRG		= rm
+SEDPRG		= sed
+SHPRG		= bash
+SORTPRG		= sort
+UNIQPRG		= uniq
+ZIPPRG		= zip
+
+PARTS= \
+	$(BUILDDIR)/linux/conio.o \
+	$(BUILDDIR)/linux/glue.o \
+	$(BUILDDIR)/blurhash.o \
+	$(BUILDDIR)/blender.o \
+	$(BUILDDIR)/bytearray.o \
+	$(BUILDDIR)/intarray.o \
+	$(BUILDDIR)/bitmap.o \
+	$(BUILDDIR)/color.o \
+	$(BUILDDIR)/dialog.o \
+	$(BUILDDIR)/DOjS.o \
+	$(BUILDDIR)/edi_render.o \
+	$(BUILDDIR)/edit.o \
+	$(BUILDDIR)/file.o \
+	$(BUILDDIR)/font.o \
+	$(BUILDDIR)/flic.o \
+	$(BUILDDIR)/funcs.o \
+	$(BUILDDIR)/gfx.o \
+	$(BUILDDIR)/inifile.o \
+	$(BUILDDIR)/joystick.o \
+	$(BUILDDIR)/lines.o \
+	$(BUILDDIR)/midiplay.o \
+	$(BUILDDIR)/sound.o \
+	$(BUILDDIR)/syntax.o \
+	$(BUILDDIR)/util.o \
+	$(BUILDDIR)/zip/src/zip.o \
+	$(BUILDDIR)/zipfile.o \
+	$(BUILDDIR)/ini/ini.o \
+	$(BUILDDIR)/curl.o \
+	$(BUILDDIR)/qoi.o \
+	$(BUILDDIR)/jpeg.o \
+	$(BUILDDIR)/webp.o \
+	$(BUILDDIR)/sqlite.o \
+	$(BUILDDIR)/sqlite3.o \
+	$(BUILDDIR)/noise.o \
+	$(BUILDDIR)/noise1234.o \
+	$(BUILDDIR)/simplexnoise1234.o \
+	$(BUILDDIR)/neural.o \
+	$(BUILDDIR)/perm.o \
+    $(BUILDDIR)/genann.o \
+	$(BUILDDIR)/doublearray.o \
+	$(BUILDDIR)/nanosvg.o \
+	$(BUILDDIR)/mpeg1.o \
+	$(BUILDDIR)/genpdf.o \
+	$(BUILDDIR)/PDFGen-master/pdfgen.o \
+	$(BUILDDIR)/vorbis.o \
+	$(BUILDDIR)/stb_vorbis.o \
+	$(BUILDDIR)/gifanim.o \
+	$(BUILDDIR)/watt.o \
+	$(BUILDDIR)/socket.o
+
+all: $(EXE) JSBOOT.ZIP cacert.pem
+
+prereqs: Makefile init liballegro libtiff libpng libmujs libwebp libcurl
+
+$(EXE): prereqs $(PARTS)
+	$(CC) $(LDFLAGS) -o $@ $(PARTS) $(LIBS)
+
+$(BUILDDIR)/%.o: src/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/sqlite.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/jpeg.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/qoi.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/webp.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/curl.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/noise.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/noise.dxelib/src/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/neural.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/nanosvg.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/mpeg1.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/genpdf.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/vorbis.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/gifanim.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/ogl.dxelib/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/zip/src/%.o: $(KUBAZIP)/src/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/ini/%.o: $(INI)/%.c prereqs
+	$(CC) $(CFLAGS) -c $< -o $@
+
+JSBOOT.ZIP: $(shell find jsboot/ -type f)
+	rm -f $@
+	zip -9 -r $@ jsboot/
+
+cacert.pem:
+	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
+
+zip: all cacert.pem doc
+	rm -f $(RELZIP)
+	zip -9 -r $(RELZIP) $(EXE) dojs.ini LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) cacert.pem *.dll
+
+init: configure_tiff
+	$(MKDIRPRG) -p $(BUILDDIR) $(BUILDDIR)/loadpng $(BUILDDIR)/zip/src $(BUILDDIR)/ini $(BUILDDIR)/linux $(BUILDDIR)/PDFGen-master/ $(ALLEGRO)/win32
+	# make sure compile time is always updated
+	#$(RMPRG) -f $(BUILDDIR)/DOjS.o
+
+libcurl: $(LIB_CURL)
+$(LIB_CURL): libmbedtls libz
+	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls TRIPLET=$(CROSS)
+
+libmbedtls: $(LIB_MBEDTLS)
+$(LIB_MBEDTLS):
+	$(MAKE) $(MPARA) -C $(MBEDTLS) -f Makefile lib
+
+libmujs: $(LIB_MUJS)
+$(LIB_MUJS):
+	$(MAKE) $(MPARA) -C $(MUJS) build/release/libmujs.a WINDOWS=1
+
+libz: $(LIB_Z)
+$(LIB_Z):
+	$(MAKE) $(MPARA) -C $(ZLIB) -f Makefile.win32
+	$(CPPRG) $(ZLIB)/zlib1.dll .
+
+libpng: $(LIB_PNG)
+$(LIB_PNG): libz
+	$(MAKE) $(MPARA) -C $(PNGLIB) -f Makefile.win32
+
+configure_tiff: libz libjpeg
+$(TIFF)/win32/Makefile:
+	(cd $(TIFF) && $(SHPRG) ./mingw-cmake.sh)
+
+libtiff: $(LIB_TIFF)
+$(LIB_TIFF): $(TIFF)/win32/Makefile 
+	$(MAKE) $(MPARA) -C $(TIFF)/win32
+
+libjpeg: $(LIB_JPEG)
+$(LIB_JPEG):
+	$(MAKE) $(MPARA) -C $(JPEG) -f makefile.dj libjpeg.a
+
+libwebp: $(LIB_WEBP)
+$(LIB_WEBP): libjpeg libtiff libpng
+	$(MAKE) $(MPARA) -C $(WEBP) -f makefile.djgpp src/libwebp.a sharpyuv/libsharpyuv.a
+
+configure_allegro: init $(ALLEGRO)/win32/Makefile libz libjpeg
+$(ALLEGRO)/win32/Makefile:
+	(cd $(ALLEGRO) && DXINC=$(DXINC) DXLIB=$(DXLIB) $(SHPRG) ./mingw-cmake.sh)
+
+liballegro: $(LIB_ALLEGRO)
+$(LIB_ALLEGRO): libz libpng configure_allegro
+	$(MAKE) $(MPARA) -C $(ALLEGRO)/win32 VERBOSE=1
+	$(CPPRG) $(ALLEGRO)/win32/lib/*.dll .
+
+alclean:
+	rm -rf $(ALLEGRO)/win32
+
+zclean:
+	$(MAKE) -C $(ZLIB) -f Makefile.win32 clean
+
+pngclean:
+	$(MAKE) -C $(PNGLIB) -f Makefile.win32 clean
+
+jsclean:
+	$(MAKE) -C $(MUJS) clean
+
+tiffclean:
+	$(MAKE) -C $(TIFF)/win32 clean
+
+distclean_tiff:
+	$(RMPRG) -rf $(TIFF)/win32
+
+jpegclean:
+	$(MAKE) -C $(JPEG) -f makefile.dj clean
+
+webpclean:
+	$(MAKE) -C $(WEBP) -f makefile.unix clean
+
+muclean:
+	$(RMPRG) -f $(LIB_MUJS)
+
+mbedtlsclean:
+	$(MAKE) -C $(MBEDTLS) -f Makefile clean
+	$(FINDPRG) $(MBEDTLS) -name \*.d -exec rm {} +
+
+curlclean:
+	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls TRIPLET=$(CROSS) clean
+	$(RMPRG) -f $(LIB_CURL)
+
+clean:
+	rm -rf $(BUILDDIR)/
+	rm -f $(EXE) $(ZIP) JSLOG.TXT JSBOOT.ZIP cacert.pem
+
+distclean: clean alclean zclean pngclean jsclean webpclean distclean_tiff muclean jpegclean mbedtlsclean curlclean
+	rm -f *.dll
+
+.PHONY: clean distclean init
+
+DEPS := $(wildcard $(BUILDDIR)/*.d)
+ifneq ($(DEPS),)
+include $(DEPS)
+endif

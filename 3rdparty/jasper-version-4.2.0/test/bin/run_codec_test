@@ -1,0 +1,504 @@
+#! /usr/bin/env bash
+# Copyright (c) 2016 Michael David Adams
+
+cmd_dir=$(dirname "$0") || exit 1
+source "$cmd_dir/base_utilities" || exit 1
+source "$cmd_dir/test_utilities" || exit 1
+source "$cmd_dir/jpcod" || exit 1
+
+debug_level="${JAS_DEBUG_LEVEL:-0}"
+if [ "$debug_level" -ge 1 ]; then
+	set -xv
+fi
+
+set_source_and_build_dirs || panic "cannot set source and build directories"
+tmp_dir=$(make_tmp_dir)
+
+init
+
+IMGCMP="$abs_top_builddir/src/app/imgcmp"
+export IMGINFO_COMMAND="$abs_top_builddir/src/app/imginfo"
+export JASPER_COMMAND="$abs_top_builddir/src/app/jasper"
+
+MKDATA=1
+DATADIR="$tmp_dir"
+# Only warn if an image is missing.
+
+test_file=$cmd_dir/codec_tests
+JPENC=$cmd_dir/jpenc
+JPDEC=$cmd_dir/jpdec
+image_viewer="display -geometry 256x256> -geometry +0+0"
+
+################################################################################
+#
+################################################################################
+
+usage()
+{
+	cat <<- EOF
+	usage: $0 [options] test...
+	Options:
+	-e encoder
+	-d decoder
+	-D fatal|ignore    How to handle distortion constraint violation.
+	-R fatal|ignore    How to handle rate constraint violation.
+	-C fatal|ignore    How to handle codec failures.
+	EOF
+	exit 2
+}
+
+################################################################################
+#
+################################################################################
+
+image_path="$IMGPATH"
+show_image=0
+missing_image_fatal=1
+failure_fatal=1
+distortion_violation_fatal=1
+rate_violation_fatal=1
+debug=0
+verbose=0
+tests=()
+enc=jasper
+dec=jasper
+skip_bugs=1
+exclude_tests=()
+
+while getopts d:e:i:vBE:I:X: opt; do
+	case "$opt" in
+	d)
+		dec="$OPTARG";;
+	e)
+		enc="$OPTARG";;
+	i)
+		image_path="$image_path;$OPTARG";;
+	v)
+		verbose=$((verbose + 1));;
+	B)
+		skip_bugs=0;;
+	E)
+		case "$OPTARG" in
+		ignore)
+			failure_fatal=0
+			rate_violation_fatal=0
+			distortion_violation_fatal=0
+			missing_image_fatal=0
+			;;
+		fatal|*)
+			failure_fatal=1
+			rate_violation_fatal=1
+			distortion_violation_fatal=1
+			missing_image_fatal=1
+			;;
+		esac
+		;;
+	I)
+		tests+=("$OPTARG");;
+	X)
+		exclude_tests+=("$OPTARG");;
+	\?)
+		usage
+		break;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -ge 1 ]; then
+	tests+=("$@")
+fi
+
+################################################################################
+#
+################################################################################
+
+#if [ -z "${tests[@]}" ]; then
+if [ "${#tests[@]}" -eq 0 ]; then
+	tcf_gettestids "$test_file" tests || panic "cannot get tests"
+fi
+
+# Remove any excluded tests from the list of tests to be run.
+tmp_tests=()
+for test in "${tests[@]}"; do
+	exclude=0
+	for exclude_test in "${exclude_tests[@]}"; do
+		if [ "$exclude_test" = "$test" ]; then
+			exclude=1
+			break
+		fi
+	done
+	if [ "$exclude" -eq 0 ]; then
+		tmp_tests+=("$test")
+	fi
+done
+tests=("${tmp_tests[@]}")
+
+if [ "$verbose" -ge 1 ]; then
+	echo "The following tests have been selected:"
+	for test in "${tests[@]}"; do
+		echo "    $test"
+	done
+fi
+
+[ -d $TMPDIR ] || mkdir -p $TMPDIR
+[ -d $DATADIR ] || mkdir -p $DATADIR
+
+failed_tests=()
+codec_failures=()
+skipped_tests=()
+rate_violations=()
+distortion_violations=()
+missing_images=()
+
+for test in "${tests[@]}"; do
+
+	echo "############################################################"
+
+	tcf_gettest "$test_file" "$test" record || \
+	  panic "cannot get test information for $test"
+
+	in_file_base=""
+	enc_opts=()
+	dec_opts=()
+	rate=0
+	max_pae=""
+	min_psnr=""
+	bug=""
+	enc_fmt=jpc
+	#enc_fmt=jp2
+
+	for tag in "${!record[@]}"; do
+		value="${record[$tag]}"
+		case "$tag" in
+		imgareatlx|imgareatly|tilegrdtlx|tilegrdtly|tilewidth|tileheight|prcwidth|prcheight|cblkwidth|cblkheight|mode|nomct|numrlvls|numgbits|ilyrrates|prg|pterm|termall|lazy|segsym|resetprob|vcausal|sop|eph|roirect)
+			enc_opts+=("$tag=$value")
+			;;
+		rate)
+			enc_opts+=("$tag=$value")
+			rate="${record[$tag]}"
+			;;
+		maxlyrs)
+			dec_opts+=("$tag=$value")
+			;;
+		image)
+			in_file_base="$value";;
+		pae)
+			max_pae="$value";;
+		psnr)
+			min_psnr="$value";;
+		id)
+			if [ "$test" != "$value" ]; then
+				panic "test mismatch"
+			fi
+			;;
+		fmt)
+			enc_fmt="$value";;
+		bug)
+			bug="$value";;
+		*)
+			echo "unknown option $tag"
+			exit 1
+			;;
+		esac
+	done
+
+	# Check for known bug in encoder and/or decoder.
+	has_enc_bug=0
+	case $enc in
+	jasper)
+		case "$bug" in
+		*jasper_enc*|*jasper_cod*)
+			has_enc_bug=1;;
+		esac
+		;;
+	jj2k)
+		case "$bug" in
+		*jj2000_enc*|*jj2000_cod*)
+			has_enc_bug=1;;
+		esac
+		;;
+	kakadu)
+		case "$bug" in
+		*kakadu_enc*|*kakadu_cod*)
+			has_enc_bug=1;;
+		esac
+		;;
+	oj)
+		case "$bug" in
+		*oj_enc*|*oj_cod*)
+			has_enc_bug=1;;
+		esac
+		;;
+	esac
+	has_dec_bug=0
+	case $dec in
+	jasper)
+		case "$bug" in
+		*jasper_dec*|*jasper_cod*)
+			has_dec_bug=1;;
+		esac
+		;;
+	jj2k)
+		case "$bug" in
+		*jj2000_dec*|*jj2000_cod*)
+			has_dec_bug=1;;
+		esac
+		;;
+	kakadu)
+		case "$bug" in
+		*kakadu_dec*|*kakadu_cod*)
+			has_dec_bug=1;;
+		esac
+		;;
+	oj)
+		case "$bug" in
+		*oj_dec*|*oj_cod*)
+			has_dec_bug=1;;
+		esac
+		;;
+	esac
+	if [ $has_enc_bug -ne 0 ]; then
+		echo "WARNING: ENCODER HAS KNOWN BUG"
+	fi
+	if [ $has_dec_bug -ne 0 ]; then
+		echo "WARNING: DECODER HAS KNOWN BUG"
+	fi
+
+	if [ "$skip_bugs" -ne 0 -a \
+	  \( "$has_enc_bug" -ne 0 -o "$has_dec_bug" -ne 0 \) ]; then
+		echo "WARNING: skipping $test"
+		skipped_tests+=("$test")
+		continue
+	fi
+
+	in_file=$(image_which "$image_path" "$in_file_base") || \
+	  panic "cannot find image"
+	if [ ! -f $in_file ]; then
+		if [ $missing_image_fatal -ne 0 ]; then
+			echo "ERROR: CANNOT FIND IMAGE $in_file_base"
+			exit 1
+		fi
+		echo "WARNING: CANNOT FIND IMAGE $in_file_base"
+		echo "WARNING: skipping $test"
+		skipped_tests+=("$test")
+		missing_images+=("$in_file_base")
+		continue
+	fi
+
+	if [ $verbose -ne 0 ]; then
+		enc_opts+=(verbose)
+		dec_opts+=(verbose)
+	fi
+	if [ $debug -ne 0 ]; then
+		enc_opts+=("debug=$debug")
+		dec_opts+=("debug=$debug")
+	fi
+
+	image_format=$(image_info "$in_file" format) || \
+	  panic "cannot get image format"
+	image_num_comps=$(image_info "$in_file" num_components) || \
+	  panic "cannot get number of image components"
+	image_width=$(image_info "$in_file" width) || \
+	  panic "cannot get image width"
+	image_height=$(image_info "$in_file" height) || \
+	  panic "cannot get image height"
+	image_prec=$(image_info "$in_file" depth) || \
+	  panic "cannot get image depth"
+	image_size=$(image_info "$in_file" size) || \
+	  panic "cannot get image size"
+
+	if [ "$image_format" = mif -o "$image_format" = jpc -o \
+	  "$image_format" = jp2 -o "$image_format" = pgx ]; then
+		dec_fmt="$image_format"
+	else
+		dec_fmt="$image_format"
+		if [ "$image_num_comps" -eq 1 -a "$image_prec" -gt 8 ]; then
+			dec_fmt=pgx
+		else
+			dec_fmt=pnm
+		fi
+	fi
+
+	if [ $rate = 0 ]; then
+		target_size=0
+	else
+		target_size=$(evalexpr "$image_size * $rate + 1" | realtoint) || \
+		  panic "calculation failed"
+	fi
+
+	enc_file="$TMPDIR/test.$enc_fmt"
+	dec_file="$TMPDIR/recon.$dec_fmt"
+	LOGFILE="$TMPDIR/log.txt"
+	#DIFFFILE="$TMPDIR/diff.pnm"
+	DIFFFILE=""
+
+	#rm -f $TMPDIR/*.pgm $TMPDIR/*.ppm $TMPDIR/*.$dec_fmt
+	rm -f "$enc_file"
+	rm -f "$dec_file" "$DIFFFILE"
+
+	if [ \( "$image_format" != pnm -a "$image_format" != pgx -a \
+	  "$enc" != jasper \) -o \( "$image_format" != pnm -a "$enc" = kakadu \) \
+	  ]; then
+		echo "WARNING: encoder cannot handle input image format $image_format... skipping"
+		skipped_tests+=("$test")
+		continue
+	fi
+	if [ \( "$dec_fmt" != pnm -a "$dec_fmt" != pgx -a "$dec" != jasper \) -o \
+	  \( "$dec_fmt" != pnm -a "$dec" = kakadu \) ]; then
+		echo "WARNING: decoder cannot handle output image format $dec_fmt... skipping"
+		skipped_tests+=("$test")
+		continue
+	fi
+
+	echo "TESTID=$test ENC=$enc DEC=$dec"
+	if [ $verbose -ne 0 ]; then
+		echo "FMT=$image_format WIDTH=$image_width HEIGHT=$image_height PREC=$image_prec NUMCMPTS=$image_num_comps RAWSIZE=$image_size"
+
+		echo "test information:"
+		for tag in "${!record[@]}"; do
+			printf "    %-16s %-16s\n" "$tag" "${record[$tag]}"
+		done
+	fi
+
+	$JPENC software=$enc input=$in_file output=$enc_file fmt=$enc_fmt "${enc_opts[@]}"
+	enc_status=$?
+	if [ $enc_status -eq 2 ]; then
+		echo "WARNING: encoder feature not supported"
+		echo "skipping"
+		skipped_tests+=("$test")
+		continue
+	fi
+	if [ $enc_status -ne 0 ]; then
+		echo "ERROR: ENCODER FAILURE"
+		codec_failures+=($test.encode)
+		failed_tests+=($test.encode)
+		if [ "$failure_fatal" -ne 0 ]; then
+			exit 1
+		else
+			continue
+		fi
+	fi
+
+	enc_size=$(wc -c $enc_file | awk '{print $1}' -) || \
+	  panic "cannot get encoded size"
+
+	$JPDEC software=$dec input=$enc_file output=$dec_file "${dec_opts[@]}"
+	dec_status=$?
+	if [ $dec_status -ne 0 ]; then
+		echo "ERROR: DECODER FAILURE"
+		codec_failures+=($test.decode)
+		failed_tests+=($test.decode)
+		if [ "$failure_fatal" -ne 0 ]; then
+			exit 1
+		else
+			continue
+		fi
+	fi
+
+	if [ \( -z "$max_pae" \) -a \( -z "$min_psnr" \) ]; then
+		echo "ERROR: NO ERROR CONSTRAINT SPECIFIED"
+		exit 1
+	fi
+
+	if [ $rate != 0 ]; then
+		if [ $enc_size -gt $target_size ]; then
+			echo "ERROR: RATE CONSTRAINT VIOLATED ($enc_size > $target_size)"
+			if [ \( $enc = jasper \) -a \( $rate_violation_fatal -ne 0 \) ]; then
+				exit 1
+			fi
+			rate_violations+=("$test")
+			failed_tests+=($test.rate)
+		fi
+	fi
+
+	FILE0=$(pnutod $in_file)
+	FILE1=$(pnutod $dec_file)
+	PAE=$($IMGCMP -f $FILE0 -F $FILE1 -m pae --max 2> /dev/null) || \
+	  panic "image comparison failed"
+	if [ -z "$PAE" ]; then
+		echo "cannot get PAE $FILE0 $FILE1"
+		exit 1
+	fi
+	if [ $PAE -ne 0 ]; then
+		psnr=$($IMGCMP -f $FILE0 -F $FILE1 -m psnr --min 2> /dev/null)
+		echo "STATUS: LOSSY (ENCFILESIZE=$enc_size ENCSIZE=$target_size PAE=$PAE PSNR=$psnr)"
+	else
+		echo "STATUS: LOSSLESS (ENCFILESIZE=$enc_size)"
+		psnr=1000.0
+	fi
+	if [ -z "$psnr" ]; then
+		echo "cannot get PSNR"
+		exit 1
+	fi
+	if [ -n "$max_pae" ]; then
+		if [ $PAE -gt $max_pae ]; then
+			echo "ERROR: PAE CONSTRAINT NOT SATISFIED ($PAE > $max_pae)"
+			if [ $distortion_violation_fatal -ne 0 ]; then
+				$image_viewer $dec_file 
+				exit 1
+			fi
+			distortion_violations+=("$test")
+			failed_tests+=($test.distortion)
+		fi
+	fi
+	if [ -n "$min_psnr" ]; then
+		CONSTRAINT=$(evalrelexpr "$psnr > $min_psnr")
+		if [ $CONSTRAINT -eq 0 ]; then
+			echo "ERROR: PSNR CONSTRAINT NOT SATISFIED ($psnr < $min_psnr)"
+			if [ $distortion_violation_fatal -ne 0 ]; then
+				$image_viewer $dec_file 
+				exit 1
+			fi
+			distortion_violations+=("$test")
+			failed_tests+=($test.distortion)
+		fi
+	fi
+
+	if [ $show_image -ne 0 ]; then
+		echo "Type Ctrl-Q to exit ImageMagick"
+		$image_viewer $dec_file 
+		#PID=$!
+		#sleep 5
+		#kill $PID
+	fi
+
+	if [ $MKDATA -ne 0 ]; then
+		cp $enc_file $DATADIR/$test.$enc_fmt
+	fi
+
+done
+
+echo "############################################################"
+echo "TEST SUMMARY"
+
+if [ ${#distortion_violations[@]} -ne 0 ]; then
+	echo "ERROR: number of distortion constraint violations ${#distortion_violations[@]}"
+	echo "${distortion_violations[@]}"
+fi
+if [ "${#rate_violations[@]}" -ne 0 ]; then
+	echo "ERROR: number of rate constraint violations ${#rate_violations[@]}"
+	echo "${rate_violations[@]}"
+fi
+if [ "${#missing_images[@]}" -ne 0 ]; then
+	echo "ERROR: number of missing images: ${#missing_images[@]}"
+	echo "skipped images: ${missing_images[@]}"
+fi
+if [ "${#skipped_tests[@]}" -ne 0 ]; then
+	echo "WARNING: skipped ${#skipped_tests[@]} tests"
+	echo "${skipped_tests[@]}"
+fi
+
+echo "Number of tests: ${#tests[@]}"
+echo "Number of errors: ${#failed_tests[@]}"
+if [ "${#failed_tests[@]}" -ne 0 ]; then
+	echo "Failed tests:"
+	for i in "${failed_tests[@]}"; do
+		echo "    $i"
+	done
+fi
+if [ "${#failed_tests[@]}" -gt 0 ]; then
+	echo "STATUS: FAIL"
+	exit 1
+fi
+
+echo "STATUS: SUCCESS"

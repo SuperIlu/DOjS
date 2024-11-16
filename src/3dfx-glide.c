@@ -23,6 +23,9 @@ SOFTWARE.
 #include "3dfx-glide.h"
 
 #include <allegro.h>
+#if WINDOWS==1
+#include <winalleg.h>
+#endif
 #include <dirent.h>
 #include <dpmi.h>
 #include <errno.h>

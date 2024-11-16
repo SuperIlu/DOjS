@@ -134,6 +134,21 @@ function Dump(obj) {
 }
 
 /**
+ * extract the path for a file.
+ * 
+ * @param {String} fname the file name with path
+ * @returns the path leading to the file
+ */
+function ExtractModulePath(fname) {
+	var lastSlash = fname.lastIndexOf('/');
+	if (lastSlash == -1) {
+		return "./";
+	} else {
+		return fname.substring(0, lastSlash + 1);
+	}
+}
+
+/**
  * try a specific filename which can ba a plain file or a ZIP-file entry. Throws an Exception if the file cant be read.
  * 
  * @param {string} name module name.
@@ -143,6 +158,15 @@ function Dump(obj) {
  */
 function RequireFile(name, fname) {
 	var content;
+
+	// handle nodejs module names (absolute DOS paths and relative)
+	if (fname[1] == ":") {
+		fname = fname.replace(":", "/");
+		fname = fname.replaceAt(1, ":");
+	} else {
+		fname = fname.replace(":", "/");
+	}
+
 	try {
 		if (fname.indexOf(ZIP_DELIM) != -1) {
 			var parts = fname.split(ZIP_DELIM);
@@ -158,8 +182,22 @@ function RequireFile(name, fname) {
 		return null;	// file errors are ignored
 	}
 	var exports = {};
+	var module = {
+		id: name,
+		path: ExtractModulePath(fname),
+		exports: exports,
+		filename: fname,
+		loaded: false,
+		children: [],
+		paths: [
+			"./",													// try local dir
+			JSBOOT_ZIP + ZIP_DELIM + JSBOOT_DIR,					// try jsboot.zip, core packages
+			JSBOOT_DIR,												// try jsboot directory, core packages
+			JSBOOT_ZIP + ZIP_DELIM + PACKAGE_DIR					// try jsboot.zip, installed packages
+		]
+	};
 	Require._cache[name] = exports;
-	NamedFunction('exports', content, name)(exports);
+	NamedFunction('exports,module', content, name)(exports, module);
 	return exports;
 }
 
@@ -216,8 +254,9 @@ function Require(name) {
 Require._cache = Object.create(null);
 
 /**
- * Alias of Require()
+ * Alias of Require() to make DOjS module loading Node.js compatible.
  * 
+ * @see NodeJS
  * @see Require
  * 
  * @param {string} name module file name.
@@ -225,6 +264,75 @@ Require._cache = Object.create(null);
  * @returns the imported module.
  */
 require = Require;
+
+/**
+ * print a stack trace.
+ * 
+ * @param {String} msg message to print with the trace
+ */
+function Trace(msg) {
+	msg = msg || "";
+	Println("Trace: " + msg);
+	var e = new Error();
+	var lines = e.stackTrace.split('\n');
+	for (var i = 2; i < lines.length; i++) {
+		Println(lines[i]);
+	}
+}
+
+/**
+ * provide console.log()
+ * @see NodeJS
+ */
+console = {
+	_timers: {},
+	_counters: {},
+
+	log: Println,
+	info: Println,
+	warn: Println,
+	error: Println,
+	trace: Trace,
+	time: function (name) {
+		name = name || "default";
+		this._timers[name] = new StopWatch();
+		this._timers[name].Start();
+	},
+	timeEnd: function (name) {
+		name = name || "default";
+		if (!this._timers[name]) {
+			throw new Error("unknown timer: " + name);
+		}
+		this._timers[name].Stop();
+		this._timers[name].Print(name);
+		delete this._timers[name];
+	},
+	timeLog: function (name) {
+		name = name || "default";
+		if (!this._timers[name]) {
+			throw new Error("unknown timer: " + name);
+		}
+		this._timers[name].Print(name);
+	},
+	count: function (name) {
+		name = name || "default";
+		if (this._counters[name]) {
+			this._counters[name]++;
+		} else {
+			this._counters[name] = 1;
+		}
+		Println(name + ": " + this._counters[name]);
+	},
+	countReset: function (name) {
+		name = name || "default";
+		this._counters[name] = 0;
+	},
+	assert: function (val, msg) {
+		if (!val) {
+			Println("Assertion failed: " + JSON.stringify(msg));
+		}
+	}
+};
 
 /**
  * include a module. The exported functions are copied into global scope.
@@ -367,6 +475,11 @@ if (!String.prototype.endsWith) {
 		return this.substring(this_len - search.length, this_len) === search;
 	};
 }
+if (!String.prototype.replaceAt) {
+	String.prototype.replaceAt = function (index, replacement) {
+		return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+	}
+}
 
 // add hypot to Math
 if (!Math.hypot) Math.hypot = function () {
@@ -422,10 +535,11 @@ StopWatch.prototype.Reset = function () {
  * @returns {number} runtime in ms.
  */
 StopWatch.prototype.ResultMs = function () {
-	if (!this.start || !this.stop) {
-		throw new Error("start or end time missing!");
+	if (this.stop) {
+		return this.stop - this.start;
+	} else {
+		return MsecTime() - this.start;
 	}
-	return this.stop - this.start;
 };
 /**
 * convert result to a readable string.

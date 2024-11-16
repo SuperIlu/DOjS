@@ -1,0 +1,17 @@
+name: Windows Testing
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        #os: [windows-latest]
+        os: [windows-2022]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v4.1.1
+    - name: testing
+      shell: bash
+      run: build/build --debug-level 10 --shared --test --verbose

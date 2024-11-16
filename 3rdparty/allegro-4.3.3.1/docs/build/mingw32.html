@@ -1,0 +1,370 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><head><title>
+Notes on building the MinGW/Cygwin version of Allegro.
+</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<link rel="stylesheet" title="Default" type="text/css" href="../allegro.css"></head><body bgcolor=white text=black link="#0000ee" alink="#ff0000" vlink="#551a8b">
+<pre>
+     ______   ___    ___
+    /\  _  \ /\_ \  /\_ \
+    \ \ \L\ \\//\ \ \//\ \      __     __   _ __   ___ 
+     \ \  __ \ \ \ \  \ \ \   /'__`\ /'_ <tt>`\/\`'</tt>__\/ __`\
+      \ \ \/\ \ \_\ \_ \_\ \_/\  __//\ \L\ \ \ \//\ \L\ \
+       \ \_\ \_\/\____\/\____\ \____\ \____ \ \_\\ \____/
+        \/_/\/_/\/____/\/____/\/____/\/___L\ \/_/ \/___/
+                                       /\____/
+                                       \_/__/
+
+
+   Notes on building the MinGW/Cygwin version of Allegro.
+
+   See <a href="../readme.html">readme.txt</a> for a more general overview.
+</pre>
+
+
+
+<p><br>
+<h1><a name="MinGW notes">MinGW notes</a></h1>
+
+<p>
+   This is a complete MinGW port of Allegro.
+
+<p>
+   The screensaver example is built, but you must copy <tt>scrsave.scr</tt> to
+   your <tt>windows/system</tt> directory (or <tt>winnt/system32</tt> directory
+   under Windows NT/2k/XP) if you want to test it.
+
+
+
+<p><br>
+<h1><a name="Obtaining and installing the compiler &amp; tools">Obtaining and installing the compiler &amp; tools</a></h1>
+
+<p>
+   You have four choices when it comes to installing MinGW and Allegro
+   on your computer:
+<ul>
+      <li>The section 'Setting up MinGW to build Allegro' describes how to set
+      up the MinGW command line tools which is the preferred choice for
+      those who like to work on the command line.
+
+      <li>The section 'Setting up Dev-C++ to build Allegro' describes how to set
+      up the Dev-C++ environment to work with Allegro. This is the preferred
+      choice for those who like to work in a graphical development environment.
+
+      <li>The section 'Setting up Cygwin to build Allegro' describes how to set
+      up your Cygwin compiler to build Allegro. Cygwin offers a mature
+      Unix-like environment for you to work in.
+
+      <li>The last section 'Cross compilation' describes how to set up the
+      MinGW command line tools to compile Win32 programs from your Linux
+      box.
+</ul>
+   Note: You will need a program to decompress .zip, .tar.gz and optionally
+   .tar.bz2 files. I recommend PowerArchiver (shareware) which can be
+   downloaded from: '<a href="http://www.powerarchiver.com">http://www.powerarchiver.com</a>'.
+
+
+
+<p><br>
+<h1><a name="Setting up MinGW to build Allegro">Setting up MinGW to build Allegro</a></h1>
+
+<p>
+   The procedure is as follows:
+<blockquote>
+<p>
+   1. Make sure you have a working MinGW installation. You can download the
+      complete distribution or individual packages from '<a href="http://www.mingw.org">http://www.mingw.org</a>'
+      or '<a href="http://sourceforge.net/projects/mingw/">http://sourceforge.net/projects/mingw/</a>'. You can also use
+      the Minimal SYStem (MSYS) environment with Allegro.
+
+<p>
+   2. Get the minimal DirectX 7 SDK for MinGW (<tt>dx70_mgw.zip</tt>). You
+      download it from '<a href="http://alleg.sourceforge.net/wip.html">http://alleg.sourceforge.net/wip.html</a>'. Note
+      that this is *not* the same package as '<tt>dx70_min.zip</tt>'. Unzip it
+      to the compiler directory, overwriting any existing files.
+
+<p>
+   3. Optionally, set the environment variable MINGDIR to the compiler
+      directory. If you use Windows 9x, you can add the line
+<blockquote class="text"><pre>
+         set MINGDIR=c:\MinGW
+</pre></blockquote>
+      to your '<tt>c:\autoexec.bat</tt>' file, assuming '<tt>c:\MinGW</tt>' is the compiler
+      directory, and reboot. If you use Windows ME, you can run '<tt>msconfig</tt>',
+      select the 'Environment' tab and then add <tt>MINGDIR</tt>. If you use
+      Windows NT/2k/XP, you can open the Control Panel, click the 'System'
+      applet, the 'Advanced' tab and finally the 'Environment' button, and
+      then add <tt>MINGDIR</tt>. If you use MSYS, add instead the line
+<blockquote class="text"><pre>
+         export MINGDIR=/mingw
+</pre></blockquote>
+      to your '<tt>c:\msys\etc\profile</tt>' file.
+</blockquote>
+<p>
+   Test the installation by typing the following on the command line:
+   '<tt>gcc -v</tt>'. The answer should be similar to:
+<blockquote class="text"><pre>
+      Reading specs from ../lib/gcc-lib/mingw32/3.2/specs
+      Configured with: ../gcc/configure --with-gcc --with-gnu-ld
+      --with-gnu-as --host=mingw32 --target=mingw32 --prefix=/mingw
+      --enable-threads --disable-nls --enable-languages=f77,c++,objc,ada
+      --disable-win32-registry --disable-shared
+      Thread model: win32
+      gcc version 3.2 (mingw special 20020817-1)
+</pre></blockquote>
+   If you don't know how to open a terminal, you can click on '<tt>Start -&gt; Run</tt>'
+   then type "<tt>command</tt>". Under Windows 2k/XP, you should type "<tt>cmd</tt>" instead.
+
+
+
+<p><br>
+<h1><a name="Setting up Dev-C++ to build Allegro">Setting up Dev-C++ to build Allegro</a></h1>
+
+<p>
+   Note: we assume that the complete version of the Dev-C++ environment (i.e
+   with the bundled MinGW compiler) is used. If you use instead Dev-C++ as
+   a mere IDE on top of an already installed MinGW compiler, follow the
+   instructions given in the previous section.
+
+<p>
+   The procedure is as follows:
+<blockquote>
+<p>
+   1. Make sure you have a working Dev-C++ installation. You can download the
+      complete version from '<a href="http://bloodshed.net/dev/devcpp.html">http://bloodshed.net/dev/devcpp.html</a>'.
+   
+<p>
+   2. Get the DirectX SDK: go to Tools\Check for Updates/Packages... and
+      install the DirectX package. Close Dev-C++.
+
+<p>
+   3. Add '<tt>c:\DevCpp\bin</tt>' to the beginning of your <tt>PATH</tt> environment variable.
+      Optionally, set the environment variable MINGDIR to '<tt>c:\DevCpp</tt>'.
+      If you use Windows 9x, you can add the lines
+<blockquote class="text"><pre>
+         PATH=c:\DevCpp\bin;%PATH%
+         set MINGDIR=c:\DevCpp
+</pre></blockquote>
+      to your '<tt>c:\autoexec.bat</tt>' file and reboot. If you use Windows ME, you
+      can run '<tt>msconfig</tt>', select the 'Environment' tab, then modify <tt>PATH</tt> and
+      add <tt>MINGDIR</tt>. If you use Windows NT/2k/XP, you can open the Control
+      Panel, click the 'System' applet, the 'Advanced' tab and finally the
+      'Environment' button, then modify <tt>PATH</tt> and add <tt>MINGDIR</tt>.
+
+</blockquote>
+<p><br>
+   Test the installation by typing the following on the command line:
+   '<tt>gcc -v</tt>'. The answer should be similar to:
+<blockquote class="text"><pre>
+      Reading specs from ../lib/gcc-lib/mingw32/3.2/specs
+      Configured with: ../gcc/configure --with-gcc --with-gnu-ld
+      --with-gnu-as --host=mingw32 --target=mingw32 --prefix=/mingw
+      --enable-threads --disable-nls --enable-languages=f77,c++,objc,ada
+      --disable-win32-registry --disable-shared
+      Thread model: win32
+      gcc version 3.2 (mingw special 20020817-1)
+</pre></blockquote>
+   If you don't know how to open a terminal, you can click on '<tt>Start -&gt; Run</tt>'
+   then type "<tt>command</tt>". Under Windows 2k/XP, you should type "<tt>cmd</tt>" instead.
+
+
+
+<p><br>
+<h1><a name="Setting up Cygwin to build Allegro">Setting up Cygwin to build Allegro</a></h1>
+
+<p>
+   Note: Allegro 4.4 has not been tested with Cygwin yet!
+
+<p>
+   The procedure is as follows:
+<blockquote>
+<p>
+   1. Make sure you have a working Cygwin installation. You can download the
+      <tt>setup.exe</tt> program from '<a href="http://sources.redhat.com/cygwin/">http://sources.redhat.com/cygwin/</a>'.
+      You will need the following packages: bash, binutils, coreutils, cygwin,
+      cygutils, fileutils, gcc, gdb, login, make, man, mingw-runtime, sed,
+      texinfo and w32api.
+
+<p>
+   2. Get the minimal DirectX 7 SDK for MinGW. (<tt>dx70_mgw.zip</tt>) Download it
+      from '<a href="http://alleg.sourceforge.net/wip.html">http://alleg.sourceforge.net/wip.html</a>' and unzip it to a
+      temporary directory, for instance '<tt>C:\Temp</tt>'. Then move the contents of
+      '<tt>C:\Temp\lib</tt>' to '<tt>C:\cygwin\lib\w32api</tt>', and the contents of
+      '<tt>C:\Temp\include</tt>' to '<tt>c:\cygwin\usr\include\w32api</tt>'. If you are asked
+      if you want to overwrite any existing files, choose to overwrite them.
+
+<p>
+   3. Put the following text in '<tt>/etc/profile</tt>' (<tt>c:\cygwin\etc\profile</tt>)
+<blockquote class="text"><pre>
+         export ALLEGRO_USE_CYGWIN=1
+         export MINGDIR=/usr/local
+         export CPATH=/usr/local/include
+         export LIBRARY_PATH=/usr/local/lib
+</pre></blockquote>
+      Note: if the <tt>CPATH</tt> or <tt>LIBRARY_PATH</tt> variables are already set, you will
+      have to append the new path to the existing one by using a colon (":")
+      as the separator.
+
+</blockquote>
+<p><br>
+   Test the installation by typing the following in the Bash shell:
+   '<tt>gcc -v</tt>'. The answer should be similar to:
+<blockquote class="text"><pre>
+      Reading specs from /usr/lib/gcc-lib/i686-pc-cygwin/3.2/specs
+      gcc version 3.2 20020927 (prerelease)
+</pre></blockquote>
+   Note: if you have problems installing the profiling version of the Allegro
+   library, you will probably need to copy a file called <tt>libgmon.a</tt> from the
+   MinGW distribution to your <tt>/lib/mingw</tt> directory (<tt>c:\cygwin\lib\mingw</tt>) in
+   Cygwin. This is expected to be fixed in a later release of the
+   mingw-runtime package (I'm currently using mingw-runtime-1.2-1).
+
+
+
+<p><br>
+<h1><a name="Cross compilation">Cross compilation</a></h1>
+
+<p>
+   The procedure is as follows:
+<blockquote>
+<p>
+   1. Download and install the MinGW cross-compiler. You can get the
+      software:
+      
+<p>
+      <ul><li>directly from the MingW site: <a href="http://sourceforge.net/projects/mingw/">http://sourceforge.net/projects/mingw/</a>.
+         
+         You need the following packages (as of February 2003):
+         
+            <ul><li>gcc (<tt>gcc-3.2.2-20030208-1-src.tar.gz</tt>)
+            <li>binutils (<tt>binutils-2.13.90-20030111-1-src.tar.gz</tt>)
+            <li>mingw runtime (<tt>mingw-runtime-2.4.tar.gz</tt>)
+            <li>w32api (<tt>w32api-2.2.tar.gz</tt>)
+            </ul>
+         Optionally, you can get from the SDL site,
+         <a href="http://www.libsdl.org/extras/win32/common">http://www.libsdl.org/extras/win32/common</a>: opengl-devel
+         (<tt>opengl-devel.tar.gz</tt>)
+      
+      <li>using a more convenient script with instructions for downloading:
+      <a href="http://www.libsdl.org/extras/win32/cross/README.txt">http://www.libsdl.org/extras/win32/cross/README.txt</a>.
+      Follow the instructions, and make sure to edit the build-crosh.sh
+      script so it downloads the most recent version of gcc and binutils.
+
+      <li>as a premade Debian package called '<tt>mingw32</tt>', which you can install
+      with '<tt>apt-get install mingw32</tt>'.
+      </ul>
+   2. Get the minimal DirectX 7 SDK for MinGW (<tt>dx70_mgw.zip</tt>).
+      Download it from '<a href="http://alleg.sourceforge.net/wip.html">http://alleg.sourceforge.net/wip.html</a>' and unzip it
+      in the cross-compiler base directory. Make sure you convert all text
+      files to unix style (<tt>unzip -a</tt>) or the preprocessor will croak. The
+      DirectX package downloaded and installed by the SDL script is not up
+      to date: replace it with the package from the Allegro site.
+
+<p>
+   3. Use the cmake/Toolchain-mingw.cmake file. Remember to set MINGDIR
+      if your MinGW binaries live alongside your native binaries, otherwise
+      the '<tt>make install</tt>' step may make a mess in your normal
+      directories.
+</blockquote>
+
+
+<p><br>
+<h1><a name="Installing Allegro">Installing Allegro</a></h1>
+
+<p>
+   Once your compiler is set up, follow the generic build instructions in
+   docs/build/cmake.txt.
+
+
+
+<p><br>
+<h1><a name="Using Allegro">Using Allegro</a></h1>
+
+<p>
+   All the Allegro functions, variables, and data structures are defined 
+   in <tt>allegro.h</tt>. You should include this in your programs, and link with
+   either the optimised library <tt>liballeg.a</tt>, the debugging library
+   <tt>liballeg-debug.a</tt>, or the profiling library <tt>liballeg-profile.a</tt>.
+   You should include the Allegro DLLs in any software you release to the
+   public.
+
+<p>
+   When using a statically linked library, you must define the preprocessor
+   symbol <tt>ALLEGRO_STATICLINK</tt> before including any of the Allegro headers and
+   link your program against Allegro and the main Win32/DirectX libraries
+   in that order.  The names of the statically linked Allegro libraries are
+   post-fixed with '<tt>-static</tt>' so that you will link with either
+   <tt>liballeg-static.a</tt>, <tt>liballeg-debug-static.a</tt> or
+   <tt>liballeg-profile-static.a</tt>.
+
+<p>
+   Don't forget that you need to use the <code>END_OF_MAIN()</code> macro right after
+   your <code>main()</code> function.
+
+
+
+<p><br>
+<h1><a name="Compiling manually with MinGW">Compiling manually with MinGW</a></h1>
+
+<p>
+   A simple example of a command line to compile an Allegro program with
+   MinGW looks like:
+<blockquote class="text"><pre>
+      gcc foo.c -Wl,--subsystem,windows -O2 -Wall -o foo.exe -lalleg
+</pre></blockquote>
+   If you are compiling with Cygwin, the compiler option '<tt>-mno-cygwin</tt>' must
+   be added, both at compile-time and at link-time:
+<blockquote class="text"><pre>
+      gcc foo.c -Wl,--subsystem,windows -mno-cygwin -O2 -Wall -o foo.exe -lalleg
+</pre></blockquote>
+   Note that, if you want to make a console application, you must use
+   '<tt>-Wl,--subsystem,console</tt>' instead of '<tt>-Wl,--subsystem,windows</tt>'.
+
+
+
+<p><br>
+<h1><a name="Creating a program with Dev-C++">Creating a program with Dev-C++</a></h1>
+
+<p>
+   A simple example on how to create a little program with Dev-C++:
+
+<p>
+   Launch Dev-C++ and create a new project (File/New Project). Select
+   "Windows Application", then click on the "Ok" button. Name your
+   project and give associate it to a new file. You should now see a
+   sample code in a window. Close that window since you won't be
+   needing it (Allegro is much simpler to use than this). Create a
+   new file (File/New Source File), then write a small Allegro
+   program. You can inspire yourself by the Allegro examples if you
+   wish. Here's a small program you can type to see if everything
+   worked until now:
+<blockquote class="code"><pre>
+      #include &lt;allegro.h&gt;
+
+      int main() {
+         allegro_init();
+         allegro_message("Hello World!");
+         return 0;
+      }
+      END_OF_MAIN()
+</pre></blockquote>
+   You now need to tell Dev-C++ that you'd like to make a program that
+   uses Allegro. For that, go in the Project Options screen
+   (Project/Project Options menu), then enter <tt>-lalleg</tt> (or <tt>-lalld</tt> for
+   the debug mode) in the box under 'Further object file or linker
+   options' or select 'Parameters tab' and enter -lalleg (or -lalld for
+   the debug mode) in the box under 'Linker'.
+
+<p>
+   Compile your project! Simply click on the green check mark on
+   your Dev-C++ toolbar. Correct any syntax errors in your code,
+   then click on "Execute" to run the program. If all worked
+   you will see a message box pop up with "Hello World" inside of it.
+
+<p>
+   Happy coding!
+
+
+</body>
+</html>

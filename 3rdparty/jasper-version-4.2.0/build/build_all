@@ -1,0 +1,499 @@
+#! /usr/bin/env bash
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+self_dir="$(dirname "$0")" || \
+  panic "cannot get self directory"
+source "$self_dir/base_utilities" || \
+  panic "cannot load base utilities"
+self_dir="$(real_path "$self_dir")" || \
+  panic "cannot get self directory"
+
+build_program="$self_dir/build"
+sysinfo_program="$self_dir/sysinfo"
+
+list_directory()
+{
+	local dir="$1"
+	(cd "$dir" && find . -type f -printf "%M %010s %P\n" | sort -k3)
+}
+
+set_build_config()
+{
+	[ $# -eq 1 ] || return 1
+
+	build_name=""
+	base_dir=""
+	command=()
+
+	local id="$1"
+	case "$id" in
+
+	############################################################
+	# Debug Builds
+	############################################################
+
+	static_debug_mt0|static_debug_mt1)
+		local multithread
+		multithread=0
+		case "$id" in
+		*mt1)
+			multithread=1;;
+		esac
+		build_name="static debug ASan+LSan+UBSan mt=$multithread"
+		base_dir="$build_dir/test_static_debug-$multithread"
+		command=("$build_program")
+		command+=("${global_options[@]}")
+		command+=(--build-dir "$base_dir/build")
+		command+=(--install-dir "$base_dir/install")
+		command+=(--static)
+		command+=(--debug)
+		command+=(--ubsan)
+		command+=("${asan_option[@]}")
+		command+=("${lsan_option[@]}")
+		command+=("${test_option[@]}")
+		if [ "$id" = "static_debug_mt1" ]; then
+			command+=("${conformance_tests_option[@]}")
+		fi
+		command+=(--install)
+		command+=(--no-documentation)
+		command+=(--no-use-jas-init)
+		if [ "$multithread" -ne 0 ]; then
+			command+=(--multithread)
+		else
+			command+=(--no-multithread)
+		fi
+		;;
+
+	static_debug_ji_mt0|static_debug_ji_mt1)
+		local multithread
+		multithread=0
+		case "$id" in
+		*mt1)
+			multithread=1;;
+		esac
+		build_name="static debug jas_init ASan+LSan+UBSan mt=$multithread"
+		base_dir="$build_dir/test_static_debug-ji-$multithread"
+		command=("$build_program")
+		command+=("${global_options[@]}")
+		command+=(--build-dir "$base_dir/build")
+		command+=(--install-dir "$base_dir/install")
+		command+=(--static)
+		command+=(--debug)
+		command+=(--ubsan)
+		command+=("${asan_option[@]}")
+		command+=("${lsan_option[@]}")
+		command+=("${test_option[@]}")
+		command+=(--install)
+		command+=(--no-documentation)
+		command+=(--use-jas-init)
+		if [ "$multithread" -ne 0 ]; then
+			command+=(--multithread)
+		else
+			command+=(--no-multithread)
+		fi
+		;;
+
+	tsan)
+		build_name="multithread static debug TSan+UBSan"
+		base_dir="$build_dir/test_static_debug_tsan"
+		command=("$build_program")
+		command+=("${global_options[@]}")
+		command+=(--build-dir "$base_dir/build")
+		command+=(--install-dir "$base_dir/install")
+		command+=(--prefer-pthread)
+		command+=(--static)
+		command+=(--debug)
+		command+=(--ubsan)
+		command+=(--tsan)
+		command+=("${test_option[@]}")
+		command+=(--install)
+		command+=(--no-documentation)
+		command+=(--multithread)
+		command+=(--no-use-jas-init)
+		;;
+
+	############################################################
+	# Release Builds
+	############################################################
+
+	# release without run-time tests
+	static_release|shared_release)
+		local shared
+		if [ "$id" = shared_release ]; then
+			shared=1
+		else
+			shared=0
+		fi
+		build_name="release shared=$shared"
+		base_dir="$build_dir/release-$shared"
+		command=("$build_program")
+		command+=("${global_options[@]}")
+		command+=(--build-dir "$base_dir/build")
+		command+=(--install-dir "$base_dir/install")
+		command+=(--shared)
+		command+=(--release)
+		command+=(--multithread)
+		command+=(--documentation)
+		command+=(--no-test)
+		command+=(--no-cxx)
+		command+=(--install)
+		;;
+
+	static_release_mt0|static_release_mt1)
+		local multithread
+		multithread=0
+		case "$id" in
+		*mt1)
+			multithread=1;;
+		esac
+		build_name="static release mt=$multithread"
+		base_dir="$build_dir/static_release-$multithread"
+		command=("$build_program")
+		command+=("${global_options[@]}")
+		command+=(--build-dir "$base_dir/build")
+		command+=(--install-dir "$base_dir/install")
+		command+=(--static)
+		command+=(--release)
+		command+=(--documentation)
+		command+=("${test_option[@]}")
+		command+=(--install)
+		if [ "$multithread" -ne 0 ]; then
+			command+=(--multithread)
+		else
+			command+=(--no-multithread)
+		fi
+		;;
+
+	shared_release_mt0|shared_release_mt1)
+		local multithread
+		multithread=0
+		case "$id" in
+		*mt1)
+			multithread=1;;
+		esac
+		build_name="shared release mt=$multithread"
+		base_dir="$build_dir/shared_release-$multithread"
+		command=("$build_program")
+		command+=("${global_options[@]}")
+		command+=(--build-dir "$base_dir/build")
+		command+=(--install-dir "$base_dir/install")
+		command+=(--shared)
+		command+=(--release)
+		command+=(--documentation)
+		command+=("${test_option[@]}")
+		command+=(--install)
+		command+=(--no-use-jas-init)
+		if [ "$multithread" -ne 0 ]; then
+			command+=(--multithread)
+		else
+			command+=(--no-multithread)
+		fi
+		;;
+
+	############################################################
+	############################################################
+
+	*)
+		return 1;;
+
+	esac
+}
+
+usage()
+{
+	echo "bad usage: $@"
+	cat <<- EOF
+	Options
+	=======
+
+	-X
+	    Disable tests.
+	-s
+	    Enable strict mode.
+	-w
+	    Disable strict mode.
+	-v
+	    Enable verbose mode.
+	-b \$dir
+	    Set the build directory to \$dir.
+	EOF
+	exit 2
+}
+
+verbose=1
+build_dir=
+crostini=0
+enable=1
+debug_level=0
+strict=1
+command_file=
+enable_test=1
+requested_tests=()
+hard_fail=0
+
+while getopts hvb:cnd:swC:Xqt:F option; do
+	case "$option" in
+	n)
+		enable=0;;
+	F)
+		hard_fail=1;;
+	c)
+		crostini=1;;
+	C)
+		command_file="$OPTARG";;
+	t)
+		requested_tests+=("$OPTARG");;
+	b)
+		build_dir="$OPTARG";;
+	d)
+		debug_level="$OPTARG";;
+	v)
+		verbose=$((verbose + 1));;
+	q)
+		if [ "$verbose" -gt 0 ]; then
+			verbose=$((verbose - 1))
+		fi
+		;;
+	w)
+		strict=0;;
+	s)
+		strict=1;;
+	X)
+		enable_test=0;;
+	h)
+		usage;;
+	*)
+		usage "invalid option $option";;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ $# -ne 0 ]; then
+	usage "unexpected command-line arguments"
+fi
+
+if [ "$debug_level" -ge 1 -a "$verbose" -eq 0 ]; then
+	verbose=1
+fi
+
+if [ -z "$build_dir" ]; then
+	build_dir="$self_dir/../tmp_cmake"
+fi
+
+if [ -n "$command_file" ]; then
+	source "$command_file" || panic "source failed"
+fi
+
+sysinfo_data="$("$sysinfo_program" -a)" || \
+  panic "cannot get system information"
+cat <<- EOF
+================================================================================
+System Information
+$sysinfo_data
+================================================================================
+EOF
+
+os=unknown
+if [ -n "$RUNNER_OS" ]; then
+	case "$RUNNER_OS" in
+	MacOS|macOS)
+		os=macos;;
+	Linux|linux)
+		os=linux;;
+	Windows|windows)
+		os=windows;;
+	esac
+fi
+
+# TODO: Fix this later.
+ubuntu_clang_hack=0
+# If invoked by GitHub Actions CI...
+if [ -n "$RUNNER_OS" ]; then
+	if [ "$os" = linux ]; then
+		# Assume that the OS being Linux means Ubuntu.
+		case "$CC" in
+		clang*)
+			ubuntu_clang_hack=1
+			;;
+		esac
+	fi
+fi
+#ubuntu_clang_hack=0
+
+################################################################################
+
+cat <<- EOF
+================================================================================
+Operating System: $os
+================================================================================
+EOF
+
+global_options=()
+
+for ((i=0; i < "$verbose"; ++i)); do
+	global_options+=(--verbose)
+done
+
+if [ "$strict" -ge 1 ]; then
+	global_options+=(--strict)
+else
+	global_options+=(--no-strict)
+fi
+
+if [ "$crostini" -ne 0 ]; then
+	global_options+=(--crostini)
+fi
+
+global_options+=(--cxx)
+
+global_options+=(--debug-level "$debug_level")
+
+lsan_option=(--lsan)
+asan_option=(--asan)
+case "$os" in
+macos)
+	lsan_option=()
+	;;
+windows)
+	asan_option=()
+	;;
+esac
+
+if [ "$enable_test" -ne 0 ]; then
+	test_option=(--test)
+	conformance_tests_option=(--conformance-tests)
+else
+	test_option=(--no-test)
+	conformance_tests_option=(--no-conformance-tests)
+fi
+case "$os" in
+windows)
+	conformance_tests_option=(--no-conformance-tests)
+	;;
+esac
+
+################################################################################
+
+cat <<- EOF
+================================================================================
+File System Mount Information
+================================================================================
+EOF
+mount || panic "mount failed"
+
+cat <<- EOF
+================================================================================
+System Information
+================================================================================
+EOF
+uname -a || panic "uname failed"
+
+################################################################################
+
+if [ "${#requested_tests[@]}" -gt 0 ]; then
+	tests=("${requested_tests[@]}")
+fi
+
+if [ "${#tests[@]}" -eq 0 ]; then
+
+	tests=()
+
+	# debug builds
+	#if [ "$ubuntu_clang_hack" -eq 0 ]; then
+	#fi
+	tests+=(static_debug_mt0)
+	tests+=(static_debug_mt1)
+	tests+=(static_debug_ji_mt0)
+	tests+=(static_debug_ji_mt1)
+	tests+=(tsan)
+
+	# release builds
+	if [ "$ubuntu_clang_hack" -eq 0 ]; then
+		tests+=(shared_release_mt0)
+		tests+=(shared_release_mt1)
+		tests+=(static_release_mt0)
+		tests+=(static_release_mt1)
+	fi
+	tests+=(static_release)
+	tests+=(shared_release)
+
+fi
+
+failed_tests=()
+passed_tests=()
+attempted_tests=()
+
+for id in "${tests[@]}"; do
+
+	attempted_tests+=("$id")
+
+	set_build_config "$id"
+	if [ $? -ne 0 ]; then
+		failed_tests+=("$id")
+		if [ "$hard_fail" -ne 0 ]; then
+			break
+		fi
+		continue
+	fi
+
+	cat <<- EOF
+	================================================================================
+	BUILD (${#attempted_tests[@]}/${#tests[@]}): ${build_name}
+	================================================================================
+	EOF
+
+	echo "RUNNING: ${command[@]}"
+	if [ "$enable" -ne 0 ]; then
+		"${command[@]}"
+		if [ $? -ne 0 ]; then
+			failed_tests+=("$id")
+			if [ "$hard_fail" -ne 0 ]; then
+				break
+			fi
+			continue
+		fi
+		echo "build directory:"
+		list_directory "$base_dir/build" || panic
+		echo "install directory:"
+		list_directory "$base_dir/install" || panic
+		passed_tests+=("$id")
+	fi
+
+done
+
+cat <<- EOF
+================================================================================
+SUMMARY
+================================================================================
+EOF
+
+echo "Total number of tests: ${#tests[@]}"
+
+echo "Number of attempted tests: ${#attempted_tests[@]}"
+
+echo "Number of passed tests: ${#passed_tests[@]}"
+if [ "${#passed_tests[@]}" -gt 0 ]; then
+	echo "The following tests passed:"
+	for test in "${passed_tests[@]}"; do
+		echo "    $test"
+	done
+fi
+
+echo "Number of failed tests: ${#failed_tests[@]}"
+if [ "${#failed_tests[@]}" -gt 0 ]; then
+	echo "ERROR: One or more tests failed."
+	echo "The following tests failed:"
+	for test in "${failed_tests[@]}"; do
+		echo "    $test"
+	done
+	exit 1
+fi
+
+exit 0
+
+################################################################################

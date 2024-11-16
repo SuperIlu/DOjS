@@ -1,0 +1,165 @@
+#! /usr/bin/env bash
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+perform_cleanup()
+{
+	if [ -n "$tmp_dir" -a -d "$tmp_dir" ]; then
+		rm -rf "$tmp_dir" || \
+		  echo "warning: cannot remove temporary directory $tmp_dir"
+	fi
+}
+
+usage()
+{
+	cat <<- EOF
+	usage:
+	$0 [options] -p \$out_dir
+
+	Examples
+	========
+
+	$0 -C -t /tmp/mdadams/wasi_jasper-XXXXXX -o /tmp/mdadams/wasi_jasper
+	EOF
+	if [ $# -ne 0 ]; then
+		echo "BAD USAGE: $*"
+	fi
+	exit 2
+}
+
+self_dir="$(dirname "$0")" || panic
+install_wasi_sdk="$self_dir/install_wasi_sdk"
+install_wasmtime="$self_dir/install_wasmtime"
+wasm_cc="$self_dir/wasm_cc"
+wasm_cxx="$self_dir/wasm_cxx"
+
+wasi_sdk_version=20.0
+wasmtime_version=12.0.1
+
+tmp_dir_template="${JAS_TMP_DIR:-/tmp}/wasi_jasper-XXXXXX"
+cleanup=1
+source_dir="$self_dir/.."
+out_dir=
+version=unknown-version
+
+while getopts ":hCt:s:o:V:" option; do
+	case "$option" in
+	C)
+		cleanup=0;;
+	t)
+		tmp_dir_template="$OPTARG";;
+	s)
+		source_dir="$OPTARG";;
+	o)
+		out_dir="$OPTARG";;
+	V)
+		version="$OPTARG";;
+	h)
+		usage;;
+	*)
+		usage "invalid option $option";;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "$tmp_dir_template" ]; then
+	usage "no temporary directory pathname template specified"
+fi
+
+if [ -z "$source_dir" ]; then
+	usage "no source directory specified"
+fi
+
+if [ -z "$out_dir" ]; then
+	usage "no output directory specified"
+fi
+
+tmp_dir="$(mktemp -d "$tmp_dir_template")" || \
+  panic "cannot create temporary directory"
+if [ "$cleanup" -ne 0 ]; then
+	trap perform_cleanup EXIT
+fi
+
+sde_dir="$tmp_dir/wasm"
+wasi_sdk_dir="$sde_dir/wasi_sdk"
+wasmtime_dir="$sde_dir/wasmtime"
+
+"$install_wasi_sdk" -d "$wasi_sdk_dir" -v "$wasi_sdk_version" || \
+  panic "cannot install WASI SDK"
+"$install_wasmtime" -d "$wasmtime_dir" -v "$wasmtime_version" || \
+  panic "cannot install wasmtime"
+wasmtime="$wasmtime_dir/bin/wasmtime"
+
+export WASI_SDK_ROOT_DIR="$wasi_sdk_dir"
+export CC="$wasm_cc"
+export CXX="$wasm_cxx"
+export PATH="$wasi_sdk_dir/bin:$PATH"
+
+lld="$(type -P lld)" || lld=
+echo "lld program: $lld"
+
+#source_dir="$tmp_dir/git"
+build_dir="$tmp_dir/build"
+install_dir="$tmp_dir/install"
+readme_file="$install_dir/README.txt"
+
+configure_options=(
+	-DCMAKE_INSTALL_PREFIX="$install_dir"
+	-DCMAKE_BUILD_TYPE=Release
+	-DCMAKE_VERBOSE_MAKEFILE=1
+	-DJAS_WASM=1
+	-DJAS_ENABLE_CXX=0
+	-DJAS_STRICT=0
+	-DJAS_ENABLE_DOC=0
+	#-DJAS_CROSSCOMPILING=1
+	#-DJAS_STDC_VERSION=201112L
+	#-DJAS_ENABLE_MULTITHREADING_SUPPORT=0
+	#-DJAS_ENABLE_SHARED=0
+	#-DJAS_USE_JAS_INIT=0
+)
+
+cmake -H"$source_dir" -B"$build_dir" "${configure_options[@]}" || \
+  panic "configure failed"
+
+cmake --build "$build_dir" || \
+  panic "build failed"
+
+cmake --build "$build_dir" --target install || \
+  panic "install failed"
+
+"$wasmtime" "$install_dir/bin/imginfo" < "$source_dir/data/images/goldenears.jp2" || panic "jasper failed"
+
+cat > "$readme_file" <<- EOF
+JasPer WebAssembly Edition ($version)
+
+This directory contains several JasPer programs built for a WebAssembly
+target that uses WASI for interfacing to the host environment.
+
+The command-line interface (CLI) for these programs is identical to
+their non-WebAssembly counterparts.  For detailed information on the
+CLI for these programs, refer to the online manual at:
+
+    https://jasper-software.github.io/jasper-manual/latest/html/index.html
+
+In order to run these WebAssembly programs, you will need a WebAssembly
+runtime with WASI support, such as:
+
+    Wasmtime (https://wasmtime.dev)
+    Wasmer (https://wasmer.io)
+    WAMR (https://bytecodealliance.github.io/wamr.dev)
+    WasmEdge (https://wasmedge.org)
+EOF
+[ $? -eq 0 ] || panic "cannot make readme file"
+
+if [ ! -d "$out_dir" ]; then
+	mkdir -p "$out_dir" || panic
+fi
+
+for file in jasper imginfo imgcmp; do
+	cp -a "$install_dir/bin/$file" "$out_dir" || panic
+done
+cp -a "$readme_file" "$out_dir" || panic

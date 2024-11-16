@@ -1,0 +1,45 @@
+/*!
+
+\page apps_jiv The jiv Program
+
+\section app__jiv The jiv Program
+
+\subsection app__jiv__synopsis Synopsis
+
+\c jiv [options] [file1 file2 ...]
+
+\subsection app__jiv__desc Description
+
+The jiv command displays an image.
+Basic pan and zoom functionality is provided.
+Components of an image may be viewed individually.
+Color components may also be viewed together as a composite image.
+At present, the jiv image viewer has only trivial support for color.
+It recognizes RGB and YCbCr color spaces, but does not use tone
+reproduction curves and the like in order to accurately reproduce color.
+For basic testing purposes, however, the color reproduction should suffice.
+
+\subsection app__jiv__options Options
+
+The following options are supported:
+
+  - `--help`
+    - Print help information and exit.
+
+  - `--version`
+    - Display the version information and exit.
+
+  - `--wait $n`
+    - Automatically step from one image to the next,
+      pausing for `$n` seconds in between.
+
+  - `--loop`
+    - Repeatedly cycle through the specified images.
+
+  - `--memory-limit $n`
+    - Set the memory limit to `$n` bytes.
+
+  - `--debug-level $level`
+    - Set the debug level to `$level`.
+
+*/

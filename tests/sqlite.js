@@ -15,10 +15,10 @@ function exec(sql, stmt, param) {
 		msg(stmt);
 		var res = sql.Exec(stmt, param);
 		if (res.length > 0) {
-			dump(res, EGA.RED);
+			dump(res, EGA.YELLOW);
 		}
 	} catch (e) {
-		msg(e);
+		msg(e, EGA.RED);
 	}
 }
 
@@ -29,21 +29,27 @@ function commandFunc(c) {
 
 	var inp = c.GetInput();
 	if (inp.length > 0) {
-		exec(sql, inp);
+		if (inp.startsWith(".quit")) {
+			Stop();
+		} else {
+			exec(sql, inp);
 
-		c.SetInput("");
+			c.SetInput("");
+		}
 	}
 
 	sql.Close();
 }
 
 function Setup() {
+	MouseShowCursor(false);
+
 	con = new Console(EGA.GREEN, EGA.BLACK, commandFunc);
 
 	try {
 		RmFile("test.db");
 	} catch (e) {
-		msg(e);
+		msg(e, EGA.RED);
 	}
 
 	var sql = new SQLite("test.db");

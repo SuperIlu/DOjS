@@ -1,0 +1,40 @@
+name: Deploy Manual
+
+on:
+  push:
+    tags:
+      - version-[0-9]+.[0-9]+.[0-9]+-unstable[0-9]+
+      - 'manual-version-*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      ############################################################
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+      ############################################################
+      - name: Prebuild
+        shell: bash
+        run: build/github/prebuild
+      ############################################################
+      - name: Build
+        shell: bash
+        run: build/make_release -r ${{github.ref}} -w ${{github.workspace}} -t ${{runner.temp}}/tmp -o ${{runner.temp}}/out
+      ############################################################
+      - name: Deploy GitHub Pages Site for Manual
+        env:
+          DEPLOY_KEY: ${{secrets.MANUAL_DEPLOY_KEY}}
+        shell: bash
+        run: |
+          build/github/deploy_gh_pages \
+            -f \
+            -m key \
+            -t ${{runner.temp}}/deploy_gh_pages \
+            -i ${{runner.temp}}/out/doc \
+            -r jasper-software/jasper-manual \
+            -b gh-pages \
+            -z ${{github.ref}}
+      ############################################################

@@ -1,0 +1,46 @@
+#! /usr/bin/env bash
+
+eecho()
+{
+	echo "$*" 1>&2
+}
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+#mode=zig
+mode=wasi_sdk
+
+#eecho "wasm_cc mode: $mode"
+
+case "$mode" in
+
+wasi_sdk)
+	if [ -z "$WASI_SDK_ROOT_DIR" ]; then
+		panic "WASI_SDK_ROOT_DIR not set"
+	fi
+	wasi_sdk_path="$WASI_SDK_ROOT_DIR"
+	clang=$wasi_sdk_path/bin/clang
+	if [ ! -x "$clang" ]; then
+		panic "clang not found ($clang)"
+	fi
+	exec "$clang" --sysroot=$wasi_sdk_path/share/wasi-sysroot "$@"
+	;;
+
+zig)
+	if [ -z "$WASM_ROOT_DIR" ]; then
+		panic "WASM_ROOT_DIR not set"
+	fi
+	wasm_root_dir="$WASM_ROOT_DIR"
+	#zig="$(type -P zig)" || zig=false
+	zig="$wasm_root_dir/zig/zig"
+	if [ ! -x "$zig" ]; then
+		panic "zig not found ($zig)"
+	fi
+	exec "$zig" cc --target=wasm32-wasi "$@"
+	;;
+
+esac

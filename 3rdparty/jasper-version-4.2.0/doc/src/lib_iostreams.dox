@@ -1,0 +1,80 @@
+/*!
+
+\page lib_iostreams I/O Streams
+
+\section lib_iostream__api API References
+
+- \ref module_iostreams
+
+\section overview_streams I/O Streams
+
+The library provides a type for representing a stream of characters
+for input/output.
+Such a stream is represented by the type `jas_stream_t`.
+Streams (in the JasPer library) are similar to I/O streams in the C standard
+library but have a few additional functionalities.
+In particular, with JasPer I/O streams, it is possible to:
+
+  - set a limit on the number of characters that can be read from or
+    written to a stream;
+  - put back more than one character read from a stream;
+  - query the number of characters that have been read from or written to
+    a stream; and
+  - associate a stream with one of several different types of underlying
+    data sources/sinks (including buffers in memory and temporary files).
+
+The possible underlying sources/sinks for a stream include:
+
+  - a stdio stream (i.e., FILE)
+  - a file descriptor
+  - a memory buffer
+  - a temporary file
+
+The following functions are used for opening/closing streams:
+
+  - `jas_stream_fopen()`
+  - `jas_stream_memopen2()`
+  - `jas_stream_fdopen()`
+  - `jas_stream_freopen()`
+  - `jas_stream_tmpfile()`
+  - `jas_stream_close()`
+
+
+The following functions are used for reading/writing streams:
+
+  - `jas_stream_read()`
+  - `jas_stream_write()`
+  - `jas_stream_peek()`
+  - `jas_stream_printf()`
+  - `jas_stream_puts()`
+  - `jas_stream_gets()`
+  - `jas_stream_ungetc()`
+  - `jas_stream_getc()`
+  - `jas_stream_putc()`
+  - `jas_stream_peekc()`
+  - `jas_stream_gobble()`
+  - `jas_stream_pad()`
+
+The following functions are used for getting/setting the position within a
+stream:
+
+  - `jas_stream_isseekable()`
+  - `jas_stream_seek()`
+  - `jas_stream_tell()`
+  - `jas_stream_rewind()`
+
+Numerous other functions for streams are also provided, including:
+
+  - `jas_stream_flush()`
+  - `jas_stream_copy()`
+  - `jas_stream_display()`
+  - `jas_stream_length()`
+  - `jas_stream_eof()`
+  - `jas_stream_error()`
+  - `jas_stream_clearerr()`
+  - `jas_stream_setrwlimit()`
+  - `jas_stream_setrwcount()`
+  - `jas_stream_getrwlimit()`
+  - `jas_stream_getrwcount()`
+
+*/

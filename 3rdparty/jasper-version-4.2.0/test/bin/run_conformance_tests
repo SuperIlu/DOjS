@@ -1,0 +1,515 @@
+#! /usr/bin/env bash
+# Copyright (c) 2016 Michael David Adams
+################################################################################
+
+################################################################################
+
+if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
+	echo "This test requires Bash 4 or greater."
+	echo "This test is being skipped."
+	exit 0
+fi
+
+cmd_dir=$(dirname "$0") || exit 1
+source "$cmd_dir"/base_utilities || exit 1
+source "$cmd_dir"/test_utilities || exit 1
+source "$cmd_dir/jpcod" || exit 1
+
+set_source_and_build_dirs || panic "cannot set source and build directories"
+
+init
+
+################################################################################
+
+perform_cleanup()
+{
+	if [ -n "$tmp_dir" -a -d "$tmp_dir" ]; then
+		rm -rf "$tmp_dir" || echo "warning: cannot remove directory $tmp_dir"
+	fi
+}
+
+################################################################################
+
+usage()
+{
+	if [ $# -ne 0 ]; then
+		echo "bad usage: $*"
+	fi
+	cat <<- EOF
+	usage: $0 [options]
+
+	Options
+	=======
+
+	-v
+	    Increase the verbosity of the output.
+	    This option can be specified multiple times.
+	-a
+	    Enable all (non-extra) tests (including ones that might potentially
+	    fail).
+	-x
+	    Enable extra tests.
+	-t \$test_case
+	    Specify that only the test case \$test_case should be run.
+	    This option can be specified more than once to run multiple
+	    specific tests.
+
+	Examples
+	========
+
+	Download the test data and run the normal test cases with mildly
+	verbose output:
+	$0 -v
+	[This is used in the CI framework for JasPer.]
+
+	Download the test data and run the normal test cases with moderately
+	verbose output:
+	$0 -v -v
+
+	Download the test data and run all of the test cases with mildly verbose
+	output:
+	$0 -v -a
+	EOF
+	exit 2
+}
+
+#j2k_codestreams_url="https://standards.iso.org/iso-iec/15444/-4/ed-3/en/ISO_IEC_15444-4-Ed3_Codestreams.zip"
+j2k_codestreams_url="https://www.ece.uvic.ca/~mdadams/jasper/downloads/ISO_IEC_15444-4-Ed3_Codestreams.zip"
+j2k_codestreams_git_url="https://gitlab.com/wg1/htj2k-codestreams.git"
+j2k_codestreams_git_commit=0d319b5fd2e6eb40e05aa27fcac71354d58d48d1
+
+cmd_name="$(basename "$0")" || panic "cannot get command name"
+tmp_dir=
+tmp_dir_template="/tmp/$cmd_name-XXXXXXXXXX"
+
+j2k_codestreams_source=git
+debug_level="${JAS_DEBUG_LEVEL:-0}"
+verbose=0
+jas_jp2k_test_top_dir="$JAS_JP2K_TEST_TOP_DIR"
+testcases=()
+enable_imginfo_tests=1
+enable_jasper_tests=1
+download=0
+force_success=0
+enable_all_tests=0
+enable_extra_tests=0
+show_actual=0
+cleanup=1
+skip_resolution_reduction=1
+
+while getopts CT:D:vt:JIfahxrs: option; do
+	case "$option" in
+	s)
+		j2k_codestreams_source="$OPTARG";;
+	C)
+		cleanup=0;;
+	r)
+		skip_resolution_reduction=0;;
+	a)
+		enable_all_tests=1;;
+	x)
+		enable_extra_tests=1;;
+	J)
+		enable_jasper_tests=0;;
+	I)
+		enable_imginfo_tests=0;;
+	t)
+		testcases+=("$OPTARG");;
+	T)
+		jas_jp2k_test_top_dir="$OPTARG";;
+	D)
+		debug_level="$OPTARG";;
+	v)
+		verbose=$((verbose + 1));;
+	d)
+		download=1;;
+	f)
+		force_success=1;;
+	h)
+		usage;;
+	\?)
+		usage "invalid option $option";;
+	esac
+done
+shift $((OPTIND - 1))
+
+tcf_options=()
+if [ "$enable_all_tests" -ne 0 ]; then
+	tcf_options+=(-DENABLE_BAD_TESTS)
+fi
+if [ "$enable_extra_tests" -ne 0 ]; then
+	tcf_options+=(-DENABLE_EXTRA_TESTS)
+fi
+
+if [ "$verbose" -ge 2 ]; then
+	show_actual=1
+fi
+
+tmp_dir="$(make_tmp_dir_2 "$tmp_dir_template")" || \
+  panic "cannot create temporary directory"
+if [ "$cleanup" -ne 0 ]; then
+	trap perform_cleanup EXIT
+fi
+
+archive_dir="$tmp_dir/archives"
+archive_file="$archive_dir/j2k_codestreams.zip"
+
+case "$j2k_codestreams_source" in
+git)
+	git_dir="$tmp_dir/git"
+	if [ "$verbose" -ge 1 ]; then
+		echo "cloning Git repository $j2k_codestreams_git_url"
+	fi
+	git clone -q "$j2k_codestreams_git_url" "$git_dir" || \
+	  panic "cannot clone repository $git_url"
+	git -C "$git_dir" checkout -q "$j2k_codestreams_git_commit" || \
+	  panic "cannot checkout commit $j2k_codestreams_git_commit"
+	jas_jp2k_test_top_dir="$git_dir"
+	;;
+zip)
+	mkdir -p "$archive_dir" || \
+	  panic "cannot make directory $archive_dir"
+	wget -nv -O "$archive_file" "$j2k_codestreams_url" || \
+	  panic "cannot download archive"
+	(cd "$tmp_dir" && unzip -q "$archive_file") || \
+	  panic "cannot extract archive"
+	jas_jp2k_test_top_dir="$tmp_dir/Software/T.803-15444-4-Ed3_Codestreams_20210901"
+	;;
+*)
+	;;
+esac
+
+if [ ! -d "$jas_jp2k_test_top_dir" ]; then
+	echo "The data for this test is not available."
+	echo "Skipping test."
+	exit 0
+fi
+
+jpdec="$cmd_dir/jpdec"
+dec=jasper
+
+jasper="$abs_top_builddir/src/app/jasper"
+imginfo="$abs_top_builddir/src/app/imginfo"
+imgcmp="$abs_top_builddir/src/app/imgcmp"
+export IMGINFO_COMMAND="$imginfo"
+export JASPER_COMMAND="$jasper"
+
+testcase_file="$cmd_dir/conformance_tests"
+if [ "${#testcases[@]}" -eq 0 ]; then
+	tcf_gettestids "$testcase_file" testcases "${tcf_options[@]}" || \
+	  panic "cannot get test cases"
+fi
+
+skipped_testcases=()
+
+# Disable test cases that are known to be problematic.
+#if [ 1 -ne 0 ]; then
+#	tmp_testcases=("${testcases[@]}")
+#	testcases=()
+#	for testcase in "${tmp_testcases[@]}"; do
+#		skip=0
+#		case "$testcase" in
+#		j2kc_c0p0_13*)
+#			skip=1;;
+#		j2kc_c1p0_13*)
+#			skip=1;;
+#		j2kc_c0p0_08*)
+#			skip=1;;
+#		j2kc_c1p0_08*)
+#			skip=1;;
+#		esac
+#		if [ "$skip" -eq 0 ]; then
+#			testcases+=("$testcase")
+#		else
+#			skipped_testcases+=("$testcase")
+#			echo "SKIPPING: $testcase"
+#		fi
+#	done
+#fi
+
+echo "Number of test cases: ${#testcases[@]}"
+
+failed_testcases=()
+passed_testcases=()
+
+################################################################################
+#
+################################################################################
+
+if [ "$enable_imginfo_tests" -ne 0 ]; then
+
+	if [ "$verbose" -ge 2 ]; then
+		cat <<- EOF
+		############################################################
+		imginfo test cases
+		############################################################
+		EOF
+	fi
+
+	for testcase in "${testcases[@]}"; do
+
+		if [ "$verbose" -ge 2 ]; then
+			cat <<- EOF
+			############################################################"
+			Test case: $testcase
+			EOF
+		fi
+
+		tcf_gettest "$testcase_file" "$testcase" record "${tcf_options[@]}" || \
+		  panic "cannot get test case"
+
+		enc_file="$jas_jp2k_test_top_dir/${record[encoded_file]}"
+		if [ "$debug_level" -ge 1 ]; then
+			imginfo_opts+=(--debug-level "$debug_level")
+		fi
+		if [ "$verbose" -ge 3 ]; then
+			echo "Running $imginfo -q ${imginfo_opts[@]} < $enc_file"
+		fi
+		buffer="$("$imginfo" -q "${imginfo_opts[@]}" < "$enc_file")"
+		status=$?
+		if [ "$status" -ne 0 ]; then
+			echo "error: cannot decode $enc_file"
+			failed_testcases+=("$testcase")
+		fi
+		if [ "$verbose" -ge 1 ]; then
+			echo "OK [$testcase]: $buffer"
+		fi
+
+		passed_testcases+=("$testcase")
+
+	done
+fi
+
+################################################################################
+#
+################################################################################
+
+if [ "$enable_jasper_tests" -ne 0 ]; then
+
+	if [ "$verbose" -ge 2 ]; then
+		cat <<- EOF
+		############################################################
+		jasper test cases
+		############################################################
+		EOF
+	fi
+
+	for testcase in "${testcases[@]}"; do
+
+		if [ "$verbose" -ge 2 ]; then
+			echo "############################################################"
+			echo "Test case: $testcase"
+		fi
+
+		tcf_gettest "$testcase_file" "$testcase" record "${tcf_options[@]}" || \
+		  panic "cannot get test case"
+
+		#for key in "${!record[@]}"; do
+		#	echo "$key -> ${record[$key]}"
+		#done
+
+		enc_file="$jas_jp2k_test_top_dir/${record[encoded_file]}"
+		orig_file="$jas_jp2k_test_top_dir/${record[decoded_file]}"
+		pae="${record[pae]}"
+		mse="${record[mse]}"
+		psnr="${record[psnr]}"
+		resolution_reduction="${record[resolution_reduction]}"
+		comp_no="${record[cmptno]}"
+		force_srgb="${record[force_srgb]}"
+		dec_file="$tmp_dir/decoded.jp2"
+		orig_pnm_file="$tmp_dir/orig_file.pnm"
+		tmp_enc_file="$tmp_dir/tmp_enc_file.pnm"
+
+		if [ -n "$resolution_reduction" -a \
+		  "$skip_resolution_reduction" -ne 0 ]; then
+			echo "SKIPPING [$testcase]: decoder does not support resolution reduction"
+			skipped_testcases+=("$testcase")
+			continue
+		fi
+
+		if [ -z "$force_srgb" ]; then
+			force_srgb=0
+		fi
+
+		case "$orig_file" in
+		*.tif|*.tiff)
+			tifftopnm "$orig_file" > "$orig_pnm_file" 2> /dev/null || \
+			  panic "tifftopnm failed"
+			orig_file="$orig_pnm_file"
+			;;
+		esac
+		if [ "$force_srgb" -ne 0 ]; then
+			"$jasper" -q -t jp2 -f "$enc_file" -T pnm -F "$tmp_enc_file" \
+			  --force-srgb || panic "jasper failed"
+			enc_file="$tmp_enc_file"
+		fi
+
+		dec_opts=()
+		if [ "$debug_level" -ge 1 ]; then
+			dec_opts+=(debug="$debug_level")
+		fi
+		if [ "$verbose" -ne 2 ]; then
+			dec_opts+=(verbose=1)
+		fi
+		width=$(image_info "$enc_file" width) || width=
+		height=$(image_info "$enc_file" height) || height=
+		depth=$(image_info "$enc_file" depth) || depth=
+		num_comps=$(image_info "$enc_file" num_components) || num_comps=
+		format=$(image_info "$enc_file" format) || format=
+		if [ -z "$width" -o -z "$height" -o -z "$depth" -o -z "$num_comps" \
+		  -o -z "$format" ]; then
+			failed_testcases+=("$testcase")
+			echo "SKIPPING: $testcase"
+			echo "$width $height $depth $num_comps $format"
+			continue
+		fi
+
+		if [ "$verbose" -ge 3 ]; then
+			cat <<- EOF
+			$(repeat_string 80 '*')
+			test case ID: $testcase
+			encoded file: $enc_file
+			reference file: $orig_file
+			decoded file: $dec_file
+			number of components: $num_comps
+			size: $width $height
+			precision: $prec
+			$(repeat_string 80 '*')
+			EOF
+		fi
+
+		buffer=$("$imginfo" -q < "$enc_file" 2> /dev/null)
+		jasper_opts=()
+		jasper_opts+=(-T jp2)
+		if [ -n "$comp_no" ]; then
+			jasper_opts+=(--cmptno "$comp_no")
+		fi
+		if [ "$verbose" -ge 3 ]; then
+			echo "RUNNING: $jasper ${jasper_opts[@]} < $enc_file > $dec_file"
+		fi
+		"$jasper" "${jasper_opts[@]}" < "$enc_file" > "$dec_file" 2> /dev/null
+		status=$?
+
+		if [ $status -eq 0 ]; then
+
+			if [ -n "$pae" -o "$show_actual" -ne 0 ]; then
+				command=("$imgcmp" --quiet -f "$orig_file" -F "$dec_file" \
+				  -m pae --max)
+				if [ "$verbose" -ge 3 ]; then
+					echo "RUNNING: ${command[*]}"
+				fi
+				actual_pae="$(${command[@]})" || actual_pae=
+			else
+				actual_pae=
+			fi
+			if [ -n "$mse" -o "$show_actual" -ne 0 ]; then
+				command=("$imgcmp" --quiet -f "$orig_file" -F "$dec_file" \
+				  -m mse --max)
+				if [ "$verbose" -ge 3 ]; then
+					echo "RUNNING: ${command[*]}"
+				fi
+				actual_mse="$(${command[@]})" || actual_mse=
+			else
+				actual_mse=
+			fi
+			if [ -n "$psnr" -o "$show_actual" -ne 0 ]; then
+				command=("$imgcmp" --quiet -f "$orig_file" -F "$dec_file" \
+				  -m psnr --min)
+				actual_psnr="$(${command[@]})" || actual_psnr=
+			else
+				actual_psnr=
+			fi
+			if [ "$show_actual" -ne 0 ]; then
+				echo "INFO: [$testcase]: PAE=${actual_pae:-unknown} MSE=${actual_mse:-unknown} PSNR=${actual_psnr:-unknown}"
+			fi
+
+			failed=0
+			if [ -n "$pae" ]; then
+				if [ -n "$actual_pae" ]; then
+					pae_ok="$(evaluate_expression "$actual_pae <= $pae")" || \
+					  panic "evaluate expression failed"
+					if [ "$pae_ok" -eq 0 ]; then
+						failed=1
+						echo "ERROR [$testcase]: PAE constraint violated ($actual_pae > $pae)"
+					else
+						if [ "$verbose" -ge 1 ]; then
+							echo "OK [$testcase]: PAE constraint satisfied ($actual_pae <= $pae)"
+						fi
+					fi
+				else
+					echo "ERROR [$testcase]: PAE check failed (resolution_reduction=$resolution_reduction)"
+					failed=1
+				fi
+			fi
+			if [ -n "$mse" ]; then
+				if [ -n "$actual_mse" ]; then
+					mse_ok="$(evaluate_expression "$actual_mse <= $mse")" || \
+					  panic "evaluate expression failed"
+					if [ "$mse_ok" -eq 0 ]; then
+						failed=1
+						echo "ERROR [$testcase]: MSE constraint violated ($actual_mse > $mse)"
+					else
+						if [ "$verbose" -ge 1 ]; then
+							echo "OK [$testcase]: MSE constraint satisfied ($actual_mse <= $mse)"
+						fi
+					fi
+				else
+					echo "ERROR [$testcase]: MSE check failed (resolution_reduction=$resolution_reduction)"
+					failed=1
+				fi
+			fi
+			if [ "$failed" -ne 0 ]; then
+				failed_testcases+=("$testcase")
+				echo "ERROR [$testcase]: $testcase failed"
+				continue
+			fi
+		else
+			failed_testcases+=("testcase")
+			echo "ERROR [$testcase]: DECODER FAILED"
+			continue
+			#exit 1
+		fi
+
+		passed_testcases+=("$testcase")
+	done
+fi
+
+################################################################################
+#
+################################################################################
+
+exit_status=0
+if [ "${#failed_testcases[@]}" -ne 0 ]; then
+	exit_status=1
+fi
+
+if [ "$verbose" -ge 3 ]; then
+	if [ "${#passed_testcases[@]}" -ne 0 ]; then
+		echo "The following test cases passed:"
+		for testcase in "${passed_testcases[@]}"; do
+			echo "    $testcase"
+		done
+	fi
+fi
+if [ "$verbose" -ge 1 ]; then
+	if [ "${#skipped_testcases[@]}" -ne 0 ]; then
+		echo "The following test cases were skipped:"
+		for testcase in "${skipped_testcases[@]}"; do
+			echo "    $testcase"
+		done
+	fi
+fi
+if [ "${#failed_testcases[@]}" -ne 0 ]; then
+	echo "The following test cases failed:"
+	for testcase in "${failed_testcases[@]}"; do
+		echo "    $testcase"
+	done
+fi
+echo "pass count: ${#passed_testcases[@]}"
+echo "skip count: ${#skipped_testcases[@]}"
+echo "fail count: ${#failed_testcases[@]}"
+
+if [ "$force_success" -ne 0 ]; then
+	exit_status=0
+fi
+exit "$exit_status"

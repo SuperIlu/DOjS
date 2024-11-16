@@ -24,6 +24,9 @@ SOFTWARE.
 #define __CONIO_H__
 
 #include <allegro.h>
+#if WINDOWS==1
+#include <winalleg.h>
+#endif
 
 #define TO_CIO(x) ((uint32_t)x << 8)
 #define CIO_EXT(x) (((uint32_t)x) | (1U << 18))

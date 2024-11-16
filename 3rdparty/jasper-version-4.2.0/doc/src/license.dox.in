@@ -1,0 +1,14 @@
+/*!
+
+\page license License
+
+\section license__license License
+
+The JasPer software may only be used under the terms of the license below.
+A copy of the license can also be found in the file named "LICENSE.txt"
+in the top-level directory of the software distribution for JasPer.
+
+\verbinclude @CMAKE_SOURCE_DIR@/LICENSE.txt
+
+*/
+

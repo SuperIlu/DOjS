@@ -1,0 +1,387 @@
+#! /usr/bin/env bash
+# Copyright (c) 2016 Michael David Adams
+
+debug_level="${JAS_DEBUG_LEVEL:-0}"
+if [ "$debug_level" -ge 1 ]; then
+	set -xv
+fi
+
+################################################################################
+# Basic initialization.
+################################################################################
+
+init()
+{
+	CMDDIR=$(dirname "$0") || return 1
+	#CMDDIR=$(realpath "$CMDDIR") || return 1
+	#CMDDIR=$(readlink -f "$CMDDIR") || return 1
+	CMDDIR=$(real_path "$CMDDIR") || return 1
+	ABSCMDDIR="$CMDDIR"
+	TMPDIR=$(make_tmp_dir jpcod) || return 1
+#	HOSTNAME=`hostname`
+
+	JAVA=/usr/java/jre1.5.0_07/bin/java
+
+	JASPERTOPDIR=$CMDDIR/../..
+	ALTTOPDIR=$HOME/projects/jpeg2000
+	KAKADUTOPDIR=$ALTTOPDIR/kakadu-5.2.2
+	JJ2KVER=5.1
+	JJ2KTOPDIR=$ALTTOPDIR/jj2000-$JJ2KVER
+	#LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$KAKADUTOPDIR
+	#export LD_LIBRARY_PATH
+
+	ALTIMGDIR="$HOME/data/jpeg2000_images/pnm"
+	VMTOPDIR="$HOME/work/vm90/VM9.0"
+	#EXEEXT=".exe"
+	SHOWIMG="display -geometry 256x256> -geometry +0+0"
+
+	#IMGDIR=$JASPERTOPDIR/data/images
+	#JASPER=$JASPERTOPDIR/src/app/jasper$EXEEXT
+	#JIV=$JASPERTOPDIR/src/app/jiv$EXEEXT
+	#IMGCMP=$JASPERTOPDIR/src/app/imgcmp$EXEEXT
+	#IMGINFO=$JASPERTOPDIR/src/app/imginfo$EXEEXT
+	IMGDIR=`parsepathname $JASPERTOPDIR/data/images`
+	JASPER=`parsepathname $JASPERTOPDIR/src/app/jasper$EXEEXT`
+	JIV=`parsepathname $JASPERTOPDIR/src/app/jiv$EXEEXT`
+	IMGCMP=`parsepathname $JASPERTOPDIR/src/app/imgcmp$EXEEXT`
+	IMGINFO=`parsepathname $JASPERTOPDIR/src/app/imginfo$EXEEXT`
+	KAKADUENC=$KAKADUTOPDIR/kdu_compress$EXEEXT
+	KAKADUDEC=$KAKADUTOPDIR/kdu_expand$EXEEXT
+	VMENC=$VMTOPDIR/bin/vm9_compress_32$EXEEXT
+	VMDEC=$VMTOPDIR/bin/vm9_expand_32$EXEEXT
+	JJCOD=$CMDDIR/jj2k
+	IMGPATH="$IMGDIR;${IMGDIR}2;$ALTIMGDIR"
+
+}
+
+################################################################################
+#
+################################################################################
+
+parsepathname()
+{
+	echo "$1" | awk '
+	{
+		delete comps;
+		numcomps = 0;
+		buf = $0;
+		buflen = length(buf);
+		i = 1;
+		while (i <= buflen) {
+			c = substr(buf, i, 1);
+			if (c == "/") {
+				comps[numcomps] = substr(buf, 1, i - 1);
+				++numcomps;
+				buf = substr(buf, i + 1);
+				buflen = length(buf);
+				i = 1;
+			} else {
+				++i;
+			}
+		}
+		if (buflen > 0) {
+			comps[numcomps] = buf;
+			++numcomps;
+		}
+		delete parsedcomps;
+		numparsedcomps = 0;
+		for (i = 0; i < numcomps; ++i) {
+			if (comps[i] == "..") {
+				if (numparsedcomps > 0) {
+					--numparsedcomps;
+				}
+			} else {
+				parsedcomps[numparsedcomps] = comps[i];
+				++numparsedcomps;
+			}
+		}
+		if (numparsedcomps > 0) {
+			for (i = 0; i < numparsedcomps; ++i) {
+				if (i) {
+					printf "/";
+				}
+				printf "%s", parsedcomps[i];
+			}
+		} else {
+			printf ".";
+		}
+		printf "\n";
+	}
+	' -
+}
+
+absdirname()
+{
+	DIRNAME=`dirname $1`
+	case $DIRNAME in
+	\/*)
+		;;
+	*)
+		DIRNAME=`pwd`/$DIRNAME
+		;;
+	esac
+	echo $DIRNAME
+}
+
+iscygwin()
+{
+(
+	SYSTEM=`uname -s`
+	case $SYSTEM in
+	[Cc][Yy][Gg][Ww][Ii][Nn]*)
+		BUF=1;;
+	*)
+		BUF=0;;
+	esac
+	echo $BUF
+)
+}
+
+pnutod()
+{
+(
+	ISDOS=`iscygwin`
+	if [ $ISDOS -ne 0 ]; then
+		cygpath -w $@
+	else
+		echo $@
+	fi
+)
+}
+
+extname()
+{
+	echo $1 | awk '
+	{
+		for (f = 1; f <= NF; ++f) {
+			len = length($f);
+			for (ind = len; ind >= 1; --ind) {
+				c = substr($f, ind, 1);
+				if (c == ".") {
+					break;
+				}
+			}
+			if (ind > 0 && ind < len) {
+				result = substr($f, ind + 1, len - ind);
+			} else {
+				result = "NULL";
+			}
+			printf "%s", result;
+			if (f < NF) {
+				printf " ";
+			} else {
+				printf "\n";
+			}
+		}
+	}
+	'
+}
+
+################################################################################
+# Tag-value pair parsing.
+################################################################################
+
+gettag()
+{
+	echo "$1" | awk '
+		(NR == 1) {
+			n = index($0, "=");
+			if (n != 0) {
+				print substr($0, 1, n - 1);
+			} else{
+				print $0;
+			}
+		}
+	' -
+}
+
+getval()
+{
+	echo "$1" | awk '
+		(NR == 1) {
+			n = index($0, "=");
+			if (n != 0) {
+				print substr($0, n + 1);
+			}
+		}
+	' -
+}
+
+################################################################################
+#
+################################################################################
+
+evalrelexpr()
+{
+	echo "" | awk 'BEGIN{if('"$*"'){print 1}else{print 0}}'
+}
+
+evalexpr()
+{
+	echo "" | awk 'BEGIN{printf "%f", '"$*"'}'
+}
+
+realtoint()
+{
+	awk '
+		{
+			for (i = 1; i <= NF; ++i) {
+				v = $i;
+				printf "%ld", v + 0.5;
+				if (i < NF) {
+					printf " ";
+				} else {
+					printf "\n";
+				}
+			}
+		}
+	'
+}
+
+################################################################################
+# Other code for parsing.
+################################################################################
+
+csltowsl()
+{
+	awk '
+		{
+			for (i = 1; i <= NF; ++i) {
+				printf "%s", $i
+				if (i != NF) {
+					printf " "
+				}
+			}
+		}
+	' FS=","
+}
+
+wsltocsl()
+{
+	awk '
+		{
+			for (i = 1; i <= NF; ++i) {
+				printf "%s", $i
+				if (i != NF) {
+					printf ","
+				}
+			}
+		}
+	'
+}
+
+scalewsl()
+{
+	awk '
+		{
+			for (i = 1; i <= NF; ++i) {
+				printf "%f", KAPPA * $i
+				if (i != NF) {
+					printf " "
+				}
+			}
+		}
+	' KAPPA=$1
+}
+
+reciprocatewsl()
+{
+	awk '
+		{
+			for (i = 1; i <= NF; ++i) {
+				printf "%f", 1.0 / $i
+				if (i != NF) {
+					printf " "
+				}
+			}
+		}
+	'
+}
+
+stripsuffix()
+{
+	echo $@ | awk '
+		{
+			for (i = 1; i <= NF; ++i) {
+				l = length($i);
+				for (j = l; j > 0; --j) {
+					if (substr($i, j, 1) == ".") {
+						break;
+					}
+				}
+				if (j > 0) {
+					print substr($i, 1, j - 1);
+				} else {
+					print $i
+				}
+			}
+		}
+	' -
+}
+
+getsuffix()
+{
+	echo $@ | awk '
+		{
+			for (i = 1; i <= NF; ++i) {
+				l = length($i);
+				for (j = l; j > 0; --j) {
+					if (substr($i, j, 1) == ".") {
+						break;
+					}
+				}
+				if (j > 0) {
+					print substr($i, j + 1, l - j + 1);
+				}
+			}
+		}
+	' -
+}
+
+filename()
+{
+	echo $@ | awk '
+		{
+			for (i = 1; i <= NF; ++i) {
+				l = length($i);
+				for (j = l; j > 0; --j) {
+					if (substr($i, j, 1) == "/") {
+						break;
+					}
+				}
+				if (j > 0) {
+					print substr($i, j + 1, l - j + 1);
+				} else {
+					print $i;
+				}
+			}
+		}
+	' -
+}
+
+to_upper()
+{
+	tr '[:lower:]' '[:upper:]'
+}
+
+################################################################################
+#
+################################################################################
+
+ppmtorgb()
+{
+(
+	INFILE=$1
+	REDOUTFILE=$2
+	GRNOUTFILE=$3
+	BLUOUTFILE=$4
+	mkdir -p $TMPDIR
+	rm -f $TMPDIR/ppmtorgb_tmp.ppm
+#	ln -s $INFILE $TMPDIR/ppmtorgb_tmp.ppm
+	cp $INFILE $TMPDIR/ppmtorgb_tmp.ppm
+	ppmtorgb3 $TMPDIR/ppmtorgb_tmp.ppm
+	mv $TMPDIR/ppmtorgb_tmp.red $REDOUTFILE
+	mv $TMPDIR/ppmtorgb_tmp.grn $GRNOUTFILE
+	mv $TMPDIR/ppmtorgb_tmp.blu $BLUOUTFILE
+)
+}

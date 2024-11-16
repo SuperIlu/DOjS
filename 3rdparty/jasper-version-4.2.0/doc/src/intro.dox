@@ -1,0 +1,82 @@
+/*!
+
+\page intro Introduction
+
+\section __motivation Motivation Behind JasPer
+
+Digital imagery is used in many of today's computer software applications.
+Consequently, software modules that facilitate the handling of such data
+are often needed.  Almost any application program that deals with images
+must address the problem of image interchange and import/export.  That is,
+a means must exist for moving image data between an application and its
+external environment.  Moreover, applications must often be capable of
+rendering an image for display on a particular output device (such as
+a monitor or printer) with reasonably accurate color/tone reproduction.
+
+Although image import/export and rendering are very basic functionalities,
+they are often not easily implemented.  Usually, an image is represented
+in a coded format (such as JPEG-2000 JP2 \cite iso15444p1 or JPEG
+\cite iso10918p1).  Since coding formats are frequently quite complex,
+the import/export of image data can be a daunting task.  Rendering an
+image in such a way as to accurately reproduce color/tone requires a
+color management scheme of some sort.  Unfortunately, developing an
+effective color management engine can require considerable effort.
+
+A search for a solution to the above problems led to the development
+of the JasPer software.  The remainder of this document
+provides a detailed description of the this software.
+
+\section intro__what_is_jasper What is JasPer?
+
+In simple terms, JasPer is a software tool kit for the handling of
+image data.  The software provides a means for representing images, and
+facilitates the manipulation of image data, as well as the import/export
+of such data in numerous formats (e.g., JPEG-2000 JP2 \cite iso15444p1,
+JPEG \cite iso10918p1, PNM \cite netpbm_web, BMP \cite Luse1994a,
+Sun Rasterfile \cite sun_openwinref, and PGX \cite iso15444p4).
+The import functionality supports the auto-detection (i.e., automatic
+determination) of the image format, eliminating the need to explicitly
+identify the format of coded input data.  A simple color management
+engine is also provided in order to allow the accurate representation
+of color.  Partial support is included for the ICC color profile file
+format \cite icc_fffcp, an industry standard for specifying color.
+
+The JasPer software consists of a library and several
+application programs.  The code is written in the C programming
+language \cite iso9899-2011 \cite Kernighan1988a.  This language was chosen
+primarily due to the availability of C development environments for
+most of today's computing platforms.  At present, JasPer consists of
+approximately 40K lines of code.  Although written in C, the JasPer
+library can be easily integrated into applications written in the C++
+programming language as well.
+
+\section intro__software_license Software License
+
+JasPer software development is based on an open-source model.
+A copy of the software license can be found in \ref license__license.
+
+\section intro__other_jasper_references Other Sources of Information on JasPer
+
+For more information about the JasPer software, please visit the following
+web pages:
+
+  - Official JasPer Project Home Page, https://jasper-software.github.io/jasper
+  - JasPer GitHub Home Page, https://github.com/jasper-software/jasper
+  - JasPer Reference Manual: https://jasper-software.github.io/jasper-manual
+  - Michael Adams' JasPer Page, https://www.ece.uvic.ca/~mdadams/jasper
+
+For more information about the JasPer software and JPEG-2000 standard, the
+reader is referred to \cite Adams2000c \cite wg1n2412.
+
+\section intro__origin_of_name Origin of the Name
+
+The JasPer software is named, in part, after Jasper National Park,
+the largest national park in the Canadian Rockies with 10,878 square
+kilometres of mountain wilderness. As it happens, jasper is also the name
+of an opaque cryptocrystalline variety of quartz used for ornamentation
+or as a gemstone---hence, the implication that the software is precious
+(i.e., like a gemstone).  Lastly, the name "jasper" was also chosen because
+it contains a letter "J" followed subsequently by a letter "P", not unlike
+the abbreviation "JP" that is associated with the JPEG-2000 standard.
+
+*/

@@ -33,6 +33,8 @@ else ifeq "$(build)" "sanitize"
 else
   ifeq "$(LINUX)" "1"
     CFLAGS += -O2
+  else ifeq "$(WINDOWS)" "1"
+    CFLAGS += -O2 -march=i486 -mtune=i586 -ffast-math
   else
     CFLAGS += -O2 -march=i386 -mtune=i586 -ffast-math
   endif

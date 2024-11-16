@@ -29,9 +29,19 @@ function Setup() {
 	SetFramerate(30);
 	MouseShowCursor(false);
 
+	var f = new File("tests/testdata/test.jpg", FILE.READ);
+	var jpg_bytes = f.ReadInts();
+	Println("Num bytes=" + jpg_bytes.length);
+	i0 = new Bitmap(jpg_bytes);
+	f.Close();
+
 	i1 = new Bitmap("tests/testdata/test.jpg");
 	i2 = new Bitmap("tests/testdata/normal.jpg");
-	i3 = new Bitmap("tests/testdata/progressive.jpg");
+	i3 = new Bitmap("tests/testdata/progress.jpg");
+
+	i4 = new Bitmap("tests/testdata/bor01.jpg");
+	i5 = new Bitmap("tests/testdata/bor02.jpg");
+	i6 = new Bitmap("tests/testdata/bor03.jpg");
 
 	img = i1;
 }
@@ -51,6 +61,9 @@ function Loop() {
 ** This function is called on any input.
 */
 function Input(e) {
+	if (CompareKey(e.key, '0')) {
+		img = i0;
+	}
 	if (CompareKey(e.key, '1')) {
 		img = i1;
 	}
@@ -59,5 +72,14 @@ function Input(e) {
 	}
 	if (CompareKey(e.key, '3')) {
 		img = i3;
+	}
+	if (CompareKey(e.key, '4')) {
+		img = i4;
+	}
+	if (CompareKey(e.key, '5')) {
+		img = i5;
+	}
+	if (CompareKey(e.key, '6')) {
+		img = i6;
 	}
 }

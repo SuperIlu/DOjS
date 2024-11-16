@@ -16,35 +16,28 @@
 #
 # This file was based on http://www.cmake.org/Wiki/CmakeMingw
 
+set(TOOLCHAIN_PREFIX "i486-w64-mingw32")
+
 # the name of the target operating system
 set(CMAKE_SYSTEM_NAME Windows)
 
 # Assume the target architecture.
 # XXX for some reason the value set here gets cleared before we reach the
 # main CMakeLists.txt; see that file for a workaround.
-# set(CMAKE_SYSTEM_PROCESSOR i686)
+set(CMAKE_SYSTEM_PROCESSOR i486)
+add_compile_options(-march=i486)
+add_link_options(-static-libgcc)
 
-# Which compilers to use for C and C++, and location of target
-# environment.
-if(EXISTS /usr/i586-mingw32msvc)
-    # First look in standard location as used by Debian/Ubuntu/etc.
-    set(CMAKE_C_COMPILER i586-mingw32msvc-gcc)
-    set(CMAKE_CXX_COMPILER i586-mingw32msvc-g++)
-    set(CMAKE_FIND_ROOT_PATH /usr/i586-mingw32msvc)
-elseif(EXISTS /opt/mingw)
-    # Otherwise you can get a MinGW environment using the script at
-    # <http://mingw-cross-env.nongnu.org>.  It downloads and builds MinGW and
-    # most of the dependencies for you.  This is a suitable location.
-    set(CMAKE_C_COMPILER /opt/mingw/usr/bin/i686-pc-mingw32-gcc)
-    set(CMAKE_CXX_COMPILER /opt/mingw/usr/bin/i686-pc-mingw32-g++)
-    set(CMAKE_FIND_ROOT_PATH /opt/mingw/usr/i686-pc-mingw32)
-else()
-    # Else fill in local path which the user will likely adjust.
-    # This is the location assumed by <http://www.libsdl.org/extras/win32/cross/>
-    set(CMAKE_C_COMPILER /usr/local/cross-tools/bin/i386-mingw32-gcc)
-    set(CMAKE_CXX_COMPILER /usr/local/cross-tools/bin/i386-mingw32-g++)
-    set(CMAKE_FIND_ROOT_PATH /usr/local/cross-tools)
-endif()
+set(CMAKE_CXX_COMPILER "${TOOLCHAIN_PREFIX}-g++")
+set(CMAKE_C_COMPILER "${TOOLCHAIN_PREFIX}-gcc")
+set(CMAKE_OBJCOPY "${TOOLCHAIN_PREFIX}-objcopy")
+set(CMAKE_STRIP "${TOOLCHAIN_PREFIX}-strip")
+set(CMAKE_SIZE "${TOOLCHAIN_PREFIX}-size")
+set(CMAKE_AR "${TOOLCHAIN_PREFIX}-ar")
+set(ASSEMBLER "${TOOLCHAIN_PREFIX}-as")
+set(CMAKE_RC_COMPILER "${TOOLCHAIN_PREFIX}-windres")
+
+set(CMAKE_FIND_ROOT_PATH "$ENV{MINGWDIR}")
 
 # Adjust the default behaviour of the FIND_XXX() commands:
 # search headers and libraries in the target environment, search

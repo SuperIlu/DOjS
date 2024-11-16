@@ -1,0 +1,92 @@
+################################################################################
+# This file contains some code shared between multiple Bash scripts.
+################################################################################
+
+################################################################################
+# Some functions related to errors and warnings.
+################################################################################
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+warn()
+{
+	echo "WARNING: $*" 1>& 2
+}
+
+eecho()
+{
+	echo "$*" 1>&2
+}
+
+################################################################################
+# Various utility functions.
+################################################################################
+
+# Locate a program by name on the executable search path.
+find_program()
+{
+	local program_names=("$@")
+	local program_name
+	for program_name in "${program_names[@]}"; do
+		program_path="$(type -P "$program_name")" || program_path=
+		if [ -n "$program_path" -a -x "$program_path" ]; then
+			break
+		fi
+	done
+	if [ -z "$program_path" ]; then
+		return 1
+	fi
+	echo "$program_path"
+}
+
+# Canonicalize a path.
+# Some platforms do not have the realpath program.
+# So, we use python and perl as fallbacks, if they are available.
+real_path()
+{
+	[ $# -eq 1 ] || return 1
+	local path="$1"
+	local realpath_path="$(find_program realpath)" || \
+	  realpath_path=
+	local python_path="$(find_program python3 python python2)" || \
+	  python_path=
+	local perl_path="$(find_program perl)" || perl_path=
+
+	# The following is for testing.
+	#realpath_path=
+	#python_path=
+	#perl_path=
+
+	if [ -n "$realpath_path" ]; then
+		"$realpath_path" "$path" || \
+		  return 1
+	elif [ -n "$python_path" ]; then
+		"$python_path" \
+		  -c 'import os,sys;print(os.path.realpath(sys.argv[1]))' \
+		  "$path" || \
+		  return 1
+	elif [ -n "$perl_path" ]; then
+		"$perl_path" \
+		  -MCwd -e 'print Cwd::realpath($ARGV[0]),qq<\n>' "$path" || \
+		  return 1
+	else
+		return 1
+	fi
+}
+
+repeat_string()
+{
+	[ $# -eq 2 ] || return 1
+	local n="$1"
+	local string="$2"
+	local buffer=
+	local i
+	for((i = 0; i < $n; ++i)); do
+		buffer="$buffer$string"
+	done
+	echo "$buffer"
+}

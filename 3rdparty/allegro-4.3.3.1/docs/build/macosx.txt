@@ -1,0 +1,264 @@
+     ______   ___    ___
+    /\  _  \ /\_ \  /\_ \
+    \ \ \L\ \\//\ \ \//\ \      __     __   _ __   ___ 
+     \ \  __ \ \ \ \  \ \ \   /'__`\ /'_ `\/\`'__\/ __`\
+      \ \ \/\ \ \_\ \_ \_\ \_/\  __//\ \L\ \ \ \//\ \L\ \
+       \ \_\ \_\/\____\/\____\ \____\ \____ \ \_\\ \____/
+        \/_/\/_/\/____/\/____/\/____/\/___L\ \/_/ \/___/
+                                       /\____/
+                                       \_/__/
+
+
+                MacOS X-specific information.
+
+         See readme.txt for a more general overview.
+
+
+
+=======================================
+============ MacOS X notes ============
+=======================================
+
+   This is a full featured native MacOS X port.
+
+
+
+===========================================
+============ Required software ============
+===========================================
+
+   To build Allegro under MacOS X, you need:
+
+      MacOS X 10.2.x or newer
+      Apple Developer Tools (December 2002 or newer edition)
+
+   If you don't have the Developer Tools installed, you can get the
+   latest release at:
+
+      http://developer.apple.com/tools/download
+
+   On the same page you will also find instructions on how to install them.
+   Note that system version 10.2.x is required to compile Allegro, but
+   the library will still work on 10.1.x. (At least that was true once; we
+   haven't gone back and checked it!)
+
+
+
+============================================
+============ Installing Allegro ============
+============================================
+
+   Allegro ships in source code form; this means you need to compile it
+   before you can use it. You do this easily from a terminal window.
+   See the generic documentation in docs/build/cmake.txt.
+
+   You may build either Unix-style shared library, or Mac OS X frameworks,
+   or both.
+
+   XXX information about universal binaries
+
+
+=============================================================
+============ Using Allegro from the command line ============
+=============================================================
+
+   The options for linking with Allegro are quite long, expecially for
+   static versions of the library as you need to pull in several different
+   frameworks (Cocoa, QuickTime, etc.) other than Allegro itself. When
+   linking against the shared library version, things are also different.
+   To avoid you having to work out the right linker commands for yourself,
+   the installation creates a script, allegro-config, that will print out a
+   suitable commandline. You can use this inside a backtick command
+   substitution, for example:
+
+      gcc myfile.c -o myprogram `allegro-config --libs`
+
+   Or if you want to build a debug version of your program, assuming that 
+   you have installed the debug version of Allegro:
+
+      gcc myfile.c -o myprogram `allegro-config --libs debug`
+
+   You can also link against the Allegro framework, providing you previously
+   installed it:
+
+      gcc myfile.c -o myprogram `allegro-config --frameworks`
+
+   Unix newbies, take note that these are ` backticks, not normal ' quotes!
+
+   There are also switches for printing out the Allegro version number, 
+   overriding the install paths, and selecting between shared and static 
+   libraries, in case you installed both. Run allegro-config without any
+   arguments for a full list of options.
+
+   If you get an error like 'allegro-config: program not found', and
+   you're sure you have built and installed the library as described above, it
+   probably means that /usr/local/bin is not on your path. The method
+   to add it depends on the shell you're using. If you have tcsh, add the
+   following line to the end of the .cshrc in your home directory.
+
+     set path=($path /usr/local/bin)
+
+   If you have bash, add the following line to the end of the .bash_profile
+   file in your home directory:
+
+     PATH=${PATH}:/usr/local/bin
+
+   If you don't know which, just type echo $SHELL on the command 
+   line, which will print either /bin/bash or /bin/tcsh.
+   Newer versions of OSX use bash, older ones use tcsh.
+   You will have to close the Terminal window and open a new one once
+   you have made the changes, so it will have an effect.
+
+
+
+=========================================================
+============ Allegro and application bundles ============
+=========================================================
+
+   When you build applications from the command line, you're actually just
+   creating the executable, so you can run it from the command line only,
+   and not also from the finder like a common MacOS X application. In other
+   words, compiling from the command line does not create application
+   bundles.
+
+   Allegro ships with a little tool, named fixbundle, which allows to build
+   an application bundle out of an executable.
+   The utility works from the command line and it accepts a variety of
+   options to customize your bundle; the easiest way to use it is:
+
+      fixbundle executable_name
+
+   This will create an application bundle named "executable_name.app" that
+   contains your program executable and will appear in the finder with the
+   default application icon. A more complex usage example follows:
+
+      fixbundle executable_name -m -o bundle_name -v "1.2" icon.bmp
+
+   This creates a bundle named "bundle_name.app". The executable will be
+   moved instead of copied into the bundle; the application will be marked
+   as version "1.2" and icon.bmp will be converted to an icon for the
+   bundle. You can specify more options and up to 4 differently sized
+   icons (16x16, 32x32, 48x48 and 128x128) to be read from any Allegro
+   supported image files or from datafile objects.
+   Run fixbundle without arguments for the full list of known options.
+
+   A special note is required for the "-e" switch; this lets you embed
+   the Allegro framework inside the built application bundle, so your
+   app will not require Allegro to be installed into the target machine
+   in order to work. This flag assumes you previously installed the
+   embeddable version of the Allegro framework, and that your executable
+   has been linked to it, either via Project Builder or XCode, either
+   via the allegro-config script.
+   If one of these conditions is not met, the created app may not
+   work on target machines.
+
+   Bundles created by fixbundle have this default layout:
+
+      bundle.app --- Contents --+--- MacOS --- executable
+                                |
+                                +--- Resources --+--- (bundle.icns)
+                                |                |
+                                |                +--- (executable/...)
+                                |
+                                |
+                                +--- (Frameworks) --- (Allegro.framework/...)
+                                |
+                                +--- Info.plist
+                                |
+                                +--- PkgInfo
+
+   If you are using Project Builder to compile your programs, there is no
+   need to use fixbundle, as the IDE will do the work of generating an
+   application bundle for you.
+
+   When an Allegro program starts, it automatically detects if the
+   executable lives inside a bundle or not. The working directory is
+   always set up to be the directory where the standalone executable
+   or application bundle is located, but there is an exception: if the
+   application is a bundle and Allegro finds a directory under the bundle
+   Contents/Resources path with the same name of the executable (note that
+   here we mean the real executable name, not the bundle name), that
+   directory is set to be the working one. This allows to easily package
+   all the application data inside the bundle, and still have a working
+   program without the need to tell your code about the changed location
+   of your files.
+
+
+
+==========================================
+============ Notes on drivers ============
+==========================================
+
+   This section contains MacOS X-specific notes on the drivers available.
+
+   System:
+        When the system driver is about to be initialized, we already
+        have a working NSApplication object connected to the Window Server.
+        At driver startup, the working directory is changed if inside a
+        bundle with a proper data directory under the Contents/Resources
+        path (see above).
+        
+        Display switching is possible, but only the SWITCH_BACKGROUND
+        mode is supported, so your application will have to deal with it.
+
+   Graphics:
+        The MacOS X windowed graphics mode uses a Cocoa window with a
+        Quartz QuickDraw view as its content view. All combinations of
+        window/desktop color depths are supported; if needed, color
+        conversion will automatically be done transparently to the user.
+
+        Fullscreen mode uses the CoreGraphics DirectDisplay API; only
+        8, 15 and 32 bit color depths are supported.
+
+   Sound:
+        The CoreAudio digital/MIDI drivers use V2 AudioUnits, and thus
+        they require MacOS X 10.2.x (Jaguar) or newer to work. If this is
+        not the case, you can fall back to the Carbon Sound Manager and
+        Quicktime MIDI drivers.
+
+   Keyboard:
+        MacOS X Allegro uses the current system keyboard mapping table
+        to map scancodes to characters: the keyboard user settings in
+        allegro.cfg have no effect.
+
+   Mouse:
+        On MacOS X 10.2.x (Jaguar) or newer, Allegro will automatically
+        detect the number of buttons of your mouse at driver initialization.
+        If the 1-button Apple mouse is found, the library will activate an
+        emulation mode that mimics the way MacOS X itself deals with
+        1-button mice: depending on which key is pressed when the button is
+        clicked, Allegro will report a different mouse button click.
+        (Control + button) emulates a right click and (Option + button)
+        emulates a middle click.
+
+        On MacOS X 10.1.x, mouse autodetection is not possible, and Allegro
+        will assume an 1-button mouse to always be present, activating
+        buttons emulation accordingly.
+
+
+
+===========================================================
+============ Notes on Threading and Cocoa GUIs ============
+===========================================================
+
+   It is possible to include a Cocoa GUI in an Allegro application.  If you
+   do this you should be aware that Allegro will run your application's
+   main() function in a different thread from the thread that
+   the main OS X event loop runs in.  See
+   http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/Multithreading/Introduction/Introduction.html
+   for more information about threading on Mac OS X.
+
+
+=====================================
+============ Final notes ============
+=====================================
+
+   There is a known compatibility problem when using gcc 4 on MacOS X 10.4
+   that prevents binaries from working on older versions of MacOS X. While it
+   is anticipated that a future update from Apple will fix this problem, you
+   can use gcc 3 to work around it.
+
+   As a final note, when coding Allegro programs don't forget that you
+   need to use the END_OF_MAIN() macro right after your main() function!
+
+

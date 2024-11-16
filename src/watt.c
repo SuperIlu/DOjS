@@ -22,9 +22,9 @@ SOFTWARE.
 
 #include "watt.h"
 
-#if LINUX == 1
+#if (LINUX == 1) && (WINDOWS != 1)
 #include <ifaddrs.h>
-#endif  // LINUX == 1
+#endif  // (LINUX == 1) && (WINDOWS != 1)
 
 #define WATT_NAME_BUFFER_SIZE 1024
 
@@ -53,7 +53,9 @@ static void f_IpDebug(js_State *J) { watt_pushipaddr(J, watt_toipaddr(J, 1)); }
  * GetNetworkInterfaces(): {"eth0":{"inet":[192.168.1.2], "netmask":[255,255,255,0]}, "lo":{"inet":[127.0.0.1], "netmask":[255,0,0,0]}}
  */
 static void f_GetNetworkInterfaces(js_State *J) {
-#if LINUX == 1
+#if WINDOWS == 1
+// TODO: https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/nf-iphlpapi-getipaddrtable?redirectedfrom=MSDN
+#elif LINUX == 1
     struct ifaddrs *ifaddr;
     if (getifaddrs(&ifaddr) == -1) {
         js_error(J, "getifaddrs() failed");
@@ -166,12 +168,16 @@ static void f_GetHostname(js_State *J) {
  * @param J VM state.
  */
 static void f_GetDomainname(js_State *J) {
+#if WINDOWS == 1
+    js_pushnull(J);
+#else
     char buffer[WATT_NAME_BUFFER_SIZE];
     if (getdomainname(buffer, sizeof(buffer)) == 0) {
         js_pushstring(J, buffer);
     } else {
         js_pushnull(J);
     }
+#endif
 }
 
 /***********************
@@ -207,7 +213,11 @@ void init_watt(js_State *J) {
             LOGF("WATTCP init: %s\n", sock_init_err(err));
         }
 #else   // LINUX != 1
-        (void)err;
+        if (!err) {
+            LOGF("TCP init: OK\n");
+        } else {
+            LOGF("TCP init: ERROR\n");
+        }
 #endif  // LINUX != 1
 
         // functions

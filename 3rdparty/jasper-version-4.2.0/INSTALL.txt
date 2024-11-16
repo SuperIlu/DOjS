@@ -1,0 +1,209 @@
+Installation
+============
+
+The process required to install JasPer is described below.
+
+Installation on Systems Running Unix
+------------------------------------
+
+In what follows, let $SOURCE_DIR denote the top-level directory of the JasPer
+software source tree (i.e., the directory containing the files named LICENSE
+and INSTALL) and let $INSTALL_DIR denote the target directory for installation.
+To build the software, the following steps are required (in order):
+
+  1. Select an empty directory to use for building the software.
+  Let $BUILD_DIR denote this directory.
+
+  2. Configure the software using CMake.
+  To do this, invoke the command:
+
+      cmake -H$SOURCE_DIR -B$BUILD_DIR -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
+        $OPTIONS
+
+  where $OPTIONS corresponds to zero or more -D options as described below
+  under the heading "Cmake Options".
+
+  This process allows important information about the system configuration
+  to be determined.  Unless you know what you are doing (or have problems
+  with the default build settings), it is STRONGLY RECOMMENDED that you
+  not override the default build settings.
+
+  3. Build the software using CMake.
+  To do this, invoke the command:
+
+      cmake --build $BUILD_DIR
+
+  (Assuming that the build operation was successful, the executables
+  for the JasPer application programs should be located in the directory
+  $BUILD_DIR/src/app.)
+
+  4. Run the test suite to ensure that the software seems to be working
+  correctly.  To do this, invoke the commands:
+
+    cd $BUILD_DIR
+    ctest --output-on-failure
+
+  5. Install the software (i.e., the library, application programs,
+  header files, and other auxiliary data).
+  To do this, invoke the command:
+
+      cmake --build $BUILD_DIR --target install
+
+  This step may require special (e.g., administrator) privileges depending
+  on the target directory for installation.  (On Unix-based systems,
+  the default installation directory is typically under usr/local.)
+
+  Assuming that the software was installed successfully, the executables
+  for the JasPer application programs should be found somewhere under
+  the $CMAKE_INSTALL_PREFIX directory (e.g., $CMAKE_INSTALL_PREFIX/bin).
+
+Additional Remarks:
+
+When building the JasPer software under Mac OSX, only the use of the native
+framework for OpenGL is officially supported.  If the Freeglut library
+is installed on your system, you will need to ensure that the native GLUT
+library (as opposed to the Freeglut library) is used by the build process.
+This can be accomplished by adding an extra option to the cmake command line
+that resembles the following:
+
+    -DGLUT_glut_LIBRARY=/System/Library/Frameworks/GLUT.framework
+
+Installation on Systems Running Microsoft Windows
+-------------------------------------------------
+
+In what follows, let %SOURCE_DIR% denote the top-level directory of the
+JasPer software source tree (i.e., the directory containing the files
+named LICENSE and INSTALL) and let %INSTALL_DIR% denote the target
+directory for installation.
+
+1) Select an empty directory to use for building the software.
+Let %BUILD_DIR% denote this directory.
+
+2) Generate the project file needed to build the software with Microsoft
+Visual Studio.  To do this, invoke the command:
+
+    cmake -G "Visual Studio 12 2013 Win64" -H%SOURCE_DIR% -B%BUILD_DIR% ^
+      -DCMAKE_INSTALL_PREFIX=%INSTALL_DIR% %OPTIONS%
+
+where %OPTIONS% corresponds to zero or more -D options as described
+below under the heading "Cmake Options".  (Note the caret symbol "^"
+above denotes line continuation.)
+
+3) Build and install the software.  To do this, invoke the command:
+
+    msbuild %build_dir%\INSTALL.vcxproj
+
+Other Remarks
+-------------
+
+In some cases, it may be necessary to explicitly disable the use of the
+IJG JPEG library (i.e., libjpeg).  This is accomplished through a CMake
+configuration option.  (See the "CMake Options" section below.)  For example,
+such action may be required if the version of the JPEG library installed
+on your system is not compatible with the version of JasPer being built.
+Also, when building under the Cygwin environment, it may be necessary to
+explicitly disable the use of the JPEG library.
+
+In some situations, it may be necessary to explicitly disable the use of the
+OpenGL libraries.  This is accomplished through a CMake configuration option.
+(See the "CMake Options" section below.)
+
+CMake Options
+-------------
+
+The option OPTION can be set to the value VALUE with a command-line option
+of the form -DOPTION=VALUE
+The following options are supported:
+
+CMAKE_INSTALL_PREFIX
+    Specify the installation directory.
+    Value: A directory name.
+
+CMAKE_BUILD_TYPE
+    Specify the build type (i.e., release or debug).
+    Valid values: Debug or Release
+
+JAS_ENABLE_MULTITHREADING_SUPPORT
+    Specify if the library should include multithreading support.
+    Valid values: true and false
+
+JAS_PREFER_PTHREAD
+    Specify if the POSIX Threads library should be preferred over native
+    C11 threading support.
+    Valid values: true and false
+
+JAS_ENABLE_PROGRAMS
+    Specify if the demo application programs should be built/installed.
+    Valid values: true and false
+
+JAS_ENABLE_DOC
+    Enable the building of the documentation (which requires LaTeX).
+    Valid values: true and false
+
+JAS_ENABLE_LIBJPEG
+    Enable the use of the JPEG library
+    Valid values: true and false
+
+JAS_ENABLE_OPENGL
+    Enable the use of the OpenGL and GLUT libraries.
+    Valid values: true and false
+
+JAS_ENABLE_SHARED
+    Enable the building of shared libraries.
+    Valid values: true or false
+
+JAS_ENABLE_HIDDEN
+    Hide internal symbols?  Enabling this results in a smaller binary.
+    Valid values: true or false
+
+JAS_ENABLE_32BIT
+    Force the use of 32 bit integers?  On 64 bit CPUs, JasPer
+    historically used 64 bit integers which consumes more memory, is
+    slower and has no advantages.  This produces a different ABI, so
+    the resulting library is not compatible with other builds.
+    Valid values: true or false
+
+JAS_DEFAULT_MAX_MEM_USAGE
+    Specify the maximum amount of memory (in bytes) that may be used by
+    the library.
+    This value is only a default and can be overridden at run time.
+    Valid value: a (strictly) positive integer
+
+JAS_INCLUDE_BMP_CODEC
+JAS_INCLUDE_JP2_CODEC
+JAS_INCLUDE_JPC_CODEC
+JAS_INCLUDE_JPG_CODEC
+JAS_INCLUDE_MIF_CODEC
+JAS_INCLUDE_PGX_CODEC
+JAS_INCLUDE_PNM_CODEC
+JAS_INCLUDE_RAS_CODEC
+    Include support for the specified codec in the library.
+    (This support can still be disabled at run time.)
+    Valid values: true or false
+
+JAS_ENABLE_BMP_CODEC
+JAS_ENABLE_JP2_CODEC
+JAS_ENABLE_JPC_CODEC
+JAS_ENABLE_JPG_CODEC
+JAS_ENABLE_MIF_CODEC
+JAS_ENABLE_PGX_CODEC
+JAS_ENABLE_PNM_CODEC
+JAS_ENABLE_RAS_CODEC
+    Enable support for the specified codec by default at run time.
+    Valid values: true or false
+
+JAS_ENABLE_ASAN
+    Enable the Address Sanitizer.
+    Valid values: true or false
+
+JAS_ENABLE_UBSAN
+    Enable the Undefined-Behavior Sanitizer.
+    Valid values: true or false
+
+JAS_ENABLE_LSAN
+    Enable the Leak Sanitizer.
+    Valid values: true or false
+
+JAS_ENABLE_MSAN
+    Enable the Memory Sanitizer.
+    Valid values: true or false

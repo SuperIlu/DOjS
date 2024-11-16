@@ -1,0 +1,18 @@
+/*!
+
+\page lib_math Math Support
+
+\section lib_math__api API References
+
+- \ref module_fixed
+
+\section lib_math__intro Math Support
+
+The JasPer library provides various functions/macros for performing
+fixed-point arithmetic.
+It also provides some functions for performing safe integer arithmetic
+(i.e.., integer arithmetic with overflow checking).
+The details of these macros/functions can be found using the
+link in the API References section above.
+
+*/

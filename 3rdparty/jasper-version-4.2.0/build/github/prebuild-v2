@@ -1,0 +1,125 @@
+#! /usr/bin/env bash
+
+panic()
+{
+	echo "ERROR: $@"
+	exit 1
+}
+
+usage()
+{
+	echo "bad usage: $@"
+	exit 2
+}
+
+verbose=0
+out_file=
+os=
+
+while getopts vc:s: opt; do
+	case $opt in
+	s)
+		os="$OPTARG";;
+	c)
+		out_file="$OPTARG";;
+	v)
+		verbose=$((verbose + 1));;
+	\?)
+		usage
+		break;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "$out_file" ]; then
+	panic "no output file specified"
+fi
+
+if [ -z "$os" ]; then
+	if [ -n "$RUNNER_OS" ]; then
+		case "$RUNNER_OS" in
+		MacOS|macOS)
+			os=macos;;
+		Linux|linux)
+			os=linux;;
+		Windows|windows)
+			os=windows;;
+		*)
+			os=unknown;;
+		esac
+	fi
+fi
+
+echo "OS: $os"
+
+if [ -f "$out_file" ]; then
+	rm -f "$out_file" || panic "cannot remove file $out_file"
+fi
+
+touch "$out_file" || panic "cannot create file $out_file"
+
+case "$os" in
+linux)
+	packages=()
+	packages+=(netpbm)
+	packages+=(wget)
+	packages+=(unzip)
+	sudo apt-get update || panic "apt-get update failed"
+	sudo apt-get install "${packages[@]}" || panic "apt-get install failed"
+	;;
+macos)
+
+	packages=()
+	if [ 0 -ne 0 ]; then
+		for program_name in find ppmtoppm wget unzip; do
+			program_pathname="$(type -P "$program_name")" || program_pathname=
+			if [ -z "$program_pathname" ]; then
+				echo "$program_name program not found"
+				case "$program_name" in
+				find)
+					packages+=(findutils);;
+				ppmtoppm)
+					packages+=(netpbm);;
+				wget)
+					packages+=(wget);;
+				unzip)
+					packages+=(unzip);;
+				*)
+					panic "invalid program name $program_name";;
+				esac
+			else
+				echo "$program_name program: $program_pathname"
+			fi
+		done
+	else
+		packages+=(findutils)
+		packages+=(netpbm)
+		packages+=(wget)
+		packages+=(unzip)
+	fi
+
+	export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+	export HOMEBREW_NO_INSTALL_CLEANUP=1
+	brew update || panic "brew update failed"
+	if [ "${#packages[@]}" -ne 0 ]; then
+		echo "Installing packages ${packages[@]}"
+		brew install "${packages[@]}" || panic "brew install failed"
+	fi
+	cat >> "$out_file" <<- EOF
+	export PATH=\$(brew --prefix)/opt/findutils/libexec/gnubin:\$PATH
+	EOF
+	[ $? -eq 0 ] || panic "cat failed"
+	;;
+
+windows)
+	;;
+*)
+	panic "invalid OS"
+	;;
+esac
+
+echo "========== start of commands ==========" || panic "echo failed"
+cat "$out_file" || panic "cat failed"
+echo "========== end of commands ==========" || panic "echo failed"
+
+exit 0

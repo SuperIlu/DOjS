@@ -1,0 +1,53 @@
+#! /usr/bin/env bash
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+wasi_sdk_version=
+install_dir=
+
+while getopts :d:v: option; do
+	case "$option" in
+	d)
+		install_dir="$OPTARG";;
+	v)
+		wasi_sdk_version="$OPTARG";;
+	esac
+done
+
+if [ -z "$install_dir" ]; then
+	panic "no install directory specified"
+fi
+if [ -z "$wasi_sdk_version" ]; then
+	panic "no version specified"
+fi
+
+if [ ! -d "$install_dir" ]; then
+	mkdir -p "$install_dir" || \
+	  panic "cannot make directory $install_dir"
+fi
+
+#source_dir="$install_dir/.source"
+#build_dir="$install_dir/.build"
+#build_dir_2="$install_dir/.build2"
+
+wasi_sdk_archive_url="https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-$wasi_sdk_version-linux.tar.gz"
+
+wasi_sdk_archive="$install_dir/.wasi-sdk.tar.xz"
+
+if [ ! -d "$install_dir" ]; then
+	mkdir -p "$install_dir" || \
+	  panic "cannot make directory $install_dir"
+fi
+
+wget -O "$wasi_sdk_archive" "$wasi_sdk_archive_url" || \
+  panic "wget failed"
+tar -x -z -f "$wasi_sdk_archive" --strip-components=1 -C "$install_dir" || \
+  panic "tar failed"
+
+#rm -rf "$source_dir" || panic
+#rm -rf "$build_dir" || panic
+#rm -rf "$build_dir_2" || panic

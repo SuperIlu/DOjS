@@ -25,6 +25,9 @@ SOFTWARE.
 #include "DOjS.h"
 
 #include <allegro.h>
+#if WINDOWS==1
+#include <winalleg.h>
+#endif
 
 /*********************
 ** static functions **

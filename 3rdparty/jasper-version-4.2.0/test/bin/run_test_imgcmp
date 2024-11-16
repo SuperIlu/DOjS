@@ -1,0 +1,114 @@
+#! /usr/bin/env bash
+################################################################################
+
+################################################################################
+
+cmd_dir=$(dirname "$0") || exit 1
+source "$cmd_dir"/base_utilities || exit 1
+source "$cmd_dir"/test_utilities || exit 1
+
+debug_level="${JAS_DEBUG_LEVEL:-0}"
+if [ "$debug_level" -ge 1 ]; then
+	set -xv
+fi
+
+################################################################################
+
+set_source_and_build_dirs || panic "cannot set source and build directories"
+
+imgcmp="$abs_top_builddir/src/app/imgcmp"
+
+data_dir="$abs_top_srcdir/data"
+
+################################################################################
+
+verbose=0
+if [ $# -ge 1 ]; then
+	verbose=1
+fi
+
+################################################################################
+
+failed_tests=()
+passed_tests=()
+
+image_name=
+while IFS= read -r line; do
+	if [ -z "$line" ]; then
+		continue
+	fi
+
+	reference_file=$(awk '{print $1;}' <<< "$line") || panic "cannot get file"
+	other_file=$(awk '{print $2;}' <<< "$line") || panic "cannot get file"
+	if [ "$other_file" = __self__ ]; then
+		other_file="$reference_file"
+	fi
+	test_case="test-$(basename "$reference_file")-$(basename "$other_file")-$metric"
+
+	metric=$(awk '{print $3;}' <<< "$line") || \
+	  panic "cannot get metric"
+	expected_error=($(awk '{for (i = 4; i <= NF; ++i) {print $i;}}' \
+	  <<< "$line")) || \
+	  panic "cannot get expected error"
+
+	reference_file_full="$data_dir/$reference_file"
+	other_file_full="$data_dir/$other_file"
+	actual_error=($("$imgcmp" \
+	  -f "$reference_file_full" -F "$other_file_full" -m "$metric"))
+	status=$?
+	if [ "$status" -ne 0 ]; then
+		failed_tests+=("$test_case")
+		echo "imgcmp failed for $test_case ($status)"
+		continue
+	fi
+	if [ "${#actual_error[@]}" -ne "${@expected_error[@]}" ]; then
+		failed_tests+=("$test_case")
+		echo "bad output from imgcmp for $test_case"
+		continue
+	fi
+	for i in "${!expected_error[@]}"; do
+		if [ "${actual_error[$i]}" != "${expected_error[$i]}" ]; then
+			echo "FAILED TEST: $test_case"
+			echo "   EXPECTED: ${expected_error[@]}"
+			echo "     ACTUAL: ${actual_error[@]}"
+			failed_tests+=("$test_case")
+			continue
+		fi
+	done
+	passed_tests+=("$test_case")
+
+done <<< "
+
+images/feep.pnm __self__ pae 0
+images/feep2.pnm __self__ pae 0
+images/goldenears.bmp __self__ pae 0 0 0
+images/goldenears.pnm __self__ pae 0 0 0
+images/goldenears.ras __self__ pae 0 0 0
+images/goldenears_gray.pnm __self__ pae 0
+images/goldenears_gray.ras __self__ pae 0
+images/signed_12.pgx __self__ pae 0
+images/signed_16.pgx __self__ pae 0
+images/signed_8.pgx __self__ pae 0
+images/small_16x1.pnm __self__ pae 0
+images/small_1x1.pnm __self__ pae 0
+images/stawamuschief.pnm __self__ pae 0 0 0
+images/stawamuschief_gray.pnm __self__ pae 0
+images/test.pnm __self__ pae 0
+
+images/feep.pnm images/feed.pnm pae 1
+
+"
+
+if [ "${#failed_tests[@]}" -gt 0 ]; then
+	echo "The following tests passed:"
+	for test in "${passed_tests[@]}"; do
+		echo "    $test"
+	done
+	echo "The following tests failed:"
+	for test in "${failed_tests[@]}"; do
+		echo "    $test"
+	done
+	echo "Number of passed tests: ${#passed_tests[@]}"
+	echo "Number of failed tests: ${#failed_tests[@]}"
+	panic "one or more tests failed"
+fi

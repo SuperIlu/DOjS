@@ -40,7 +40,9 @@ SOFTWARE.
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
+#if WINDOWS!=1
 #include <dlfcn.h>
+#endif
 
 #include "bitmap.h"
 #include "color.h"
@@ -105,7 +107,7 @@ static void usage() {
 #endif
     fputs("\n", stderr);
     fputs("This is DOjS " DOSJS_VERSION_STR "\n", stderr);
-    fputs("(c) 2019-2022 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
+    fputs("(c) 2019-2024 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
     fputs("See LICENSE for detailed licensing information.\n", stderr);
     fputs("\n", stderr);
     exit(1);
@@ -400,7 +402,7 @@ static void dojs_init_libraries(js_State *J) {
     if (DOjS.loaded_libraries) {
         library_t *chain = DOjS.loaded_libraries;
         while (chain) {
-            DEBUGF("%p: Library init for %s. Shutdown function %p\n", chain, chain->name, chain->init);
+            DEBUGF("%p: Library init for %s. Init function %p\n", chain, chain->name, chain->init);
 
             // call init if not already initialized
             if (chain->init && !chain->initialized) {
@@ -503,21 +505,29 @@ static void run_script(int argc, char **argv, int args) {
 #endif
 
     // detect hardware and initialize subsystems
-    allegro_init();
-    install_timer();
-    LOCK_VARIABLE(DOjS.sys_ticks);
-    LOCK_FUNCTION(tick_handler);
-    install_int(tick_handler, TICK_DELAY);
-    install_keyboard();
+    if (allegro_init() != 0) {
+        fprintf(stderr, "Could not initialize Allegro\n");
+        exit(1);
+    }
+    if(install_keyboard() >= 0) {
+        LOGF("Keyboard detected: %s\n", keyboard_driver->name);
+        LOGF("Keyboard polling: %d\n", keyboard_needs_poll());
+    }
     if (install_mouse() >= 0) {
         LOGF("Mouse detected: %s\n", mouse_driver->name);
+#if LINUX != 1
         enable_hardware_cursor();
+#endif
         select_mouse_cursor(MOUSE_CURSOR_ARROW);
         DOjS.mouse_available = true;
         DOjS.mouse_visible = true;
     } else {
         LOGF("NO Mouse detected: %s\n", allegro_error);
     }
+    install_timer();
+    LOCK_VARIABLE(DOjS.sys_ticks);
+    LOCK_FUNCTION(tick_handler);
+    install_int(tick_handler, TICK_DELAY);
     PROPDEF_B(J, DOjS.mouse_available, "MOUSE_AVAILABLE");
     init_sound(J);  // sound init must be before midi init!
     init_midi(J);
@@ -583,6 +593,9 @@ static void run_script(int argc, char **argv, int args) {
         LOG("BPP < 24, disabling alpha\n");
     }
     if (screenSuccess) {
+#if WINDOWS==1
+        set_display_switch_mode(SWITCH_BACKGROUND);
+#endif
         DOjS.render_bm = DOjS.current_bm = create_bitmap(SCREEN_W, SCREEN_H);
         clear_bitmap(DOjS.render_bm);
         DOjS.transparency_available = DOjS.params.no_alpha ? BLEND_REPLACE : BLEND_ALPHA;
@@ -617,6 +630,8 @@ static void run_script(int argc, char **argv, int args) {
                             DOjS.num_allocs = 0;
                         }
                         tick_socket();
+                        show_mouse(NULL);
+                        acquire_screen();
                         if (!callGlobal(J, CB_LOOP)) {
                             if (!DOjS.lastError) {
                                 set_last_error("Loop() not found.");
@@ -631,14 +646,15 @@ static void run_script(int argc, char **argv, int args) {
                             grBufferSwap(1);
                         } else {
 #endif
-                            show_mouse(NULL);
                             blit(DOjS.render_bm, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
-                            if (DOjS.mouse_visible) {
-                                show_mouse(screen);
-                            }
 #if LINUX != 1
                         }
 #endif
+                        release_screen();
+                        if (DOjS.mouse_visible) {
+                             show_mouse(screen);
+                        }
+                        vsync();
                         long end = DOjS.sys_ticks;
                         long runtime = (end - start) + 1;
                         DOjS.current_frame_rate = 1000 / runtime;
@@ -681,6 +697,7 @@ static void run_script(int argc, char **argv, int args) {
     if (DOjS.logfile) {
         fclose(DOjS.logfile);
     }
+    destroy_bitmap(DOjS.render_bm);
     allegro_exit();
     textmode(C80);
 
@@ -905,7 +922,7 @@ int main(int argc, char **argv) {
     const char *script_param = NULL;
 
     // initialize DOjS main structure
-    bzero(&DOjS, sizeof(DOjS));
+    memset(&DOjS, 0, sizeof(DOjS));
     DOjS.params.width = DOJS_FULL_WIDTH;
     DOjS.params.bpp = 32;
     DOjS.do_logfile = true;

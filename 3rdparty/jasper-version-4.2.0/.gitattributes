@@ -1,0 +1,13 @@
+# Consider all image files to be binary.
+*.bmp binary
+*.jp2 binary
+*.jpc binary
+*.jpg binary
+*.mif binary
+*.mif0 binary
+*.pgx binary
+*.pnm binary
+*.ras binary
+*.icm binary
+
+#* merge=verify

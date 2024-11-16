@@ -1,0 +1,835 @@
+/* JasPer Decoder Test Cases */
+
+/*
+Conformance Tests from ISO/IEC 15444-4:2020 
+
+A compliance class defines guarantees about the given level of image
+quality for a decoder and guidance for encoders to produce codestreams
+that are easily decodable by compliant decoders.
+Annex A defines three compliance classes for J2K codestreams, namely
+Compliance Classes 0, 1, and 2.  The strength of the guarantees increase
+with class number.
+
+A profile specifies a set of constraints imposed on codestreams.
+Profile 0 is a subset of Profile 1 (i.e., any implementation that can
+decode a Profile 1 codestream should be capable of passing the Profile 0
+tests of the same class).  In this sense, Profile 1 is probably of more
+practical interest, since it is the more demanding profile to satisfy.
+
+*/
+
+/*
+Externally define the following symbol to enable potentially broken tests:
+    ENABLE_BAD_TESTS
+Externally define the following symbol to enable extra tests:
+    ENABLE_EXTRA_TESTS
+*/
+
+#define ENABLE_TABLE_G1_TESTS
+
+#if defined(ENABLE_EXTRA_TESTS)
+#	define ENABLE_TABLE_C1_TESTS
+#	define ENABLE_TABLE_C4_TESTS
+#endif
+
+#define ENABLE_TABLE_C6_TESTS
+
+#define ENABLE_TABLE_C7_TESTS
+
+/******************************************************************************\
+Profile 0 Class 0 Conformance Tests
+\******************************************************************************/
+
+/******************************************************************************\
+Table C.1: Class 0 Profile 0 reference images and allowable errors
+\******************************************************************************/
+
+#ifdef ENABLE_TABLE_C1_TESTS
+
+id=j2kc_c0p0_01 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_01.j2k \
+	decoded_file=reference_class0_profile0/c0p0_01.pgx \
+	pae=0
+
+id=j2kc_c0p0_02 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_02.j2k \
+	decoded_file=reference_class0_profile0/c0p0_02.pgx \
+	pae=0
+
+id=j2kc_c0p0_03r0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_03.j2k \
+	decoded_file=reference_class0_profile0/c0p0_03r0.pgx \
+	resolution_reduction=0 \
+	pae=0
+
+id=j2kc_c0p0_03r1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_03.j2k \
+	decoded_file=reference_class0_profile0/c0p0_03r1.pgx \
+	resolution_reduction=1 \
+	pae=0
+
+/* # comp differ */
+id=j2kc_c0p0_04 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_04.j2k \
+	decoded_file=reference_class0_profile0/c0p0_04.pgx \
+	resolution_reduction=3 \
+	pae=33 \
+	mse=55.8
+
+/* 4 comp */
+id=j2kc_c0p0_05 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_05.j2k \
+	decoded_file=reference_class0_profile0/c0p0_05.pgx \
+	cmptno=0 \
+	resolution_reduction=3 \
+	pae=54 \
+	mse=68
+
+/* color */
+id=j2kc_c0p0_06 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_06.j2k \
+	decoded_file=reference_class0_profile0/c0p0_06.pgx \
+	resolution_reduction=3 \
+	pae=109 \
+	mse=743
+
+id=j2kc_c0p0_07 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_07.j2k \
+	decoded_file=reference_class0_profile0/c0p0_07.pgx \
+	resolution_reduction=0 \
+	pae=10 \
+	mse=0.34
+
+id=j2kc_c0p0_08 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_08.j2k \
+	decoded_file=reference_class0_profile0/c0p0_08.pgx \
+	resolution_reduction=5 \
+	pae=7 \
+	mse=6.72
+
+id=j2kc_c0p0_09 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_09.j2k \
+	decoded_file=reference_class0_profile0/c0p0_09.pgx \
+	resolution_reduction=2 \
+	pae=4 \
+	mse=1.47
+
+id=j2kc_c0p0_10 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_10.j2k \
+	decoded_file=reference_class0_profile0/c0p0_10.pgx \
+	resolution_reduction=0 \
+	pae=10 \
+	mse=2.84
+
+id=j2kc_c0p0_11 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_11.j2k \
+	decoded_file=reference_class0_profile0/c0p0_11.pgx \
+	pae=0
+
+id=j2kc_c0p0_12 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_12.j2k \
+	decoded_file=reference_class0_profile0/c0p0_12.pgx \
+	pae=0
+
+#ifdef ENABLE_BAD_TESTS
+/* 1 vs 257 components.  how to handle? */
+id=j2kc_c0p0_13 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_13.j2k \
+	decoded_file=reference_class0_profile0/c0p0_13.pgx \
+	cmptno=0 \
+	pae=0
+#endif
+
+id=j2kc_c0p0_14 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_14.j2k \
+	decoded_file=reference_class0_profile0/c0p0_14.pgx \
+	resolution_reduction=2 \
+	pae=0
+
+id=j2kc_c0p0_15r0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_15.j2k \
+	decoded_file=reference_class0_profile0/c0p0_15r0.pgx \
+	resolution_reduction=0 \
+	pae=0
+
+id=j2kc_c0p0_15r1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_15.j2k \
+	decoded_file=reference_class0_profile0/c0p0_15r1.pgx \
+	resolution_reduction=1 \
+	pae=0
+
+id=j2kc_c0p0_16 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_16.j2k \
+	decoded_file=reference_class0_profile0/c0p0_16.pgx \
+	pae=0
+
+#endif
+
+/******************************************************************************\
+Profile 0 Class 1 Conformance Tests
+\******************************************************************************/
+
+/******************************************************************************\
+Table C.6: Class 1 Profile 0 reference files and maximum error
+\******************************************************************************/
+
+#ifdef ENABLE_TABLE_C6_TESTS
+
+/* 128x128, 8 bits/sample, unsigned */
+id=j2kc_c1p0_01 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_01.j2k \
+	decoded_file=reference_class1_profile0/c1p0_01-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 64x126, 8 bits/sample, unsigned */
+id=j2kc_c1p0_02 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_02.j2k \
+	decoded_file=reference_class1_profile0/c1p0_02-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 256x256, 4 bits/sample, signed */
+id=j2kc_c1p0_03 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_03.j2k \
+	decoded_file=reference_class1_profile0/c1p0_03-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 640x480, 8 bits/sample, unsigned */
+id=j2kc_c1p0_04_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_04.j2k \
+	decoded_file=reference_class1_profile0/c1p0_04-0.pgx \
+	cmptno=0 \
+	pae=5 \
+	mse=0.776
+
+/* 640x480, 8 bits/sample, unsigned */
+id=j2kc_c1p0_04_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_04.j2k \
+	decoded_file=reference_class1_profile0/c1p0_04-1.pgx \
+	cmptno=1 \
+	pae=4 \
+	mse=0.626
+
+/* 640x480, 8 bits/sample, unsigned */
+id=j2kc_c1p0_04_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_04.j2k \
+	decoded_file=reference_class1_profile0/c1p0_04-2.pgx \
+	cmptno=2 \
+	pae=6 \
+	mse=1.070
+
+/* 1024x1024, 8 bits/sample, unsigned */
+id=j2kc_c1p0_05_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_05.j2k \
+	decoded_file=reference_class1_profile0/c1p0_05-0.pgx \
+	cmptno=0 \
+	pae=2 \
+	mse=0.302
+
+#ifdef ENABLE_BAD_TESTS
+/* 1024x1024, 8 bits/sample, unsigned */
+id=j2kc_c1p0_05_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_05.j2k \
+	decoded_file=reference_class1_profile0/c1p0_05-1.pgx \
+	cmptno=1 \
+	pae=2 \
+	mse=0.307
+#endif
+
+#ifdef ENABLE_BAD_TESTS
+/* 512x512, 8 bits/sample, unsigned */
+id=j2kc_c1p0_05_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_05.j2k \
+	decoded_file=reference_class1_profile0/c1p0_05-2.pgx \
+	cmptno=2 \
+	pae=2 \
+	mse=0.269
+#endif
+
+/* 1024x1024, 8 bits/sample, unsigned */
+id=j2kc_c1p0_05_3 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_05.j2k \
+	decoded_file=reference_class1_profile0/c1p0_05-3.pgx \
+	cmptno=3 \
+	pae=0
+
+/* 513x129, 12 bits/sample, unsigned */
+id=j2kc_c1p0_06_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_06.j2k \
+	decoded_file=reference_class1_profile0/c1p0_06-0.pgx \
+	cmptno=0 \
+	pae=635 \
+	mse=11287
+
+/* 257x129, 12 bits/sample, unsigned */
+id=j2kc_c1p0_06_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_06.j2k \
+	decoded_file=reference_class1_profile0/c1p0_06-1.pgx \
+	cmptno=1 \
+	pae=403 \
+	mse=6124
+
+/* 513x65, 12 bits/sample, unsigned */
+id=j2kc_c1p0_06_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_06.j2k \
+	decoded_file=reference_class1_profile0/c1p0_06-2.pgx \
+	cmptno=2 \
+	pae=378 \
+	mse=3968
+
+/* 257x65, 12 bits/sample, unsigned */
+id=j2kc_c1p0_06_3 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_06.j2k \
+	decoded_file=reference_class1_profile0/c1p0_06-3.pgx \
+	cmptno=3 \
+	pae=0
+
+/* 2048x2048, 12 bits/sample, signed */
+id=j2kc_c1p0_07_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_07.j2k \
+	decoded_file=reference_class1_profile0/c1p0_07-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 2048x2048, 12 bits/sample, signed */
+id=j2kc_c1p0_07_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_07.j2k \
+	decoded_file=reference_class1_profile0/c1p0_07-1.pgx \
+	cmptno=1 \
+	pae=0
+
+/* 2048x2048, 12 bits/sample, signed */
+id=j2kc_c1p0_07_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_07.j2k \
+	decoded_file=reference_class1_profile0/c1p0_07-2.pgx \
+	cmptno=2 \
+	pae=0
+
+/* 257x1536, 12 bits/sample, signed */
+id=j2kc_c1p0_08_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_08.j2k \
+	decoded_file=reference_class1_profile0/c1p0_08-0.pgx \
+	cmptno=0 \
+	resolution_reduction=1 \
+	pae=0
+
+/* 257x1536, 12 bits/sample, signed */
+id=j2kc_c1p0_08_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_08.j2k \
+	decoded_file=reference_class1_profile0/c1p0_08-1.pgx \
+	cmptno=1 \
+	resolution_reduction=1 \
+	pae=0
+
+/* 257x1536, 12 bits/sample, signed */
+id=j2kc_c1p0_08_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_08.j2k \
+	decoded_file=reference_class1_profile0/c1p0_08-2.pgx \
+	cmptno=2 \
+	resolution_reduction=1 \
+	pae=0
+
+/* 17x37, 8 bits/sample, unsigned */
+id=j2kc_c1p0_09_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_09.j2k \
+	decoded_file=reference_class1_profile0/c1p0_09-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 64x64, 8 bits/sample, unsigned */
+id=j2kc_c1p0_10_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_10.j2k \
+	decoded_file=reference_class1_profile0/c1p0_10-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 64x64, 8 bits/sample, unsigned */
+id=j2kc_c1p0_10_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_10.j2k \
+	decoded_file=reference_class1_profile0/c1p0_10-1.pgx \
+	cmptno=1 \
+	pae=0
+
+/* 64x64, 8 bits/sample, unsigned */
+id=j2kc_c1p0_10_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_10.j2k \
+	decoded_file=reference_class1_profile0/c1p0_10-2.pgx \
+	cmptno=2 \
+	pae=0
+
+/* 128x1, 8 bits/sample, unsigned */
+id=j2kc_c1p0_11_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_11.j2k \
+	decoded_file=reference_class1_profile0/c1p0_11-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 3x5, 8 bits/sample, unsigned */
+id=j2kc_c1p0_12_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_12.j2k \
+	decoded_file=reference_class1_profile0/c1p0_12-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 1x1, 8 bits/sample, unsigned */
+id=j2kc_c1p0_13_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_13.j2k \
+	decoded_file=reference_class1_profile0/c1p0_13-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 1x1, 8 bits/sample, unsigned */
+id=j2kc_c1p0_13_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_13.j2k \
+	decoded_file=reference_class1_profile0/c1p0_13-1.pgx \
+	cmptno=1 \
+	pae=0
+
+/* 1x1, 8 bits/sample, unsigned */
+id=j2kc_c1p0_13_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_13.j2k \
+	decoded_file=reference_class1_profile0/c1p0_13-2.pgx \
+	cmptno=2 \
+	pae=0
+
+/* 1x1, 8 bits/sample, unsigned */
+id=j2kc_c1p0_13_3 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_13.j2k \
+	decoded_file=reference_class1_profile0/c1p0_13-3.pgx \
+	cmptno=3 \
+	pae=0
+
+/* 49x149, 8 bits/sample, unsigned */
+id=j2kc_c1p0_14_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_14.j2k \
+	decoded_file=reference_class1_profile0/c1p0_14-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 49x49, 8 bits/sample, unsigned */
+id=j2kc_c1p0_14_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_14.j2k \
+	decoded_file=reference_class1_profile0/c1p0_14-1.pgx \
+	cmptno=1 \
+	pae=0
+
+/* 49x49, 8 bits/sample, unsigned */
+id=j2kc_c1p0_14_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_14.j2k \
+	decoded_file=reference_class1_profile0/c1p0_14-2.pgx \
+	cmptno=2 \
+	pae=0
+
+/* 256x256, 8 bits/sample, signed */
+id=j2kc_c1p0_15_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_15.j2k \
+	decoded_file=reference_class1_profile0/c1p0_15-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 128x128, 8 bits/sample, unsigned */
+id=j2kc_c1p0_16_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile0/p0_16.j2k \
+	decoded_file=reference_class1_profile0/c1p0_16-0.pgx \
+	cmptno=0 \
+	pae=0
+
+#endif
+
+/******************************************************************************\
+Profile 1 Class 0 Conformance Tests
+\******************************************************************************/
+
+/******************************************************************************\
+Table C.4: Class 0 Profile 1 reference images and allowable errors
+\******************************************************************************/
+
+#ifdef ENABLE_TABLE_C4_TESTS
+
+/* 61x99, 1 component, 8 bits/sample */
+id=j2kc_c0p1_01 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_01.j2k \
+	decoded_file=reference_class0_profile1/c0p1_01.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 80x60, 1 component, 8 bits/sample */
+id=j2kc_c0p1_02 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_02.j2k \
+	decoded_file=reference_class0_profile1/c0p1_02.pgx \
+	cmptno=0 \
+	resolution_reduction=3 \
+	pae=35 \
+	mse=74.0
+
+/* 128x128, 1 component, 8 bits/sample */
+id=j2kc_c0p1_03 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_03.j2k \
+	decoded_file=reference_class0_profile1/c0p1_03.pgx \
+	cmptno=0 \
+	resolution_reduction=3 \
+	pae=28 \
+	mse=18.8
+
+/* 128x128, 1 component, 8 bits/sample */
+id=j2kc_c0p1_04r0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_04.j2k \
+	decoded_file=reference_class0_profile1/c0p1_04r0.pgx \
+	cmptno=0 \
+	resolution_reduction=0 \
+	pae=128 \
+	mse=2042
+
+/* 128x128, 1 component, 8 bits/sample */
+id=j2kc_c0p1_04r3 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_04.j2k \
+	decoded_file=reference_class0_profile1/c0p1_04r3.pgx \
+	cmptno=0 \
+	resolution_reduction=3 \
+	pae=128 \
+	mse=2042
+
+/* 32x32, 1 component, 8 bits/sample */
+id=j2kc_c0p1_05 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_05.j2k \
+	decoded_file=reference_class0_profile1/c0p1_05.pgx \
+	cmptno=0 \
+	resolution_reduction=4 \
+	pae=128 \
+	mse=16384
+
+/* 6x6, 1 component, 8 bits/sample */
+id=j2kc_c0p1_06 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_06.j2k \
+	decoded_file=reference_class0_profile1/c0p1_06.pgx \
+	cmptno=0 \
+	resolution_reduction=1 \
+	pae=128 \
+	mse=16384
+
+/* 2x12, 1 component, 8 bits/sample */
+id=j2kc_c0p1_07 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_07.j2k \
+	decoded_file=reference_class0_profile1/c0p1_07.pgx \
+	cmptno=0 \
+	pae=0
+
+#endif
+
+/******************************************************************************\
+Profile 1 Class 1 Conformance Tests
+\******************************************************************************/
+
+/******************************************************************************\
+Table C.7: Class 1 Profile 1 reference images and allowable error
+\******************************************************************************/
+
+#ifdef ENABLE_TABLE_C7_TESTS
+
+/* 61x99, 8 bits/sample */
+id=j2kc_c1p1_01_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_01.j2k \
+	decoded_file=reference_class1_profile1/c1p1_01-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 640x480, 8 bits/sample */
+id=j2kc_c1p1_02_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_02.j2k \
+	decoded_file=reference_class1_profile1/c1p1_02-0.pgx \
+	cmptno=0 \
+	pae=5 \
+	mse=0.765
+
+/* 640x480, 8 bits/sample */
+id=j2kc_c1p1_02_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_02.j2k \
+	decoded_file=reference_class1_profile1/c1p1_02-1.pgx \
+	cmptno=1 \
+	pae=4 \
+	mse=0.616
+
+/* 640x480, 8 bits/sample */
+id=j2kc_c1p1_02_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_02.j2k \
+	decoded_file=reference_class1_profile1/c1p1_02-2.pgx \
+	cmptno=2 \
+	pae=6 \
+	mse=1.051
+
+/* 1024x1024, 8 bits/sample */
+id=j2kc_c1p1_03_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_03.j2k \
+	decoded_file=reference_class1_profile1/c1p1_03-0.pgx \
+	cmptno=0 \
+	pae=2 \
+	mse=0.300
+
+#ifdef ENABLE_BAD_TESTS
+/* 1024x1024, 8 bits/sample */
+id=j2kc_c1p1_03_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_03.j2k \
+	decoded_file=reference_class1_profile1/c1p1_03-1.pgx \
+	cmptno=1 \
+	pae=2 \
+	mse=0.210
+#endif
+
+#ifdef ENABLE_BAD_TESTS
+/* 512x512, 8 bits/sample */
+id=j2kc_c1p1_03_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_03.j2k \
+	decoded_file=reference_class1_profile1/c1p1_03-2.pgx \
+	cmptno=2 \
+	pae=1 \
+	mse=0.200
+#endif
+
+/* 512x512, 8 bits/sample */
+id=j2kc_c1p1_03_3 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_03.j2k \
+	decoded_file=reference_class1_profile1/c1p1_03-3.pgx \
+	cmptno=3 \
+	pae=0
+
+/* 1024x1024, 12 bits/sample */
+id=j2kc_c1p1_04_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_04.j2k \
+	decoded_file=reference_class1_profile1/c1p1_04-0.pgx \
+	cmptno=0 \
+	pae=624 \
+	mse=3080
+
+/* 512x512, 8 bits/sample */
+id=j2kc_c1p1_05_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_05.j2k \
+	decoded_file=reference_class1_profile1/c1p1_05-0.pgx \
+	cmptno=0 \
+	pae=40 \
+	mse=8.458
+
+/* 512x512, 8 bits/sample */
+id=j2kc_c1p1_05_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_05.j2k \
+	decoded_file=reference_class1_profile1/c1p1_05-1.pgx \
+	cmptno=1 \
+	pae=40 \
+	mse=9.716
+
+/* 512x512, 8 bits/sample */
+id=j2kc_c1p1_05_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_05.j2k \
+	decoded_file=reference_class1_profile1/c1p1_05-2.pgx \
+	cmptno=2 \
+	pae=40 \
+	mse=10.154
+
+/* 12x12, 12 bits/sample */
+id=j2kc_c1p1_06_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_06.j2k \
+	decoded_file=reference_class1_profile1/c1p1_06-0.pgx \
+	cmptno=0 \
+	pae=2 \
+	mse=0.600
+
+/* 12x12, 12 bits/sample */
+id=j2kc_c1p1_06_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_06.j2k \
+	decoded_file=reference_class1_profile1/c1p1_06-1.pgx \
+	cmptno=1 \
+	pae=2 \
+	mse=0.600
+
+/* 12x12, 12 bits/sample */
+id=j2kc_c1p1_06_2 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_06.j2k \
+	decoded_file=reference_class1_profile1/c1p1_06-2.pgx \
+	cmptno=2 \
+	pae=2 \
+	mse=0.600
+
+/* 2x12, 12 bits/sample */
+id=j2kc_c1p1_07_0 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_07.j2k \
+	decoded_file=reference_class1_profile1/c1p1_07-0.pgx \
+	cmptno=0 \
+	pae=0
+
+/* 8x12, 12 bits/sample */
+id=j2kc_c1p1_07_1 \
+	collection=j2kc \
+	encoded_file=codestreams_profile1/p1_07.j2k \
+	decoded_file=reference_class1_profile1/c1p1_07-1.pgx \
+	cmptno=1 \
+	pae=0
+
+#endif
+
+/******************************************************************************\
+JP2 File Format Reader Conformance Tests
+\******************************************************************************/
+
+/******************************************************************************\
+Table G.1: JP2 reference images and allowable error
+\******************************************************************************/
+
+#ifdef ENABLE_TABLE_G1_TESTS
+
+/* 768x512, 3 components, 8 bits/sample, sRGB */
+id=j2kc_jp2_01 \
+	collection=j2kc \
+	encoded_file=testfiles_jp2/file1.jp2 \
+	decoded_file=reference_jp2/jp2_1.tif \
+	pae=4
+
+/* 3 components, 8 bits/sample, sRGB-YCC */
+id=j2kc_jp2_02 \
+	collection=j2kc \
+	encoded_file=testfiles_jp2/file2.jp2 \
+	decoded_file=reference_jp2/jp2_2.tif \
+	force_srgb=1 \
+	pae=4
+
+/* 3 components, 8 bits/sample, sRGB-YCC */
+id=j2kc_jp2_03 \
+	collection=j2kc \
+	encoded_file=testfiles_jp2/file3.jp2 \
+	decoded_file=reference_jp2/jp2_3.tif \
+	force_srgb=1 \
+	pae=4
+
+#if defined(ENABLE_BAD_TESTS) && defined(ENABLE_EXTRA_TESTS)
+/* 1 component, 8 bits/sample, sRGB-gray */
+/* ERROR DUE TO: 1 vs 3 components */
+id=j2kc_jp2_04 \
+	collection=j2kc \
+	encoded_file=testfiles_jp2/file4.jp2 \
+	decoded_file=reference_jp2/jp2_4.tif \
+	pae=4
+#endif
+
+/* 3 component, 8 bits/sample, ROMM-RGB */
+id=j2kc_jp2_05 \
+	collection=j2kc \
+	encoded_file=testfiles_jp2/file5.jp2 \
+	decoded_file=reference_jp2/jp2_5.tif \
+	force_srgb=1 \
+	pae=4
+
+#if defined(ENABLE_BAD_TESTS) && defined(ENABLE_EXTRA_TESTS)
+/* 1 component, 12 bits/sample, sRGB-grey */
+/* ERROR DUE TO: 1 vs 3 components */
+id=j2kc_jp2_06 \
+	collection=j2kc \
+	encoded_file=testfiles_jp2/file6.jp2 \
+	decoded_file=reference_jp2/jp2_6.tif \
+	pae=4
+#endif
+
+/* 3 components, 16 bits/sample, e-sRGB */
+id=j2kc_jp2_07 \
+	collection=j2kc \
+	encoded_file=testfiles_jp2/file7.jp2 \
+	decoded_file=reference_jp2/jp2_7.tif \
+	force_srgb=1 \
+	pae=4
+
+/* 1 component, 8 bits/sample, gamma 1.8 */
+id=j2kc_jp2_08 \
+	collection=j2kc \
+	encoded_file=testfiles_jp2/file8.jp2 \
+	decoded_file=reference_jp2/jp2_8.tif \
+	force_srgb=1 \
+	pae=4
+
+/* 1 component, 8 bits/sample, palette */
+id=j2kc_jp2_09 \
+	collection=j2kc \
+	encoded_file=testfiles_jp2/file9.jp2 \
+	decoded_file=reference_jp2/jp2_9.tif \
+	force_srgb=1 \
+	pae=4
+
+#endif
+
+/******************************************************************************\
+\******************************************************************************/

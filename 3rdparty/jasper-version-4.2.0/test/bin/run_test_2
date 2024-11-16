@@ -1,0 +1,172 @@
+#! /usr/bin/env bash
+# Copyright (c) 2016 Michael David Adams
+################################################################################
+
+cmd_dir=$(dirname $0) || exit 1
+source "$cmd_dir/base_utilities" || exit 1
+source "$cmd_dir/test_utilities" || exit 1
+
+debug_level="${JAS_DEBUG_LEVEL:-0}"
+if [ "$debug_level" -ge 1 ]; then
+	set -xv
+fi
+
+################################################################################
+
+set_source_and_build_dirs || panic "cannot set source and build directories"
+tmp_dir=$(make_tmp_dir)
+
+################################################################################
+
+#abs_source_dir="$1"
+#abs_build_dir="$2"
+
+tmp_file=$tmp_dir/data
+
+top_dir="$cmd_dir/../.."
+data_dir="$top_dir/data"
+
+jasper="$abs_top_builddir/src/app/jasper"
+imginfo="$abs_top_builddir/src/app/imginfo"
+imgcmp="$abs_top_builddir/src/app/imgcmp"
+jiv="$abs_top_builddir/src/app/jiv"
+export JASPER_COMMAND="$jasper"
+export IMGINFO_COMMAND="$imginfo"
+
+internal_testing_mode="${JAS_INTERNAL_TESTING_MODE:-0}"
+
+debug=0
+
+image_path="$data_dir/images"
+
+has_jpg=$(is_supported_format jpg) || \
+  panic "cannot determine if JPG is supported format"
+has_mif=$(is_supported_format mif) || \
+  panic "cannot determine if MIF is supported format"
+
+in_files=()
+#in_files+=(feep2.pnm)
+#in_files+=(feep.pnm)
+in_files+=(goldenears.bmp)
+in_files+=(goldenears_gray.jpg)
+in_files+=(goldenears_gray.pnm)
+in_files+=(goldenears_gray.ras)
+in_files+=(goldenears.jpg)
+in_files+=(goldenears.pnm)
+in_files+=(goldenears.ras)
+in_files+=(small_16x1.pnm)
+in_files+=(small_1x1.pnm)
+in_files+=(stawamuschief_gray.pnm)
+in_files+=(stawamuschief.pnm)
+in_files+=(test.pnm)
+
+image_formats=()
+image_formats+=(bmp)
+image_formats+=(jp2)
+image_formats+=(jpc)
+image_formats+=(pgx)
+image_formats+=(pnm)
+image_formats+=(ras)
+if [ "$internal_testing_mode" -eq 1 ]; then
+	image_formats+=(mif)
+fi
+# NOTE: Since the test requires lossless coding, we cannot use JPEG format.
+#image_formats+=(jpg)
+
+error_count=0
+failed_tests=()
+
+for in_file_base in "${in_files[@]}"; do
+
+	skip=0
+	case "$in_file_base" in
+	*.jpg|*.jpeg)
+		if [ "$has_jpg" -eq 0 ]; then
+			skip=1
+		fi
+		;;
+	*.mif)
+		if [ "$has_mif" -eq 0 ]; then
+			skip=1
+		fi
+		;;
+	esac
+	if [ "$skip" -ne 0 ]; then
+		echo "SKIPPING: $in_file_base"
+		continue
+	fi
+
+	for image_format in "${image_formats[@]}"; do
+		test_case="$in_file_base-$image_format"
+		echo "############################################################"
+		in_file=$(image_which "$image_path" "$in_file_base") || \
+		  panic "cannot find image $in_file_base"
+		image_type=$(image_info "$in_file" "type") || \
+		  panic "cannot get image type $in_file"
+		image_fmt=$(image_info "$in_file" "format") || \
+		  panic "cannot get image format $in_file"
+		image_prec=$(image_info "$in_file" "depth") || \
+		  panic "cannot get image depth $in_file"
+		echo "input: $in_file_base"
+		echo "target format: $image_format"
+		if [ ! -f "$in_file" ]; then
+			echo "warning: cannot find image file $in_file_base"
+			continue
+		fi
+		if [ "$image_type" = rgb -a "$image_format" = pgx ]; then
+			echo "The PGX format does not support color images."
+			echo "Skipping the conversion of a color image to the PGX format."
+			continue
+		fi
+		if [ "$image_prec" -ne 8 -a "$image_format" = bmp ]; then
+			continue
+		fi
+		rm -f "$tmp_file"
+		enc_opts=()
+		enc_opts+=(-f "$in_file")
+		enc_opts+=(-T "$image_format")
+		dec_opts=()
+		dec_opts+=(-T "$image_format")
+		if [ "$debug" -ge 1 ]; then
+			enc_opts+=(--debug-level 10)
+			dec_opts+=(--debug-level 10)
+		fi
+		echo "Running $jasper ${enc_opts[@]} | $jasper ${dec_opts[@]} > $tmp_file"
+		"$jasper" "${enc_opts[@]}" | \
+		  "$jasper" "${dec_opts[@]}" > "$tmp_file"
+		pae=$("$imgcmp" -f "$in_file" -F "$tmp_file" -m pae --max \
+		  2> /dev/null)
+		status=$?
+		if [ "$status" -ne 0 ]; then
+			echo "imgcmp failed ($status) for $in_file and $tmp_file"
+			error_count=$((error_count + 1))
+			failed_tests+=("$test_case")
+			continue
+		fi
+		if [ -z "$pae" ]; then
+			echo "imgcmp output empty $in_file and $tmp_file"
+			error_count=$((error_count + 1))
+			failed_tests+=("$test_case")
+			continue
+		fi
+		if [ "$pae" != 0 ]; then
+			echo "ERROR: $image_format $in_file_base NOT LOSSLESS (PAE=$pae)"
+			error_count=$((error_count + 1))
+			failed_tests+=("$test_case")
+			#"$jiv" $tmp_file $in_file
+		fi
+		echo "STATUS: OK"
+	done
+done
+
+echo "############################################################"
+if [ "$error_count" -gt 0 ]; then
+	echo "The following test cases failed:"
+	for failed_test in "${failed_tests[@]}"; do
+		echo "    $failed_test"
+	done
+	echo "Number of failed test cases: $error_count"
+	echo "STATUS: FAILED"
+	exit 1
+fi
+echo "STATUS: PASSED"

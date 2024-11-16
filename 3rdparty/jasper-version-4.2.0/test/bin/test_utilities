@@ -1,0 +1,243 @@
+#! /usr/bin/env bash
+# Copyright (c) 2016 Michael David Adams
+
+################################################################################
+#
+################################################################################
+
+set_source_and_build_dirs()
+{
+	#eecho "JAS_ABS_TOP_BUILDDIR $JAS_ABS_TOP_BUILDDIR"
+	#eecho "JAS_TOP_BUILDDIR $JAS_TOP_BUILDDIR"
+	#eecho "JAS_ABS_TOP_SRCDIR $JAS_ABS_TOP_SRCDIR"
+	#eecho "JAS_TOP_SRCDIR $JAS_TOP_SRCDIR"
+	abs_top_builddir=${JAS_ABS_TOP_BUILDDIR:-$(realpath "$cmd_dir/../..")} || \
+	  return 1
+	top_builddir=${JAS_TOP_BUILDDIR:-$(realpath --relative-to \
+	  "$abs_top_builddir" "$cmd_dir/../..")} || return 1
+	abs_top_srcdir=${JAS_ABS_TOP_SRCDIR:-$(realpath "$cmd_dir/../..")} || \
+	  return 1
+	top_srcdir=${JAS_TOP_SRCDIR:-$(realpath --relative-to "$abs_top_srcdir" \
+	  "$cmd_dir/../..")} || return 1
+	#eecho "abs_top_builddir=$abs_top_builddir"
+	#eecho "top_builddir=$top_builddir"
+	#eecho "abs_top_srcdir=$abs_top_srcdir"
+	#eecho "top_srcdir=$top_srcdir"
+}
+
+get_tmp_dir()
+{
+	local package="jasper"
+	if [ $# -ne 1 ]; then
+		return 1
+	fi
+	local name="$1"
+	echo "/tmp/$package-$USER@$HOSTNAME/$name-$$"
+}
+
+make_tmp_dir()
+{
+	local name
+	if [ $# -ge 1 ]; then
+		name="$1"
+	else
+		name=`basename $0`
+	fi
+	local tmp_dir
+	tmp_dir=`get_tmp_dir "$name"` || return 1
+	if [ ! -d "$tmp_dir" ]; then
+		mkdir -p "$tmp_dir" || return 1
+	fi
+	echo "$tmp_dir"
+}
+
+make_tmp_dir_2()
+{
+	[ $# -eq 1 ] || return 1
+	local template="$1"
+	local tmp_dir
+	tmp_dir="$(mktemp -d "$template")" || return 1
+	echo "$tmp_dir"
+}
+
+################################################################################
+# Image characteristics.
+################################################################################
+
+image_which()
+{
+	if [ $# -ne 2 ]; then
+		return 2
+	fi
+	local path="$1"
+	local file="$2"
+	#eecho "PATH=$path FILE=$file"
+	local dirs=($(echo "$path" | tr ';' ' ')) || return 1
+	for dir in "${dirs[@]}"; do
+		local buffer="$dir/$file"
+		if [ -f "$buffer" ]; then
+			echo "$buffer"
+			return 0
+		fi
+	done
+	echo "$file"
+}
+
+image_info()
+{
+	#eecho "IMGINFO_COMMAND $IMGINFO_COMMAND"
+	if [ $# -ne 2 ]; then
+		return 2
+	fi
+	local file="$1"
+	local key="$2"
+	local value
+	#local imginfo="${IMGINFO_COMMAND:-imginfo}"
+	local imginfo="$IMGINFO_COMMAND"
+	[ -n "$imginfo" ] || return 1
+	#eecho "invoked image_info with file=$file key=$key"
+	if [ ! -x "$imginfo" ]; then
+		eecho "cannot find command $imginfo"
+		return 1
+	fi
+	#local buffer=$("$imginfo" -q < "$file" 2> /dev/null) || return 1
+	local buffer=$("$imginfo" --enable-all-formats -q < "$file") || return 1
+	case "$key" in
+	format)
+		value=$(awk '{print $1}' <<< "$buffer") || return 1
+		;;
+	num_components)
+		value=$(awk '{print $2}' <<< "$buffer") || return 1
+		;;
+	width)
+		value=$(awk '{print $3}' <<< "$buffer") || return 1
+		;;
+	height)
+		value=$(awk '{print $4}' <<< "$buffer") || return 1
+		;;
+	depth)
+		value=$(awk '{print $5}' <<< "$buffer") || return 1
+		;;
+	size)
+		value=$(awk '{print $6}' <<< "$buffer") || return 1
+		;;
+	type)
+		local num_components=$(awk '{print $2}' <<< "$buffer") || return 1
+		value=""
+		case "$num_components" in
+		1)
+			value="gray";;
+		3)
+			value="rgb";;
+		esac
+		;;
+	esac
+	if [ -z "$value" ]; then
+		return 1
+	fi
+	echo "$value"
+}
+
+################################################################################
+# Functions for processing the test cases file and its associated data.
+################################################################################
+
+stripblanklines()
+{
+	awk '(NF > 0){print $0}' -
+}
+
+tcf_preprocessor()
+{
+	cpp "$@" -P 2> /dev/null | stripblanklines
+}
+
+tcf_gettest()
+{
+	[ $# -ge 3 ] || return 3
+	local file="$1"
+	local id="$2"
+	local name="$3"
+	shift 3
+	local options=("$@")
+	#eecho "$file $id $name"
+	local buffer=$(cat "$file" | tcf_preprocessor "${options[@]}" | \
+	  awk -v TESTID="$id" '
+	{
+		id="";
+		buf="";
+		for (i = 1; i <= NF; ++i) {
+			ind = index($i, "=");
+			if (ind <= 0) {
+				continue;
+			}
+			len = length($i);
+			key = substr($i, 1, ind - 1);
+			val = substr($i, ind + 1, len - ind);
+			if (key == "id") {
+				id=val;
+			}
+			buf = buf "[" key "]=" val " ";
+		}
+		if (length(id) > 0 && TESTID == id) {
+			print buf;
+		}
+	}
+	') || return 1
+	#eecho "BUFFER $buffer"
+	if [ -z "$buffer" ]; then
+		return 1
+	fi
+	eval declare -g -A "$name"=\("$buffer"\)
+}
+
+tcf_gettestids()
+{
+	[ $# -ge 2 ] || return 2
+	local file="$1"
+	local name="$2"
+	shift 2
+	options=("$@")
+	#eecho "$file $name"
+	local buffer=$(cat "$file" | tcf_preprocessor "${options[@]}" | awk '
+	{
+		id="";
+		for (i = 1; i <= NF; ++i) {
+			ind = index($i, "=");
+			if (ind <= 0) {
+				continue;
+			}
+			len = length($i);
+			key = substr($i, 1, ind - 1);
+			val = substr($i, ind + 1, len - ind);
+			if (key == "id") {
+				id=val;
+			}
+		}
+		if (length(id) > 0) {
+			printf "%s ", id;
+		}
+	}
+	')
+	#eecho "BUFFER $buffer"
+	eval declare -g -a "$name"=\("$buffer"\)
+}
+
+evaluate_expression()
+{
+	[ $# -eq 1 ] || return 1
+	local expr="$1"
+	bc -l <<< "$expr"
+}
+
+is_supported_format()
+{
+	#local jasper="${JASPER_COMMAND:-jasper}"
+	local jasper="$JASPER_COMMAND"
+	[ -n "$jasper" ] || return 1
+	local format="$1"
+	local supported=0
+	"$jasper" --enable-all-formats --list-enabled-formats | \
+	  grep -q '^'"$format"'$' && supported=1
+	echo "$supported"
+}

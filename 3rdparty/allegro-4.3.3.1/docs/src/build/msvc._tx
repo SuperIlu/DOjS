@@ -1,0 +1,135 @@
+@html_text_substitution=readme.txt|<a href="../readme.html">readme.txt</a>
+@external-css=../allegro.css
+@document_title=Allegro MSVC-specific information
+@<pre>
+     ______   ___    ___
+    /\  _  \ /\_ \  /\_ \
+    \ \ \L\ \\//\ \ \//\ \      __     __   _ __   ___ 
+     \ \  __ \ \ \ \  \ \ \   /'__`\ /'_ `\/\`'__\/ __`\
+      \ \ \/\ \ \_\ \_ \_\ \_/\  __//\ \L\ \ \ \//\ \L\ \
+       \ \_\ \_\/\____\/\____\ \____\ \____ \ \_\\ \____/
+	\/_/\/_/\/____/\/____/\/____/\/___L\ \/_/ \/___/
+				       /\____/
+				       \_/__/
+
+
+		 MSVC-specific information.
+
+	 See readme.txt for a more general overview.
+@</pre>
+
+
+
+@heading
+MSVC notes
+
+   Status: complete.
+
+   The screensaver example is built, but you must copy <tt>scrsave.scr</tt> to
+   your <tt>windows/system</tt> directory (or <tt>winnt/system32</tt> directory
+   under Windows NT/2k/XP) if you want to test it.
+   
+   You may also want to refer to one of the following, as they may include
+   more up to date information:
+   
+     <ul><li><link>http://wiki.allegro.cc/Build/MSVC_6</a>
+     <li><link>http://wiki.allegro.cc/Build/MSVC_7</a>
+     <li><link>http://wiki.allegro.cc/Build/MSVC_8</a>
+     </ul>
+
+
+
+@heading
+Project Files
+
+   The CMake tool can generate workspaces for MSVC.
+   
+   If everything builds successfully, you'll need to copy some files to finish
+   the installation:
+   
+   <ul><li>Copy the contents of C:\allegro\include to "Visual Studio\VC\include"
+   <li>Copy the .lib files from C:\allegro\lib\msvc to "Visual Studio\VC\lib"
+   <li>Copy the .dll files from C:\allegro\lib\msvc to C:\Windows\System32 
+   </ul>
+     
+   The most common location of Visual Studio is "C:\Program Files\Microsoft
+   Visual Studio."
+   
+   Then you can build the rest of the examples, demos, tests, and tools by 
+   opening up their respective project files and selectiong Batch Build from
+   the menu.
+      
+
+
+@heading
+Required software
+
+   <ul><li>Microsoft Visual C++.
+   <li>Recent set of DirectX and other Windows SDK headers.
+   </ul>
+   Allegro should work with MSVC versions 6 and above. Lower versions may
+   work but haven't been tested in a long time.
+
+   The DirectX SDK can be obtained directly from Microsoft. An old version 
+   of the headers is included with MSVC 6, but Allegro requires more recent 
+   files. You should either copy the current headers into your MSVC include 
+   and lib directories, or alter your <tt>INCLUDE</tt> and <tt>LIB</tt> environment variables
+   to put the DirectX SDK files in front of the standard MSVC locations.
+
+   Microsoft Visual Studio Express Editions (free):
+   You will need to separately download and install the "Platform SDK" or
+   "Windows SDK". In the IDE, go to Tools > Options > Projects and Solutions >
+   VC++ Directories and add the Platform SDK and DirectX Include and Lib/x86
+   (or whatever) directories to the relevant lists.
+
+
+
+@heading
+Installing Allegro
+
+   This is a source-only distribution, so you will have to compile Allegro 
+   before you can use it.  Please follow the generic instructions in
+   docs/build/cmake.txt.
+
+   If you need to call MSVC from the command line, you may need to set up your
+   environment.
+   You probably have a <tt>vcvars32.bat</tt> file that will do this for you
+   (the exact location of this file depends on your MSVC version and folder
+   where you have MSVC installed, e.g. for MSVC 6 it is usually 
+   <tt>C:\Program Files\Microsoft Visual Studio\VC98\Bin</tt>, for MSVC 8 
+   <tt>C:\Program Files\Microsoft Visual Studio 8\VC\Bin</tt> etc.).
+   You will have to run this file every time you open a DOS box or configure 
+   the environment variables in Control Panel/System/Environment (autoexec.bat
+   for Win 9x/ME). 
+
+
+
+@heading
+Using Allegro
+
+   All the Allegro functions, variables, and data structures are defined in 
+   <tt>allegro.h</tt>. You should include this in your programs, and link with one of
+   the libraries:
+<textblock>
+      alleg.lib                  - optimised DLL import library
+      alleg-debug.lib            - debugging DLL import library
+      alleg-profile.lib          - profiling DLL import library
+      alleg-static.lib           - statically linked optimised library
+      alleg-debug-static.lib     - statically linked debugging library
+      alleg-profile-static.lib   - statically linked profiling library
+<endblock>
+   When using a statically linked library, you must define the preprocessor
+   symbol <tt>ALLEGRO_STATICLINK</tt> before including any of the Allegro headers and
+   link your program against Allegro and the main Win32/DirectX libraries
+   in that order (see the variable <tt>LIBRARIES</tt> in <tt>makefile.vc</tt>). You have also
+   to make sure that your program is linked against the right C run-time
+   library, ie. the multi-threaded DLL version of MSVCRT (or the debug
+   version if you are using the debug library). You can change this option
+   at Project - Settings - C/C++ - Category: Code Generation - Use run-time
+   library.
+
+   Don't forget that you need to use the <code>END_OF_MAIN()</code> macro right after
+   your <code>main()</code> function!
+
+   If you use one of the DLL versions, you will obviously need to distribute 
+   the appropriate DLL along with your program.

@@ -1,0 +1,42 @@
+/*!
+
+\page bugs Bug Tracking and Reporting
+
+All bugs reported in JasPer are tracked using the issue-tracking
+functionality provided by GitHub.  If you encounter a problem with
+JasPer and you would like to know if it is a known problem, please
+check the issue-tracker page for JasPer on GitHub, which can be found at:
+
+  - https://github.com/jasper-software/jasper/issues
+
+If you happen to find a bug that has not been previously reported,
+please report it so that it can be fixed.
+To submit a bug report, visit the above issue-tracker page,
+and click on the "New issue" button.
+
+In order to ensure that your bug report can be properly processed,
+always be sure to include **all** of the following information:
+
+  - The version of JasPer in which the problem was found.
+
+  - The details of the run-time system (i.e., operating system,
+    version number).
+
+  - The compiler that you are using (i.e., vendor, version number).
+
+  - The exact command line options used when the problem was observed.
+
+  - Indicate whether or not the problem is reproducible.  If the
+    problem is reproducible, indicate the exact steps required to
+    reproduce the problem.
+
+  - A detailed description of the problem that you are experiencing.
+
+It is essential that you include all of the above information.
+Failure to do so may result in the bug report not being processed.
+
+Please do not submit bug reports directly to the author of JasPer
+via email, as bug reports that are not submitted via the above
+issue-tracking system on GitHub are easy to be lost.
+
+*/

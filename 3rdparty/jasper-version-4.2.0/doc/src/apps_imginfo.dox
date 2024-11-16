@@ -1,0 +1,68 @@
+/*!
+
+\page apps_imginfo The imginfo Program
+
+\section app__imginfo The imginfo Program
+
+\subsection app__imginfo__synopsis Synopsis
+
+\c imginfo [options]
+
+\subsection app__imginfo__desc Description
+
+The `imginfo` command displays information about an image.
+This command is really only intended to be used from shell scripts for
+testing purposes.
+
+\subsection app__imginfo__options Options
+
+The following options are supported:
+
+  - `--help`
+    - Print help information and exit.
+
+  - `--version`
+    - Display the version information and exit.
+
+  - `--verbose`
+    - Increase the verbosity level.
+
+  - `-f $file`
+    - Specify that the image should be read from the file named `$file`.
+      If this option is not specified, the image is read from standard
+      input.
+
+  - `--list-enabled-formats`
+    - Print the names of all of the enabled image formats to standard output.
+
+  - `--memory-limit $n`
+    - Set the memory limit to `$n` bytes.
+
+  - `--debug-level $level`
+    - Set the debug level to `$level`.
+
+  - `--max-samples $n`
+    - Set the maximum number of samples for decoding to `$n`.
+
+  - `--decoder-option $string`
+    - Add the option `$string` to the list of decoder options.
+
+
+\subsection app__imginfo__example Examples
+
+To obtain information on how to use the `imginfo` program, use the
+command:
+
+    imginfo --help
+
+Suppose that we would like to print information about an image stored
+in the file name `image.jp2`.
+This could be accomplished by using the command:
+
+    imginfo < image.jp2
+
+Alternatively, the following command could be used:
+
+    imginfo -f image.jp2
+
+*/

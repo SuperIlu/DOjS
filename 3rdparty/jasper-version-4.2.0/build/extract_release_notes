@@ -1,0 +1,21 @@
+#! /usr/bin/env bash
+
+cat <<- EOF
+The comments below are automatically extracted from the beginning of the
+NEWS document.
+EOF
+echo
+
+awk '
+	BEGIN {
+		count = 0;
+	}
+	/^[0-9]+\.[0-9]+\.[0-9]+ \([0-9]+-[0-9]+-[0-9]+\)/ {
+		++count;
+	}
+	{
+		if (count >= 1 && count < 2) {
+			print $0;
+		}
+	}
+'

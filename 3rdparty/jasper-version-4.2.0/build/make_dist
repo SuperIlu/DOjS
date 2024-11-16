@@ -1,0 +1,128 @@
+#! /bin/bash
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+usage()
+{
+	echo "usage: $0 [-n NAME] [-r COMMIT] [-l LOCAL_DIR]"
+	cat <<- EOF
+	Example:
+	    $0 -n jasper-2.0.0 -r version-2.0.0
+	EOF
+	exit 2
+}
+
+user=$(whoami) || panic "cannot get username"
+host=$(hostname) || panic "cannot get hostname"
+
+repo_location=""
+commit=""
+local_dir=""
+name=""
+
+while getopts l:r:n: opt; do
+	case $opt in
+	n)
+		name="$OPTARG"
+		;;
+	l)
+		repo_location=local
+		local_dir="$OPTARG"
+		;;
+	r)
+		repo_location=remote
+		commit="$OPTARG"
+		;;
+	\?)
+		usage
+		break;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "$name" ]; then
+	usage "no name specified"
+fi
+
+if [ -z "$repo_location" ]; then
+	usage "no repo location specified"
+fi
+
+tmp_dir="/tmp/jasper-makedist-$user@$host-$$"
+build_dir="$tmp_dir/build"
+source_dir="$tmp_dir/$name"
+install_dir="$tmp_dir/install"
+
+for dir in "$tmp_dir" "$build_dir" "$source_dir" "$install_dir"; do
+	if [ ! -d "$dir" ]; then
+		mkdir -p "$dir" || panic "cannot make directory $dir"
+	fi
+done
+
+case "$repo_location" in
+remote)
+	git clone https://github.com/mdadams/jasper.git "$source_dir" || \
+	  panic "cannot clone repository"
+	(cd "$source_dir" && git checkout "$commit") || \
+	  panic "cannot checkout commit $commit"
+	;;
+local)
+	(cd "$local_dir" && tar -cf - . ) | (cd "$source_dir" && tar -xf -) || \
+	  panic "cannot copy"
+	;;
+*)
+	usage "invalid repo location"
+	;;
+esac
+
+cmake \
+  -G "Unix Makefiles" \
+  -DCMAKE_INSTALL_PREFIX="$install_dir" \
+  -DJAS_ENABLE_OPENGL=false \
+  -H"$source_dir" -B"$build_dir" || \
+  panic "cmake failed"
+
+(cd "$build_dir" && make clean all) || \
+  panic "make clean/all failed"
+
+(cd "$build_dir/doc/latex" && make clean all) || \
+  panic "make clean/all in doc/latex failed"
+
+mv "$build_dir/doc/html" "$source_dir/doc/html" || \
+  panic "cannot move html"
+
+mv "$build_dir/doc/latex/refman.pdf" "$source_dir/doc/manual.pdf" || \
+  panic "cannot move manual.pdf"
+
+(cd "$source_dir" && \
+  git log --stat -M -C --name-status --no-color | \
+  fmt --split-only > ChangeLog) || \
+  panic "cannot generate changelog"
+
+remove_list=()
+remove_list+=(build/appveyor)
+remove_list+=(build/travis)
+remove_list+=(build/make_dist)
+remove_list+=(appveyor.yml)
+remove_list+=(.travis.yml)
+remove_list+=(.gitignore)
+remove_list+=(.gitattributes)
+remove_list+=(data/test/bad/1_crash.jpg)
+for file in "${remove_list[@]}"; do
+	if [ ! -e "$source_dir/$file" ]; then
+		panic "missing file/directory $file"
+	fi
+	(cd "$source_dir" && rm -rf "$file") || \
+	  panic "cannot remove file/directory $file"
+done
+
+(cd "$source_dir" && rm -rf .git) || \
+  panic "cannot remove .git directory"
+
+tar -C "$tmp_dir" -czf - "$name" > "$name.tar.gz" || \
+  panic "cannot make archive"
+

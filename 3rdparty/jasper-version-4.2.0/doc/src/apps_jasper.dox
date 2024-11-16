@@ -1,0 +1,163 @@
+/*!
+
+\page apps_jasper The jasper Program
+
+\section app__jasper The jasper Program
+
+\subsection app__jasper__synopsis Synopsis
+
+\c jasper [options]
+
+\subsection app__jasper__desc Description
+
+The jasper command converts image data from one format to another.
+In other words, this command functions as a general-purpose transcoder.
+Since the JPEG-2000 format is supported by this software,
+it can be used as a JPEG-2000 encoder and/or decoder.
+
+\subsection app__jasper__options Options
+
+The jasper program accepts the following options:
+
+  - `--help`
+    - Print usage information and exit.
+
+  - `--version`.
+    - Print the version and exit.
+
+  - `--verbose`
+    - Enable verbose mode.
+
+  - `--list-enabled-formats`
+    - Print the names of all of the enabled image formats to standard output.
+
+  - `--memory-limit $n`
+    - Set the memory limit to `$n` bytes.
+
+  - `--debug-level $level`
+    - Set the debug level to `$level`.
+
+  - `--input $file` or
+    `-f $file`
+    - Read the input image from the file named `$file`.
+      By default, the input image is read from standard input.
+
+  - `--input-format $format`
+    or
+    `-t $format`
+    - Specify the format of the input image as `$format`.
+      In most circumstances, this option should not be needed, as the format
+      is normally autodetected by examining the image data directly
+      or deduced from the input file name extension if an input file is
+      specified (via the `--input` option).
+
+  - `--input-option $option`
+    or
+    `-o $option`
+    - Provide the option `$option` to the decoder.
+      The valid values for the argument `$option` are determined
+      by the input image format.
+      See below for more details.
+
+  - `--output $file`
+    or
+    `-F $file`
+    - Write the encoded image to the file named `$file`.
+      By default, the encoded image is written to standard output.
+
+  - `--output-format $format`
+    or
+    `-T $format`
+    - Produce the output image in the format indicated by `$format`.
+      The output format must be specified if an output file is not given
+      (via the `--output` option).
+      If an output file is given and no output format is specified, an
+      attempt will be made to deduce the correct format from the output
+      file name extension.
+
+  - `--output-option $option`
+    or
+    `-O $option`
+    - Provide the option `$option` to the encoder.
+      The valid values for the argument `$option` are determined by
+      the output format.
+      See below for more details.
+
+  - `--force-srgb`
+    - Force the image to be converted to the sRGB color space before
+      encoding.
+      As a side effect, the image will also be homogeneously sampled
+      (i.e., all components are sampled at the same points on the reference
+      grid).
+
+Assuming that JasPer is built with all codec support included (so that
+all codecs are available for use), the argument `$format` must have one of
+the following values:
+
+  - `bmp`: Windows BMP
+  - `heic`: HEIC Format
+  - `jp2`: JPEG-2000 JP2
+  - `jpc`: JPEG-2000 Code Stream
+  - `jpg`: JPEG
+  - `pgx`: PGX
+  - `pnm`: PNM/PGM/PPM
+  - `mif`: My Image Format
+  - `ras`: Sun Rasterfile
+
+A list of the available formats is included in the help information for
+the program (obtained via the `--help` option).
+
+\subsection app__jasper__examples Examples
+
+To obtain information on how to use the `jasper` program, use the
+command:
+
+    jasper --help
+
+Suppose that we have an image stored in the PNM/PPM format in a file called
+`lena.ppm`.
+To encode this image (losslessly) in the JPEG-2000 JP2 format, and store the
+result in a file called `lena.jp2`, use the command:
+
+    jasper --input lena.ppm --output lena.jp2 --output-format jp2
+
+Or, alternately (using short option names), use the command:
+
+    jasper -f lena.ppm -F lena.jp2 -T jp2
+
+Suppose that we have a RGB color image stored in the JPEG-2000 JP2
+format in a file called `lena.jp2`.
+To encode this image in the PNM/PPM format, and store the result in a file
+called `lena.ppm`, use the command:
+
+    jasper --input lena.jp2 --output lena.ppm --output-format pnm
+
+Or, alternately (using short option names), use the command:
+
+    jasper -f lena.jp2 -F lena.ppm -T pnm
+
+Suppose that we have an image stored in the BMP format in a file called
+`lena.bmp`.
+To encode this image in a lossy manner at 100:1 compression in the JPEG-2000
+(code stream) format, and store the result in a file called `lena_lossy.jpc`,
+use the command:
+
+    jasper -f lena.bmp -F lena_lossy.jpc -T jpc -O rate=0.01
+
+Suppose that we have an image stored in a file called `sachie.pnm` in the
+PNM/PPM format, and we want to encode the image in the JPEG-2000 (code stream)
+format and store the result in a file named `sachie_new.jpc`.
+Further, suppose that we want the JPEG-2000 format to employ the following
+parameters:
+
+  - code blocks are 64 samples in width and 32 samples in height
+  - no multicomponent transform is to be employed
+  - 4 resolution levels should be employed for each component
+  - the compression is lossy at 64:1
+
+In order to accomplish the above, type:
+
+    jasper -f sachie.pnm -F sachie_new.jpc -T jpc -O cblkwidth=64 \
+      -O cblkheight=32 -O nomct -O numrlvls=4 -O rate=0.015625
+
+*/

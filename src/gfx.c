@@ -21,6 +21,9 @@ SOFTWARE.
 */
 
 #include <allegro.h>
+#if WINDOWS==1
+#include <winalleg.h>
+#endif
 #include <dirent.h>
 #include <errno.h>
 #include <mujs.h>

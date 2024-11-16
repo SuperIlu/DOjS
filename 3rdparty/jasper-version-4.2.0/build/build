@@ -1,0 +1,675 @@
+#! /usr/bin/env bash
+
+################################################################################
+# Functions
+################################################################################
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+usage()
+{
+	if [ "$#" -gt 0 ]; then
+		echo "bad usage: $@"
+	fi
+	cat <<- EOF
+	Options
+	=======
+
+	--help
+	    Print help information and exit.
+
+	--build-dir \$dir
+	    Set the build directory to \$dir.
+	--install-dir \$dir
+	    Set the install directory to \$dir.
+
+	--configure-only
+	    Perform configuration phase of CMake only.
+	--install
+	    Perform installation.
+	--test
+	    Perform testing.
+
+	--multithread
+	    Enable multithreading support.
+	--no-multithread
+	    Disable multithreading support.
+
+	--shared
+	    Enable the generation of shared (instead of static) libraries.
+	--static
+	    Enable the generation of static (instead of shared) libraries.
+
+	--use-jas-init
+	--no-use-jas-init
+
+	--release
+	    Set the build type to release.
+	--debug
+	    Set the build type to debug.
+	--relwithdebinfo
+	    Set the build type to release with debug information.
+
+	--documentation
+	    Enable the building of the documentation.
+	--no-documentation
+	    Disable the building of the documentation.
+
+	--asan
+	    Enable ASan.
+	--lsan
+	    Enable LSan.
+	--tsan
+	    Enable TSan.
+	--ubsan
+	    Enable UBSan.
+	--msan
+	    Enable MSan.
+
+	Examples
+	========
+
+	$0 --mode debug
+	EOF
+	exit 2
+}
+
+################################################################################
+# Early initialization.
+################################################################################
+
+self_dir="$(dirname "$0")" || \
+  panic "cannot get self directory"
+source "$self_dir/base_utilities" || \
+  panic "cannot load base utilities"
+self_dir="$(real_path "$self_dir")" || \
+  panic "cannot get self directory"
+
+sysinfo_program="$self_dir/sysinfo"
+
+################################################################################
+# Process command line.
+################################################################################
+
+enable=1
+enable_install=0
+build_type=release
+enable_test=0
+enable_conformance_tests=0
+verbose=0
+enable_asan=0
+enable_lsan=0
+enable_ubsan=0
+enable_msan=0
+enable_tsan=0
+enable_shared=1
+sde_top_dir=
+configure_only=0
+enable_doc=0
+use_pthread=0
+enable_multithread=1
+build_dir=
+install_dir=
+out_dir=
+crostini=0
+clean_build_dir=0
+clean_install_dir=0
+debug_level=0
+os=
+use_jas_init=0
+enable_strict=1
+cmake_generator=
+enable_32bit=0
+enable_cxx=1
+
+while [ $# -gt 0 ]; do
+	option="$1"
+	case "$option" in
+	--debug-level)
+		shift 1
+		[ $# -gt 0 ] || usage
+		debug_level="$1"
+		shift 1
+		;;
+	--make)
+		shift 1
+		cmake_generator="Unix Makefiles"
+		;;
+	--ninja)
+		shift 1
+		cmake_generator="Ninja"
+		;;
+
+	--clean-build-dir)
+		shift 1
+		clean_build_dir=1
+		;;
+	--clean-install-dir)
+		shift 1
+		clean_install_dir=1
+		;;
+	--crostini)
+		shift 1
+		crostini=1
+		;;
+	-q|--quiet)
+		shift 1
+		if [ "$verbose" -gt 0 ]; then
+			verbose=$((verbose - 1))
+		fi
+		;;
+	-v|--verbose)
+		shift 1
+		verbose=$((verbose + 1))
+		;;
+	--configure-only)
+		shift 1
+		configure_only=1
+		;;
+	--install)
+		shift 1
+		enable_install=1
+		;;
+	--out-dir)
+		shift 1
+		[ $# -gt 0 ] || usage
+		out_dir="$1"
+		shift 1
+		;;
+	--build-dir)
+		shift 1
+		[ $# -gt 0 ] || usage
+		build_dir="$1"
+		shift 1
+		;;
+	--install-dir)
+		shift 1
+		[ $# -gt 0 ] || usage
+		install_dir="$1"
+		shift 1
+		;;
+	--mode)
+		shift 1
+		[ $# -gt 0 ] || usage
+		case "$1" in
+		debug)
+			enable_asan=1
+			enable_ubsan=1
+			enable_lsan=1
+			enable_doc=0
+			use_pthread=0
+			enable_shared=0
+			enable_multithreading=1
+			build_type=debug
+			shift 1
+			;;
+		*)
+			shift 1;;
+		esac
+		;;
+	--32bit)
+		shift 1
+		enable_32bit=1
+		;;
+	--cxx)
+		shift 1
+		enable_cxx=1
+		;;
+	--no-cxx)
+		shift 1
+		enable_cxx=0
+		;;
+
+	--strict)
+		shift 1
+		enable_strict=1
+		;;
+	--no-strict)
+		shift 1
+		enable_strict=0
+		;;
+
+	--use-jas-init)
+		shift 1
+		use_jas_init=1
+		;;
+	--no-use-jas-init)
+		shift 1
+		use_jas_init=0
+		;;
+
+	--test)
+		shift 1
+		enable_test=1
+		;;
+	--no-test)
+		shift 1
+		enable_test=0
+		;;
+
+	--conformance-tests)
+		shift 1
+		enable_conformance_tests=1
+		;;
+	--no-conformance-tests)
+		shift 1
+		enable_conformance_tests=0
+		;;
+
+	--documentation)
+		shift 1
+		enable_doc=1
+		;;
+	--no-documentation)
+		shift 1
+		enable_doc=0
+		;;
+
+	--shared)
+		shift 1
+		enable_shared=1
+		;;
+
+	--asan)
+		shift 1
+		enable_asan=1
+		;;
+	--no-asan)
+		shift 1
+		enable_asan=0
+		;;
+
+	--lsan)
+		shift 1
+		enable_lsan=1
+		;;
+	--no-lsan)
+		shift 1
+		enable_lsan=0
+		;;
+
+	--msan)
+		shift 1
+		enable_msan=1
+		;;
+	--no-msan)
+		shift 1
+		enable_msan=0
+		;;
+
+	--ubsan)
+		shift 1
+		enable_ubsan=1
+		;;
+	--no-ubsan)
+		shift 1
+		enable_ubsan=0
+		;;
+
+	--tsan)
+		shift 1
+		enable_tsan=1
+		;;
+	--no-tsan)
+		shift 1
+		enable_tsan=0
+		;;
+
+	--release)
+		shift 1
+		build_type=release
+		;;
+	--relwithdebinfo)
+		shift 1
+		build_type=relwithdebinfo
+		;;
+	--debug)
+		shift 1
+		build_type=debug
+		;;
+
+	--prefer-pthread)
+		shift 1
+		use_pthread=1
+		;;
+	--no-prefer-pthread)
+		shift 1
+		use_pthread=0
+		;;
+
+	--print-only)
+		shift 1
+		enable=0
+		;;
+	--shared)
+		shift 1
+		enable_shared=1
+		;;
+	--static)
+		shift 1
+		enable_shared=0
+		;;
+
+	--no-multithread)
+		shift 1
+		enable_multithread=0
+		;;
+	--multithread)
+		shift 1
+		enable_multithread=1
+		;;
+
+	--help)
+		usage
+		;;
+	--)
+		shift 1
+		break
+		;;
+	--*|-*)
+		usage "invalid option $option"
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+program_args=("$@")
+
+if [ "$debug_level" -ge 1 ]; then
+	set -xv
+fi
+
+if [ -z "$os" ]; then
+	if [ -n "$RUNNER_OS" ]; then
+		case "$RUNNER_OS" in
+		MacOS|macOS)
+			os=macos;;
+		Linux|linux)
+			os=linux;;
+		Windows|windows)
+			os=windows;;
+		esac
+	else
+		os=unknown
+	fi
+fi
+
+sysinfo_data="$("$sysinfo_program" -a)" || \
+  panic "cannot get system information"
+cat <<- EOF
+================================================================================
+System Information
+$sysinfo_data
+================================================================================
+EOF
+[ $? -eq 0 ] || panic "cat failed"
+
+################################################################################
+# Apply some platform-specific hacks.
+################################################################################
+
+if [ "$crostini" -ne 0 ]; then
+	enable_tsan=0
+fi
+if [ "$os" == windows ]; then
+	if [ "$enable_doc" -ne 0 ]; then
+		echo "WARNING: disabling the generation of documentation"
+		enable_doc=0
+	fi
+fi
+
+################################################################################
+# Perform some initialization.
+################################################################################
+
+source_dir="$self_dir/.."
+
+if [ -z "$out_dir" ]; then
+	out_dir="$source_dir/tmp_cmake"
+fi
+if [ -z "$build_dir" ]; then
+	build_dir="$out_dir/build"
+fi
+if [ -z "$install_dir" ]; then
+	install_dir="$out_dir/install"
+fi
+
+echo "operating system: $os"
+echo "source directory: $source_dir"
+echo "build directory: $build_dir"
+echo "install directory: $install_dir"
+if [ -n "$CC" ]; then
+	echo "C compiler $CC"
+fi
+if [ -n "$CXX" ]; then
+	echo "CXX compiler $CXX"
+fi
+
+if [ -n "$sde_top_dir" ]; then
+	#sde_gcc="$sde_top_dir/bin/gcc"
+	sde_setup="$sde_top_dir/bin/sde_make_setup"
+	eval $("$sde_setup") || panic "setup failed"
+fi
+
+################################################################################
+# Create the build and install directories (possibly emptying them first).
+################################################################################
+
+if [ "$clean_build_dir" -ne 0 -a -e "$build_dir" ]; then
+	echo "Removing $build_dir"
+	rm -rf "$build_dir" || panic "cannot remove directory $build_dir"
+fi
+if [ "$clean_install_dir" -ne 0 -a -e "$install_dir" ]; then
+	echo "Removing $install_dir"
+	rm -rf "$install_dir" || panic "cannot remove directory $install_dir"
+fi
+
+if [ ! -d "$build_dir" ]; then
+	mkdir -p "$build_dir" || panic "cannot make directory $build_dir"
+fi
+if [ ! -d "$install_dir" ]; then
+	mkdir -p "$install_dir" || panic "cannot make directory $install_dir"
+fi
+
+################################################################################
+# Configure
+################################################################################
+
+configure_opts=()
+
+configure_opts+=(-B"$build_dir")
+configure_opts+=(-H"$source_dir")
+
+if [ -n "$cmake_generator" ]; then
+	configure_opts+=(-G "$cmake_generator")
+fi
+
+#if [ "$os" = windows ]; then
+#	configure_opts+=(-G "Visual Studio 12 2013 Win64")
+#fi
+
+configure_opts+=("-DCMAKE_INSTALL_PREFIX=$install_dir")
+
+if [ "$verbose" -ge 1 ]; then
+	configure_opts+=("-DCMAKE_VERBOSE_MAKEFILE=true")
+fi
+
+case "$build_type" in
+debug)
+	configure_opts+=("-DCMAKE_BUILD_TYPE=Debug");;
+release)
+	configure_opts+=("-DCMAKE_BUILD_TYPE=Release");;
+relwithdebinfo)
+	configure_opts+=("-DCMAKE_BUILD_TYPE=RelWithDebInfo");;
+*)
+	panic "unknown build type $build_type";;
+esac
+
+if [ "$enable_shared" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_SHARED=true")
+else
+	configure_opts+=("-DJAS_ENABLE_SHARED=false")
+fi
+
+if [ "$enable_asan" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_ASAN=true")
+fi
+if [ "$enable_tsan" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_TSAN=true")
+fi
+if [ "$enable_lsan" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_LSAN=true")
+fi
+if [ "$enable_ubsan" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_UBSAN=true")
+fi
+if [ "$enable_msan" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_MSAN=true")
+fi
+if [ "$enable_32bit" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_32BIT=true")
+fi
+
+if [ "$enable_cxx" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_CXX=true")
+else
+	configure_opts+=("-DJAS_ENABLE_CXX=false")
+fi
+configure_opts+=("-DJAS_ENABLE_DANGEROUS_INTERNAL_TESTING_MODE=true")
+
+if [ "$enable_doc" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_DOC=true")
+else
+	configure_opts+=("-DJAS_ENABLE_DOC=false")
+fi
+
+if [ "$use_jas_init" -ne 0 ]; then
+	configure_opts+=("-DJAS_USE_JAS_INIT=true")
+else
+	configure_opts+=("-DJAS_USE_JAS_INIT=false")
+fi
+
+if [ "$enable_strict" -ne 0 ]; then
+	configure_opts+=("-DJAS_STRICT=true")
+else
+	configure_opts+=("-DJAS_STRICT=false")
+fi
+
+if [ "$enable_multithread" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_MULTITHREADING_SUPPORT=true")
+else
+	configure_opts+=("-DJAS_ENABLE_MULTITHREADING_SUPPORT=false")
+fi
+if [ "$use_pthread" -ne 0 ]; then
+	configure_opts+=("-DJAS_PREFER_PTHREAD=true")
+fi
+
+if [ "$enable_conformance_tests" -ne 0 ]; then
+	configure_opts+=("-DJAS_ENABLE_CONFORMANCE_TESTS=true")
+else
+	configure_opts+=("-DJAS_ENABLE_CONFORMANCE_TESTS=false")
+fi
+
+configure_opts+=("${program_args[@]}")
+command=(cmake "${configure_opts[@]}")
+echo "============================================================"
+echo "RUNNING: ${command[@]}"
+echo "============================================================"
+if [ "$enable" -ne 0 ]; then
+	"${command[@]}" || panic "cmake failed"
+fi
+
+if [ "$configure_only" -ne 0 ]; then
+	exit
+fi
+
+################################################################################
+#
+################################################################################
+
+build_opts=()
+
+if [ "$verbose" -ge 1 ]; then
+	build_opts+=(--verbose)
+fi
+
+command=(cmake)
+command+=(--build "$build_dir")
+#command+=(--clean-first)
+command+=("${build_opts[@]}")
+echo "============================================================"
+echo "RUNNING: ${command[@]}"
+echo "============================================================"
+if [ "$enable" -ne 0 ]; then
+	"${command[@]}" || \
+	  panic "cmake build failed"
+fi
+
+################################################################################
+#
+################################################################################
+
+install_opts=()
+
+if [ "$verbose" -ge 1 ]; then
+	install_opts+=(--verbose)
+fi
+
+if [ "$enable_install" -ne 0 ]; then
+	command=(cmake)
+	command+=(--build "$build_dir")
+	command+=(--target install)
+	command+=("${install_opts[@]}")
+	echo "============================================================"
+	echo "RUNNING: ${command[@]}"
+	echo "============================================================"
+	if [ "$enable" -ne 0 ]; then
+		"${command[@]}" || \
+		  panic "cmake install failed"
+	fi
+fi
+
+################################################################################
+#
+################################################################################
+
+test_opts=()
+
+if [ "$verbose" -ge 2 ]; then
+	test_opts+=(--verbose)
+fi
+
+test_opts+=(--output-on-failure)
+
+command=()
+command+=(env)
+if [ "$debug_level" -ge 2 ]; then
+	command+=(JAS_DEBUG_LEVEL="$debug_level")
+fi
+if [ "$os" = windows ]; then
+	# NOTE:
+	# Windows searches for DLLs in the directories specified by the PATH
+	# environment variable (and possibly a few system directories as well).
+	# So, the following line ensures that the directory containing the
+	# JasPer DLL will be found.
+	command+=(PATH="$PATH:$build_dir/src/libjasper")
+	echo "**********"
+	ls -al $build_dir/src/libjasper
+	echo "**********"
+fi
+command+=(ctest "${test_opts[@]}")
+if [ "$enable_test" -ne 0 ]; then
+	echo "============================================================"
+	echo "Testing"
+	echo "RUNNING: ${command[@]}"
+	echo "============================================================"
+	if [ "$enable" -ne 0 ]; then
+		(cd "$build_dir" && "${command[@]}") || panic "ctest failed"
+	fi
+fi

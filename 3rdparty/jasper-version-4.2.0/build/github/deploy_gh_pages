@@ -1,0 +1,353 @@
+#! /usr/bin/env bash
+
+# Copyright (c) 2021 Michael David Adams.
+# All rights reserved.
+
+################################################################################
+# Some helper functions.
+################################################################################
+
+# Terminate with error.
+panic()
+{
+	echo "ERROR: $@" 1>&2
+	exit 1
+}
+
+join_by()
+{
+	local IFS="$1"
+	shift
+	echo "$*"
+}
+
+is_preview_release()
+{
+	local version="$1"
+	local pattern='^version-[0-9]+\.[0-9]+\.[0-9]+$'
+	if [[ "$version" =~ $pattern ]]; then
+		output="0"
+	else
+		output="1"
+	fi
+	echo "$output"
+}
+
+# Print usage information and exit.
+usage()
+{
+	echo "bad usage: $@"
+	cat <<- EOF
+	$(basename $0) - deploy JasPer manual GitHub Pages site
+
+	Usage
+	=====
+
+	$0 [options]
+
+	Options
+	=======
+
+	-b \$branch
+	    Set the deployment branch to \$branch.
+	-t \$tmp_dir
+	    Set the temporary directory to $\tmp_dir.
+	-i \$in_dir
+	    Set the input directory to \$in_dir.
+	    This is the directory containing the output of the document build
+	    process.
+	-r \$repo_name
+	    Set the deployment repository to \$repo_name.
+	    This includes both the user/organization and repository name.
+	-z \$github_ref
+	    Set the GitHub ref to \$github_ref.
+	-f
+	    Allow private key file to be overwritten.
+	-n
+	    Prepare to push to deployment repository but do not actually
+	    push the changes.  (This is only for testing purposes.)
+
+	Examples
+	========
+
+	export DEPLOY_KEY=.... # set DEPLOY_KEY to private SSH key
+	$0 -n -f -r jasper-software/jasper -b gh-pages \\
+	  -t /tmp/jasper_test/tmp -i /tmp/jasper_test/install -z refs/tags/v1.0.0
+	EOF
+	exit 2
+}
+
+################################################################################
+# Parse command line.
+################################################################################
+
+program_dir="$(dirname "$0")" || panic
+make_main_gh_page="$program_dir/make_main_gh_page"
+
+latest=
+branch="gh-pages"
+in_dir=
+repo_name=
+tmp_dir="${TMPDIR:-/tmp}"
+github_ref=
+force=0
+prepare_only=0
+verbose=1
+deploy_mode=
+
+while getopts b:i:r:t:z:fnvqm:lL opt; do
+	case $opt in
+	L)
+		latest=0;;
+	l)
+		latest=1;;
+	m)
+		deploy_mode="$OPTARG";;
+	v)
+		verbose=$((verbose + 1));;
+	q)
+		verbose=$((verbose - 1));;
+	b)
+		branch="$OPTARG";;
+	t)
+		tmp_dir="$OPTARG";;
+	i)
+		in_dir="$OPTARG";;
+	r)
+		repo_name="$OPTARG";;
+	z)
+		github_ref="$OPTARG";;
+	f)
+		force=1;;
+	n)
+		prepare_only=1;;
+	\?)
+		usage
+		break;;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "$github_ref" ]; then
+	usage "no github ref specified"
+fi
+if [ -z "$tmp_dir" ]; then
+	usage "no temporary directory specified"
+fi
+if [ -z "$in_dir" ]; then
+	usage "no input directory specified"
+fi
+if [ -z "$repo_name" ]; then
+	usage "no repository name specified"
+fi
+
+case "$deploy_mode" in
+key)
+	if [ -z "$DEPLOY_KEY" ]; then
+		usage "DEPLOY_KEY environment variable not set"
+	fi
+	;;
+token)
+	if [ -z "$DEPLOY_TOKEN" ]; then
+		usage "DEPLOY_TOKEN environment variable not set"
+	fi
+	;;
+*)
+	usage "bad deployment mode specified $deploy_mode"
+	;;
+esac
+
+if [ "$verbose" -ge 1 ]; then
+	echo "temporary directory $tmp_dir"
+	echo "input directory $in_dir"
+	echo "repository name $repo_name"
+	echo "GitHub ref $github_ref"
+fi
+
+################################################################################
+# Perform some basic initialization.
+################################################################################
+
+if [ "$verbose" -ge 3 ]; then
+	set -xv
+fi
+
+cmd_dir=$(dirname "$0") || \
+  panic "cannot determine directory"
+top_dir="$cmd_dir/../.."
+
+version="$(awk -v FS="/" '{print $3;}' <<< "$github_ref")" || \
+  panic "cannot determine document version"
+if [ "$verbose" -ge 1 ]; then
+	echo "version $version"
+fi
+
+preview_release="$(is_preview_release "$version")" || \
+  panic "cannot determine if release is preview release"
+
+if [ -z "$latest" ]; then
+	latest=1
+	if [ "$preview_release" -ne 0 ]; then
+		latest=0
+	fi
+fi
+
+tmp_dir="$tmp_dir/deploy"
+
+git_dir="$tmp_dir/git"
+version_dir="$git_dir/releases/$version"
+github_host="github.com"
+github_user="git"
+
+################################################################################
+# Setup SSH client configuration if needed.
+################################################################################
+
+case "$deploy_mode" in
+
+key)
+
+	ssh_dir="$HOME/.ssh"
+	private_key_file="$ssh_dir/private_key"
+
+	repo_url="ssh://git@$github_host/$repo_name.git"
+
+	if [ "$force" -eq 0 -a -e "$private_key_file" ]; then
+		panic "private key file already exists"
+	fi
+
+	if [ ! -d "$ssh_dir" ]; then
+		mkdir -p "$ssh_dir" || \
+		  panic "cannot make directory $ssh_dir"
+	fi
+	if [ ! -d "$tmp_dir" ]; then
+		mkdir -p "$ssh_dir" || \
+		  panic "cannot make directory $ssh_dir"
+	fi
+
+	echo "$DEPLOY_KEY" > "$private_key_file" || \
+	  panic "cannot create private key file"
+	chmod u+rw,g=,o= "$private_key_file" || \
+	  panic "cannot set permissions for private key file"
+
+	if [ -z "$SSH_AGENT_PID" ]; then
+		eval $(ssh-agent) || \
+		  panic "cannot start ssh-agent"
+	fi
+	ssh-add "$private_key_file" || \
+	  panic "ssh-add failed"
+	;;
+
+token)
+
+	git config --global credential.helper 'cache --timeout=86400' || \
+	  panic "cannot set credential helper"
+	cred_info=()
+	cred_info+=("protocol=https")
+	cred_info+=("host=$github_host")
+	cred_info+=("username=$github_user")
+	cred_info+=("password=$DEPLOY_TOKEN")
+	cred_string="$(join_by $'\n' "${cred_info[@]}")" || \
+	  panic "string processing failed"
+	cred_string="$(git credential fill <<< "$cred_string")" || \
+	  panic "git credential fill failed"
+
+	git credential approve <<< "$cred_string" || \
+	  panic "git credential approve failed"
+
+	repo_url="https://$github_user@$github_host/$repo_name.git"
+	;;
+
+*)
+
+	panic "unexpected case"
+	;;
+
+esac
+
+if [ "$verbose" -ge 1 ]; then
+	echo "repository URL: $repo_url"
+fi
+
+################################################################################
+# Add new release to GitHub pages repository.
+################################################################################
+
+git_push_extra_args=()
+
+# Clone the repository.
+git clone "$repo_url" "$git_dir" || \
+  panic "cannot clone repository $repo_url"
+
+# Create an orphaned branch for the web site content if the branch does
+# not already exist.
+git -C "$git_dir" ls-remote --exit-code --heads "$repo_url" "$branch" \
+  > /dev/null
+status=$?
+if [ "$status" -ne 0 -a "$status" -ne 2 ]; then
+	panic "git ls-remote failed"
+fi
+if [ "$status" -eq 2 ]; then
+	git -C "$git_dir" checkout --orphan "$branch" || \
+	  panic "cannot create orphan branch $branch"
+	git_push_extra_args=(-u origin "$branch")
+else
+	git -C "$git_dir" checkout "$branch" || \
+	  panic "cannot checkout branch $branch"
+fi
+
+# Set the Git user.
+git -C "$git_dir" config --local user.name "Michael Adams" || \
+  panic "cannot set Git user name"
+git -C "$git_dir" config --local user.email "mdadams@ece.uvic.ca" || \
+  panic "cannot set Git user email"
+
+################################################################################
+# Add the content for the new release.
+################################################################################
+
+if [ -e "$version_dir" ]; then
+	panic "directory already exist for $version"
+fi
+mkdir -p "$version_dir" || \
+  panic "cannot make directory $version_dir"
+(cd "$in_dir" && tar -cf - .) | (cd "$version_dir" && tar -xf -) || \
+  panic "tar failed"
+
+if [ "$latest" -ne 0 ]; then
+	# Update the symlink for the latest release.
+	target="$git_dir/latest"
+	if [ -h "$target" -o -e "$target" ]; then
+		rm -f "$target" || panic "rm failed"
+	fi
+	ln -s "releases/$version" "$target" || \
+	  panic "ln failed"
+fi
+
+# Add a top-level index.html file.
+target="$git_dir/index.html"
+if [ -e "$target" ]; then
+	rm -f "$target" || panic "cannot remove $target"
+fi
+"$make_main_gh_page" -d "$git_dir" > "$target" || \
+  panic "cannot create index.html"
+
+if [ "$verbose" -ge 2 ]; then
+	ls -al "$git_dir"/*
+fi
+
+################################################################################
+# Commit and push all of the changes.
+################################################################################
+
+git -C "$git_dir" add . || \
+  panic "git add failed"
+git -C "$git_dir" commit -m "Deploying release $version" || \
+  panic "git commit failed"
+if [ "$prepare_only" -eq 0 ]; then
+	if [ "$verbose" -ge 1 ]; then
+		echo "Pushing changes."
+	fi
+	git -C "$git_dir" push "${git_push_extra_args[@]}" || \
+	  panic "git push failed"
+fi

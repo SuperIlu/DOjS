@@ -1,0 +1,320 @@
+4.2.0 (2024-02-05)
+==================
+
+* Add the JAS_PACKAGING option to the CMake build in an attempt to allow
+  easier control over rpath settings by packagers of JasPer.
+* Remove a number of obsolete scripts.
+* Make some cosmetic changes to the code for the JPC codec in order
+  to improve readability (#371).
+* Fix a portability bug related to threads/atomics.
+* Replace some lingering uses of strtok in the JPC coder with jas_strtok,
+  since the use of strtok is problematic in multithreading contexts.
+
+4.1.2 (2024-01-11)
+==================
+
+* Fix invalid memory write bug (#367) (CVE-2023-51257).
+* Fix missing range check in the JPC encoder (#368).
+
+4.1.1 (2023-11-28)
+==================
+
+* Disallow in-source builds by default.
+* Fix a potential integer overflow problem in the jas_get_total_mem_size
+  function (for the Windows platform).
+
+4.1.0 (2023-11-04)
+==================
+
+* Add support for building several JasPer application programs for
+  WebAssembly target with WASI support.
+
+4.0.1 (2023-11-04)
+==================
+
+* Fix integer overflow bug in PNM decoder (#353).
+* Fix a few minor build issues.
+
+4.0.0 (2022-11-05)
+==================
+
+* Improve static linking (#336).
+* Fix path relocation in mingw environment (#335).
+* Improve logging and build scripts.
+* Improve JPEG-2000 conformance test results.
+* Enable PIC by default.
+* Fix memory leaks in function cmdopts_parse (#332) (CVE-2022-2963).
+* imgcmp:
+  + Add quiet (-q) option.
+  + Add debug-level option.
+  + Fix memory leak.
+* imginfo:
+  + Add quiet (-q) option.
+* Fix bug in parsing PGX header.
+* Fix integer overflow bug (#345) (CVE-2022-40755).
+
+3.0.6 (2022-07-13)
+==================
+
+* Fix bug in manual deployment script.
+
+3.0.5 (2022-06-23)
+==================
+
+* Fix a minor build issue (#328).
+
+3.0.4 (2022-06-02)
+==================
+
+* Eliminate some bogus calls to abort.
+* Fix a typo in jas_safeui64_div (#323).
+* Add some additional logging messages.
+* Fix the source of a potential compiler warning (#321).
+
+3.0.3 (2022-03-15)
+==================
+
+* Fix some portability issues in a few scripts.
+
+3.0.2 (2022-02-14)
+==================
+
+* Fix a build issue that occurs when a cross-compiler is used (e.g., #319).
+
+3.0.1 (2022-02-12)
+==================
+
+* Fix some build/portability issues (e.g., #317, #318).
+
+3.0.0 (2022-02-05)
+==================
+
+VERY IMPORTANT NOTE:
+This release of the JasPer software introduced some changes in the API
+and/or behavior of the library relative to earlier releases, which may
+necessitate some small changes in code using the library (e.g., to avoid
+memory leaks or other problems).  Please refer to the "News" section
+of the JasPer Reference Manual for more details.  For convenience,
+this manual is available online (for various JasPer releases) at:
+    https://jasper-software.github.io/jasper-manual
+
+* Greatly improve documentation.
+* Add support for multithreading.
+* Add some customization points in the library, such as the memory allocator
+  and error logging function.
+* Add improved memory usage tracking and limiting.
+* Add experimental partial encoding/decoding support for the HEIC format.
+* Fix some longstanding issues in the JasPer I/O streams API.
+* Add the running of the full test suite in CI builds for the Windows platform.
+  (Previously, the full test suite was only run for CI builds on Unix-based
+  platforms.)
+* Fix many bugs (e.g., #305, #307, #308, #309, #312, #314, and many others
+  not associated with any issue numbers).
+
+* Merged support for JasPer 3.0.0 into the XV software at:
+      https://github.com/jasper-software/xv.git
+
+2.0.33 (2021-08-01)
+===================
+
+* Fix a JP2/JPC decoder bug. (#291)
+* Fix a build issue impacting some platforms. (#296)
+
+2.0.32 (2021-04-18)
+===================
+
+* Test release performed with GitHub Actions.
+
+2.0.29 (2021-04-16)
+===================
+
+* Loosen some overly tight restrictions on JP2 codestreams, which caused
+  some valid codestreams to be rejected. (#289)
+
+2.0.28 (2021-03-29)
+===================
+
+* Fix potential null pointer dereference in the JP2/JPC decoder. (#269)
+  (CVE-2021-3443)
+* Fix ignoring of JAS_STREAM_FILEOBJ_NOCLOSE at stream close time. (#286)
+* Fix integral type sizing problem in JP2 codec. (#284)
+
+2.0.27 (2021-03-18)
+===================
+
+* Check for an image containing no samples in the PGX
+  decoder. (#271, #272, #273, #274, #275, #276, #281)
+* Check for dimensions of zero in the JPC and JPEG decoders.
+* Fix an arguably incorrect type for an integer literal
+  in the PGX decoder. (#270)
+* Check for an invalid component reference in the
+  JP2 decoder. (#269)
+* Check on integer size in JP2 decoder. (#278)
+
+2.0.26 (2021-03-05)
+===================
+
+* Fix JP2 decoder bug that can cause a null pointer dereference for
+  some invalid CDEF boxes. (#268) (CVE-2021-3467)
+
+2.0.25 (2021-02-07)
+===================
+
+* Fix memory-related bugs in the JPEG-2000 codec resulting from
+  attempting to decode invalid code streams. (#264, #265)
+  This fix is associated with CVE-2021-26926 and CVE-2021-26927.
+* Fix wrong return value under some compilers (#260)
+* Fix CVE-2021-3272 heap buffer overflow in jp2_decode (#259) 
+
+2.0.24 (2021-01-03)
+===================
+
+* Add JAS_VERSION_MAJOR, JAS_VERSION_MINOR, JAS_VERSION_PATCH
+  for easier access to the JasPer version.
+* Fixes stack overflow bug on Windows, where variable-length
+  arrays are not available. (#256)
+
+2.0.23 (2020-12-08)
+===================
+
+* Fix CVE-2020-27828, heap-overflow in cp_create() in jpc_enc.c
+  https://github.com/jasper-software/jasper/issues/252
+
+2.0.22 (2020-10-05)
+===================
+
+* Update manual
+
+* Remove JPEG dummy codec. Jasper needs libjpeg for JPEG support
+
+* Fix test suite build failure regarding disabled MIF codec (#249)
+
+* Fix OpenGL/glut detection (#247)
+
+2.0.21 (2020-09-20)
+===================
+
+* Fix ZDI-15-529
+  https://github.com/jasper-software/jasper/pull/245
+
+* Fix CVE-2018-19541 in decoder
+  https://github.com/jasper-software/jasper/pull/244
+
+2.0.20 (2020-09-05)
+===================
+
+* Fix several ISO/IEC 15444-4 conformance bugs
+
+* Fix new variant of CVE-2016-9398
+
+* Disable the MIF codec by default for security reasons (but it is still
+  included in the library);
+  in a future release, the MIF codec may also be excluded from the
+  library by default
+
+* Add documentation for the I/O streams library API
+
+2.0.19 (2020-07-11)
+===================
+
+* Fix CVE-2021-27845
+  https://github.com/mdadams/jasper/issues/194 (part 1)
+
+* Fix CVE-2018-9154
+  https://github.com/jasper-software/jasper/issues/215
+  https://github.com/jasper-software/jasper/issues/166
+  https://github.com/jasper-software/jasper/issues/175
+  https://github.com/jasper-maint/jasper/issues/8
+
+* Fix CVE-2018-19541 in encoder
+  https://github.com/jasper-software/jasper/pull/199
+  https://github.com/jasper-maint/jasper/issues/6
+
+* Fix CVE-2016-9399, CVE-2017-13751
+  https://github.com/jasper-maint/jasper/issues/1
+
+* Fix CVE-2018-19540
+  https://github.com/jasper-software/jasper/issues/182
+  https://github.com/jasper-maint/jasper/issues/22
+
+* Fix CVE-2018-9055
+  https://github.com/jasper-maint/jasper/issues/9
+
+* Fix CVE-2017-13748
+  https://github.com/jasper-software/jasper/issues/168
+
+* Fix CVE-2017-5503, CVE-2017-5504, CVE-2017-5505
+  https://github.com/jasper-maint/jasper/issues/3
+  https://github.com/jasper-maint/jasper/issues/4
+  https://github.com/jasper-maint/jasper/issues/5
+  https://github.com/jasper-software/jasper/issues/88
+  https://github.com/jasper-software/jasper/issues/89
+  https://github.com/jasper-software/jasper/issues/90
+
+* Fix CVE-2018-9252
+  https://github.com/jasper-maint/jasper/issues/16
+
+* Fix CVE-2018-19139
+  https://github.com/jasper-maint/jasper/issues/14
+
+* Fix CVE-2018-19543, CVE-2017-9782
+  https://github.com/jasper-maint/jasper/issues/13
+  https://github.com/jasper-maint/jasper/issues/18
+  https://github.com/jasper-software/jasper/issues/140
+  https://github.com/jasper-software/jasper/issues/182
+
+* Fix CVE-2018-20570
+  https://github.com/jasper-maint/jasper/issues/11
+  https://github.com/jasper-software/jasper/issues/191
+
+* Fix CVE-2018-20622
+  https://github.com/jasper-maint/jasper/issues/12
+  https://github.com/jasper-software/jasper/issues/193
+
+* Fix CVE-2016-9398
+  https://github.com/jasper-maint/jasper/issues/10
+
+* Fix CVE-2017-14132
+  https://github.com/jasper-maint/jasper/issues/17
+
+* Fix CVE-2017-5499
+  https://github.com/jasper-maint/jasper/issues/2
+  https://github.com/jasper-software/jasper/issues/63
+
+* Fix CVE-2018-18873
+  https://github.com/jasper-maint/jasper/issues/15
+  https://github.com/jasper-software/jasper/issues/184
+
+* Fix https://github.com/jasper-software/jasper/issues/207
+
+* Fix https://github.com/jasper-software/jasper/issues/194 part 1
+
+* Fix CVE-2017-13750
+  https://github.com/jasper-software/jasper/issues/165
+  https://github.com/jasper-software/jasper/issues/174
+
+* New option -DJAS_ENABLE_HIDDEN=true to not export internal symbols in the public symbol table
+
+* Fix various memory leaks
+
+* Plenty of code cleanups, and performance improvements
+
+* Some macros were changed to inline functions.  This has to potential to
+  impact some code that made assumptions about the implementation.  Some
+  potentially impacted macros include:
+      jas_matrix_numrows, jas_matrix_numcols
+      jas_matrix_get
+      jas_seq_get, jas_seq_start, jas_seq_end
+      jpc_ms_gettype
+      jas_matrix_set and jas_seq_set is affected differently; the old macro was
+      an actual expression returning the value, while the new function does not.
+  The following macros have been changed, too, but are likely not
+  affected, since they have been an rvalue-expression anyway:
+      JP2_DTYPETOBPC, JP2_BPCTODTYPE
+      JAS_IMAGE_CDT_{SETSGND,GETSGND,SETPREC,GETPREC}
+      jas_image_cmptdtype
+      macros from here
+      jas_matrix_setv, jas_matrix_getvref
+      jas_matrix_bind{row,col}
+      the jpc_fix_ family
+      the JPC_QCX and JPC_COX families

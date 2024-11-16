@@ -1,0 +1,90 @@
+/*!
+
+@defgroup module_init Configuration, Initialization, and Shutdown
+@brief Configuration, Initialization, and Shutdown
+
+@details
+General information can be found
+\ref lib_init "here".
+
+@defgroup module_alloc Memory Allocation
+@brief Memory Allocation
+
+@details
+General information can be found
+\ref init_allocators "here".
+
+@defgroup module_iostreams I/O Streams
+@brief I/O streams
+
+@details
+General information can be found
+\ref lib_iostreams "here".
+
+@defgroup module_images Image Representation
+@brief Image Representation
+
+@details
+General information can be found
+\ref lib_images "here".
+
+@defgroup module_cm Color Management
+@brief Color Management
+
+@details
+General information can be found
+\ref lib_images "here".
+
+@defgroup module_seq One- and Two-Dimensional Sequences
+@brief One- and Two-Dimensional Sequences
+
+@defgroup module_fixed Fixed-Point Arithmetic
+@brief Fixed-Point Arithmetic
+
+@defgroup module_log Logging
+@brief Logging
+
+@details
+General information can be found
+\ref lib_log "here".
+
+@if DOXYGEN_EXCLUDE
+
+@defgroup module_threads Threading Support
+@brief Threading
+
+@details
+General information can be found
+\ref lib_threads "here".
+
+@endif
+
+@defgroup module_timers Timers
+@brief Timers
+
+@details
+General information can be found
+\ref lib_timers "here".
+
+@defgroup module_getopt Command-Line Interface (CLI) Option Processing
+@brief Command-Line Interface (CLI) Option Processing
+
+@details
+General information can be found
+\ref lib_string "here".
+
+@defgroup module_tvp Tag-Value Pair (TVP) Parsing
+@brief Tag-Value Pair (TVP) Parsing
+
+@details
+General information can be found
+\ref lib_string "here".
+
+@defgroup module_string String Processing
+@brief String Processing
+
+@details
+General information can be found
+\ref lib_string "here".
+
+ */

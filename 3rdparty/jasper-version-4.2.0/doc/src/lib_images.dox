@@ -1,0 +1,264 @@
+/*!
+
+\page lib_images Images, Sequences, and Color Management
+
+\section lib_images__api API References
+
+- \ref module_images
+- \ref module_cm
+- \ref module_seq
+
+\section overview_images Images
+
+An image is represented by the type `jas_image_t`.
+An image component is represented by the type `jas_image_cmpt_t`.
+
+The image-format table contains an entry for each codec that is
+supported by the JasPer library.
+More specifically, an entry in the table will be present for each codec
+whose support was included in the JasPer library when the
+library was built.
+A codec may be either in an enabled or disabled state.
+The default value for the enable/disable setting is specified when the
+library is built.
+The enable/disable setting can also be changed (from the default)
+at run time.
+Most functions that query the image-format table ignore (or skip)
+entries that correspond to disabled codecs.
+The default build-time configuration settings for JasPer are such
+that codecs that are experimental or dangerous (due to posing
+security risks) are disabled by default.
+
+The following functions are provided for image creation/destruction:
+
+  - `jas_image_create()`
+  - `jas_image_create0()`
+  - `jas_image_copy()`
+  - `jas_image_destroy()`
+
+The following functions are provided for image encoding/decoding:
+
+  - `jas_image_decode()`
+  - `jas_image_encode()`
+
+The following functions are provided for various other functionality
+for images:
+
+  - `jas_image_rawsize()`
+  - `jas_image_ishomosamp()`
+  - `jas_image_cmprof()`
+  - `jas_image_sampcmpt()`
+  - `jas_image_writecmpt2()`
+  - `jas_image_readcmpt2()`
+  - `jas_image_chclrspc()`
+  - `jas_image_dump()`
+
+The following functions are provided for accessing/manipulating
+image components:
+
+  - `jas_image_cmptwidth()`
+  - `jas_image_cmptheight()`
+  - `jas_image_cmptsgnd()`
+  - `jas_image_cmptprec()`
+  - `jas_image_cmpthstep()`
+  - `jas_image_cmptvstep()`
+  - `jas_image_cmpttlx()`
+  - `jas_image_cmpttly()`
+  - `jas_image_cmptbrx()`
+  - `jas_image_cmptbry()`
+
+  - `jas_image_cmpt_domains_same()`
+
+  - `jas_image_readcmpt()`
+  - `jas_image_writecmpt()`
+  - `jas_image_delcmpt()`
+  - `jas_image_addcmpt()`
+  - `jas_image_copycmpt()`
+
+  - `JAS_IMAGE_CDT_GETSGND()`
+  - `JAS_IMAGE_CDT_SETSGND()`
+  - `JAS_IMAGE_CDT_GETPREC()`
+  - `JAS_IMAGE_CDT_SETPREC()`
+  - `jas_image_cmptdtype()`
+  - `jas_image_depalettize()`
+  - `jas_image_readcmptsample()`
+  - `jas_image_writecmptsample()`
+  - `jas_image_getcmptbytype()`
+
+The following functions are provided for accessing/manipulating the
+image-format table:
+
+  - `jas_image_clearfmts()`
+  - `jas_image_addfmt()`
+  - `jas_image_lookupfmtbyid()`
+  - `jas_image_lookupfmtbyname()`
+  - `jas_image_fmtfromname()`
+  - `jas_image_getfmt()`
+  - `jas_image_strtofmt()`
+  - `jas_image_fmttostr()`
+
+  - `jas_image_getnumfmts()`
+  - `jas_image_getfmtbyind()`
+
+\section overview_cm Color Management
+
+The JasPer library provides basic support for color management.
+A color-management (CM) profile is used to describe the color space
+used by an image.
+The following function are provided for accessing/manipulating
+CM profiles:
+
+  - `jas_cmxform_create()`
+  - `jas_cmxform_destroy()`
+  - `jas_cmxform_apply()`
+  - `jas_cmprof_createfromclrspc()`
+  - `jas_cmprof_destroy()`
+  - `jas_clrspc_numchans()`
+  - `jas_cmprof_clrspc()`
+  - `jas_cmprof_copy()`
+
+The following functions are provided for accessing/manipulating
+color spaces:
+
+  - `jas_clrspc_create()`
+  - `jas_clrspc_fam()`
+  - `jas_clrspc_mbr()`
+  - `jas_clrspc_isgeneric()`
+  - `jas_clrspc_isunknown()`
+
+\section overview_icc ICC Profiles
+
+The JasPer library offers support for managing ICC profiles.
+The following functions are provided for managing such profiles:
+
+  - `jas_iccprof_load()`
+  - `jas_iccprof_save()`
+  - `jas_iccprof_destroy()`
+  - `jas_iccprof_getattr()`
+  - `jas_iccprof_setattr()`
+  - `jas_iccprof_dump()`
+  - `jas_iccprof_copy()`
+  - `jas_iccprof_gethdr()`
+  - `jas_iccprof_sethdr()`
+
+  - `jas_iccattrval_destroy()`
+  - `jas_iccattrval_dump()`
+  - `jas_iccattrval_allowmodify()`
+  - `jas_iccattrval_clone()`
+  - `jas_iccattrval_create()`
+
+  - `jas_iccattrtab_dump()`
+
+  - `jas_iccprof_createfrombuf()`
+  - `jas_iccprof_createfromclrspc()`
+
+\section images_seq Sequences and Matrices
+
+The JasPer library provides classes for representing matrices
+and both 1-D and 2-D sequences.
+
+Matrices are represented in JasPer using the `jas_matrix_t` class.
+A list of the various functions/macros provided for this class is follows:
+
+  - matrix creation/destruction:
+
+      - `jas_matrix_create()`
+      - `jas_matrix_copy()`
+      - `jas_matrix_destroy()`
+
+  - getting/setting various attributes of a matrix:
+
+      - `jas_matrix_numrows()`
+      - `jas_matrix_numcols()`
+      - `jas_matrix_size()`
+      - `jas_matrix_empty()`
+      - `jas_matrix_resize()`
+      - `jas_matrix_rowstep()`
+      - `jas_matrix_step()`
+
+  - getting/setting elements of a matrix:
+
+      - `jas_matrix_get()`
+      - `jas_matrix_set()`
+      - `jas_matrix_getv()`
+      - `jas_matrix_setv()`
+      - `jas_matrix_getref()`
+      - `jas_matrix_getvref()`
+
+  - accessing submatrices of a matrix:
+
+      - `jas_matrix_bindsub()`
+      - `jas_matrix_bindrow()`
+      - `jas_matrix_bindcol()`
+
+  - performing an arithmetic operations on all elements of a matrix:
+
+      - `jas_matrix_clip()`
+      - `jas_matrix_asl()`
+      - `jas_matrix_asr()`
+      - `jas_matrix_divpow2()`
+      - `jas_matrix_setall()`
+
+  - relational operations for matrices:
+
+      - `jas_matrix_cmp()`
+
+  - reading and writing a matrix from and to a stream:
+
+      - `jas_matrix_input()`
+      - `jas_matrix_output()`
+
+Sequences in 2-D are represented using the `jas_seq2d_t` class.
+In effect, a 2-D sequence is simply a matrix whose starting row and
+column indices are arbitrary (instead of being fixed at zero as in the
+case of a matrix).
+A list of the various functions/macros provided for this class is follows:
+
+  - creation/destruction of a sequence:
+
+      - `jas_seq2d_create()`
+      - `jas_seq2d_destroy()`
+      - `jas_seq2d_copy()`
+
+  - getting/setting attributes of a sequence:
+
+      - `jas_seq2d_xstart()`
+      - `jas_seq2d_ystart()`
+      - `jas_seq2d_xend()`
+      - `jas_seq2d_yend()`
+      - `jas_seq2d_rowstep()`
+      - `jas_seq2d_width()`
+      - `jas_seq2d_height()`
+      - `jas_seq2d_setshift()`
+      - `jas_seq2d_size()`
+      - `jas_seq2d_empty()`
+
+  - accessing elements of a sequence:
+
+      - `jas_seq2d_getref()`
+      - `jas_seq2d_get()`
+
+  - referencing a subsequence of a sequence:
+
+      - `jas_seq2d_bindsub()`
+
+Sequences in 1-D are represented using the `jas_seq_t` class.
+A list of the various functions/macros provided for this class is follows:
+
+  - creation/destruction of a sequence:
+
+      - `jas_seq_create()`
+      - `jas_seq_destroy()`
+
+  - querying the attributes of a sequence:
+
+      - `jas_seq_start()`
+      - `jas_seq_end()`
+
+  - accessing the elements of a sequence:
+
+      - `jas_seq_set()`
+      - `jas_seq_getref()`
+      - `jas_seq_get()`
+
+*/

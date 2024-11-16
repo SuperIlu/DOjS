@@ -1,0 +1,74 @@
+#! /usr/bin/env bash
+
+# Wasmtime release artifacts for download:
+# - library and headers for C API:
+#   wasmtime-$version-x86_64-linux-c-api.tar.xz
+# - program to run WASM applications:
+#   wasmtime-$version-x86_64-linux.tar.xz
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+usage()
+{
+	cat <<- EOF
+	usage: $0 [options]
+	-d \$install_dir
+	-v \$version
+	EOF
+	exit 2
+}
+
+wasmtime_version=
+install_dir=
+
+while getopts :d:v: option; do
+	case "$option" in
+	d)
+		install_dir="$OPTARG";;
+	v)
+		wasmtime_version="$OPTARG";;
+	*)
+		usage "invalid option $OPTARG";;
+	esac
+done
+
+if [ -z "$install_dir" ]; then
+	panic "no install directory specified"
+fi
+if [ -z "$wasmtime_version" ]; then
+	panic "no version specified"
+fi
+
+if [ ! -d "$install_dir" ]; then
+	mkdir -p "$install_dir" || \
+	  panic "cannot make directory $install_dir"
+fi
+
+#source_dir="$install_dir/.source"
+#build_dir="$install_dir/.build"
+#build_dir_2="$install_dir/.build2"
+
+wasmtime_archive="$install_dir/.wasmtime.tar.xz"
+wasmtime_capi_archive="$install_dir/.wasmtime-capi.tar.xz"
+wasmtime_archive_url="https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtime_version/wasmtime-v$wasmtime_version-x86_64-linux.tar.xz"
+wasmtime_capi_archive_url="https://github.com/bytecodealliance/wasmtime/releases/download/v$wasmtime_version/wasmtime-v$wasmtime_version-x86_64-linux-c-api.tar.xz"
+
+wget -O "$wasmtime_archive" "$wasmtime_archive_url" || \
+  panic "wget failed"
+wget -O "$wasmtime_capi_archive" "$wasmtime_capi_archive_url" || \
+  panic "wget failed"
+if [ ! -d "$install_dir/bin" ]; then
+	mkdir -p "$install_dir/bin"
+fi
+tar -x -J -f "$wasmtime_archive" --strip-components=1 -C "$install_dir/bin" || \
+  panic "tar failed"
+tar -x -J -f "$wasmtime_capi_archive" --strip-components=1 -C "$install_dir" || \
+  panic "tar failed"
+
+#rm -rf "$source_dir" || panic
+#rm -rf "$build_dir" || panic
+#rm -rf "$build_dir_2" || panic

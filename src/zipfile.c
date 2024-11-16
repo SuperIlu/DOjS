@@ -627,11 +627,13 @@ PACKFILE *open_zipfile2(const char *zname, const char *ename) {
         free(info);
         return NULL;
     }
-    if (zip_entry_read(zip, (void **)&info->block, &info->length) < 0) {
+    size_t length;
+    if (zip_entry_read(zip, (void **)&info->block, &length) < 0) {
         zip_close(zip);
         free(info);
         return NULL;
     }
+    info->length = length;
     zip_entry_close(zip);
     zip_close(zip);
 

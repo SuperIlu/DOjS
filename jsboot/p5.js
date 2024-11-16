@@ -774,3 +774,78 @@ exports.blendMode = function (mode) {
 	//  } else if (mode === REMOVE) {
 	TransparencyEnabled(bm);
 };
+
+
+/**
+ * The <a href="#/p5/keyIsDown">keyIsDown()</a> function checks if the key is currently down, i.e. pressed.
+ * It can be used if you have an object that moves, and you want several keys
+ * to be able to affect its behaviour simultaneously, such as moving a
+ * sprite diagonally. You can put in any number representing the keyCode of
+ * the key, or use any of the variables from {@link KEY}.
+ *
+ * @method keyIsDown
+ * @param {Number}          code The key to check for.
+ * @return {Boolean}        whether key is down or not
+ * @example
+ * <div><code>
+ * let x = 100;
+ * let y = 100;
+ *
+ * function setup() {
+ *   createCanvas(512, 512);
+ *   fill(255, 0, 0);
+ * }
+ *
+ * function draw() {
+ *   if (keyIsDown(LEFT_ARROW)) {
+ *     x -= 5;
+ *   }
+ *
+ *   if (keyIsDown(RIGHT_ARROW)) {
+ *     x += 5;
+ *   }
+ *
+ *   if (keyIsDown(UP_ARROW)) {
+ *     y -= 5;
+ *   }
+ *
+ *   if (keyIsDown(DOWN_ARROW)) {
+ *     y += 5;
+ *   }
+ *
+ *   clear();
+ *   ellipse(x, y, 50, 50);
+ *   describe(`50-by-50 red ellipse moves left, right, up, and
+ *     down with arrow presses.`);
+ * }
+ * </code></div>
+ *
+ * <div><code>
+ * let diameter = 50;
+ *
+ * function setup() {
+ *   createCanvas(512, 512);
+ * }
+ *
+ * function draw() {
+ *   // 107 and 187 are keyCodes for "+"
+ *   if (keyIsDown(107) || keyIsDown(187)) {
+ *     diameter += 1;
+ *   }
+ *
+ *   // 109 and 189 are keyCodes for "-"
+ *   if (keyIsDown(109) || keyIsDown(189)) {
+ *     diameter -= 1;
+ *   }
+ *
+ *   clear();
+ *   fill(255, 0, 0);
+ *   ellipse(50, 50, diameter, diameter);
+ *   describe(`50-by-50 red ellipse gets bigger or smaller when
+ *     + or - are pressed.`);
+ * }
+ * </code></div>
+ */
+exports.keyIsDown = function (code) {
+	return KeyIsPressed(code);
+};

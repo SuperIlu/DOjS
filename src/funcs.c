@@ -26,7 +26,9 @@ SOFTWARE.
 #include <mujs.h>
 #include <stdio.h>
 #include <sys/stat.h>
+#if WINDOWS != 1
 #include <dlfcn.h>
+#endif
 
 #include "util.h"
 #include "socket.h"
@@ -36,7 +38,9 @@ SOFTWARE.
 #include "jscompile.h"
 
 #if LINUX == 1
+#if WINDOWS !=1
 #include <sys/sysinfo.h>
+#endif
 #else
 #include <sys/dxe.h>
 #include <dos.h>
@@ -192,7 +196,11 @@ static void f_MakeDir(js_State *J) {
         return;
     }
 
+#if WINDOWS == 1
+    int ret = _mkdir(dir);
+#else
     int ret = mkdir(dir, 0);
+#endif
     if (ret != 0) {
         js_error(J, "Could not create directory: %s", strerror(errno));
         return;
@@ -273,7 +281,11 @@ static void f_Stat(js_State *J) {
         js_setproperty(J, -2, "mtime");
         js_pushnumber(J, s.st_size);
         js_setproperty(J, -2, "size");
+#if WINDOWS == 1
+        js_pushnumber(J, 0);
+#else
         js_pushnumber(J, s.st_blksize);
+#endif
         js_setproperty(J, -2, "blksize");
         js_pushnumber(J, s.st_nlink);
         js_setproperty(J, -2, "nlink");
@@ -376,7 +388,18 @@ static void f_Gc(js_State *J) {
  * @param J the JS context.
  */
 static void f_MemoryInfo(js_State *J) {
-#if LINUX == 1
+#if WINDOWS == 1
+    MEMORYSTATUS memstat;
+
+    js_newobject(J);
+    {
+        GlobalMemoryStatus(&memstat);
+        js_pushnumber(J, memstat.dwTotalPhys);
+        js_setproperty(J, -2, "total");
+        js_pushnumber(J, memstat.dwAvailPhys);
+        js_setproperty(J, -2, "remaining");
+    }
+#elif LINUX == 1
     struct sysinfo info;
 
     js_newobject(J);
@@ -853,6 +876,21 @@ static void f_GetDrive(js_State *J) {
 }
 
 /**
+ * @brief canonicalizes the input path
+ *
+ * @param J VM state.
+ */
+static void f_RealPath(js_State *J) {
+    char newpath[PATH_MAX];
+#if WINDOWS == 1
+    _fullpath(newpath, js_tostring(J, 1), sizeof(newpath-1));
+#else
+    realpath(js_tostring(J, 1), newpath);
+#endif
+    js_pushstring(J, newpath);
+}
+
+/**
  * @brief convert text from UTF-8 to current encoding
  *
  * @param J VM state.
@@ -886,6 +924,22 @@ static void f_ToUTF8(js_State *J) {
     } else {
         js_copy(J, 1);
     }
+}
+
+/**
+ * @brief check allegro key array
+ *
+ * @param J VM state.
+ */
+static void f_KeyIsPressed(js_State *J) {
+    uint16_t k = js_touint16(J, 1);
+
+    if (k >= KEY_MAX) {
+        js_error(J, "Key index out of range");
+        return;
+    }
+
+    js_pushboolean(J, key[k]);
 }
 
 // #define DUMMY_FUNC
@@ -976,6 +1030,7 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     NFUNCDEF(J, System, 2);
     NFUNCDEF(J, GetDrive, 0);
     NFUNCDEF(J, SetDrive, 1);
+    NFUNCDEF(J, RealPath, 1);
 
     NFUNCDEF(J, Print, 0);
     NFUNCDEF(J, Println, 0);
@@ -997,6 +1052,7 @@ void init_funcs(js_State *J, int argc, char **argv, int args) {
     NFUNCDEF(J, MouseShowCursor, 1);
     NFUNCDEF(J, MouseSetCursorMode, 1);
 
+    NFUNCDEF(J, KeyIsPressed, 1);
     NFUNCDEF(J, SetExitKey, 1);
     NFUNCDEF(J, SetExitMessage, 1);
 

@@ -1,0 +1,17 @@
+bash ./configure \
+	--build=`gcc -dumpmachine` \
+	--host=${HOST} \
+	--disable-shared \
+	--disable-tests \
+	--disable-tools \
+  	--disable-contrib \
+  	--disable-docs \
+  	--disable-webp \
+	--disable-cxx \
+	--disable-zlib \
+	--disable-libdeflate \
+	--disable-lzma \
+	--disable-jpeg \
+	--disable-tests \
+	--disable-webp \
+	--disable-zstd

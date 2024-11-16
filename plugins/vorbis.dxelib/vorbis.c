@@ -98,7 +98,7 @@ static void new_Ogg(js_State *J) {
         JS_ENOMEM(J);
         return;
     }
-    bzero(ov, sizeof(vorbis_t));
+    memset(ov, 0, sizeof(vorbis_t));
 
     int err;
     const char *fname = js_tostring(J, 1);

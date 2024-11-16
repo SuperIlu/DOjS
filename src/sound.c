@@ -23,6 +23,9 @@ SOFTWARE.
 #include "sound.h"
 
 #include <allegro.h>
+#if WINDOWS==1
+#include <winalleg.h>
+#endif
 #include <mujs.h>
 
 #include "DOjS.h"

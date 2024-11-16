@@ -1,16 +1,17 @@
+#if WINDOWS==1
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0600
+#endif
+
 #include <string.h>
-#include <netdb.h>
-#include <poll.h>
-#include <sys/ioctl.h>
 
 #include "DOjS.h"
 #include "glue.h"
-#include "allegro/internal/aintern.h"
-#include "jpgalleg.h"
 #include "loadpng.h"
 #include "bitmap.h"
 #include "qoi.h"
 #include "webp.h"
+#include "jpeg.h"
 #include "sqlite.h"
 #include "curl.h"
 #include "noise.h"
@@ -22,12 +23,30 @@
 #include "gifanim.h"
 #include "ogl.h"
 
+#include "allegro/internal/aintern.h"
+#if WINDOWS==1
+#include <winalleg.h>
+#endif
+
+#if WINDOWS==1
+#include <winsock2.h>
+#else
+#include <netdb.h>
+#include <poll.h>
+#include <sys/ioctl.h>
+#endif
+
+
 #define FONTMAGIC 0x19590214L
 #define JPEG_BUFFER_SIZE (4096 * 16)  //!< memory allocation increment while loading file data
 
 unsigned short _osmajor = 1, _osminor = 2;
 unsigned short _os_trueversion = 4711;
+#if WINDOWS==1
+const char *_os_flavor = "WinDOS";
+#else
 const char *_os_flavor = "LinDOS";
+#endif
 
 void init_png(js_State *J);
 
@@ -60,10 +79,10 @@ void init_png(js_State *J) {
 }
 
 void glue_init(js_State *J) {
-    jpgalleg_init();
     loadpng_init();
     init_png(J);
     init_qoi(J);
+    init_jpeg(J);
     init_webp(J);
     init_sqlite(J);
     init_curl(J);
@@ -74,10 +93,18 @@ void glue_init(js_State *J) {
     init_genpdf(J);
     init_vorbis(J);
     init_gifanim(J);
+#if WINDOWS!=1
     init_ogl(J);
+#endif
 }
 
-void glue_shutdown() { shutdown_ogl(); }
+void glue_shutdown() { 
+#if WINDOWS!=1
+    shutdown_ogl();
+#else
+    WSACleanup();
+#endif
+}
 
 FONT *load_grx_font_pf(PACKFILE *pack, RGB *pal, void *param) {
     FONT *f;
@@ -139,46 +166,6 @@ FONT *load_grx_font_pf(PACKFILE *pack, RGB *pal, void *param) {
     return f;
 }
 
-static BITMAP *load_jpg_pf(PACKFILE *f, RGB *pal) {
-    BITMAP *bm = NULL;
-    uint8_t *buffer = NULL;
-    unsigned int malloc_size = JPEG_BUFFER_SIZE;
-    unsigned int pos = 0;
-
-    // try loading the whole JPEG to memory, Allegro4 PACKFILES have no way of determining file size, so we need this ugly hack!
-    buffer = realloc(buffer, malloc_size);
-    if (!buffer) {
-        return NULL;
-    }
-    DEBUGF("realloc : mem_size = %d, file_size = %d\n", malloc_size, pos);
-    while (true) {
-        int ch = pack_getc(f);
-        if (ch == EOF) {
-            break;  // reading done
-        } else {
-            buffer[pos++] = ch;                                      // store byte
-            if (pos >= malloc_size) {                                // check buffer bounds
-                malloc_size += JPEG_BUFFER_SIZE;                     // increase buffer size
-                uint8_t *new_buffer = realloc(buffer, malloc_size);  // try re-alloc
-                if (!new_buffer) {                                   // bail out on failure
-                    free(buffer);
-                    return NULL;
-                } else {
-                    buffer = new_buffer;
-                }
-                DEBUGF("realloc : mem_size = %d, file_size = %d\n", malloc_size, pos);
-            }
-        }
-    }
-    DEBUGF("final   : mem_size = %d, file_size = %d\n", malloc_size, pos);
-
-    bm = load_memory_jpg(buffer, pos, pal);
-
-    free(buffer);
-
-    return bm;
-}
-
 struct BITMAP *load_bitmap_pf(PACKFILE *f, struct RGB *pal, const char *aext) {
     if (stricmp("bmp", aext) == 0) {
         return load_bmp_pf(f, pal);
@@ -207,7 +194,14 @@ const char *wattcpVersion(void) { return "v666"; }
 const char *wattcpCapabilities(void) { return "dummy bsd"; }
 const char *sock_init_err(int rc) { return "dummy init error"; }
 char *_inet_ntoa(char *s, DWORD x) { return "dummy address"; }
-int sock_init() { return 0; }
+int sock_init() {
+#if WINDOWS==1
+    WSADATA wsa;
+    return WSAStartup(MAKEWORD(2,0),&wsa); 
+#else
+    return 0;
+#endif
+}
 void dbug_init(void) {}
 
 const char *dom_strerror(int err) { return strerror(err); }
@@ -290,16 +284,25 @@ int _w32__getsockname(const sock_type *s, void *dest, int *len) {
 }
 
 WORD sock_dataready(sock_type *s) {
+#if WINDOWS==1
+    u_long n = -1;
+    if (ioctlsocket(s->sock_num, FIONREAD, &n) < 0) {
+        s->error = errno;
+        return 0;
+    }
+    return n;
+#else
     int n = -1;
     if (ioctl(s->sock_num, FIONREAD, &n) < 0) {
         s->error = errno;
         return 0;
     }
     return n;
+#endif
 }
 
 int udp_open(udp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler) {
-    bzero(s, sizeof(udp_Socket));
+    memset(s, 0, sizeof(udp_Socket));
     s->type = SOCK_DGRAM;
     s->sock_num = socket(AF_INET, SOCK_DGRAM, 0);
     if (s->sock_num < 0) {
@@ -326,7 +329,7 @@ int udp_open(udp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handl
 }
 
 int tcp_open(tcp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler) {
-    bzero(s, sizeof(tcp_Socket));
+    memset(s, 0, sizeof(tcp_Socket));
     s->type = SOCK_STREAM;
     s->sock_num = socket(AF_INET, SOCK_STREAM, 0);
     if (s->sock_num < 0) {
@@ -354,7 +357,7 @@ int tcp_open(tcp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handl
 
 // server stuff
 int tcp_listen(tcp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler handler, WORD timeout) {
-    bzero(s, sizeof(tcp_Socket));
+    memset(s, 0, sizeof(tcp_Socket));
 
     s->type = SOCK_STREAM;
     s->server_num = socket(AF_INET, SOCK_STREAM, 0);
@@ -392,6 +395,22 @@ int tcp_listen(tcp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler han
 }
 
 int sock_established(sock_type *s) {
+#if WINDOWS==1
+    ////// this function is not available on Win98, we always return true!
+    // if ((s->server_num >= 0) && (s->sock_num < 0)) {
+    //     WSAPOLLFD fdarray = {0};
+    //     fdarray.fd = s->server_num;
+    //     fdarray.events = POLLIN;
+    //     int ret = WSAPoll(&fdarray, 1, 100);
+
+    //     if (ret > 0) {  // connection ready
+    //         size_t addrlen = sizeof(struct sockaddr);
+    //         s->sock_num = accept(s->server_num, (struct sockaddr *)&s->remote, &addrlen);
+    //     }
+    // }
+    // return s->sock_num != -1;
+    return true;
+#else
     if ((s->server_num >= 0) && (s->sock_num < 0)) {
         struct pollfd pfd = {.fd = s->server_num, .events = POLLIN, .revents = 0};
         int ret = poll(&pfd, 1, 100);
@@ -402,6 +421,7 @@ int sock_established(sock_type *s) {
         }
     }
     return s->sock_num != -1;
+#endif
 }
 
 int sock_close(sock_type *s) {
@@ -429,19 +449,57 @@ BYTE sock_putc(sock_type *s, BYTE c) {
 
 // wait 'sec' seconds for data on socket
 int _ip_delay1(sock_type *s, int sec, UserHandler fn, int *statusptr) {
+#if WINDOWS==1
+    fd_set all_sockets; // Set for all sockets connected to server
+    fd_set read_fds;    // Temporary set for select()
+    struct timeval timer;
+    FD_ZERO(&all_sockets);
+    FD_ZERO(&read_fds);
+    FD_SET(s->sock_num, &all_sockets); // Add listener socket to set
+    int fd_max = s->sock_num+1; // Highest fd is necessarily our socket
+    while (1) { // Main loop
+        // Copy all socket set since select() will modify monitored set
+        read_fds = all_sockets;
+        // 2 second timeout for select()
+        timer.tv_sec = 2;
+        timer.tv_usec = 0;
+        int ret = select(fd_max, &read_fds, NULL, NULL, &timer);
+        if (ret == 0) {
+            return -1;  // timeout
+        } else if (ret < 0) {
+            return 1;  // error/closed
+        } else {
+            for (int i = 0; i < fd_max; i++) {
+                if (FD_ISSET(i, &read_fds) != 1) {
+                    // Fd i is not a socket to monitor
+                    // stop here and continue the loop
+                    continue ;
+                }
+                // Ready for I/O operation
+                // Socket is ready to read!
+                if (i == s->sock_num) {
+                    return 0; // data ready
+                }
+            }
+        }
+        // not us, try again
+    }
+    ////// function ot available in Win98
+    // WSAPOLLFD fdarray = {0};
+    // fdarray.fd = s->server_num;
+    // fdarray.events = POLLIN;
+    // int ret = WSAPoll(&fdarray, 1, sec + 1000);
+#else
     struct pollfd pfd = {.fd = s->sock_num, .events = POLLIN, .revents = 0};
     int ret = poll(&pfd, 1, sec + 1000);
-
-    int status;
     if (ret == 0) {
-        status = -1;  // timeout
+        return -1;  // timeout
     } else if (ret > 0) {
-        status = 0;  // data ready
+        return 0;  // data ready
     } else {
-        status = 1;  // error/closed
+        return 1;  // error/closed
     }
-
-    return status;
+#endif
 }
 
 // op-ops

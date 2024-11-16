@@ -1,6 +1,6 @@
 # DOjS
 ## A DOS JavaScript Canvas with sound.
-[DOjS](https://github.com/SuperIlu/DOjS) is a JavaScript programming environment for systems running MS-DOS, [FreeDOS](http://freedos.org/) or any DOS based Windows (like 95, 98, ME).
+[DOjS](https://github.com/SuperIlu/DOjS) is a JavaScript programming environment for systems running MS-DOS, [FreeDOS](http://freedos.org/) or any DOS based Windows (like 95, 98, ME). There are experimental ports for Linux and Win32 (Windows 98 or never) as well.
 It features an integrated editor, graphics & sound output, mouse/keyboard/joystick input and more (see below).
 It was inspired by [Processing](https://processing.org/) which is described on [Wikipedia](https://en.wikipedia.org/wiki/Processing_(programming_language)) as:
 
@@ -30,7 +30,7 @@ DOjS was only possible due to the work of these people/projects:
   * [Watt32](https://github.com/gvanem/Watt-32.git) for TCP/IP networking
   * [zip](https://github.com/kuba--/zip) for ZIP file access
   * [zlib](http://zlib.net/) for compression
-  * [stb_image.h](https://github.com/nothings/stb/blob/master/stb_image.h) for JPEG loading
+  * [libjpeg](http://ijg.org/) for JPEG loading
   * [AnimatedGIF](https://github.com/bitbank2/AnimatedGIF/) for rendering GIF animations.
   * [PL_MPEG](https://github.com/phoboslab/pl_mpeg) for mpeg1 decoding
   * [pdfgen](https://github.com/AndreRenaud/PDFGen) for PDF rendering.
@@ -39,6 +39,9 @@ DOjS was only possible due to the work of these people/projects:
   * [ini](https://github.com/rxi/ini) for INI file reading.
   * [Mesa](https://www.mesa3d.org/) for OpenGL
   * [libwebp](https://chromium.googlesource.com/webm/libwebp) for WebP decoding/encoding
+  * [libtiff](https://gitlab.com/libtiff/libtiff) for TIFF decoding/encoding
+  * [jasper](https://github.com/jasper-software/jasper) for Jpeg 2000 and Sun Raster decoding/encoding
+  * [NOISE.SYS](https://github.com/robrwo/noise.sys) for a better entropy source for TLS.
 
 ## Contact
 You can find me on [Mastodon](https://mastodon.social/@dec_hl) or in the [DOjS Discord](https://discord.gg/J7MUTap9fM) if you want...
@@ -195,7 +198,7 @@ Setup Windows Subsystem for Linux (WSL) according to [this](https://docs.microso
 
 ## Preparation
 Build and install DJGPP 12.2.0 according to [this](https://github.com/jwt27/build-djgpp) guide.
-Install [NVM](https://github.com/nvm-sh/nvm#installing-and-updating).
+Install [NVM](https://github.com/nvm-sh/nvm#installing-and-updating). You also need a [CMake >= 3.20](https://cmake.org/download/).
 I used the following command lines to update/install my dependencies:
 ```bash
 sudo apt-get update
@@ -235,6 +238,9 @@ Now you are ready to compile DOjS with `make clean all`. This might take some ti
 
 ## Compile the Linux version of DOjS
 There is an experimental Linux version of DOjS. It only supports a subset of the DOS version and should be considered ALPHA! See [this](README_Linux.md) file for more information.
+
+## Compile the Win32 version of DOjS
+There is an experimental Win32 (Windows98 or never) version of DOjS. It only supports a subset of the DOS version and should be considered ALPHA! See [this](README_win32.md) file for more information.
 
 # Notes
 ## 3dfx/Glide3
@@ -286,7 +292,7 @@ See the [changelog](/CHANGELOG.md) for the projects history.
     * http://espeak.sourceforge.net/
 
 # Licenses
-See [LICENSE](LICENSE) file for all licenses.
+See [LICENSE](LICENSE) file for all licenses and details.
 
 ## DOjS
 All code from me is released under **MIT license**.
@@ -389,11 +395,17 @@ See LICENSE.txt in nanosvg.dxelib.
 ## noise
 See LICENSE.md in noise.dxelib.
 
-## nanojpeg
-See nanojpeg.c in jpeg.dxelib.
+## libjpeg
+See README in jpeg-9f directory.
 
-## nanojpeg
+## gifanim
 See LICENSE in gifanim.dxelib.
+
+## libtiff
+See LICENSE.md in tiff directory.
+
+## Jasper
+See LICENSE.txt in jasper directory
 
 # Usage
 ## Command line

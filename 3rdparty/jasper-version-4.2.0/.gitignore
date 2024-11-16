@@ -1,0 +1,27 @@
+# All directories
+core
+*.o
+*.a
+*.la
+*.lo
+.deps
+.libs
+Makefile
+Makefile.in
+*.trs
+*.log
+
+# build directory
+/build/jasper.spec
+/build/jasper.pc
+
+# src/app directory
+/src/app/imgcmp
+/src/app/imginfo
+/src/app/jasper
+/src/app/jiv
+/src/app/tmrdemo
+
+# src/libjasper/include/jasper directory
+/src/libjasper/include/jasper/jas_config.h
+/src/libjasper/include/jasper/stamp-h1

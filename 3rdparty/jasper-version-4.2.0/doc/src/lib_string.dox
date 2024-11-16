@@ -1,0 +1,62 @@
+/*!
+
+\page lib_string String Processing
+
+\section lib_string__api API References
+
+- \ref module_getopt
+- \ref module_tvp
+- \ref module_string
+
+\section lib_string__getopt Command-Line Interface (CLI) Option Processing
+
+The JasPer library provides the following function for processing
+command-line interface (CLI) options:
+
+  - `jas_getopt()`
+    This function is somewhat similar the `getopt()` function
+    in the POSIX standard but provides support for both long and
+    short option names.
+
+Each CLI option is described using an object of the type `jas_opt_t`.
+The set of full CLI options is specified as an array of such objects.
+
+\section lib_string_tvp Tag-Value Pair (TVP) Processing
+
+A tag-value pair (TVP) is a string of the form "tag=value".
+
+The JasPer library provides functionality for parsing tag-value pairs
+in strings.
+This functionality is provided through the `jas_tvparser_t` class.
+
+  - `jas_tvparser_create()`
+  - `jas_tvparser_destroy()`
+  - `jas_taginfos_lookup()`
+  - `jas_taginfo_nonull()`
+  - `jas_tvparser_next()`
+  - `jas_tvparser_gettag()`
+  - `jas_tvparser_getval()`
+
+When parsing TVPs, each tag is associated with a unique integer ID.
+The TVP parser represents a parsed TVP using the `jas_taginfo_t` class,
+which contains a tag ID and value string.
+
+\section lib_string__string String Processing
+
+The JasPer library provides a few functions for performing basic
+string processing:
+
+  - `jas_strdup()`.
+    This function is similar to the popular `strdup()` function, except
+	that memory is allocated with `jas_malloc()` instead of `malloc()`.
+
+  - `jas_strtok()`
+    This function is a re-entrant (i.e., thread-safe) version of the
+    `strtok()` function in the C standard library, and is
+    similar to the `strtok_r()` function in the POSIX standard.
+
+  - `jas_stringtokenize()`
+    This function can be used to split a string into tokens based on
+    a specified set of delimiters.
+
+*/

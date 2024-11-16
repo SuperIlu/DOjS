@@ -1,0 +1,313 @@
+#! /usr/bin/env bash
+# Copyright (c) 2016 Michael David Adams
+
+debug_level="${JAS_DEBUG_LEVEL:-0}"
+if [ "$debug_level" -ge 1 ]; then
+	set -xv
+fi
+
+cmd_dir=$(dirname "$0") || exit 1
+source "$cmd_dir/base_utilities" || exit 1
+source "$cmd_dir/test_utilities" || exit 1
+source "$cmd_dir/jpcod" || exit 1
+
+set_source_and_build_dirs || panic "cannot set source and build directories"
+
+init
+VERBOSE=0
+
+JASPER="$abs_top_builddir/src/app/jasper"
+IMGINFO="$abs_top_builddir/src/app/imginfo"
+export JASPER_COMMAND="$JASPER"
+export IMGINFO_COMMAND="$IMGINFO"
+
+################################################################################
+#
+################################################################################
+
+setdefcodingparms()
+{
+
+	DEBUG=0
+
+	INFILE=""
+	OUTFILE=""
+
+	SOFTWARE=""
+
+	MAXLYRS=0
+	MAXPKTS=0
+
+}
+
+################################################################################
+#
+################################################################################
+
+jasper_dec()
+{
+(
+	DECOPTS=""
+
+
+	if [ $DEBUG -ne 0 ]; then
+		DECOPTS="$DECOPTS -o debug=$DEBUG --debug-level 50"
+	fi
+	if [ $MAXLYRS -ne 0 ]; then
+		DECOPTS="$DECOPTS -o maxlyrs=$MAXLYRS"
+	fi
+	if [ $MAXPKTS -ne 0 ]; then
+		DECOPTS="$DECOPTS -o maxpkts=$MAXPKTS"
+	fi
+	DECOPTS="$DECOPTS -T $OUTFMT"
+	#DECOPTS="$DECOPTS -O noraw"
+
+	if [ $VERBOSE -ne 0 ]; then
+		echo "Running JasPer decoder"
+		echo "$JASPER $DECOPTS < $INFILE > $OUTFILE"
+	fi
+#	$JASPER $DECOPTS -f `pnutod $INFILE` -F `pnutod $OUTFILE`
+	$JASPER $DECOPTS < $INFILE > $OUTFILE
+
+)
+}
+
+################################################################################
+#
+################################################################################
+
+jj2k_dec()
+{
+	(
+		DECOPTS=""
+		DECOPTS="$DECOPTS -verbose off"
+		case $OUTFMT in
+		pgx)
+			TMPOUTFMT=pgx;;
+		pnm)
+			case $IMGTYPE in
+			rgb)
+				TMPOUTFMT=ppm;;
+			*)
+				TMPOUTFMT=pgm;;
+			esac
+			;;
+		*)
+			exit 2
+			;;
+		esac
+		TMPOUTFILE=$TMPDIR/jjtmp.$TMPOUTFMT
+		if [ $VERBOSE -ne 0 ]; then
+			echo "Running JJ2000 decoder"
+			echo "$JJCOD dec -i $INFILE -o $TMPOUTFILE $DECOPTS"
+		fi
+		CLASSPATH=$JJ2KTOPDIR/jj2000-$JJ2KVER.jar
+		export CLASSPATH
+		$JAVA JJ2KDecoder \
+		  -i $INFILE -o $TMPOUTFILE $DECOPTS > $ERRFILE 2> $ERRFILE
+		mv $TMPOUTFILE $OUTFILE
+		if [ ! -f $OUTFILE ]; then
+			exit 1
+		fi
+	)
+}
+
+################################################################################
+#
+################################################################################
+
+vm_dec()
+{
+	(
+		DECOPTS=""
+		DECOPTS="$DECOPTS -i $INFILE"
+		if [ $IMGTYPE = rgb ]; then
+			XOUTFILE=$TMPDIR/tmp
+			DECOPTS="$DECOPTS -o $XOUTFILE.pgm"
+			ROUTFILE=${XOUTFILE}_1.pgm
+			GOUTFILE=${XOUTFILE}_2.pgm
+			BOUTFILE=${XOUTFILE}_3.pgm
+		else
+			DECOPTS="$DECOPTS -o $OUTFILE"
+		fi
+		if [ $VERBOSE -ne 0 ]; then
+			echo "Running VM decoder"
+			echo "$VMDEC $DECOPTS"
+		fi
+		$VMDEC $DECOPTS > $ERRFILE 2> $ERRFILE
+		STATUS=$?
+		if [ $STATUS -ne 0 ]; then
+			exit 1
+		fi
+		if [ $IMGTYPE = rgb ]; then
+			if [ ! -f $ROUTFILE -o ! -f $GOUTFILE -o ! -f $BOUTFILE ]; then
+				exit 1
+			fi
+			rgb3toppm $ROUTFILE $GOUTFILE $BOUTFILE > $OUTFILE
+		fi
+		if [ ! -f $OUTFILE ]; then
+			exit 1
+		fi
+		exit 0
+	)
+
+}
+
+################################################################################
+#
+################################################################################
+
+kakadu_dec()
+{
+	(
+		case $OUTFMT in
+		pnm)
+			if [ $IMGTYPE = rgb ]; then
+				TMPOUTFMT=ppm
+			else
+				TMPOUTFMT=pgm
+			fi
+			;;
+		*)
+			exit 1;;
+		esac
+		TMPOUTFILE=$TMPDIR/kakadu.$TMPOUTFMT
+		rm -f $TMPOUTFILE
+		DECOPTS=""
+		DECOPTS="$DECOPTS -fussy -resilient"
+		if [ $VERBOSE -ne 0 ]; then
+			echo "Running Kakadu decoder"
+			echo "$KAKADUDEC -quiet -i `pnutod $INFILE` -o `pnutod $TMPOUTFILE` $DECOPTS"
+		fi
+		$KAKADUDEC -quiet -i `pnutod $INFILE` -o `pnutod $TMPOUTFILE` $DECOPTS
+		if [ $? -ne 0 ]; then
+			exit 1
+		fi
+		cp $TMPOUTFILE $OUTFILE
+	)
+}
+
+################################################################################
+# OpenJPEG
+################################################################################
+
+oj_dec()
+{
+	local oj_decode_opts
+	oj_decode_opts=()
+	oj_decode_opts+=(-i "$INFILE")
+	oj_decode_opts+=(-o "$OUTFILE")
+	oj_decode_opts+=(-OutFor PNM)
+	echo "Running $oj_decode ${oj_decode_opts[@]}"
+	"$oj_decode" "${oj_decode_opts[@]}"
+}
+
+################################################################################
+#
+################################################################################
+
+oj_decode="opj2_decompress"
+
+[ -d $TMPDIR ] || mkdir -p $TMPDIR
+
+setdefcodingparms
+
+while [ $# -gt 0 ]; do
+	BUF=$1
+	TAG=`gettag $BUF`
+	VAL=`getval $BUF`
+	case $TAG in
+	software)
+		SOFTWARE=$VAL;;
+	input)
+		INFILE=$VAL;;
+	output)
+		OUTFILE=$VAL;;
+	debug)
+		DEBUG=$VAL;;
+	maxpkts)
+		MAXPKTS=$VAL;;
+	maxlyrs)
+		MAXLYRS=$VAL;;
+	verbose)
+		VERBOSE=1;;
+	*)
+		echo "unknown option $TAG"
+		exit 1
+		;;
+	esac
+	shift
+done
+
+if [ $VERBOSE -ne 0 ]; then
+	ERRFILE=/dev/stderr
+else
+	ERRFILE=/dev/null
+fi
+
+if [ -z "$SOFTWARE" ]; then
+	echo "ERROR: NO SOFTWARE SELECTED"
+	exit 1
+fi
+if [ -z "$INFILE" ]; then
+	echo "ERROR: NO INPUT FILE SPECIFIED"
+	exit 1
+fi
+if [ -z "$OUTFILE" ]; then
+	echo "ERROR: NO OUTPUT FILE SPECIFIED"
+	exit 1
+fi
+
+if [ ! -f $INFILE ]; then
+	echo "ERROR: INPUT FILE DOES NOT EXIST"
+	exit 1
+fi
+
+OUTFMT=`extname $OUTFILE`
+case $OUTFMT in
+pnm|pgm|ppm)
+	OUTFMT=pnm;;
+*)
+	;;
+esac
+
+IMGTYPE=$(image_info "$INFILE" type) || panic "cannot get image type"
+if [ -z "$IMGTYPE" ]; then
+	IMGTYPE=rgb
+	IMGTYPE=gray
+	echo "ERROR: CANNOT DETERMINE IMAGE TYPE ($INFILE)"
+	echo "ASSUMING IMAGE TYPE $IMGTYPE"
+	#exit 1
+fi
+
+rm -f $OUTFILE
+
+case $SOFTWARE in
+jasper)
+	jasper_dec;;
+vm)
+	vm_dec;;
+jj2k)
+	jj2k_dec;;
+kakadu)
+	kakadu_dec;;
+oj)
+	oj_dec;;
+*)
+	echo "ERROR: INVALID SOFTWARE SPECIFIED"
+	exit 1
+	;;
+esac
+STATUS=$?
+
+if [ \( $STATUS -ne 0 \) -o \( ! -f $OUTFILE \) ]; then
+	echo "ERROR: DECODER FAILURE"
+	exit 1
+fi
+OUTFILESIZE=`wc -c $OUTFILE | awk '{print $1}' -`
+if [ $OUTFILESIZE -eq 0 ]; then
+	echo "ERROR: DECODER FAILURE"
+	exit 1
+fi
+
+exit 0

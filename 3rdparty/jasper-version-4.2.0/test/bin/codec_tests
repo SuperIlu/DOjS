@@ -1,0 +1,460 @@
+/******************************************************************************\
+* JasPer Test Cases
+* Copyright (c) 2001,2016 Michael David Adams
+\******************************************************************************/
+
+/* Specify the default JPEG-2000 format to use for tests. */
+#if 1
+#define	FMT	fmt=jpc
+#else
+#define	FMT	fmt=jp2
+#endif
+
+#undef MARK_BUGS
+#define MARK_BUGS
+
+/******************************************************************************\
+*
+\******************************************************************************/
+
+#ifdef MARK_BUGS
+#define JASPER_BUG jasper_cod
+#define JASPER_ENC_BUG jasper_enc
+#define JASPER_DEC_BUG jasper_dec
+#define JJ2000_BUG jj2000_cod
+#define JJ2000_ENC_BUG jj2000_enc
+#define JJ2000_DEC_BUG jj2000_dec
+#define KAKADU_BUG kakadu_cod
+#define KAKADU_ENC_BUG kakadu_enc
+#define KAKADU_DEC_BUG kakadu_dec
+#define OJ_BUG oj_cod
+#define OJ_ENC_BUG oj_enc
+#define OJ_DEC_BUG oj_dec
+#else
+#define JASPER_BUG
+#define JASPER_ENC_BUG
+#define JASPER_DEC_BUG
+#define JJ2000_BUG
+#define JJ2000_ENC_BUG
+#define JJ2000_DEC_BUG
+#define KAKADU_BUG
+#define KAKADU_ENC_BUG
+#define KAKADU_DEC_BUG
+#define OJ_BUG
+#define OJ_ENC_BUG
+#define OJ_DEC_BUG
+#endif
+
+#define	BEGIN FMT
+#define	mct
+
+/******************************************************************************\
+*
+\******************************************************************************/
+
+/******************************************************************************\
+* Temporary tests.
+\******************************************************************************/
+
+BEGIN id=sgn_0 image=signed_8.pgx mode=int pae=0 bug=OJ_DEC_BUG
+BEGIN id=sgn_1 image=signed_12.pgx mode=int pae=0 bug=OJ_DEC_BUG
+BEGIN id=sgn_2 image=signed_16.pgx mode=int pae=0 bug=OJ_DEC_BUG
+
+#if 0
+/* 16 bits/sample image */
+BEGIN id=tmp_9 image=sar1.pgx mode=real numrlvls=6 numgbits=1 rate=0.02 \
+  psnr=10
+BEGIN id=gbit_99 image=stawamuschief_gray.pnm mode=int numrlvls=2 numgbits=1 pae=0
+BEGIN id=gbit_98 image=target.pnm mode=int numrlvls=5 numgbits=0 pae=0
+BEGIN id=tmp_0 image=example2.mif mode=int numrlvls=5 pae=0
+#endif
+
+/******************************************************************************\
+* Temporary tests.
+\******************************************************************************/
+
+#if defined(MIF_TESTS)
+BEGIN id=geom_0 image=example.mif mode=int numrlvls=5 pae=0
+
+BEGIN id=geom_1 image=example.mif mode=real numrlvls=5 rate=0.0625 psnr=21
+#endif
+
+/******************************************************************************\
+* Basic Lossless Compression
+\******************************************************************************/
+
+/* grayscale image */
+BEGIN id=lossless_0 image=stawamuschief_gray.pnm mode=int pae=0
+
+/* grayscale image, no WT */
+BEGIN id=lossless_1 image=stawamuschief_gray.pnm mode=int numrlvls=1 pae=0
+
+/* RGB color image, no MCT, reversible 5/3 WT */
+BEGIN id=lossless_2 image=stawamuschief.pnm mode=int nomct numrlvls=5 pae=0
+
+/* RGB color image, RCT, no WT */
+BEGIN id=lossless_3 image=stawamuschief.pnm mode=int mct numrlvls=1 pae=0
+
+/* RGB color image, RCT, reversible 5/3 WT */
+BEGIN id=lossless_4 image=stawamuschief.pnm mode=int mct numrlvls=6 pae=0
+
+/* 12 bits/sample image, reversible 5/3 WT */
+BEGIN id=lossless_5 image=ct.pnm mode=int numrlvls=5 pae=0
+
+/* 10 bits/sample image, reversible 5/3 WT */
+BEGIN id=lossless_6 image=cr.pnm mode=int numrlvls=5 pae=0 bug=OJ_BUG
+
+/* 12 bits/sample image, reversible 5/3 WT */
+BEGIN id=lossless_7 image=sar2.pnm mode=int numrlvls=5 pae=0
+
+/* 16 bits/sample image, reversible 5/3 WT */
+BEGIN id=lossless_8 image=sar1.pnm mode=int numrlvls=6 pae=0
+
+/* large grayscale image */
+BEGIN id=lossless_9 image=mat.pnm mode=int numrlvls=5 pae=0
+
+/******************************************************************************\
+* Basic Lossy Compression
+\******************************************************************************/
+
+/* grayscale image, irreversible 9/7 WT */
+BEGIN id=lossy_0 image=stawamuschief_gray.pnm mode=real rate=0.05 numrlvls=5 psnr=28.0
+
+/* grayscale image, reversible 5/3 WT */
+BEGIN id=lossy_1 image=stawamuschief_gray.pnm mode=int rate=0.03125 numrlvls=5 psnr=27.0
+
+/* color image, no MCT, reversible 5/3 WT */
+BEGIN id=lossy_2 image=stawamuschief.pnm mode=int rate=0.125 nomct numrlvls=5 \
+  psnr=32.8
+
+/* color image, RCT, reversible 5/3 WT */
+BEGIN id=lossy_3 image=stawamuschief.pnm mode=int rate=0.05 mct numrlvls=5 \
+  psnr=30.0
+
+/* color image, ICT, no WT */
+BEGIN id=lossy_4 image=stawamuschief.pnm mode=real rate=0.07 mct numrlvls=1 \
+  psnr=24.5
+
+/* color image, ICT, irreversible 9/7 WT */
+BEGIN id=lossy_5 image=stawamuschief.pnm mode=real rate=0.04 mct numrlvls=5 \
+  psnr=29.3
+
+/* color image, ICT, no WT */
+BEGIN id=lossy_6 image=stawamuschief.pnm mode=real rate=0.07 mct numrlvls=1 \
+  psnr=24.5
+
+/* large grayscale image, reversible 5/3 WT */
+BEGIN id=lossy_7 image=mat.pnm mode=int rate=0.03125 psnr=10
+
+/* large grayscale image, irreversible 9/7 WT */
+BEGIN id=lossy_8 image=mat.pnm mode=real numrlvls=8 rate=0.03125 psnr=10
+
+/* 16 bits/sample image */
+BEGIN id=lossy_9 image=sar1.pnm mode=real numrlvls=5 numgbits=1 rate=0.02 \
+  psnr=10
+
+/******************************************************************************\
+* Wavelet Transform
+\******************************************************************************/
+
+/* NOTE: The width and height of the test image should have opposite parity. */
+/* This is not the case now. */
+#define	WTTEST0	image=stawamuschief_gray.pnm
+
+BEGIN id=wt_0 WTTEST0 \
+  imgareatlx=0 imgareatly=0 tilegrdtlx=0 tilegrdtly=0 \
+  mode=int numrlvls=2 \
+  pae=0
+
+BEGIN id=wt_1 WTTEST0 \
+  imgareatlx=1 imgareatly=1 tilegrdtlx=1 tilegrdtly=1 \
+  mode=int numrlvls=2 \
+  pae=0 \
+  bug=JJ2000_ENC_BUG
+
+BEGIN id=wt_2 WTTEST0 \
+  imgareatlx=1 imgareatly=1 tilegrdtlx=1 tilegrdtly=1 \
+  mode=real numrlvls=10 \
+  rate=0.1 \
+  psnr=31.5 \
+  bug=JJ2000_ENC_BUG
+
+BEGIN id=wt_3 WTTEST0 \
+  imgareatlx=1 imgareatly=1 tilegrdtlx=1 tilegrdtly=1 \
+  mode=real numrlvls=16 \
+  rate=0.1 \
+  psnr=31.5 \
+  bug=JJ2000_ENC_BUG
+
+BEGIN id=wt_4 WTTEST0 \
+  imgareatlx=1 imgareatly=1 tilegrdtlx=1 tilegrdtly=1 \
+  mode=int numrlvls=16 \
+  rate=0.1 \
+  psnr=30 \
+  bug=JJ2000_ENC_BUG
+
+BEGIN id=wt_5 WTTEST0 \
+  imgareatlx=5 imgareatly=5 tilegrdtlx=5 tilegrdtly=5 \
+  mode=int numrlvls=16 \
+  pae=0 \
+  bug=JJ2000_ENC_BUG
+
+BEGIN id=wt_6 WTTEST0 \
+  imgareatlx=1 imgareatly=1 tilegrdtlx=1 tilegrdtly=1 \
+  mode=real numrlvls=10 \
+  rate=2 \
+  psnr=30 \
+  bug=JJ2000_ENC_BUG
+
+/******************************************************************************\
+* Guard bit tests.
+\******************************************************************************/
+
+BEGIN id=gbit_0 image=stawamuschief.pnm mode=int numgbits=2 pae=0
+BEGIN id=gbit_1 image=stawamuschief.pnm mode=int numgbits=4 pae=0
+/* Kakadu 35.25 dB */
+BEGIN id=gbit_2 image=stawamuschief.pnm mode=real numrlvls=6 numgbits=3 \
+  rate=0.125 psnr=35
+BEGIN id=gbit_3 image=stawamuschief_gray.pnm mode=int numgbits=7 pae=0
+BEGIN id=gbit_4 image=stawamuschief_gray.pnm mode=real numrlvls=5 numgbits=7 \
+  rate=0.0625 psnr=30
+
+/******************************************************************************\
+* Progression Tests
+\******************************************************************************/
+
+/* Use multicomponent images for at least some of the progression tests, as
+  tests involving such images may catch more catch errors. */
+
+#define	PRGTEST0 \
+	image=stawamuschief.pnm imgareatlx=1 imgareatly=1 tilegrdtlx=0 \
+	tilegrdtly=1 tilewidth=97 tileheight=101 cblkwidth=128 cblkheight=32 \
+	prcwidth=16384 prcheight=16384 mode=int numrlvls=10 pae=0
+
+BEGIN id=prg_0 PRGTEST0 prg=lrcp bug=OJ_BUG
+BEGIN id=prg_1 PRGTEST0 prg=rlcp bug=OJ_BUG
+BEGIN id=prg_2 PRGTEST0 prg=rpcl bug=JASPER_ENC_BUG,OJ_BUG
+BEGIN id=prg_3 PRGTEST0 prg=cprl bug=JASPER_ENC_BUG,OJ_BUG
+BEGIN id=prg_4 PRGTEST0 prg=pcrl bug=JASPER_ENC_BUG,OJ_BUG
+
+#define	PRGTEST1 \
+	image=stawamuschief.pnm imgareatlx=41 imgareatly=3097 tilegrdtlx=33 \
+	tilegrdtly=3003 tilewidth=91 tileheight=97 cblkwidth=128 cblkheight=32 \
+	prcwidth=16384 prcheight=16384 mode=int numrlvls=10 pae=0
+
+BEGIN id=prg_5 PRGTEST1 prg=lrcp bug=OJ_BUG
+BEGIN id=prg_6 PRGTEST1 prg=rlcp bug=OJ_BUG
+BEGIN id=prg_7 PRGTEST1 prg=rpcl bug=JASPER_ENC_BUG,OJ_BUG
+BEGIN id=prg_8 PRGTEST1 prg=cprl bug=JASPER_ENC_BUG,OJ_BUG
+BEGIN id=prg_9 PRGTEST1 prg=pcrl bug=JASPER_ENC_BUG,OJ_BUG
+
+/* Note: The testcases prg_8 and prg_9 cause an exception in the JJ2000
+  encoder (version 5.1) */
+
+/******************************************************************************\
+* Coding style tests
+\******************************************************************************/
+
+/* For coding style tests, use a large image.  A large image will require
+  more coding passes, and this is desirable for finding termination-related
+  problems. */
+
+#define	CSTYTEST0 \
+	image=target.pnm imgareatlx=1 imgareatly=1 tilegrdtlx=0 tilegrdtly=1 \
+	tilewidth=97 tileheight=101 cblkwidth=128 cblkheight=32 prcwidth=16384 \
+	prcheight=16384 mode=int numrlvls=10 pae=0
+
+BEGIN id=csty_0 CSTYTEST0 pterm
+BEGIN id=csty_1 CSTYTEST0 termall
+BEGIN id=csty_2 CSTYTEST0 termall pterm
+BEGIN id=csty_3 CSTYTEST0 lazy bug=JJ2000_ENC_BUG
+BEGIN id=csty_4 CSTYTEST0 lazy pterm
+BEGIN id=csty_5 CSTYTEST0 lazy termall bug=JJ2000_ENC_BUG
+BEGIN id=csty_6 CSTYTEST0 lazy termall pterm
+BEGIN id=csty_7 CSTYTEST0 segsym
+BEGIN id=csty_8 CSTYTEST0 resetprob
+BEGIN id=csty_9 CSTYTEST0 vcausal
+BEGIN id=csty_10 CSTYTEST0 segsym
+BEGIN id=csty_11 CSTYTEST0 sop
+BEGIN id=csty_12 CSTYTEST0 eph
+BEGIN id=csty_13 CSTYTEST0 lazy termall pterm segsym sop eph vcausal \
+  resetprob
+BEGIN id=csty_14 CSTYTEST0 lazy termall pterm segsym sop eph vcausal \
+  resetprob sop eph
+
+#define	CSTYTEST1 \
+  image=stawamuschief.pnm \
+  imgareatlx=1 imgareatly=1 tilegrdtlx=0 tilegrdtly=1 \
+  tilewidth=97 tileheight=101 cblkwidth=128 cblkheight=32 prcwidth=16384 \
+  prcheight=16384 mode=int numrlvls=10 pae=0
+
+BEGIN id=csty_20 CSTYTEST1 pterm
+BEGIN id=csty_21 CSTYTEST1 termall
+BEGIN id=csty_22 CSTYTEST1 termall pterm
+BEGIN id=csty_23 CSTYTEST1 lazy
+BEGIN id=csty_24 CSTYTEST1 lazy pterm
+BEGIN id=csty_25 CSTYTEST1 lazy termall
+BEGIN id=csty_26 CSTYTEST1 lazy termall pterm
+BEGIN id=csty_27 CSTYTEST1 segsym
+BEGIN id=csty_28 CSTYTEST1 resetprob
+BEGIN id=csty_29 CSTYTEST1 vcausal
+BEGIN id=csty_30 CSTYTEST1 segsym
+BEGIN id=csty_31 CSTYTEST1 sop
+BEGIN id=csty_32 CSTYTEST1 eph
+BEGIN id=csty_33 CSTYTEST1 lazy termall pterm segsym sop eph vcausal \
+  resetprob
+BEGIN id=csty_34 CSTYTEST1 lazy termall pterm segsym sop eph vcausal \
+  resetprob sop eph
+
+/******************************************************************************\
+* Intermediate layer tests
+\******************************************************************************/
+
+#define	ILYRRATES \
+	ilyrrates=0.00390625,0.0078125,0.015625,0.03125,0.0625,0.125
+
+#if 0
+BEGIN id=ilyr_600 image=target.pnm mode=int rate=0.25 ILYRRATES psnr=10
+BEGIN id=ilyr_601 image=mono.pgm mode=int ILYRRATES pae=0
+BEGIN id=ilyr_602 image=colr.ppm mode=int ILYRRATES pae=0
+BEGIN id=ilyr_603 image=mono.pgm mode=real rate=0.25 ILYRRATES psnr=10
+BEGIN id=ilyr_604 image=colr.ppm mode=real rate=0.25 ILYRRATES psnr=10
+#else
+BEGIN id=ilyr_600 image=target.pnm mode=int rate=0.25 ILYRRATES psnr=10
+BEGIN id=ilyr_601 image=stawamuschief_gray.pnm mode=int ILYRRATES pae=0
+BEGIN id=ilyr_602 image=stawamuschief.pnm mode=int ILYRRATES pae=0
+BEGIN id=ilyr_603 image=stawamuschief_gray.pnm mode=real rate=0.25 ILYRRATES psnr=10
+BEGIN id=ilyr_604 image=stawamuschief.pnm mode=real rate=0.25 ILYRRATES psnr=10
+#endif
+
+/******************************************************************************\
+* Layer Progressive Decoding Test
+\******************************************************************************/
+
+#define	ILYRTEST0 \
+	image=target.pnm mode=int \
+	ilyrrates=0.00390625,0.0078125,0.015625,0.03125,0.0625,0.125 \
+
+BEGIN id=ilyr_605 ILYRTEST0 maxlyrs=1 psnr=16.90
+BEGIN id=ilyr_606 ILYRTEST0 maxlyrs=2 psnr=18.85
+BEGIN id=ilyr_607 ILYRTEST0 maxlyrs=6 psnr=42.0
+BEGIN id=ilyr_608 ILYRTEST0 maxlyrs=7 pae=0
+
+#define	ILYRTEST1 \
+	image=target.pnm mode=real rate=0.25 \
+	ilyrrates=0.00390625,0.0078125,0.015625,0.03125,0.0625,0.125 \
+
+BEGIN id=ilyr_609 ILYRTEST1 maxlyrs=1 psnr=10
+
+/******************************************************************************\
+* ROI tests.
+\******************************************************************************/
+
+BEGIN id=roi_0 image=stawamuschief.pnm mode=int mct numrlvls=6 numgbits=2 \
+  rate=0.0625 roirect=0.4,0.4,0.2,0.2 psnr=28
+
+BEGIN id=roi_1 image=goldenears_gray.pnm mode=int numrlvls=16 numgbits=2 \
+  rate=0.0625 roirect=0.25,0.25,0.5,0.5 psnr=22
+
+BEGIN id=roi_2 image=goldenears_gray.pnm mode=int numrlvls=16 numgbits=3 \
+  roirect=0.45,0.45,0.1,0.1 pae=0
+
+/******************************************************************************\
+* Images that are only one sample in width and/or height.
+\******************************************************************************/
+
+BEGIN id=700 image=small_1x1.pnm mode=int numrlvls=10 pterm pae=0 bug=JJ2000_BUG,KAKADU_BUG
+
+BEGIN id=701 image=small_1x1.pnm imgareatlx=1 imgareatly=1 mode=real rate=300 \
+  numrlvls=10 pterm psnr=5 bug=JJ2000_DEC_BUG
+
+BEGIN id=702 image=small_16x1.pnm mode=real rate=200 /* pterm */ psnr=14
+
+/******************************************************************************\
+* Kakadu-related tests
+\******************************************************************************/
+
+#if 0
+BEGIN id=kakadu_a1 image=mono.pgm mode=int numrlvls=6 pae=0
+
+BEGIN id=kakadu_a2 image=colr.ppm mode=int numrlvls=6 pae=0
+
+BEGIN id=kakadu_a3 image=mono.pgm imgareatlx=0 imgareatly=0 tilegrdtlx=0 \
+  tilegrdtly=0 tilewidth=131 tileheight=137 mode=int numrlvls=6 pae=0
+
+BEGIN id=kakadu_a5 image=mono.pgm imgareatlx=0 imgareatly=0 \
+  tilegrdtlx=0 tilegrdtly=0 tilewidth=111 tileheight=203 \
+  mode=int numrlvls=6 ilyrrates=0.03125,0.0625,2 sop eph pae=0
+
+BEGIN id=kakadu_b1 image=mono.pgm mode=int numrlvls=6 imgareatlx=41 \
+  imgareatly=3097 tilegrdtlx=33 tilegrdtly=3003 tilewidth=91 tileheight=97 \
+  pae=0
+
+BEGIN id=kakadu_c1 image=mono.pgm mode=int numrlvls=6 ilyrrates=0.1,10 \
+  lazy pae=0
+
+BEGIN id=kakadu_c2 image=mono.pgm mode=int numrlvls=6 ilyrrates=0.1,10 \
+  lazy resetprob vcausal segsym pae=0
+
+BEGIN id=kakadu_d1 image=colr.ppm mode=int ilyrrates=0.0625,0.125,0.5,1 \
+  prcwidth=64 prcheight=64 prg=pcrl pae=0
+
+/* modified */
+BEGIN id=kakadu_d2_a image=colr.ppm mode=int \
+  ilyrrates=0.0625,0.125,0.5,1 imgareatlx=1 imgareatly=1 \
+  tilewidth=101 tileheight=79 prcwidth=32 prcheight=32 prg=rlcp pae=0
+
+/* modified */
+BEGIN id=kakadu_d2_b image=colr.ppm mode=int ilyrrates=0.0625,0.125,0.5,1 \
+  imgareatlx=1 imgareatly=1 tilewidth=101 tileheight=79 prcwidth=32 \
+  prcheight=32 prg=pcrl pae=0
+#endif
+
+/******************************************************************************\
+* JPEG-2000 Test Images
+\******************************************************************************/
+
+#define DEFINE_TEST(i) \
+  BEGIN id=jpeg2000_##i image=i##.pnm \
+  tilewidth=2048 tileheight=2048 \
+  mode=int numrlvls=5 mct pae=0
+
+#if 0
+DEFINE_TEST(aerial2)
+DEFINE_TEST(bike)
+DEFINE_TEST(bike_rgb)
+DEFINE_TEST(cafe)
+DEFINE_TEST(cats)
+DEFINE_TEST(ccit1)
+DEFINE_TEST(ccit2)
+DEFINE_TEST(chart)
+DEFINE_TEST(cmpnd1)
+DEFINE_TEST(cmpnd2)
+DEFINE_TEST(cr)
+DEFINE_TEST(ct)
+DEFINE_TEST(elev)
+DEFINE_TEST(finger)
+DEFINE_TEST(gold)
+DEFINE_TEST(grid1)
+DEFINE_TEST(grid2)
+DEFINE_TEST(hotel)
+DEFINE_TEST(mat)
+DEFINE_TEST(mri)
+DEFINE_TEST(sar1)
+DEFINE_TEST(sar2)
+DEFINE_TEST(seismic)
+DEFINE_TEST(target)
+DEFINE_TEST(tools)
+DEFINE_TEST(txtur1)
+DEFINE_TEST(txtur2)
+DEFINE_TEST(us)
+DEFINE_TEST(water)
+DEFINE_TEST(woman)
+DEFINE_TEST(woman_rgb)
+DEFINE_TEST(x_ray)
+#endif
+
+/******************************************************************************\
+* Temporary Tests
+\******************************************************************************/
+

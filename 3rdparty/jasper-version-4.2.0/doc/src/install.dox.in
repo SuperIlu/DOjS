@@ -1,0 +1,141 @@
+/*!
+
+\page install Installation
+
+\section install__versioning Version Identification
+
+As the JasPer software continues to evolve over time, it is important
+to be able to identify particular releases of the software.
+Every release of the JasPer software is named by a version identifier.
+A version identifier is comprised of three integers separated by dots.
+In order, the three integers correspond to the major, minor, and micro
+version numbers for the software.
+For example, the version identifier "1.500.0" corresponds to a major
+version of 1, a minor version of 500, and a micro version of 0.
+In instances where the micro version is zero, the version identifier may
+be truncated after the minor version number.
+For example, the version identifier "1.500" is completely valid and
+simply an abbreviation for "1.500.0".
+
+Given two different releases of the JasPer software, one can easily
+determine which one is more recent by comparing the version identifiers,
+as follows:
+
+  1. if the major version numbers differ, the release with the higher major
+  version number is newer;
+
+  2. if the major version numbers are equal and the minor version numbers
+  differ, the release with the higher minor version number is newer; or
+
+  3. if the major version numbers are equal and the minor version numbers are
+  equal, the release with the higher micro version is newer.
+
+\section install__obtaining Obtaining the Software
+
+The latest version of the JasPer software can be downloaded
+from the following locations:
+
+  - JasPer Project GitHub Releases Page,
+    <https://github.com/jasper-software/jasper/releases>
+    (The official releases of JasPer can be found here.)
+
+  - JasPer Project Home Page,
+    <https://jasper-software.github.io/jasper>
+
+\section install__extracting Extracting the Software
+
+The JasPer software is distributed in the form of a gzipped tar archive.
+Therefore, in order to extract the contents of this
+file, a program capable of handling gzipped tar archives is required.
+Such software is readily available for most modern computing
+platforms.
+
+\section install__prereqs Prerequisites for Building (Software Dependencies)
+
+The JasPer code should compile and run on any platform with a C
+language implementation conforming to ISO/IEC 9899:2011 \cite iso9899-2011
+(i.e., the ISO C language standard) and supporting a subset of ISO/IEC
+9945-1 \cite iso9945p1 (i.e., the POSIX C API).
+Only limited POSIX support is required (e.g., the `open`, `close`, `read`,
+`write`, and `lseek` functions must be supported).
+
+If you need a C compiler that is reasonably compliant with the ISO/IEC
+9899:2011 standard, you can obtain GNU C from the GNU Project web site
+(i.e., <http://www.gnu.org>).
+If you need the CMake software, this can be obtained from
+the official CMake web site (i.e., <https://cmake.org>).
+
+If you are unfortunate enough to have a compiler that is not compliant
+with ISO/IEC 9899:2011, you may need to make some changes to the code.
+Unfortunately, even some of the most popular C language implementations do
+not strictly comply with the standard.
+One such example is Microsoft Visual C 6.0.
+Due to the popularity of Visual C, however, several workarounds have been
+added to the JasPer code to ensure that it will compile successfully with
+Visual C.
+
+Portability was a major consideration during the design of the JasPer
+software.
+For this reason, the software makes minimal assumptions about the runtime
+environment.
+The code uses very little floating-point arithmetic, most of which can be
+attributed to floating-point conversions in invocations of the `printf`
+function.
+This minimal use of floating-point arithmetic should make the code much
+easier to port to platforms lacking hardware support for floating-point
+arithmetic.
+
+In order to have access to the full functionality of the JasPer sofware,
+you may need to install some additional software on your system.
+This software must be installed before you attempt to build JasPer.
+
+In order to build the JasPer software with JPEG support, you will need
+to download and install the free IJG JPEG library which is available
+from the IJG web site:
+
+  - <http://www.ijg.org>
+
+In order to build the JasPer software with HEIC support, the Libheif
+library is needed.  This library is available from:
+
+  - <https://github.com/strukturag/libheif>
+
+In order to build the jiv application, you will need the OpenGL and GLUT
+libraries installed on your system.
+Most modern systems include OpenGL support (including Linux, MacOS, and
+Microsoft Windows).
+The GLUT library is relatively less common and, therefore, may not be installed
+on your system.
+To obtain the GLUT library, one can visit:
+
+  - <http://freeglut.sourceforge.net>
+
+For more information on the OpenGL library, see:
+
+  - <http://www.opengl.org>.
+
+\section install__building Building the Software
+
+Obviously, before the software can be built, the contents of the
+archive file containing the JasPer distribution must be extracted.
+
+The JasPer software is intended to be built using CMake, a very popular
+cross-platform build tool.
+The current version of the JasPer software should compile on most modern
+Unix variants such as Linux and MacOS as well as Microsoft Windows.
+The continuous integration (CI) framework on GitHub used for JasPer development
+includes builds for the following environments:
+
+  - the GCC and Clang C compilers on Ubuntu Linux
+  - the GCC and Clang C compiler on MacOS
+  - the Microsoft Visual C (MSVC) compiler on Microsoft Windows
+
+Also, the lead JasPer developer uses both the GCC and Clang compilers
+on Fedora Linux for much of their work.
+So, the JasPer software should build fairly reliably in these environments.
+Of course, the software should compile successfully in many other
+environments as well.
+
+\verbinclude @CMAKE_SOURCE_DIR@/INSTALL.txt
+
+*/

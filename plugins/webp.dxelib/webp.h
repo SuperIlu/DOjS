@@ -26,7 +26,7 @@ SOFTWARE.
 #if LINUX == 1
 #include "DOjS.h"
 extern void init_webp(js_State *J);
-extern bool save_webp(BITMAP *bm, const char *fname);
+extern bool save_webp(BITMAP *bm, const char *fname, int quality);
 extern BITMAP *load_webp_pf(PACKFILE *f, RGB *pal);
 #endif
 

@@ -1,0 +1,19 @@
+#! /usr/bin/env bash
+
+# Copyright (c) 2021 Michael David Adams.
+# All rights reserved.
+
+# Terminate with error.
+panic()
+{
+	echo "ERROR: $@" 1>&2
+	exit 1
+}
+
+# Initialize the list of required packages.
+packages=()
+packages+=(doxygen)
+
+# Install the packages.
+sudo apt-get install -y "${packages[@]}" || \
+  panic "unable to install packages"

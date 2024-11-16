@@ -1,3 +1,24 @@
+# Version 1.13.0 (For the WIN-dows) / November 16th, 2024
+* Added `KeyIsPressed()` and `keyIsDown()` in p5js emulation.
+* Updated syntax highlighting
+* Updated internal `help.txt`
+* JPEG decoding now uses libjpeg and JPEG saving is supported, too.
+* Added TIFF loading and writing.
+* Added Sun Raster (RAS) loading and writing.
+* Added Jpeg 2000 (JP2) loading and writing.
+* Added a Node.js compatible `console`
+* Made `require()` Node.js compatible
+* Added `RealPath()`
+* Added `Trace()`
+* Updated to mbedTLS 3.6.2
+* Updated cURL to 8.11.0
+* Updated zlib to 1.3.1
+* Fixed javascript `Date` string conversion
+* Improved JSDoc generation in Makefile (contributed by MinekPo1) and added `node_install` target for dependencies
+* Updated SQLite to 3.46.1 (thanks to https://mastodon.social/@BenCollver@tilde.zone)
+* Updated libjpeg to from 9e to 9f
+* Added a Win32 binary release that runs on Win98 and never.
+
 # Version 1.12.1 (The puny port) / February 2nd, 2024
 * repaired mbedTLS config
 

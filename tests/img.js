@@ -23,6 +23,9 @@ SOFTWARE.
 LoadLibrary("qoi");
 LoadLibrary("png");
 LoadLibrary("jpeg");
+LoadLibrary("tiff");
+LoadLibrary("jasper");
+LoadLibrary("webp");
 
 /*
 ** This function is called once when the script is started.
@@ -35,9 +38,14 @@ function Setup() {
 	i2 = img_test("examples/3dfx.tga");
 	i3 = img_test("examples/glow.pcx");
 	i6 = img_test("examples/3dfx.png");
-	i7 = img_test("examples/3dfx_s.jpg");
+	i5 = img_test("tests/testdata/qoi_logo.qoi");
+	i7 = new Bitmap("tests/testdata/640.tif");
 	i8 = img_test("examples/3dfx.jpg");
 	i9 = img_test("examples/3dfx_bw.jpg");
+
+	ia = img_test("tests/testdata/3dfx.ras");
+	ib = img_test("tests/testdata/640.jp2");
+	ic = img_test("tests/testdata/webp/rose.wep");
 
 	i10 = new Bitmap("LEHLh[WB2yk8pyoJadR*.7kCMdnj", 320, 240, 1);
 	// i10 = new Bitmap("L", 320, 240, 1);
@@ -103,52 +111,75 @@ function Input(e) {
 	Println(JSON.stringify(e));
 	if (CompareKey(e.key, '1')) {
 		img = i1;
-		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '2')) {
 		img = i2;
-		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '3')) {
 		img = i3;
-		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '4')) {
 		img = i4;
-		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '5')) {
-		img = new Bitmap(100, 100, 255, 255);
-		Println(img.constructor.toString());
-		img.SaveTgaImage("5.tga");
-		img.SavePcxImage("5.pcx");
-		img.SaveBmpImage("5.bmp");
-		img.SavePngImage("5.png");
-		img.SavePngImage("5.qoi");
-
-		SaveTgaImage("scr.tga");
-		SavePcxImage("scr.pcx");
-		SaveBmpImage("scr.bmp");
-		SavePngImage("scr.qoi");
+		img = i5;
 	}
 	if (CompareKey(e.key, '6')) {
 		img = i6;
-		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '7')) {
 		img = i7;
-		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '8')) {
 		img = i8;
-		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '9')) {
 		img = i9;
-		Println(img.constructor.toString());
 	}
 	if (CompareKey(e.key, '0')) {
 		img = i10;
-		Println(img.constructor.toString());
 	}
+	if (CompareKey(e.key, 'a')) {
+		img = ia;
+	}
+	if (CompareKey(e.key, 'b')) {
+		img = ib;
+	}
+	if (CompareKey(e.key, 'c')) {
+		img = ic;
+	}
+	if (CompareKey(e.key, 's')) {
+		img = new Bitmap(100, 100, 255, 255);
+		Println(img.constructor.toString());
+		img.SaveBmpImage("5.bmp");
+		img.SaveJp2Image("5.jp2");
+		img.SaveJpgImage("5.jpg");
+		img.SavePcxImage("5.pcx");
+		img.SavePngImage("5.png");
+		img.SaveQoiImage("5.qoi");
+		img.SaveRasImage("5.ras");
+		img.SaveTgaImage("5.tga");
+		img.SaveTiffImage("5.tif");
+		img.SaveWebpImage("5.wep");
+
+		SaveBmpImage("scr.bmp");
+		SaveJp2Image("scr.jp2");
+		SaveJpgImage("scr.jpg");
+		SavePcxImage("scr.pcx");
+		SavePngImage("scr.png");
+		SaveQoiImage("scr.qoi");
+		SaveRasImage("scr.ras");
+		SaveTgaImage("scr.tga");
+		SaveTiffImage("scr.tif");
+		SaveWebpImage("scr.wep");
+
+		SaveJpgImage("scr2.jpg", 20);
+		SaveJpgImage("scr6.jpg", 60);
+		SaveJp2Image("scr1.jp2", 10);
+		SaveJp2Image("scr2.jp2", 20);
+		SaveJp2Image("scr6.jp2", 60);
+		SaveWebpImage("scr2.wep", 20);
+		SaveWebpImage("scr6.wep", 60);
+	}
+	Println(img.constructor.toString());
 }

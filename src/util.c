@@ -179,10 +179,17 @@ char *ut_getBitmapType(byte_array_t *ba) {
         return "PNG";
     } else if ((ba->data[0] == 'q') && (ba->data[1] == 'o') && (ba->data[2] == 'i') && (ba->data[3] == 'f')) {
         return "QOI";
+    } else if ((ba->data[0] == 0x59) && (ba->data[1] == 0xA6) && (ba->data[2] == 0x6A) && (ba->data[3] == 0x95)) {
+        return "RAS";
+    } else if ((ba->data[0] == 0x00) && (ba->data[1] == 0x00) && (ba->data[2] == 0x00) && (ba->data[3] == 0x0C) && (ba->data[4] == 0x6A) && (ba->data[5] == 0x50) &&
+               (ba->data[6] == 0x20) && (ba->data[7] == 0x20) && (ba->data[8] == 0x0D) && (ba->data[9] == 0x0A) && (ba->data[10] == 0x87) && (ba->data[11] == 0x0A)) {
+        return "JP2";
     } else if ((ba->data[0] == 'B') && (ba->data[1] == 'M')) {
         return "BMP";
     } else if (ba->data[0] == 0x0A) {
         return "PCX";
+    } else if ((ba->data[0] == 'I' && ba->data[1] == 'I' && ba->data[2] == 42) || (ba->data[0] == 'M' && ba->data[1] == 'M' && ba->data[2] == 42)) {
+        return "TIF";
     } else {
         // try to figure out if TGA
         if (((ba->data[1] == 0) || (ba->data[1] == 1)) &&                                                   // Color map type must be 0 or 1

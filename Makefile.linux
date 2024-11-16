@@ -2,7 +2,7 @@ THIRDPARTY	= 3rdparty
 PLUGINS     = plugins
 MUJS		= $(THIRDPARTY)/mujs-1.0.5
 ALLEGRO		= $(THIRDPARTY)/allegro-4.3.3.1
-KUBAZIP		= $(THIRDPARTY)/zip-0.3.1
+KUBAZIP		= $(THIRDPARTY)/zip-0.3.2
 INI			= $(THIRDPARTY)/ini-20220806/src
 WEBP		= $(THIRDPARTY)/libwebp-1.3.2
 
@@ -25,6 +25,7 @@ CFLAGS   = -MMD -Wall -Wno-format -std=gnu99 -O2 -fomit-frame-pointer $(INCLUDES
 INCLUDES = \
 	-I$(realpath ./src) \
 	-I$(realpath ./src/linux) \
+	-I$(realpath $(PLUGINS))/jpeg.dxelib \
 	-I$(realpath $(PLUGINS))/curl.dxelib \
 	-I$(realpath $(PLUGINS))/qoi.dxelib \
 	-I$(realpath $(PLUGINS))/webp.dxelib \
@@ -35,7 +36,7 @@ INCLUDES = \
 	-I$(realpath $(PLUGINS))/nanosvg.dxelib \
 	-I$(realpath $(PLUGINS))/mpeg1.dxelib \
 	-I$(realpath $(PLUGINS))/genpdf.dxelib \
-	-I$(realpath $(PLUGINS))/genpdf.dxelib/PDFGen-0.1.0/ \
+	-I$(realpath $(PLUGINS))/genpdf.dxelib/PDFGen-master/ \
 	-I$(realpath $(PLUGINS))/vorbis.dxelib \
 	-I$(realpath $(PLUGINS))/gifanim.dxelib \
 	-I$(realpath $(PLUGINS))/ogl.dxelib \
@@ -50,7 +51,7 @@ INCLUDES = \
 	-I$(realpath $(INI))/
 
 # linker
-LIBS     = -lalleg -lloadpng -ljpgalleg -lmujs -lm -lz -lpthread -lm -lpthread -lrt -lXpm -lX11 -lXext -lXxf86vm -lXcursor -lXcursor -lasound -lpng -lcurl -lGL -lGLU -lglut -lGLEW -lglfw -lwebp -lsharpyuv
+LIBS     = -lalleg -lloadpng -ljpeg -lmujs -lm -lz -lpthread -lm -lpthread -lrt -lXpm -lX11 -lXext -lXxf86vm -lXcursor -lXcursor -lasound -lpng -lcurl -lGL -lGLU -lglut -lGLEW -lglfw -lwebp -lsharpyuv
 LDFLAGS  = -s \
 	-L$(MUJS)/build/release \
 	-L$(WEBP)/src \
@@ -106,6 +107,7 @@ PARTS= \
 	$(BUILDDIR)/ini/ini.o \
 	$(BUILDDIR)/curl.o \
 	$(BUILDDIR)/qoi.o \
+	$(BUILDDIR)/jpeg.o \
 	$(BUILDDIR)/webp.o \
 	$(BUILDDIR)/sqlite.o \
 	$(BUILDDIR)/sqlite3.o \
@@ -119,7 +121,7 @@ PARTS= \
 	$(BUILDDIR)/nanosvg.o \
 	$(BUILDDIR)/mpeg1.o \
 	$(BUILDDIR)/genpdf.o \
-	$(BUILDDIR)/PDFGen-0.1.0/pdfgen.o \
+	$(BUILDDIR)/PDFGen-master/pdfgen.o \
 	$(BUILDDIR)/vorbis.o \
 	$(BUILDDIR)/stb_vorbis.o \
 	$(BUILDDIR)/gifanim.o \
@@ -153,12 +155,12 @@ $(LIB_ALLEGRO):
 		-DWANT_ALLEGROGL=off \
 		-DWANT_LOADPNG=on \
 		-DWANT_LOGG=off \
-		-DWANT_JPGALLEG=on \
+		-DWANT_JPGALLEG=off \
 		-DWANT_EXAMPLES=off \
 		-DWANT_TOOLS=off \
 		-DWANT_TESTS=off \
 		.. && \
-	make -j 8 allegro loadpng jpgalleg)
+	make -j 8 allegro loadpng)
 
 libwebp: $(LIB_WEBP)
 $(LIB_WEBP):
@@ -171,6 +173,9 @@ $(BUILDDIR)/%.o: src/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILDDIR)/%.o: plugins/sqlite.dxelib/%.c Makefile
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILDDIR)/%.o: plugins/jpeg.dxelib/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILDDIR)/%.o: plugins/qoi.dxelib/%.c Makefile
@@ -232,7 +237,7 @@ doc:
 	cd doc && jsdoc --verbose -c jsdoc.conf.json -d ../$(DOCDIR)
 
 init:
-	mkdir -p $(BUILDDIR) $(BUILDDIR)/zip/src $(BUILDDIR)/ini $(BUILDDIR)/linux $(BUILDDIR)/PDFGen-0.1.0/
+	mkdir -p $(BUILDDIR) $(BUILDDIR)/zip/src $(BUILDDIR)/ini $(BUILDDIR)/linux $(BUILDDIR)/PDFGen-master/
 	# make sure compile time is always updated
 	# rm -f $(BUILDDIR)/DOjS.o
 

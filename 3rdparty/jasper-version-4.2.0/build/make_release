@@ -1,0 +1,278 @@
+#! /usr/bin/env bash
+
+################################################################################
+
+panic()
+{
+	echo "FATAL ERROR: $*" 1>& 2
+	exit 1
+}
+
+warn()
+{
+	echo "WARNING: $*" 1>& 2
+}
+
+usage()
+{
+	cat <<- EOF
+	usage:
+	$0 [options]
+
+	Example
+	=======
+
+	$0 -w $self_dir/.. \\
+	  -W 1 \\
+	  -t /tmp/jasper/tmp \\
+	  -o /tmp/jasper/output \\
+	  -r refs/tags/mdadams-experimental-version-wasm1
+	EOF
+	if [ $# -ne 0 ]; then
+		echo "BAD USAGE: $*"
+	fi
+	exit 2
+}
+
+################################################################################
+
+self_dir="$(dirname "$0")" || \
+  panic "cannot get self directory"
+source "$self_dir/base_utilities" || \
+  panic "cannot load base utilities"
+self_dir="$(real_path "$self_dir")" || \
+  panic "cannot get self directory"
+
+build_wasi_jasper="$self_dir/build_wasi_jasper"
+
+################################################################################
+# Command-Line Processing
+################################################################################
+
+tmp_dir=
+workspace_dir=
+out_dir=
+github_ref=
+enable_wasm=0
+
+while getopts :t:w:o:r:W:h opt; do
+	case "$opt" in
+	w)
+		workspace_dir="$OPTARG";;
+	t)
+		tmp_dir="$OPTARG";;
+	o)
+		out_dir="$OPTARG";;
+	r)
+		github_ref="$OPTARG";;
+	W)
+		enable_wasm="$OPTARG";;
+	h)
+		usage;;
+	*)
+		usage "invalid option $OPTARG";;
+	esac
+done
+shift $((OPTIND - 1))
+
+if [ -z "$github_ref" ]; then
+	usage "no GitHub ref specified"
+fi
+if [ -z "$out_dir" ]; then
+	usage "no output directory specified"
+fi
+if [ -z "$workspace_dir" ]; then
+	usage "no workspace directory specified"
+fi
+if [ -z "$tmp_dir" ]; then
+	usage "no temporary directory specified"
+fi
+
+# Ensure an absolute pathname.
+workspace_dir="$(real_path "$workspace_dir")" || \
+  panic "cannot get absolute pathname"
+
+if [ ! -d "$workspace_dir" ]; then
+	panic "no such directory $workspace_dir"
+fi
+
+echo "temporary directory: $tmp_dir"
+echo "workspace directory: $workspace_dir"
+echo "GitHub ref: $github_ref"
+
+################################################################################
+#
+################################################################################
+
+commit="$(git -C "$workspace_dir" rev-parse HEAD)" || \
+  panic "cannot get commit"
+#tag="$(git -C "$workspace_dir" describe "$commit")" || \
+#  panic "cannot get tag"
+tag="$(awk -v FS="/" '{print $3;}' <<< "$github_ref")" || \
+  panic "cannot get tag"
+
+release_type=
+grep -q -E '^version-.*$' <<< "$tag" && release_type=normal
+if [ -z "$release_type" ]; then
+	grep -q -E '^experimental-version-.*$' <<< "$tag" && \
+	  release_type=experimental
+fi
+if [ -z "$release_type" ]; then
+	grep -q -E '^mdadams-experimental-version-.*$' <<< "$tag" && \
+	  release_type=mdadams
+fi
+case "$release_type" in
+normal)
+	version="$(awk -v FS="-" '{print $2;}' <<< "$tag")" || \
+	  panic "cannot get version"
+	;;
+experimental)
+	version="$(awk -v FS="-" '{print $3;}' <<< "$tag")" || \
+	  panic "cannot get version"
+	;;
+mdadams)
+	version="$(awk -v FS="-" '{print $4;}' <<< "$tag")" || \
+	  panic "cannot get version"
+	;;
+*)
+	#version="$tag"
+	panic "unknown release type"
+	;;
+esac
+
+cat <<- EOF
+release type: $release_type
+EOF
+
+################################################################################
+#
+################################################################################
+
+name="jasper-$version"
+
+source_dir="$tmp_dir/$name"
+build_dir="$tmp_dir/build"
+install_dir="$tmp_dir/install"
+news_file="$workspace_dir/NEWS.txt"
+changelog_file="$source_dir/ChangeLog"
+release_notes_file="$out_dir/release_notes.txt"
+archive_file="$out_dir/${name}.tar.gz"
+
+echo "name: $name"
+echo "commit: $commit"
+echo "tag: $tag"
+echo "version: $version"
+
+for dir in "$tmp_dir" "$out_dir" "$build_dir" "$source_dir" "$install_dir" \
+  "$out_dir/doc/html"; do
+	if [ ! -d "$dir" ]; then
+		mkdir -p "$dir" || panic "cannot make directory $dir"
+	fi
+done
+
+cp -a "$workspace_dir/." "$source_dir" || \
+  panic "cannot copy"
+#(cd "$workspace_dir" && tar -cf - . ) | (cd "$source_dir" && tar -xf -) || \
+#  panic "cannot copy"
+rm -rf "$source_dir/.git" || \
+  panic "cannot remove .git directory"
+
+git -C "$workspace_dir" log --stat -M -C --name-status --no-color | \
+  fmt --split-only > "$changelog_file" || \
+  panic "cannot generate changelog"
+
+case "$release_type" in
+normal)
+	"$self_dir"/extract_release_notes \
+	  < "$news_file" \
+	  > "$release_notes_file" \
+	  || \
+	  panic
+	;;
+experimental|mdadams)
+	cat > "$release_notes_file" <<- EOF
+	WARNING: DO NOT USE THIS RELEASE!
+
+	This is an experimental release whose sole purpose is to test some of
+	the software build/deployment infrastructure employed in this project.
+	EOF
+	;;
+*)
+	panic "unknown release type"
+	;;
+esac
+
+cmake \
+  -G "Unix Makefiles" \
+  -DCMAKE_INSTALL_PREFIX="$install_dir" \
+  -DJAS_ENABLE_DOC=true \
+  -DJAS_ENABLE_OPENGL=false \
+  -H"$source_dir" -B"$build_dir" || \
+  panic "cmake failed"
+
+cmake --build "$build_dir" --clean-first || \
+  panic "make clean/all failed"
+
+#cmake --build "$build_dir" --target install || \
+#  panic "make install failed"
+
+cp -a "$build_dir/doc/html/." "$out_dir/doc/html" || \
+  panic "cannot move html"
+
+#mv "$build_dir/doc/latex/refman.pdf" "$source_dir/doc/manual.pdf" || \
+#  panic "cannot move manual.pdf"
+
+remove_list=()
+
+remove_list+=(appveyor.yml)
+remove_list+=(.gitattributes)
+remove_list+=(.github)
+remove_list+=(.gitignore)
+remove_list+=(.travis.yml)
+
+remove_list+=(build/appveyor)
+remove_list+=(build/extract_release_notes)
+remove_list+=(build/github)
+remove_list+=(build/make_dist)
+remove_list+=(build/make_release)
+remove_list+=(build/travis)
+
+remove_list+=(data/test/bad/1_crash.jpg)
+
+for file in "${remove_list[@]}"; do
+	if [ ! -e "$source_dir/$file" ]; then
+		warn "missing file/directory $file"
+	fi
+	rm -rf "$source_dir/$file" || \
+	  panic "cannot remove file/directory $file"
+done
+
+tar -C "$tmp_dir" -czf - "$name" > "$archive_file" || \
+  panic "cannot make archive"
+
+################################################################################
+
+if [ "$enable_wasm" -ne 0 ]; then
+
+	name="jasper-WebAssembly-$version"
+
+	stage_dir="$tmp_dir/wasm"
+	archive_file="$out_dir/$name.tar.gz"
+
+	echo "stage directory: $stage_dir"
+	echo "archive file: $archive_file"
+
+	JAS_TMP_DIR="$tmp_dir" \
+	  "$build_wasi_jasper" -V "$version" -o "$stage_dir/$name" || \
+	  panic "cannot build WASI jasper"
+
+	ls -al "$stage_dir"
+	(cd "$stage_dir" && ls -al)
+
+	tar -C "$stage_dir" -c -z -f - "$name" > "$archive_file" || \
+	  panic "cannot make archive"
+
+fi
+
+################################################################################
+

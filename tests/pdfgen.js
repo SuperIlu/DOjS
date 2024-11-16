@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-LoadLibrary("pdfgen");
+LoadLibrary("genpdf");
 
 function Setup() {
     Println(PDF_A4_WIDTH);
@@ -51,7 +51,7 @@ function Setup() {
     var bmid = pdf.AddBookmark(PDF_TOPLEVEL_BOOKMARK, "First page");
     var bmid2 = pdf.AddBookmark(bmid, "First sublevel");
 
-    pdf.AppendPage();
+    // pdf.AppendPage();
     height = pdf.AddTextWrap(
         "This is a great big long string that I hope will wrap properly " +
         "around several lines.\nThere are some odd length " +
@@ -60,8 +60,12 @@ function Setup() {
         "see how it copes with them. Hopefully it all works properly.\n\n\n" +
         "We even include multiple breaks\n" +
         "thisisanenourmouswordthatwillneverfitandwillhavetobecut",
-        16, 60, 800, EGA.BLACK, 300, PDF_ALIGN_JUSTIFY);
+        16, 60, 800, 0, EGA.BLACK, 300, PDF_ALIGN_JUSTIFY);
     pdf.AddRectangle(58, 800 + 16, 304, -height, 2, EGA.BLACK);
+
+    for (var i = 0; i < 360; i += 10) {
+        pdf.AddTextWrap("The quick brown fox jumps over the whatever....", 16, 300, 400, degToRad(i), EGA.BLACK, 300, PDF_ALIGN_JUSTIFY);
+    }
 
     pdf.AppendPage();
     pdf.AddImageFile(10, 10, 20, 30, "tests/testdata/teapot.ppm");
@@ -88,7 +92,7 @@ function Setup() {
     pdf.AddCircle(200, 240, 50, 5, EGA.RED, NO_COLOR);
     pdf.AddEllipse(100, 240, 40, 30, 2, EGA.YELLOW, EGA.BROWN);
     pdf.AddRectangle(150, 150, 100, 100, 4, EGA.BLUE);
-    pdf.AddFilledRectangle(150, 450, 100, 100, 4, EGA.GREEN);
+    pdf.AddFilledRectangle(150, 450, 100, 100, 4, EGA.GREEN, EGA.RED);
 
     pdf.AppendPage();
     var p = [
@@ -128,4 +132,8 @@ function Loop() {
 }
 
 function Input(e) {
+}
+
+function degToRad(d) {
+    return d * Math.PI / 180.0;
 }

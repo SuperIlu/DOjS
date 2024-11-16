@@ -84,7 +84,7 @@ static void new_Pdfgen(js_State *J) {
         JS_ENOMEM(J);
         return;
     }
-    bzero(pg, sizeof(pdfgen_t));
+    memset(pg, 0, sizeof(pdfgen_t));
 
     float width = js_tonumber(J, 1);
     float height = js_tonumber(J, 2);
@@ -255,7 +255,7 @@ static void PG_AddRectangle(js_State *J) {
 
 /**
  * @brief draw a filled rectangle.
- * pg.AddFilledRectangle(x:number, y:number, w:number, h:number, width:number, col:Color)
+ * pg.AddFilledRectangle(x:number, y:number, w:number, h:number, width:number, col:Color, col:Color)
  *
  * @param J VM state.
  */
@@ -266,8 +266,9 @@ static void PG_AddFilledRectangle(js_State *J) {
     float w = js_tonumber(J, 3);
     float h = js_tonumber(J, 4);
     float bw = js_tonumber(J, 5);
-    uint32_t c = js_touint32(J, 6);
-    if (pdf_add_filled_rectangle(pg->pdf, NULL, x, y, w, h, bw, PDF_CONVERT_COLOR(c)) < 0) {
+    uint32_t cf = js_touint32(J, 6);
+    uint32_t cb = js_touint32(J, 7);
+    if (pdf_add_filled_rectangle(pg->pdf, NULL, x, y, w, h, bw, PDF_CONVERT_COLOR(cf), PDF_CONVERT_COLOR(cb)) < 0) {
         js_error(J, "Could not add filled rectangle: %s", pdf_get_err(pg->pdf, NULL));
         pdf_clear_err(pg->pdf);
         return;
@@ -296,7 +297,7 @@ static void PG_AddText(js_State *J) {
 
 /**
  * @brief add wrapped text.
- * pg.AddTextWrap(txt:string, size:number, x:number, y:number, col:Color, wwidth: number, align:number):number
+ * pg.AddTextWrap(txt:string, size:number, x:number, y:number, ang:number, col:Color, wwidth: number, align:number):number
  *
  * @param J VM state.
  */
@@ -307,10 +308,11 @@ static void PG_AddTextWrap(js_State *J) {
     float s = js_tonumber(J, 2);
     float x = js_tonumber(J, 3);
     float y = js_tonumber(J, 4);
-    uint32_t c = js_touint32(J, 5);
-    float ww = js_tonumber(J, 6);
-    uint32_t align = js_touint32(J, 7);
-    if (pdf_add_text_wrap(pg->pdf, NULL, txt, s, x, y, PDF_CONVERT_COLOR(c), ww, align, &height) < 0) {
+    float ang = js_tonumber(J, 5);
+    uint32_t c = js_touint32(J, 6);
+    float ww = js_tonumber(J, 7);
+    uint32_t align = js_touint32(J, 8);
+    if (pdf_add_text_wrap(pg->pdf, NULL, txt, s, x, y, ang, PDF_CONVERT_COLOR(c), ww, align, &height) < 0) {
         js_error(J, "Could not add text: %s", pdf_get_err(pg->pdf, NULL));
         pdf_clear_err(pg->pdf);
         return;
@@ -787,10 +789,10 @@ void init_genpdf(js_State *J) {
         NPROTDEF(J, PG, AddCircle, 6);
         NPROTDEF(J, PG, AddEllipse, 7);
         NPROTDEF(J, PG, AddRectangle, 6);
-        NPROTDEF(J, PG, AddFilledRectangle, 6);
+        NPROTDEF(J, PG, AddFilledRectangle, 7);
         NPROTDEF(J, PG, AddText, 5);
         NPROTDEF(J, PG, AddImageFile, 5);
-        NPROTDEF(J, PG, AddTextWrap, 7);
+        NPROTDEF(J, PG, AddTextWrap, 8);
         NPROTDEF(J, PG, GetFontTextWidth, 3);
         NPROTDEF(J, PG, AddBookmark, 2);
         NPROTDEF(J, PG, AddCubicBezier, 10);

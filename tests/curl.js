@@ -41,11 +41,11 @@ function Setup() {
 	Println(">>> date=" + new Date().toISOString());
 
 	// simple https get
+	sslTest("https://curl.se");
 	sslTest("https://mastodon.social/about");
 	sslTest("https://retrochat.online/about");
 	sslTest("https://bitbang.social/about");
 	sslTest("https://raw.githubusercontent.com/SuperIlu/DOjSHPackages/master/dojs/index.json");
-	sslTest("https://curl.se");
 	sslTest("https://www.shdon.com/");
 	sslTest("https://www.heise.de");
 

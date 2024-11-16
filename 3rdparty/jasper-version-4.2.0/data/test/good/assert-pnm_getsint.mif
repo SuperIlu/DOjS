@@ -1,0 +1,7 @@
+MIF
+component tlx=0 tly=0 sampperx=2 samppery=4 width=2 height=1 prec=8 sgnd=1
+end
+P5
+2 3
+-5
+5

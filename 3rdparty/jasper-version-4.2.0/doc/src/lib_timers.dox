@@ -1,0 +1,26 @@
+/*!
+
+\page lib_timers Timers
+
+\section lib_timers__api API References
+
+- \ref module_timers
+
+\section lib_timers__introduction Timers
+
+The JasPer library provides a simple timer class, which can be used
+more measuring elapsed time.
+
+A timer is represented using the `jas_tmr_t` class.
+A list of the various functions/macros provided for this class is
+given below.
+
+  - starting and stopping a timer:
+      - `jas_tmr_start()`
+      - `jas_tmr_stop()`
+
+  - querying the elapsed time for a timer:
+
+      - `jas_tmr_get()`
+
+*/

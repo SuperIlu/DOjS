@@ -1,0 +1,873 @@
+#! /usr/bin/env bash
+# Copyright (c) 2016 Michael David Adams
+
+debug_level="${JAS_DEBUG_LEVEL:-0}"
+if [ "$debug_level" -ge 1 ]; then
+	set -xv
+fi
+
+cmd_dir=$(dirname "$0") || exit 1
+source "$cmd_dir/base_utilities" || exit 1
+source "$cmd_dir/test_utilities" || exit 1
+source "$cmd_dir/jpcod" || exit 1
+
+set_source_and_build_dirs || panic "cannot set source and build directories"
+
+init
+VERBOSE=0
+
+JASPER="$abs_top_builddir/src/app/jasper"
+IMGINFO="$abs_top_builddir/src/app/imginfo"
+export JASPER_COMMAND="$JASPER"
+export IMGINFO_COMMAND="$IMGINFO"
+
+################################################################################
+#
+################################################################################
+
+setdefcodingparms()
+{
+
+	#DEBUG=10
+	#DEBUG=5
+	#DEBUG=1
+	DEBUG=0
+
+	FMT=jpc
+
+	INFILE=""
+	OUTFILE=""
+
+	SOFTWARE=""
+
+	IMGAREATLX=0
+	IMGAREATLY=0
+	TILEWIDTH=0
+	TILEHEIGHT=0
+	TILEGRDTLX=$IMGAREATLX
+	TILEGRDTLY=$IMGAREATLY
+	CBLKWIDTH=64
+	CBLKHEIGHT=64
+	PRCWIDTH=0
+	PRCHEIGHT=0
+
+	MODE=int
+	SOP=0
+	EPH=0
+	SEGSYM=0
+	LAZY=0
+	TERMALL=0
+	PTERM=0
+	PRG=lrcp
+
+	NUMGBITS=2
+
+	ALLOWMCT=1
+	VCAUSAL=0
+	RESETPROB=0
+
+	NUMRLVLS=6
+
+	RATE=0
+	ILYRRATES=""
+	MAXPAE=""
+	MINPSNR=""
+	MAXLYRS=0
+	ROIRECT=""
+
+}
+
+################################################################################
+#
+################################################################################
+
+jasper_enc()
+{
+	(
+		ENCOPTS=""
+
+		IMGNAME=`basename $INFILE`
+
+		if [ -n "$ROIRECT" ]; then
+			exit 2
+		fi
+
+		if [ $DEBUG -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O debug=$DEBUG"
+		fi
+
+		ENCOPTS="$ENCOPTS -T $FMT"
+
+		if [ $IMGAREATLX -ne 0 -o $IMGAREATLY -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O imgareatlx=$IMGAREATLX"
+			ENCOPTS="$ENCOPTS -O imgareatly=$IMGAREATLY"
+		fi
+		if [ $TILEWIDTH -ne 0 -o $TILEHEIGHT -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O tilewidth=$TILEWIDTH"
+			ENCOPTS="$ENCOPTS -O tileheight=$TILEHEIGHT"
+		fi
+		if [ $TILEGRDTLX -ne 0 -o $TILEGRDTLY -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O tilegrdtlx=$TILEGRDTLX"
+			ENCOPTS="$ENCOPTS -O tilegrdtly=$TILEGRDTLY"
+		fi
+		if [ $PRCWIDTH -ne 0 -o $PRCHEIGHT -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O prcwidth=$PRCWIDTH"
+			ENCOPTS="$ENCOPTS -O prcheight=$PRCHEIGHT"
+		fi
+		ENCOPTS="$ENCOPTS -O cblkwidth=$CBLKWIDTH"
+		ENCOPTS="$ENCOPTS -O cblkheight=$CBLKHEIGHT"
+
+		if [ $RATE = 0 ]; then
+			ENCOPTS="$ENCOPTS -O mode=int"
+		else
+			if [ $MODE = int ]; then
+				# Use the 5/3 wavelet transform for lossy coding.
+				ENCOPTS="$ENCOPTS -O mode=int"
+			else
+				# Do not use the 5/3 wavelet transform for lossy coding.
+				ENCOPTS="$ENCOPTS -O mode=real"
+			fi
+			ENCOPTS="$ENCOPTS -O rate=$RATE"
+		fi
+		if [ -n "$ILYRRATES" ]; then
+			ENCOPTS="$ENCOPTS -O ilyrrates=$ILYRRATES"
+		fi
+
+		ENCOPTS="$ENCOPTS -O numrlvls=$NUMRLVLS"
+		ENCOPTS="$ENCOPTS -O numgbits=$NUMGBITS"
+		ENCOPTS="$ENCOPTS -O prg=$PRG"
+
+		if [ $ALLOWMCT -eq 0 ]; then
+			ENCOPTS="$ENCOPTS -O nomct"
+		fi
+
+		if [ $LAZY -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O lazy"
+		fi
+		if [ $TERMALL -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O termall"
+		fi
+		if [ $PTERM -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O pterm"
+		fi
+		if [ $SOP -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O sop"
+		fi
+		if [ $EPH -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O eph"
+		fi
+		if [ $SEGSYM -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O segsym"
+		fi
+		if [ $VCAUSAL -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O vcausal"
+		fi
+		if [ $RESETPROB -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -O resetprob"
+		fi
+
+		if [ $VERBOSE -ne 0 ]; then
+			echo "Running JasPer encoder"
+			echo "$JASPER $ENCOPTS < $INFILE > $OUTFILE"
+		fi
+		$JASPER $ENCOPTS < $INFILE > $OUTFILE
+	)
+}
+
+################################################################################
+#
+################################################################################
+
+jj2k_enc()
+{
+	(
+		IMGFMT=$(image_info "$INFILE" format) || \
+		  panic "cannot get image format"
+		INFILESUFFIX=`getsuffix $INFILE`
+		INFILEBASE=`stripsuffix $INFILE`
+
+if [ $IMGFMT != pgx ]; then
+if [ $IMGPREC -ne 8 -a $IMGPREC -ne 24 ]; then
+	# unsupported precision
+	exit 2
+fi
+fi
+
+		if [ $IMGFMT != pnm -a $IMGFMT != pgx ]; then
+			exit 2
+		fi
+
+echo suffix $INFILESUFFIX
+		if [ "$INFILESUFFIX" = pnm ]; then
+			if [ $IMGTYPE = rgb ]; then
+				TMPINFILE=$TMPDIR/tmp_image.ppm
+			else
+				TMPINFILE=$TMPDIR/tmp_image.pgm
+			fi
+			ln -s $INFILE $TMPINFILE
+			INFILE=$TMPINFILE
+		fi
+
+		if [ $IMGTYPE = rgb ]; then
+			PREC=24
+		else
+			PREC=8
+		fi
+
+		if [ $RATE != "0" ]; then
+			BITRATE=`evalexpr "$RATE * $PREC"`
+		else
+			BITRATE=0
+		fi
+
+		ENCOPTS=""
+
+		ENCOPTS="$ENCOPTS -verbose off"
+
+		if [ $FMT = jp2 ]; then
+			ENCOPTS="$ENCOPTS -file_format on"
+		fi
+
+		if [ $IMGAREATLX -ne 0 -o $IMGAREATLY -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -ref $IMGAREATLX $IMGAREATLY"
+		fi
+		if [ $TILEWIDTH -ne 0 -o $TILEHEIGHT -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -tiles $TILEWIDTH $TILEHEIGHT"
+		fi
+		if [ $TILEGRDTLX -ne 0 -o $TILEGRDTLY -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -tref $TILEGRDTLX $TILEGRDTLY"
+		fi
+		if [ $PRCWIDTH -ne 0 -o $PRCHEIGHT -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Cpp $PRCWIDTH $PRCHEIGHT"
+		fi
+		ENCOPTS="$ENCOPTS -Cblksiz $CBLKWIDTH $CBLKHEIGHT"
+
+		if [ $RATE = 0 ]; then
+			ENCOPTS="$ENCOPTS -lossless on"
+		else
+			if [ $MODE = int ]; then
+				# Use the 5/3 wavelet transform for lossy coding.
+				ENCOPTS="$ENCOPTS -Ffilters w5x3"
+				ENCOPTS="$ENCOPTS -Qtype reversible"
+			else
+				# Do not use the 5/3 wavelet transform for lossy coding.
+				ENCOPTS="$ENCOPTS -Ffilters w9x7"
+			fi
+			ENCOPTS="$ENCOPTS -rate $BITRATE"
+		fi
+		if [ -n "$ILYRRATES" ]; then
+			BUF=`echo "$ILYRRATES" | csltowsl | scalewsl $PREC`
+			ENCOPTS="$ENCOPTS -Alayers $BUF"
+		else
+			ENCOPTS="$ENCOPTS -Alayers 100 +1"
+		fi
+
+		ENCOPTS="$ENCOPTS -Wlev $NUMDLVLS"
+		ENCOPTS="$ENCOPTS -Qguard_bits $NUMGBITS"
+
+		case $PRG in
+		lrcp)
+			ENCOPTS="$ENCOPTS -Aptype layer"
+			;;
+		rlcp)
+			ENCOPTS="$ENCOPTS -Aptype res"
+			;;
+		rpcl)
+			ENCOPTS="$ENCOPTS -Aptype res-pos"
+			;;
+		pcrl)
+			ENCOPTS="$ENCOPTS -Aptype pos-comp"
+			;;
+		cprl)
+			ENCOPTS="$ENCOPTS -Aptype comp-pos"
+			;;
+		*)
+			echo "ERROR: unknown progression"
+			exit 1
+			;;
+		esac
+
+		if [ $IMGTYPE = rgb ]; then
+			if [ $ALLOWMCT -eq 0 ]; then
+				ENCOPTS="$ENCOPTS -Mct off"
+			else
+				ENCOPTS="$ENCOPTS -Mct on"
+			fi
+		fi
+
+		if [ $LAZY -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Cbypass"
+		fi
+		if [ $TERMALL -ne 0 ]; then
+			#ENCOPTS="$ENCOPTS -Creg_term"
+			ENCOPTS="$ENCOPTS -Cterminate"
+		fi
+		if [ $PTERM -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Cterm_type predict"
+		else
+			ENCOPTS="$ENCOPTS -Cterm_type near_opt"
+		fi
+		if [ $SOP -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Psop"
+		fi
+		if [ $EPH -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Peph"
+		fi
+		if [ $SEGSYM -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Cseg_symbol"
+		fi
+		if [ $VCAUSAL -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Ccausal"
+		fi
+		if [ $RESETPROB -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -CresetMQ"
+		fi
+		if [ -n "$ROIRECT" ]; then
+			ROITLX=`echo $ROIRECT | csltowsl | awk '{print $1}' | scalewsl $IMGWIDTH | realtoint`
+			ROITLY=`echo $ROIRECT | csltowsl | awk '{print $2}' | scalewsl $IMGHEIGHT | realtoint`
+			ROIWIDTH=`echo $ROIRECT | csltowsl | awk '{print $3}' | scalewsl $IMGWIDTH | realtoint`
+			ROIHEIGHT=`echo $ROIRECT | csltowsl | awk '{print $4}' | scalewsl $IMGHEIGHT | realtoint`
+			ENCOPTS="$ENCOPTS -Rroi R $ROITLX $ROITLY $ROIWIDTH $ROIHEIGHT"
+		fi
+		if [ $VERBOSE -ne 0 ]; then
+			echo "Running JJ2000 encoder"
+			echo "$JJCOD enc -i $INFILE -o $OUTFILE $ENCOPTS > $ERRFILE 2> $ERRFILE"
+		fi
+		CLASSPATH=$JJ2KTOPDIR/jj2000-$JJ2KVER.jar
+		export CLASSPATH
+		$JAVA JJ2KEncoder \
+		  -i $INFILE -o $OUTFILE $ENCOPTS > $ERRFILE 2> $ERRFILE
+	)
+}
+
+################################################################################
+#
+################################################################################
+
+vm_enc()
+{
+	(
+		if [ $FMT != jpc ]; then
+			echo "VM encoder cannot handle JP2 format"
+			exit 1
+		fi
+		IMGFMT=$(image_info "$INFILE" format) || \
+		  panic "cannot get image format"
+		if [ $IMGFMT != pnm -a $IMGFMT != pgx ]; then
+			exit 2
+		fi
+		if [ -n "$ROIRECT" ]; then
+			exit 2
+		fi
+
+		IMGNAME=`basename $INFILE`
+
+		if [ $IMGTYPE = rgb ]; then
+			PREC=24
+		else
+			PREC=8
+		fi
+		if [ $RATE != "0" ]; then
+			BITRATE=`evalexpr "$RATE * $PREC"`
+		else
+			BITRATE=0
+		fi
+
+		ENCOPTS=""
+
+		if [ $DEBUG -ne 0 ]; then
+			:
+		else
+			ENCOPTS="$ENCOPTS -quiet"
+		fi
+
+		if [ $IMGAREATLX -ne 0 -o $IMGAREATLY -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Fref $IMGAREATLY $IMGAREATLX"
+		fi
+		if [ $TILEWIDTH -ne 0 -o $TILEHEIGHT -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Ftiles $TILEHEIGHT $TILEWIDTH"
+		fi
+		if [ $TILEGRDTLX -ne 0 -o $TILEGRDTLY -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Ftile_ref $TILEGRDTLY $TILEGRDTLX"
+		fi
+		if [ $PRCWIDTH -ne 0 -o $PRCHEIGHT -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Cpp ${PRCWIDTH}x$PRCHEIGHT"
+		fi
+		ENCOPTS="$ENCOPTS -Cblk ${CBLKHEIGHT}x$CBLKWIDTH"
+
+		ENCOPTS="$ENCOPTS -Flev $NUMDLVLS"
+		ENCOPTS="$ENCOPTS -Fguard_bits $NUMGBITS"
+		ENCOPTS="$ENCOPTS -Bcomment Generated_by_VM_9.0"
+
+#		if [ $DERIVEDSTEPSIZES -ne 0 ]; then
+#			ENCOPTS="$ENCOPTS -Fimplicit Y"
+#		fi
+
+		if [ $LAZY -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Clazy"
+		fi
+		if [ $TERMALL -ne 0 ]; then
+			if [ $PTERM -eq 0 ]; then
+				echo "WARNING: VM cannot use both TERMALL and no PTERM"
+			fi
+			ENCOPTS="$ENCOPTS -Cer_term Y"
+		else
+			ENCOPTS="$ENCOPTS -Cer_term N"
+		fi
+		if [ $PTERM -ne 0 ]; then
+			if [ $TERMALL -eq 0 ]; then
+				echo "WARNING: VM cannot use PTERM without TERMALL"
+			fi
+		fi
+		if [ $SOP -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Bresync Y"
+		fi
+		if [ $EPH -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Beph Y"
+		fi
+		if [ $SEGSYM -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Csegmark Y"
+		fi
+		if [ $VCAUSAL -ne 0 ]; then
+			ENCOPTS="$ENCOPTS -Ccausal Y"
+		fi
+		if [ $RESETPROB -ne 0 ]; then
+			echo "warning: The VM has term all enabled!"
+			ENCOPTS="$ENCOPTS -Cparallel Y"
+		fi
+
+		if [ $ALLOWMCT -ne 0 ]; then
+			if [ $IMGTYPE = rgb ]; then
+				ENCOPTS="$ENCOPTS -Mycc"
+			fi
+		fi
+
+		case $PRG in
+		lrcp)
+			ENCOPTS="$ENCOPTS -Corder L"
+			;;
+		rlcp)
+			ENCOPTS="$ENCOPTS -Corder RL"
+			;;
+		rpcl)
+			ENCOPTS="$ENCOPTS -Corder RP"
+			;;
+		pcrl)
+			ENCOPTS="$ENCOPTS -Corder PC"
+			;;
+		cprl)
+			ENCOPTS="$ENCOPTS -Corder CP"
+			;;
+		*)
+			echo "ERROR: unknown progression"
+			exit 1
+			;;
+		esac
+
+		if [ $RATE = 0 ]; then
+			ENCOPTS="$ENCOPTS -Frev"
+		else
+			if [ $MODE = int ]; then
+				# Use the 5/3 wavelet transform for lossy coding.
+				ENCOPTS="$ENCOPTS -Frev"
+			else
+				# Do not use the 5/3 wavelet transform for lossy coding.
+				ENCOPTS="$ENCOPTS"
+			fi
+			ENCOPTS="$ENCOPTS -rate $BITRATE"
+		fi
+
+		ENCOPTS="-o $OUTFILE $ENCOPTS"
+		if [ $IMGTYPE = rgb ]; then
+			REDINFILE=$TMPDIR/vmenc_r.pgm
+			GRNINFILE=$TMPDIR/vmenc_g.pgm
+			BLUINFILE=$TMPDIR/vmenc_b.pgm
+			ppmtorgb $INFILE $REDINFILE $GRNINFILE $BLUINFILE
+			ENCOPTS="-i $REDINFILE $GRNINFILE $BLUINFILE $ENCOPTS"
+		else
+			ENCOPTS="-i $INFILE $ENCOPTS"
+		fi
+		if [ $VERBOSE -ne 0 ]; then
+			echo "Running VM encoder"
+			echo "$VMENC $ENCOPTS > $ERRFILE 2> $ERRFILE"
+		fi
+		$VMENC $ENCOPTS > $ERRFILE 2> $ERRFILE
+	)
+}
+
+################################################################################
+#
+################################################################################
+
+kakadu_enc()
+{
+(
+	ENCOPTS=""
+	INFILESUFFIX=`getsuffix $INFILE`
+	INFILEBASE=`stripsuffix $INFILE`
+
+	if [ -n "$ROIRECT" ]; then
+		exit 2
+	fi
+
+	if [ $IMGPREC -ne 8 -a $IMGPREC -ne 24 ]; then
+		# unsupported precision
+		exit 2
+	fi
+	if [ $IMGTYPE = rgb ]; then
+		PREC=24
+	else
+		PREC=8
+	fi
+	if [ $RATE = 0 ]; then
+		LOSSLESS=1
+		RATE=100
+	else
+		LOSSLESS=0
+	fi
+	BITRATE=`evalexpr "$RATE * $PREC"`
+
+echo suffix $INFILESUFFIX
+	if [ "$INFILESUFFIX" = pnm ]; then
+		if [ $IMGTYPE = rgb ]; then
+			TMPINFILE=$TMPDIR/tmp_image.ppm
+		else
+			TMPINFILE=$TMPDIR/tmp_image.pgm
+		fi
+		ln -s $INFILE $TMPINFILE
+		INFILE=$TMPINFILE
+	fi
+
+	ENCOPTS="$ENCOPTS -precise"
+	ENCOPTS="$ENCOPTS -full"
+	if [ $IMGAREATLX -ne 0 -o $IMGAREATLY -ne 0 ]; then
+		ENCOPTS="$ENCOPTS Sorigin={$IMGAREATLY,$IMGAREATLX}"
+	fi
+	if [ $TILEWIDTH -ne 0 -o $TILEHEIGHT -ne 0 ]; then
+		ENCOPTS="$ENCOPTS Stiles={$TILEHEIGHT,$TILEWIDTH}"
+	fi
+	if [ $TILEGRDTLX -ne 0 -o $TILEGRDTLY -ne 0 ]; then
+		ENCOPTS="$ENCOPTS Stile_origin={$TILEGRDTLY,$TILEGRDTLX}"
+	fi
+	if [ $PRCWIDTH -ne 0 -o $PRCHEIGHT -ne 0 ]; then
+		ENCOPTS="$ENCOPTS Cprecincts={$PRCWIDTH,$PRCHEIGHT}"
+	fi
+	ENCOPTS="$ENCOPTS Cblk={$CBLKHEIGHT,$CBLKWIDTH}"
+
+	if [ $MODE = int ]; then
+		ENCOPTS="$ENCOPTS Creversible=yes"
+		ENCOPTS="$ENCOPTS Ckernels=W5X3"
+	else
+		ENCOPTS="$ENCOPTS Creversible=no"
+		ENCOPTS="$ENCOPTS Ckernels=W9X7"
+	fi
+	if [ -n "$ILYRRATES" ]; then
+		BUF=`echo "${ILYRRATES},$RATE" | csltowsl | scalewsl $PREC | wsltocsl`
+		ENCOPTS="$ENCOPTS -rate $BUF"
+	else
+#if [ $LOSSLESS -eq 0 ]; then
+		ENCOPTS="$ENCOPTS -rate $BITRATE"
+#fi
+	fi
+
+	ENCOPTS="$ENCOPTS Clevels=$NUMDLVLS"
+	ENCOPTS="$ENCOPTS Qguard=$NUMGBITS"
+
+	case $PRG in
+	lrcp)
+		ENCOPTS="$ENCOPTS Corder=LRCP"
+		;;
+	rlcp)
+		ENCOPTS="$ENCOPTS Corder=RLCP"
+		;;
+	rpcl)
+		ENCOPTS="$ENCOPTS Corder=RPCL"
+		;;
+	pcrl)
+		ENCOPTS="$ENCOPTS Corder=PCRL"
+		;;
+	cprl)
+		ENCOPTS="$ENCOPTS Corder=CPRL"
+		;;
+	*)
+		echo "ERROR: unknown progression"
+		exit 1
+		;;
+	esac
+
+	if [ $ALLOWMCT -eq 0 ]; then
+		ENCOPTS="$ENCOPTS Cycc=yes"
+	else
+		ENCOPTS="$ENCOPTS Cycc=no"
+	fi
+
+	MODESEP=""
+	MODES=""
+	if [ $LAZY -ne 0 ]; then
+		MODES="$MODES${MODESEP}BYPASS"
+		MODESEP="|"
+	fi
+	if [ $PTERM -ne 0 -o $TERMALL -ne 0 ]; then
+		MODES="$MODES${MODESEP}ERTERM"
+		MODESEP="|"
+	fi
+	if [ $SEGSYM -ne 0 ]; then
+		MODES="$MODES${MODESEP}SEGMARK"
+		MODESEP="|"
+	fi
+	if [ $VCAUSAL -ne 0 ]; then
+		MODES="$MODES${MODESEP}CAUSAL"
+		MODESEP="|"
+	fi
+	if [ $RESETPROB -ne 0 ]; then
+		MODES="$MODES${MODESEP}RESET"
+		MODESEP="|"
+	fi
+	if [ -n "$MODES" ]; then
+		ENCOPTS="$ENCOPTS Cmodes=$MODES"
+	fi
+
+	if [ $SOP -ne 0 ]; then
+		ENCOPTS="$ENCOPTS Cuse_sop=yes"
+	fi
+	if [ $EPH -ne 0 ]; then
+		ENCOPTS="$ENCOPTS Cuse_eph=yes"
+	fi
+	if [ $VERBOSE -ne 0 ]; then
+		echo "Running Kakadu encoder"
+		echo "$KAKADUENC -quiet -i `pnutod $INFILE` -o `pnutod $OUTFILE` $ENCOPTS >> $ERRFILE 2>> $ERRFILE"
+	fi
+	$KAKADUENC -quiet -i `pnutod $INFILE` -o `pnutod $OUTFILE` $ENCOPTS >> $ERRFILE 2>> $ERRFILE
+)
+}
+
+################################################################################
+
+oj_enc()
+{
+	local oj_encode_opts
+	oj_encode_opts=()
+	oj_encode_opts+=(-i "$INFILE")
+	oj_encode_opts+=(-o "$OUTFILE")
+	oj_encode_opts+=(-OutFor "$FMT")
+
+	if [ "$RATE" = 0 ]; then
+		RATE=1
+		LOSSLESS=1
+	else
+		LOSSLESS=0
+	fi
+
+	if [ "$LOSSLESS" -eq 0 -a "$MODE" != int ]; then
+		oj_encode_opts+=(-I)
+	fi
+
+	if [ -n "$ILYRRATES" ]; then
+		BUF=$(echo "${ILYRRATES},$RATE" | csltowsl | reciprocatewsl | wsltocsl) || panic "processing failed"
+		oj_encode_opts+=(-r "$BUF")
+	else
+		BUF=$(echo "$RATE" | reciprocatewsl) || panic "processing failed"
+		oj_encode_opts+=(-r "$BUF")
+	fi
+	oj_encode_opts+=(-b "$CBLKHEIGHT,$CBLKWIDTH")
+	if [ $PRCWIDTH -ne 0 -o $PRCHEIGHT -ne 0 ]; then
+		oj_encode_opts+=(-c "[$PRCWIDTH,$PRCHEIGHT]")
+	fi
+	if [ $TILEWIDTH -ne 0 -o $TILEHEIGHT -ne 0 ]; then
+		oj_encode_opts+=(-t "$TILEWIDTH,$TILEHEIGHT")
+	fi
+	if [ $TILEWIDTH -ne 0 -o $TILEHEIGHT -ne 0 ]; then
+		oj_encode_opts+=(-T "$TILEWIDTH,$TILEHEIGHT")
+	fi
+	if [ $IMGTYPE = rgb ]; then
+		if [ $ALLOWMCT -eq 0 ]; then
+			oj_encode_opts+=(-mct 0)
+		else
+			oj_encode_opts+=(-mct 1)
+		fi
+	fi
+	PRG=$(echo "$PRG" | to_upper) || panic "to_upper failed"
+	oj_encode_opts+=(-p "$PRG")
+	#oj_encode_opts+=()
+	echo "Running $oj_encode ${oj_encode_opts[@]}"
+	"$oj_encode" "${oj_encode_opts[@]}"
+}
+
+################################################################################
+#
+################################################################################
+
+oj_encode="opj2_compress"
+
+[ -d $TMPDIR ] || mkdir -p $TMPDIR
+
+setdefcodingparms
+
+echo "$@"
+
+while [ $# -gt 0 ]; do
+	BUF=$1
+	TAG=`gettag $BUF`
+	VAL=`getval $BUF`
+	case $TAG in
+	software)
+		SOFTWARE=$VAL;;
+	imgareatlx)
+		IMGAREATLX=$VAL;;
+	imgareatly)
+		IMGAREATLY=$VAL;;
+	tilegrdtlx)
+		TILEGRDTLX=$VAL;;
+	tilegrdtly)
+		TILEGRDTLY=$VAL;;
+	tilewidth)
+		TILEWIDTH=$VAL;;
+	tileheight)
+		TILEHEIGHT=$VAL;;
+	cblkwidth)
+		CBLKWIDTH=$VAL;;
+	cblkheight)
+		CBLKHEIGHT=$VAL;;
+	numrlvls)
+		NUMRLVLS=$VAL;;
+	numgbits)
+		NUMGBITS=$VAL;;
+	ilyrrates)
+		ILYRRATES=$VAL;;
+	rate)
+		RATE=$VAL;;
+	prg)
+		PRG=$VAL;;
+	lazy)
+		LAZY=1;;
+	termall)
+		TERMALL=1;;
+	segsym)
+		SEGSYM=1;;
+	pterm)
+		PTERM=1;;
+	resetprob)
+		RESETPROB=1;;
+	vcausal)
+		VCAUSAL=1;;
+	nomct)
+		ALLOWMCT=0;;
+	input)
+		INFILE=$VAL;;
+	output)
+		OUTFILE=$VAL;;
+	mode)
+		MODE=$VAL;;
+	prcwidth)
+		PRCWIDTH=$VAL;;
+	prcheight)
+		PRCHEIGHT=$VAL;;
+	debug)
+		DEBUG=$VAL;;
+	sop)
+		SOP=1;;
+	eph)
+		EPH=1;;
+	roirect)
+		ROIRECT=$VAL;;	
+	verbose)
+		VERBOSE=1;;
+	fmt)
+		FMT=$VAL;;
+	*)
+		echo "unknown option $TAG"
+		exit 1
+		;;
+	esac
+	shift
+done
+
+if [ $VERBOSE -ne 0 ]; then
+	ERRFILE=/dev/stderr
+else
+	ERRFILE=/dev/null
+fi
+ERRFILE=/dev/stderr
+
+if [ -z "$SOFTWARE" ]; then
+	echo "ERROR: NO SOFTWARE SELECTED"
+	exit 1
+fi
+if [ -z "$INFILE" ]; then
+	echo "ERROR: NO INPUT FILE SPECIFIED"
+	exit 1
+fi
+if [ -z "$OUTFILE" ]; then
+	echo "ERROR: NO OUTPUT FILE SPECIFIED"
+	exit 1
+fi
+
+if [ ! -f $INFILE ]; then
+	echo "ERROR: INPUT FILE DOES NOT EXIST"
+	exit 1
+fi
+
+if [ $RATE = 0 -a $MODE = real ]; then
+	echo "ERROR: CANNOT USE REAL MODE FOR LOSSLESS CODING"
+	exit 1
+fi
+
+if [ $RATE = 0 ]; then
+	MODE=int
+fi
+
+NUMDLVLS=`expr $NUMRLVLS - 1`
+
+IMGFMT=$(image_info "$INFILE" format) || panic "cannot get image format"
+IMGTYPE=$(image_info "$INFILE" type) || panic "cannot get image type"
+if [ -z "$IMGTYPE" ]; then
+	echo "ERROR: CANNOT DETERMINE IMAGE TYPE"
+	exit 1
+fi
+IMGWIDTH=$(image_info "$INFILE" width) || panic "cannot get image width"
+IMGHEIGHT=$(image_info "$INFILE" height) || panic "cannot get image height"
+IMGPREC=$(image_info "$INFILE" depth) || panic "cannot get image depth"
+
+rm -f $OUTFILE
+
+case $SOFTWARE in
+jasper)
+	jasper_enc;;
+vm)
+	vm_enc;;
+jj2k)
+	jj2k_enc;;
+kakadu)
+	kakadu_enc;;
+oj)
+	oj_enc;;
+*)
+	echo "ERROR: INVALID SOFTWARE SPECIFIER"
+	exit 1
+	;;
+esac
+STATUS=$?
+
+if [ ! -f $OUTFILE ]; then
+	if [ $STATUS -eq 0 ]; then
+		STATUS=1
+	fi
+else
+	OUTFILESIZE=`wc -c $OUTFILE | awk '{print $1}' -`
+	if [ $OUTFILESIZE -eq 0 ]; then
+		if [ $STATUS -eq 0 ]; then
+			STATUS=1
+		fi
+	fi
+fi
+
+if [ $STATUS -ne 0 ]; then
+	if [ $STATUS -eq 2 ]; then
+		echo "WARNING: ENCODER FEATURE NOT SUPPORTED"
+	else
+		echo "ERROR: ENCODER FAILURE"
+	fi
+	exit $STATUS
+fi
+
+exit 0

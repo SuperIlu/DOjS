@@ -210,9 +210,10 @@ PDFGen.prototype.AddRectangle = function (x, y, w, h, width, col) { }
  * @param {number} w Width of rectangle
  * @param {number} h Height of rectangle
  * @param {number} width Width of rectangle border
- * @param {Color} col Colour to draw the rectangle
+ * @param {Color} fill fill Colour to draw the rectangle
+ * @param {Color} border border Colour to draw the rectangle
  */
-PDFGen.prototype.AddFilledRectangle = function (x, y, w, h, width, col) { }
+PDFGen.prototype.AddFilledRectangle = function (x, y, w, h, width, fill, border) { }
 
 /**
  * Add a text string to the document
@@ -230,12 +231,13 @@ PDFGen.prototype.AddText = function (txt, size, x, y, col) { }
  * @param {number} size Point size of the font
  * @param {number} x X location to put it in
  * @param {number} y Y location to put it in
+ * @param {number} angle text rotation angle in radians
  * @param {Color} col Colour to draw the text
  * @param {number} wwidth Width at which to wrap the text
  * @param {number} align Text alignment (see PDF_ALIGN_xxx)
  * @returns {number} the final height of the wrapped text here
  */
-PDFGen.prototype.AddTextWrap = function (txt, size, x, y, col, wwidth, align) { }
+PDFGen.prototype.AddTextWrap = function (txt, size, x, y, angle, col, wwidth, align) { }
 
 /**
  * Add an image file as an image to the document.

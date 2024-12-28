@@ -44,7 +44,7 @@ DOjS was only possible due to the work of these people/projects:
   * [NOISE.SYS](https://github.com/robrwo/noise.sys) for a better entropy source for TLS.
 
 ## Contact
-You can find me on [Mastodon](https://mastodon.social/@dec_hl) or in the [DOjS Discord](https://discord.gg/J7MUTap9fM) if you want...
+You can find me on [Mastodon](https://mastodon.social/@dec_hl) in [DOjS Matrix](https://matrix.to/#/#dojs:tchncs.de) or in the [DOjS Discord](https://discord.gg/J7MUTap9fM) if you want...
 
 # Download and quick start
 **You can find binary releases on the [GitHub release page](https://github.com/SuperIlu/DOjS/releases).** Just extract the contents of the archive and run `DOjS.exe`.

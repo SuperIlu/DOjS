@@ -203,7 +203,7 @@ I used the following command lines to update/install my dependencies:
 ```bash
 sudo apt-get update
 sudo apt-get dist-upgrade
-sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev g++ unzip htop screen git bash-completion build-essential zip dos2unix python3
+sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev g++ unzip htop screen git bash-completion build-essential zip dos2unix python3 cmake
 nvm install node
 npm install -g jsdoc
 npm install -g better-docs
@@ -211,9 +211,14 @@ npm install -g better-docs
 
 And the following commands to build and install DJGPP to `/home/ilu/cross`.:
 ```bash
+$ sudo apt-get update
+$ sudo apt-get install bison flex curl gcc g++ make texinfo zlib1g-dev tar bzip2 gzip xz-utils unzip python3-dev m4 dos2unix nasm
 git clone https://github.com/jwt27/build-djgpp.git
 cd build-djgpp
-./build-djgpp.sh --target=i586-pc-msdosdjgpp --prefix=/home/ilu/cross all
+./build-djgpp.sh --target=i586-pc-msdosdjgpp --prefix=/home/ilu/cross binutils-2.43.1 djgpp-cvs gcc-12.2.0 watt32-git
+cd download/djgpp-cvs/src/libemu
+make ../../lib/libemu.a
+cp ../../lib/libemu.a ~/cross/i586-pc-msdosdjgpp/lib
 ```
 
 ## Getting & Compiling DOjS

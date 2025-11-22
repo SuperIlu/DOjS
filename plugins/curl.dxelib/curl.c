@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ SOFTWARE.
 #define CURL_PUT_PROPERTY "__put_data__"
 
 //! default file name for the certificate authorities file
-#define CURL_SSL_CERT_FILE "cacert.pem"
+#define CURL_SSL_CERT_FILE "CACERT.PEM"
 
 #define CURL_DEFAULT_AGENT ("DOjS/" DOSJS_VERSION_STR " (%s %d.%d) cURL/" LIBCURL_VERSION)
 
@@ -146,6 +146,72 @@ typedef struct __curl {
 /*********************
 ** static functions **
 *********************/
+#ifdef DEBUG_ENABLED
+static void dump(const char *text, FILE *stream, unsigned char *ptr, size_t size) {
+    size_t i;
+    size_t c;
+    unsigned int width = 0x10;
+
+    fprintf(stream, "%s, %10.10ld bytes (0x%8.8lx)\n", text, (long)size, (long)size);
+
+    for (i = 0; i < size; i += width) {
+        fprintf(stream, "%4.4lx: ", (long)i);
+
+        /* show hex to the left */
+        for (c = 0; c < width; c++) {
+            if (i + c < size)
+                fprintf(stream, "%02x ", ptr[i + c]);
+            else
+                fputs("   ", stream);
+        }
+
+        /* show data on the right */
+        for (c = 0; (c < width) && (i + c < size); c++) {
+            char x = (ptr[i + c] >= 0x20 && ptr[i + c] < 0x80) ? ptr[i + c] : '.';
+            fputc(x, stream);
+        }
+
+        fputc('\n', stream); /* newline */
+    }
+}
+
+static int my_trace(CURL *handle, curl_infotype type, char *data, size_t size, void *clientp) {
+    const char *text;
+    (void)handle; /* prevent compiler warning */
+    (void)clientp;
+
+    switch (type) {
+        case CURLINFO_TEXT:
+            fputs("== Info: ", LOGSTREAM);
+            fwrite(data, size, 1, LOGSTREAM);
+        default: /* in case a new one is introduced to shock us */
+            return 0;
+
+        case CURLINFO_HEADER_OUT:
+            text = "=> Send header";
+            break;
+        case CURLINFO_DATA_OUT:
+            text = "=> Send data";
+            break;
+        case CURLINFO_SSL_DATA_OUT:
+            text = "=> Send SSL data";
+            break;
+        case CURLINFO_HEADER_IN:
+            text = "<= Recv header";
+            break;
+        case CURLINFO_DATA_IN:
+            text = "<= Recv data";
+            break;
+        case CURLINFO_SSL_DATA_IN:
+            text = "<= Recv SSL data";
+            break;
+    }
+
+    dump(text, LOGSTREAM, (unsigned char *)data, size);
+    return 0;
+}
+#endif  // DEBUG_ENABLED
+
 #if LINUX != 1
 static int poll_noise_sys(void *data, unsigned char *output, size_t len, size_t *olen) {
     FILE *file;
@@ -214,33 +280,91 @@ int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t 
 }
 
 mbedtls_ms_time_t mbedtls_ms_time(void) { return DOjS.sys_ticks; }
-#endif // LINUX != 1
+#endif  // LINUX != 1
 
 #if WINDOWS == 1
 int mbedtls_hardware_poll(void *data, unsigned char *output, size_t len, size_t *olen) {
-  memset(output, 0, len);
+    memset(output, 0, len);
 
-  {
-    HCRYPTPROV hCryptProv = 0;
+    {
+        HCRYPTPROV hCryptProv = 0;
 
-    if(!CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL,
-                            CRYPT_VERIFYCONTEXT | CRYPT_SILENT))
-      return CURLE_FAILED_INIT;
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+            LOGF("CryptAcquireContext(PROV_RSA_FULL) OK\n");
+            goto prov_ok;
+        }
+        // hCryptProv = 0;
+        // if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_AES, CRYPT_NEWKEYSET)) {
+        //     LOGF("CryptAcquireContext(PROV_RSA_AES) OK\n");
+        //     goto prov_ok;
+        // }
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_SIG, CRYPT_NEWKEYSET)) {
+            LOGF("CryptAcquireContext(PROV_RSA_SIG) OK\n");
+            goto prov_ok;
+        }
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_RSA_SCHANNEL, CRYPT_NEWKEYSET)) {
+            LOGF("CryptAcquireContext(PROV_RSA_SCHANNEL) OK\n");
+            goto prov_ok;
+        }
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_DSS, CRYPT_NEWKEYSET)) {
+            LOGF("CryptAcquireContext(PROV_DSS, CRYPT_NEWKEYSET) OK\n");
+            goto prov_ok;
+        }
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_DSS, 0)) {
+            LOGF("CryptAcquireContext(PROV_DSS, 0) OK\n");
+            goto prov_ok;
+        }
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_DSS_DH, CRYPT_NEWKEYSET)) {
+            LOGF("CryptAcquireContext(PROV_DSS_DH) OK\n");
+            goto prov_ok;
+        }
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_DH_SCHANNEL, CRYPT_NEWKEYSET)) {
+            LOGF("CryptAcquireContext(PROV_DH_SCHANNEL) OK\n");
+            goto prov_ok;
+        }
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_FORTEZZA, CRYPT_NEWKEYSET)) {
+            LOGF("CryptAcquireContext(PROV_FORTEZZA) OK\n");
+            goto prov_ok;
+        }
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_MS_EXCHANGE, CRYPT_NEWKEYSET)) {
+            LOGF("CryptAcquireContext(PROV_MS_EXCHANGE) OK\n");
+            goto prov_ok;
+        }
+        hCryptProv = 0;
+        if (CryptAcquireContext(&hCryptProv, NULL, NULL, PROV_SSL, CRYPT_NEWKEYSET)) {
+            LOGF("CryptAcquireContext(PROV_SSL) OK\n");
+            goto prov_ok;
+        }
 
-    if(!CryptGenRandom(hCryptProv, (DWORD)len, output)) {
-      CryptReleaseContext(hCryptProv, 0UL);
-      return CURLE_FAILED_INIT;
+        LOGF("CryptAcquireContext() failed\n");
+        return MBEDTLS_ERR_ENTROPY_SOURCE_FAILED;
+
+    prov_ok:
+        if (!CryptGenRandom(hCryptProv, (DWORD)len, output)) {
+            LOGF("CryptGenRandom(%d) failed\n", len);
+            CryptReleaseContext(hCryptProv, 0UL);
+            return MBEDTLS_ERR_ENTROPY_SOURCE_FAILED;
+        }
+        *olen = len;
+
+        CryptReleaseContext(hCryptProv, 0UL);
     }
-
-    CryptReleaseContext(hCryptProv, 0UL);
-  }
-  return CURLE_OK;
+    LOGF("CryptGenRandom(%d) OK\n", len);
+    return 0;
 }
 
 mbedtls_ms_time_t mbedtls_ms_time(void) { return DOjS.sys_ticks; }
 
-int vsnprintf_s(char *s, size_t n, size_t count, const char *fmt, va_list arg)
-{
+int vsnprintf_s(char *s, size_t n, size_t count, const char *fmt, va_list arg) {
     int ret = MBEDTLS_ERR_ERROR_CORRUPTION_DETECTED;
 
     /* Avoid calling the invalid parameter handler by checking ourselves */
@@ -249,14 +373,14 @@ int vsnprintf_s(char *s, size_t n, size_t count, const char *fmt, va_list arg)
     }
 
     ret = vsnprintf(s, n, fmt, arg);
-    if (ret < 0 || (size_t) ret == n) {
-        s[n-1] = '\0';
+    if (ret < 0 || (size_t)ret == n) {
+        s[n - 1] = '\0';
         ret = -1;
     }
 
     return ret;
 }
-#endif // WINDOWS == 1
+#endif  // WINDOWS == 1
 
 /**
  * @brief copy the received data into provided ByteArray (header and body data).
@@ -366,6 +490,8 @@ static void new_Curl(js_State *J) {
     curl_easy_setopt(c->curl, CURLOPT_SSLENGINE_DEFAULT, 1L);
 
 #ifdef DEBUG_ENABLED
+    curl_global_trace("all");
+    curl_easy_setopt(c->curl, CURLOPT_DEBUGFUNCTION, my_trace);
     curl_easy_setopt(c->curl, CURLOPT_STDERR, LOGSTREAM);
     curl_easy_setopt(c->curl, CURLOPT_VERBOSE, 1L);
 #endif

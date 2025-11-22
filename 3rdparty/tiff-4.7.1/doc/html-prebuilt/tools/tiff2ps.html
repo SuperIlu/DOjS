@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>tiff2ps &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tiff2rgba" href="tiff2rgba.html" />
+    <link rel="prev" title="tiff2pdf" href="tiff2pdf.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tiff2rgba.html" title="tiff2rgba"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tiff2pdf.html" title="tiff2pdf"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tiff2ps</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tiff2ps">
+<h1>tiff2ps<a class="headerlink" href="#tiff2ps" title="Permalink to this heading">¶</a></h1>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<p><strong>tiff2ps</strong> [ <em>options</em> ] <em>input.tif</em> …</p>
+</section>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p><strong class="program">tiff2ps</strong> reads TIFF images and writes PostScript™ or Encapsulated
+PostScript™ (EPS) on the standard output. By default <strong class="program">tiff2ps</strong>
+writes Encapsulated PostScript™ for the first image in the specified
+TIFF image file.</p>
+<p>By default, <strong class="program">tiff2ps</strong> will generate PostScript™ that fills a
+printed area specified by the TIFF tags in the input file.
+If the file does not contain <code class="docutils literal notranslate"><span class="pre">XResolution</span></code> or <code class="docutils literal notranslate"><span class="pre">YResolution</span></code>
+tags, then the printed area is set according to the image dimensions.
+The <a class="reference internal" href="#cmdoption-tiff2ps-w"><code class="xref std std-option docutils literal notranslate"><span class="pre">-w</span></code></a> and <a class="reference internal" href="#cmdoption-tiff2ps-h"><code class="xref std std-option docutils literal notranslate"><span class="pre">-h</span></code></a> options (see below)
+can be used to set the dimensions of the printed area in inches;
+overriding any relevant TIFF tags.</p>
+<p>The PostScript™ generated for RGB, palette, and CMYK images uses the
+<code class="docutils literal notranslate"><span class="pre">colorimage</span></code> operator.  The PostScript™ generated for greyscale and
+bilevel images uses the <code class="docutils literal notranslate"><span class="pre">image</span></code> operator.  When the <code class="docutils literal notranslate"><span class="pre">colorimage</span></code>
+operator is used, PostScript™ code to emulate this operator
+on older PostScript™ printers is also generated.
+Note that this emulation code can be very slow.</p>
+<p>Color images with associated alpha data are composited over
+a white background.</p>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-1">
+<span class="sig-name descname"><span class="pre">-1</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate PostScript™ Level 1 (the default).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-2">
+<span class="sig-name descname"><span class="pre">-2</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate PostScript™ Level 2.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-3">
+<span class="sig-name descname"><span class="pre">-3</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate PostScript™ Level 3. It basically allows one to use the <code class="docutils literal notranslate"><span class="pre">`/flateDecode</span></code>
+filter for ZIP compressed TIFF images.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-8">
+<span class="sig-name descname"><span class="pre">-8</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-8" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disable use of ASCII85 encoding with PostScript™ Level 2/3.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-a">
+<span class="sig-name descname"><span class="pre">-a</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate output for all IFDs (pages) in the input file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-b">
+<span class="sig-name descname"><span class="pre">-b</span></span><span class="sig-prename descclassname"> <span class="pre">margin</span></span><a class="headerlink" href="#cmdoption-tiff2ps-b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the bottom margin for the output (in inches). This does not affect
+the height of the printed image.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-c">
+<span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center the image in the output. This option only shows an effect if both
+the <a class="reference internal" href="#cmdoption-tiff2ps-w"><code class="xref std std-option docutils literal notranslate"><span class="pre">-w</span></code></a> and the <a class="reference internal" href="#cmdoption-tiff2ps-h"><code class="xref std std-option docutils literal notranslate"><span class="pre">-h</span></code></a> option are given.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-C">
+<span class="sig-name descname"><span class="pre">-C</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#cmdoption-tiff2ps-C" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the document creator name.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-d">
+<span class="sig-name descname"><span class="pre">-d</span></span><span class="sig-prename descclassname"> <span class="pre">dir</span></span><a class="headerlink" href="#cmdoption-tiff2ps-d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the initial TIFF
+directory to the specified directory number.
+(NB: Directories are numbered starting at zero.)
+This option is useful for selecting individual pages in a
+multi-page (e.g. facsimile) file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-D">
+<span class="sig-name descname"><span class="pre">-D</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable duplex printing (two pages per sheet of paper).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-e">
+<span class="sig-name descname"><span class="pre">-e</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-e" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force the generation of Encapsulated PostScript™ (implies
+<a class="reference internal" href="#cmdoption-tiff2ps-z"><code class="xref std std-option docutils literal notranslate"><span class="pre">-z</span></code></a>).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-h">
+<span class="sig-name descname"><span class="pre">-h</span></span><span class="sig-prename descclassname"> <span class="pre">size</span></span><a class="headerlink" href="#cmdoption-tiff2ps-h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the vertical size of the printed area (in inches).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-H">
+<span class="sig-name descname"><span class="pre">-H</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-H" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the maximum height of image (in inches). Images with larger sizes will
+be split in several pages. Option <a class="reference internal" href="#cmdoption-tiff2ps-L"><code class="xref std std-option docutils literal notranslate"><span class="pre">-L</span></code></a>
+may be used for specifying size of split images overlapping.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-i">
+<span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/disable pixel interpolation.  This option requires a
+single numeric value: zero to disable pixel interpolation and
+non-zero to enable.  The default is enabled.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-L">
+<span class="sig-name descname"><span class="pre">-L</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-L" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the size of overlapping for split images (in inches). Used in
+conjunction with <a class="reference internal" href="#cmdoption-tiff2ps-H"><code class="xref std std-option docutils literal notranslate"><span class="pre">-H</span></code></a> and <a class="reference internal" href="#cmdoption-tiff2ps-W"><code class="xref std std-option docutils literal notranslate"><span class="pre">-W</span></code></a> options.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-l">
+<span class="sig-name descname"><span class="pre">-l</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-l" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the left margin for the output (in inches). This does not affect
+the width of the printed image.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-M">
+<span class="sig-name descname"><span class="pre">-M</span></span><span class="sig-prename descclassname"> <span class="pre">size</span></span><a class="headerlink" href="#cmdoption-tiff2ps-M" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set maximum memory allocation size (in MiB). The default is 256MiB.
+Set to 0 to disable the limit.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-m">
+<span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Where possible render using the <code class="docutils literal notranslate"><span class="pre">imagemask</span></code> PostScript™ operator instead of the
+<code class="docutils literal notranslate"><span class="pre">image</span></code> operator.  When this option is specified <strong class="program">tiff2ps</strong> will use
+<code class="docutils literal notranslate"><span class="pre">imagemask</span></code> for rendering 1 bit deep images.  If this option is not specified
+or if the image depth is greater than 1 then the <code class="docutils literal notranslate"><span class="pre">image</span></code> operator is used.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-o">
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"> <span class="pre">ifdoffset</span></span><a class="headerlink" href="#cmdoption-tiff2ps-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the initial TIFF directory to the IFD at the specified file offset.
+This option is useful for selecting thumbnail images and the
+like which are hidden using the <code class="docutils literal notranslate"><span class="pre">SubIFD</span></code> tag.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-O">
+<span class="sig-name descname"><span class="pre">-O</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-O" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write PostScript™ to specified file instead of standard output.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-p">
+<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force the generation of (non-Encapsulated) PostScript™.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-P">
+<span class="sig-name descname"><span class="pre">-P</span></span><span class="sig-prename descclassname"> <span class="pre">L|P</span></span><a class="headerlink" href="#cmdoption-tiff2ps-P" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set optional PageOrientation DSC comment to Landscape or Portrait.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-r">
+<span class="sig-name descname"><span class="pre">-r</span></span><span class="sig-prename descclassname"> <span class="pre">90|180|270|auto</span></span><a class="headerlink" href="#cmdoption-tiff2ps-r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate image by 90, 180, 270 degrees or auto.  Auto picks the best
+fit for the image on the specified paper size (eg portrait
+or landscape) if <a class="reference internal" href="#cmdoption-tiff2ps-h"><code class="xref std std-option docutils literal notranslate"><span class="pre">-h</span></code></a> or <a class="reference internal" href="#cmdoption-tiff2ps-w"><code class="xref std std-option docutils literal notranslate"><span class="pre">-w</span></code></a> is specified. Rotation is in degrees
+counterclockwise. Auto rotates 90 degrees ccw to produce landscape.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-s">
+<span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate output for a single IFD (page) in the input file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-t">
+<span class="sig-name descname"><span class="pre">-t</span></span><span class="sig-prename descclassname"> <span class="pre">title</span></span><a class="headerlink" href="#cmdoption-tiff2ps-t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the document title string.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-T">
+<span class="sig-name descname"><span class="pre">-T</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-T" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print pages for top edge binding.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-w">
+<span class="sig-name descname"><span class="pre">-w</span></span><span class="sig-prename descclassname"> <span class="pre">size</span></span><a class="headerlink" href="#cmdoption-tiff2ps-w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the horizontal size of the printed area (in inches).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-W">
+<span class="sig-name descname"><span class="pre">-W</span></span><span class="sig-prename descclassname"> <span class="pre">size</span></span><a class="headerlink" href="#cmdoption-tiff2ps-W" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the maximum width of image (in inches). Images with larger sizes will
+be split in several pages. Options <a class="reference internal" href="#cmdoption-tiff2ps-L"><code class="xref std std-option docutils literal notranslate"><span class="pre">-L</span></code></a> and <a class="reference internal" href="#cmdoption-tiff2ps-W"><code class="xref std std-option docutils literal notranslate"><span class="pre">-W</span></code></a>
+are mutually exclusive.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-x">
+<span class="sig-name descname"><span class="pre">-x</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override resolution units specified in the TIFF as centimeters.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-y">
+<span class="sig-name descname"><span class="pre">-y</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override resolution units specified in the TIFF as inches.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2ps-z">
+<span class="sig-name descname"><span class="pre">-z</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2ps-z" title="Permalink to this definition">¶</a></dt>
+<dd><p>When generating PostScript™ Level 2, data is scaled so that it does not
+image into the <code class="docutils literal notranslate"><span class="pre">deadzone</span></code> on a page (the outer margin that the printing device
+is unable to mark).  This option suppresses this behavior.
+When PostScript™ Level 1 is generated, data is imaged to the entire printed
+page and this option has no affect.</p>
+</dd></dl>
+
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<p>The following generates PostScript™ Level 2 for all pages of a facsimile:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tiff2ps<span class="w"> </span><span class="se">\-</span>a2<span class="w"> </span>fax.tif<span class="w"> </span><span class="p">|</span><span class="w"> </span>lpr
+</pre></div>
+</div>
+<p>Note also that if you have version 2.6.1 or newer of Ghostscript then you
+can efficiently preview facsimile generated with the above command.</p>
+<p>To generate Encapsulated PostScript™ for a the image at directory 2
+of an image use:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tiff2ps<span class="w"> </span><span class="se">\-</span>d<span class="w"> </span><span class="m">1</span><span class="w"> </span>foo.tif
+</pre></div>
+</div>
+<p>(Notice that directories are numbered starting at zero.)</p>
+<p>If you have a long image, it may be split in several pages:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tiff2ps<span class="w"> </span><span class="se">\-</span>h11<span class="w"> </span><span class="se">\-</span>w8.5<span class="w"> </span><span class="se">\-</span>H14<span class="w"> </span><span class="se">\-</span>L.5<span class="w"> </span>foo.tif<span class="w"> </span>&gt;<span class="w"> </span>foo.ps
+</pre></div>
+</div>
+<p>The page size is set to 8.5x11 by <a class="reference internal" href="#cmdoption-tiff2ps-w"><code class="xref std std-option docutils literal notranslate"><span class="pre">-w</span></code></a> and <a class="reference internal" href="#cmdoption-tiff2ps-h"><code class="xref std std-option docutils literal notranslate"><span class="pre">-h</span></code></a>
+options. We will accept a small amount of vertical compression, so
+<a class="reference internal" href="#cmdoption-tiff2ps-H"><code class="xref std std-option docutils literal notranslate"><span class="pre">-H</span></code></a> set to 14. Any pages between 11 and 14 inches will be fit onto one page.
+Pages longer than 14 inches are cut off at 11 and continued on the next
+page. The <strong class="command">-L.5</strong>
+option says to repeat a half inch on the next page (to improve readability).</p>
+</section>
+<section id="bugs">
+<h2>Bugs<a class="headerlink" href="#bugs" title="Permalink to this heading">¶</a></h2>
+<p>Because PostScript™ does not support the notion of a colormap,
+8-bit palette images produce 24-bit PostScript™ images.
+This conversion results in output that is six times
+bigger than the original image and which takes a long time
+to send to a printer over a serial line.
+Matters are even worse for 4-, 2-, and 1-bit palette images.</p>
+<p>Does not handle tiled images when generating PostScript™ Level I output.</p>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="pal2rgb.html"><span class="doc">pal2rgb</span></a> (1),
+<a class="reference internal" href="tiffinfo.html"><span class="doc">tiffinfo</span></a> (1),
+<a class="reference internal" href="tiffcp.html"><span class="doc">tiffcp</span></a> (1),
+<a class="reference internal" href="tiffgt.html"><span class="doc">tiffgt</span></a> (1),
+<a class="reference internal" href="tiffmedian.html"><span class="doc">tiffmedian</span></a> (1),
+<a class="reference internal" href="tiff2bw.html"><span class="doc">tiff2bw</span></a> (1),
+<a class="reference internal" href="../functions/libtiff.html"><span class="doc">libtiff</span></a> (3tiff),</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">tiff2ps</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#options">Options</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#bugs">Bugs</a></li>
+<li><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="tiff2pdf.html"
+                          title="previous chapter">tiff2pdf</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tiff2rgba.html"
+                          title="next chapter">tiff2rgba</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/tools/tiff2ps.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tiff2rgba.html" title="tiff2rgba"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tiff2pdf.html" title="tiff2pdf"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tiff2ps</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

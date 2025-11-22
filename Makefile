@@ -13,18 +13,21 @@ ALLEGRO		= $(THIRDPARTY)/allegro-4.2.2-xc-master
 DZCOMMDIR	= $(THIRDPARTY)/dzcomm
 WATT32		= $(THIRDPARTY)/Watt-32
 ZLIB		= $(THIRDPARTY)/zlib-1.3.1
-KUBAZIP		= $(THIRDPARTY)/zip-0.3.2
+KUBAZIP		= $(THIRDPARTY)/zip-0.3.5
 ALPNG		= $(THIRDPARTY)/alpng13
-CURL		= $(THIRDPARTY)/curl-8.11.0
+CURL_SRC	= $(THIRDPARTY)/curl-8.17.0
+CURL_BIN	= $(THIRDPARTY)/curl-djgpp
 MESA3		= $(THIRDPARTY)/MesaFX-3.4-master
 BZIP2		= $(THIRDPARTY)/bzip2-1.0.8
 INI			= $(THIRDPARTY)/ini-20220806/src
-MBEDTLS		= $(THIRDPARTY)/mbedtls-3.6.2
-WEBP		= $(THIRDPARTY)/libwebp-1.3.2
-TIFF		= $(THIRDPARTY)/tiff-4.6.0
-JASPER_SRC	= $(THIRDPARTY)/jasper-version-4.2.0
+MBEDTLS		= $(THIRDPARTY)/mbedtls-3.6.5
+WEBP		= $(THIRDPARTY)/libwebp-1.6.0
+TIFF		= $(THIRDPARTY)/tiff-4.7.1
+EXIF		= $(THIRDPARTY)/libexif-0.6.25
+JASPER_SRC	= $(THIRDPARTY)/jasper-4.2.8
 JASPER_BIN	= $(THIRDPARTY)/jasper-djgpp
 JPEG		= $(THIRDPARTY)/jpeg-9f
+SMACKER		= $(THIRDPARTY)/libsmacker-1.1.1
 
 GLIDE		= glide3x
 GLIDESDK	= $(GLIDE)/v1
@@ -36,20 +39,23 @@ LIB_DZCOMM	= $(DZCOMMDIR)/lib/djgpp/libdzcom.a
 LIB_MUJS	= $(MUJS)/build/release/libmujs.a
 LIB_ALLEGRO	= $(ALLEGRO)/lib/djgpp/liballeg.a
 LIB_WATT	= $(WATT32)/lib/libwatt.a
-LIB_Z		= $(ZLIB)/msdos/libz.a
+LIB_Z		= $(ZLIB)/libz.a
 LIB_ALPNG	= $(ALPNG)/libalpng.a
-LIB_CURL	= $(CURL)/lib/libcurl.a
+LIB_CURL	= $(CURL_BIN)/lib/libcurl.a
 LIB_MESA	= $(MESA3)/lib/libgl.a
 LIB_BZIP2	= $(BZIP2)/libbzip2.a
 LIB_MBEDTLS = $(MBEDTLS)/library/libmbedtls.a
 LIB_WEBP 	= $(WEBP)/src/libwebp.a
 LIB_TIFF 	= $(TIFF)/libtiff/.libs/libtiff.a
+LIB_EXIF 	= $(EXIF)/libexif/.libs/libexif.a
 LIB_JASPER 	= $(JASPER_BIN)/src/libjasper/libjasper.a
 LIB_JPEG 	= $(JPEG)/libjpeg.a
+LIB_SMACKER	= $(SMACKER)/libsmacker.a
 
 # compiler
 CDEF     = -DGC_BEFORE_MALLOC -DLFB_3DFX -DEDI_FAST #-DDEBUG_ENABLED # -DMEMDEBUG 
 CFLAGS   = -MMD -Wall -std=gnu99 -O2 -march=i386 -mtune=i586 -ffast-math -fomit-frame-pointer $(INCLUDES) -fgnu89-inline -Wmissing-prototypes $(CDEF)
+CFLAGS_MBED = -DMBEDTLS_CONFIG_FILE='<$(realpath $(THIRDPARTY)/dojs_mbedtls_config.h)>' $(CFLAGS)
 INCLUDES = \
 	-I$(realpath ./src) \
 	-I$(realpath $(MUJS)) \
@@ -62,9 +68,10 @@ INCLUDES = \
 	-I$(realpath $(ALPNG))/src \
 	-I$(realpath $(MBEDTLS))/include \
 	-I$(realpath $(MBEDTLS))/library \
-	-I$(realpath $(CURL))/include \
+	-I$(realpath $(CURL_SRC))/include \
 	-I$(realpath $(WEBP))/src \
 	-I$(realpath $(TIFF))/libtiff \
+	-I$(realpath $(EXIF)) \
 	-I$(realpath $(JASPER_SRC))/src/libjasper/include \
 	-I$(realpath $(JASPER_BIN))/src/libjasper/include \
 	-I$(realpath $(JPEG)) \
@@ -171,19 +178,19 @@ DXE_DIRS := $(wildcard plugins/*.dxelib)
 
 all: dojs $(DXE_DIRS) JSBOOT.ZIP
 
-dojs: init libmujs liballegro dzcomm libwatt32 libz alpng libcurl mesa3 libwebp libtiff libjasper libjpeg texus.exe fntconv.exe $(EXE)
+dojs: init libmujs liballegro dzcomm libwatt32 libsmacker libz alpng libcurl mesa3 libwebp libtiff libexif libjasper libjpeg texus.exe fntconv.exe $(EXE)
 
 mesa3: $(LIB_MESA)
 $(LIB_MESA):
 	$(MAKE) $(MPARA) -C $(MESA3) -f Makefile.dja
 
 libcurl: $(LIB_CURL)
-$(LIB_CURL): $(LIB_MBEDTLS) $(LIB_Z)
-	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls-watt TRIPLET=i586-pc-msdosdjgpp WATT_ROOT=$(WATT32)
+$(LIB_CURL): $(LIB_MBEDTLS) $(LIB_Z) $(LIB_WATT)
+	(cd $(CURL_SRC) && $(SHPRG) ./cmake-djgpp.sh)
 
 libmbedtls: $(LIB_MBEDTLS)
 $(LIB_MBEDTLS):
-	$(MAKE) $(MPARA) -C $(MBEDTLS) -f Makefile lib
+	CFLAGS="$(CFLAGS_MBED)" $(MAKE) $(MPARA) -C $(MBEDTLS) -f Makefile lib
 
 alpng: $(LIB_ALPNG)
 $(LIB_ALPNG):
@@ -192,6 +199,10 @@ $(LIB_ALPNG):
 libz: $(LIB_Z)
 $(LIB_Z):
 	$(MAKE) $(MPARA) -C $(ZLIB) -f Makefile.dojs
+
+libsmacker: $(LIB_SMACKER)
+$(LIB_SMACKER):
+	$(MAKE) $(MPARA) -C $(SMACKER) -f Makefile.dojs
 
 libwebp: $(LIB_WEBP)
 $(LIB_WEBP):
@@ -225,6 +236,14 @@ libtiff: $(LIB_TIFF)
 $(LIB_TIFF): $(TIFF)/Makefile
 	$(MAKE) $(MPARA) -C $(TIFF)
 
+configure_exif: $(EXIF)/Makefile
+$(EXIF)/Makefile:
+	(cd $(EXIF) && HOST=$(CROSS) CFLAGS="$(CFLAGS)" LDFLAGS="" LIBS="" $(SHPRG) ./djgpp-config.sh)
+
+libexif: $(LIB_EXIF)
+$(LIB_EXIF): $(EXIF)/Makefile
+	$(MAKE) $(MPARA) -C $(EXIF)
+
 libjasper: $(LIB_JASPER)
 $(LIB_JASPER):
 	(cd $(JASPER_SRC) && $(SHPRG) ./cmake-djgpp.sh)
@@ -248,7 +267,7 @@ $(BUILDDIR)/zip/src/%.o: $(KUBAZIP)/src/%.c Makefile
 $(BUILDDIR)/ini/%.o: $(INI)/%.c Makefile
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(DXE_DIRS): init libmujs liballegro dzcomm libwatt32 libz alpng libcurl libtiff libjasper libjpeg mesa3
+$(DXE_DIRS): init libmujs liballegro dzcomm libwatt32 libz alpng libcurl libtiff libexif libjasper libjpeg mesa3
 	$(MAKE) -C $@
 
 $(DXE_EXPORTS): dxetemplate.txt $(MUJS)/mujs.h
@@ -266,23 +285,23 @@ fntconv.exe:
 	$(MAKE) -C $(FONTCONV) clean all
 	$(CPPRG) $(FONTCONV)/fntconv.exe .
 
-cacert.pem:
-	$(CURLPRG) --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
+CACERT.PEM:
+	$(CURLPRG) -o CACERT.PEM https://curl.se/ca/cacert.pem
 
-zip: all cacert.pem doc
+zip: all CACERT.PEM doc
 	$(RMPRG) -f $(RELZIP)
 	$(RMPRG) -f dxetest.DXE dxetest2.DXE
 	$(CPPRG) $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	$(ZIPPRG) -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe DPM.BAT V_*.BAT texus.exe fntconv.exe cacert.pem *.DXE
+	$(ZIPPRG) -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) $(GLIDE)/*/lib/glide3x.dxe DPM.BAT V_*.BAT texus.exe fntconv.exe CACERT.PEM *.DXE
 
-devzip: all cacert.pem doc
+devzip: all CACERT.PEM doc
 	$(RMPRG) -f $(RELZIP)
 	$(CPPRG) $(GLIDE)/v1/lib/glide3x.dxe ./GLIDE3X.DXE
-	$(ZIPPRG) -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT texus.exe fntconv.exe cacert.pem *.DXE
+	$(ZIPPRG) -9 -r $(RELZIP) $(EXE) dojs.ini WATTCP.CFG GLIDE3X.DXE CWSDPMI.EXE LICENSE *.md JSBOOT.ZIP examples/ tests/*.js tests/*.svg $(GLIDE)/*/lib/glide3x.dxe *.BAT texus.exe fntconv.exe CACERT.PEM *.DXE
 	$(CPPRG)p $(RELZIP) smbshare@192.168.2.8:/sata/c64
 
 dostodon: zip
-	$(CPPRG) png.DXE jpeg.DXE sqlite.DXE webp.DXE curl.DXE dojs.exe cacert.pem JSBOOT.ZIP ../GitHub/DOStodon/
+	$(CPPRG) png.DXE jpeg.DXE sqlite.DXE webp.DXE curl.DXE dojs.exe CACERT.PEM JSBOOT.ZIP ../GitHub/DOStodon/
 
 doc:
 	$(RMPRG) -rf $(DOCDIR)
@@ -297,16 +316,17 @@ init: configure_tiff
 
 clean:
 	$(RMPRG) -rf $(BUILDDIR)/
-	$(RMPRG) -f $(EXE) $(ZIP) JSLOG.TXT texus.exe fntconv.exe GLIDE3X.DXE JSBOOT.ZIP cacert.pem W32DHCP.TMP
+	$(RMPRG) -f $(EXE) $(ZIP) JSLOG.TXT texus.exe fntconv.exe GLIDE3X.DXE JSBOOT.ZIP CACERT.PEM W32DHCP.TMP
 	for dir in $(DXE_DIRS); do \
 		$(MAKE) -C $$dir -f Makefile $@; \
 	done
 
-distclean: clean alclean jsclean dzclean wattclean zclean apclean mbedtlsclean curlclean dxeclean mesa3clean webpclean bzip2clean distclean_tiff jasperclean jpegclean
+distclean: clean alclean jsclean dzclean wattclean zclean apclean mbedtlsclean curlclean dxeclean mesa3clean webpclean bzip2clean distclean_tiff distclean_exif jasperclean jpegclean
 	$(MAKE) -C $(TEXUS) clean
 	$(MAKE) -C $(FONTCONV) clean
 	$(RMPRG) -rf $(DOCDIR) TEST.TXT JSLOG.TXT synC.txt synJ.txt syn.txt *.DXE *.BMP *.PCX, *.TGA *.PNG TMP1.* TMP2.*
 	$(RMPRG) -rf $(GLIDE)/*/test $(GLIDE)/texus/*.exe $(GLIDE)/texus/*.EXE $(GLIDE)/texus/build
+	$(FINDPRG) $(MBEDTLS) -name \*.pyc -exec rm {} +
 
 dzclean:
 	$(MAKE) -C $(DZCOMMDIR) clean
@@ -322,6 +342,9 @@ wattclean:
 
 zclean:
 	$(MAKE) -C $(ZLIB) -f Makefile.dojs clean
+
+smackerclean:
+	$(MAKE) -C $(SMACKER) -f Makefile.dojs clean
 
 webpclean:
 	$(MAKE) -C $(WEBP) -f makefile.djgpp clean
@@ -343,8 +366,7 @@ mesa3clean:
 	$(MAKE) -C $(MESA3) -f Makefile.dja realclean
 
 curlclean:
-	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls-watt TRIPLET=i586-pc-msdosdjgpp WATT_ROOT=$(WATT32) clean
-	$(RMPRG) -f $(LIB_CURL)
+	$(RMPRG) -rf $(CURL_BIN)
 
 muclean:
 	$(RMPRG) -f $(LIB_MUJS)
@@ -357,6 +379,12 @@ tiffclean:
 
 distclean_tiff:
 	-(cd $(TIFF) && $(MAKE) distclean)
+
+exifclean:
+	$(MAKE) -C $(EXIF) clean
+
+distclean_exif:
+	-(cd $(EXIF) && $(MAKE) distclean)
 
 jasperclean:
 	$(RMPRG) -rf $(JASPER_BIN)
@@ -423,7 +451,7 @@ fdos: zip
 		JSBOOT.ZIP \
 		texus.exe \
 		fntconv.exe \
-		cacert.pem \
+		CACERT.PEM \
 		examples/ \
 		V_*.BAT \
 		DPM.BAT \

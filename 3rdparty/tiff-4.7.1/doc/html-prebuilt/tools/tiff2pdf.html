@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>tiff2pdf &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tiff2ps" href="tiff2ps.html" />
+    <link rel="prev" title="tiff2bw" href="tiff2bw.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tiff2ps.html" title="tiff2ps"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tiff2bw.html" title="tiff2bw"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tiff2pdf</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tiff2pdf">
+<h1>tiff2pdf<a class="headerlink" href="#tiff2pdf" title="Permalink to this heading">¶</a></h1>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<p><strong>tiff2pdf</strong> [ <em>options</em> ] <em>input.tiff</em></p>
+</section>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p><strong class="program">tiff2pdf</strong> opens a TIFF image and writes a PDF document to standard output.</p>
+<p>The program converts one TIFF file to one PDF file, including multiple page
+TIFF files, tiled TIFF files, black and white. grayscale, and color TIFF
+files that contain data of TIFF photometric interpretations of bilevel,
+grayscale, RGB, YCbCr, CMYK separation, and ICC L*a*b* as supported by
+<strong class="program">libtiff</strong> and PDF.</p>
+<p>If you have multiple TIFF files to convert into one PDF file then use <strong class="program">tiffcp</strong>
+or other program to concatenate the files into a multiple page TIFF file.
+If the input TIFF file is of huge dimensions (greater than 10000 pixels height
+or width) convert the input image to a tiled TIFF if it is not already.</p>
+<p>The standard output is standard output.  Set the output file name with the
+<a class="reference internal" href="#cmdoption-tiff2pdf-o"><code class="xref std std-option docutils literal notranslate"><span class="pre">-o</span></code></a> option.</p>
+<p>All black and white files are compressed into a single strip CCITT G4 Fax
+compressed PDF, unless tiled, where tiled black and white images are
+compressed into tiled CCITT G4 Fax compressed PDF,
+<strong class="program">libtiff</strong> CCITT support is assumed.</p>
+<p>Color and grayscale data can be compressed using either JPEG compression,
+ITU-T T.81, or Zip/Deflate LZ77 compression.  Set the compression type using
+the <a class="reference internal" href="#cmdoption-tiff2pdf-j"><code class="xref std std-option docutils literal notranslate"><span class="pre">-j</span></code></a> or <a class="reference internal" href="#cmdoption-tiff2pdf-z"><code class="xref std std-option docutils literal notranslate"><span class="pre">-z</span></code></a> options.  JPEG compression support
+requires that <strong class="program">libtiff</strong> be configured with JPEG support, and
+Zip/Deflate compression support requires that <strong class="program">libtiff</strong>
+be configured with Zip support.  Use only one or the other of
+<a class="reference internal" href="#cmdoption-tiff2pdf-j"><code class="xref std std-option docutils literal notranslate"><span class="pre">-j</span></code></a> and <a class="reference internal" href="#cmdoption-tiff2pdf-z"><code class="xref std std-option docutils literal notranslate"><span class="pre">-z</span></code></a>.</p>
+<p>If the input TIFF contains single strip CCITT G4 Fax compressed information,
+then that is written to the PDF file without transcoding, unless the options
+of no compression and no passthrough are set, <a class="reference internal" href="#cmdoption-tiff2pdf-d"><code class="xref std std-option docutils literal notranslate"><span class="pre">-d</span></code></a> and <a class="reference internal" href="#cmdoption-tiff2pdf-n"><code class="xref std std-option docutils literal notranslate"><span class="pre">-n</span></code></a>.</p>
+<p>If the input TIFF contains JPEG or single strip Zip/Deflate compressed
+information, and they are configured, then that is written to the PDF file
+without transcoding, unless the options of no compression and no passthrough
+are set.</p>
+<p>The default page size upon which the TIFF image is placed is determined by
+the resolution and extent of the image data.  Default values for the TIFF
+image resolution can be set using the <a class="reference internal" href="#cmdoption-tiff2pdf-x"><code class="xref std std-option docutils literal notranslate"><span class="pre">-x</span></code></a> and <a class="reference internal" href="#cmdoption-tiff2pdf-y"><code class="xref std std-option docutils literal notranslate"><span class="pre">-y</span></code></a>
+options.  The page size can be set using the <a class="reference internal" href="#cmdoption-tiff2pdf-p"><code class="xref std std-option docutils literal notranslate"><span class="pre">-p</span></code></a>
+option for paper size, or <a class="reference internal" href="#cmdoption-tiff2pdf-w"><code class="xref std std-option docutils literal notranslate"><span class="pre">-w</span></code></a> and <a class="reference internal" href="#cmdoption-tiff2pdf-l"><code class="xref std std-option docutils literal notranslate"><span class="pre">-l</span></code></a>
+for paper width and length, then each page of the TIFF image is centered on
+its page.  The distance unit for default resolution and page width and
+length can be set by the <a class="reference internal" href="#cmdoption-tiff2pdf-u"><code class="xref std std-option docutils literal notranslate"><span class="pre">-u</span></code></a> option, the default unit is inch.</p>
+<p>Various items of the output document information can be set with the
+<a class="reference internal" href="#cmdoption-tiff2pdf-e"><code class="xref std std-option docutils literal notranslate"><span class="pre">-e</span></code></a>, <a class="reference internal" href="#cmdoption-tiff2pdf-c"><code class="xref std std-option docutils literal notranslate"><span class="pre">-c</span></code></a>, <a class="reference internal" href="#cmdoption-tiff2pdf-a"><code class="xref std std-option docutils literal notranslate"><span class="pre">-a</span></code></a>, <a class="reference internal" href="#cmdoption-tiff2pdf-t"><code class="xref std std-option docutils literal notranslate"><span class="pre">-t</span></code></a>, <a class="reference internal" href="#cmdoption-tiff2pdf-s"><code class="xref std std-option docutils literal notranslate"><span class="pre">-s</span></code></a>,
+and <a class="reference internal" href="#cmdoption-tiff2pdf-k"><code class="xref std std-option docutils literal notranslate"><span class="pre">-k</span></code></a> options.  Setting the argument of the option to <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> for these
+tags causes the relevant document information field to be not written.  Some
+of the document information values otherwise get their information from the
+input TIFF image, the software, author, document name, and image description.</p>
+<p>The Portable Document Format (PDF) specification is copyrighted by Adobe
+Systems, Incorporated.</p>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-o">
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"> <span class="pre">output-file</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the output to go to file <em>output-file</em></p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-j">
+<span class="sig-name descname"><span class="pre">-j</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2pdf-j" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compress with JPEG (requires <strong class="program">libjpeg</strong> configured with
+<strong class="program">libtiff</strong>).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-z">
+<span class="sig-name descname"><span class="pre">-z</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2pdf-z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compress with Zip/Deflate (requires :program`zlib` configured with
+<strong class="program">libtiff</strong>).</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-q">
+<span class="sig-name descname"><span class="pre">-q</span></span><span class="sig-prename descclassname"> <span class="pre">quality</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-q" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the compression quality, 1-100 for JPEG.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-n">
+<span class="sig-name descname"><span class="pre">-n</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2pdf-n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do not allow data to be converted without uncompressing, no compressed
+data passthrough.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-b">
+<span class="sig-name descname"><span class="pre">-b</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2pdf-b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set PDF <code class="docutils literal notranslate"><span class="pre">Interpolate</span></code> user preference.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-d">
+<span class="sig-name descname"><span class="pre">-d</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2pdf-d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do not compress (decompress) - except monochrome to CCITT Group 4.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-i">
+<span class="sig-name descname"><span class="pre">-i</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2pdf-i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invert colors.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-p">
+<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"> <span class="pre">paper-size</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set paper size, e.g., <code class="docutils literal notranslate"><span class="pre">letter</span></code>,  <code class="docutils literal notranslate"><span class="pre">legal</span></code>, <code class="docutils literal notranslate"><span class="pre">A4</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-F">
+<span class="sig-name descname"><span class="pre">-F</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2pdf-F" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cause the tiff to fill the PDF page.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-u">
+<span class="sig-name descname"><span class="pre">-u</span></span><span class="sig-prename descclassname"> <span class="pre">[</span> <span class="pre">i</span> <span class="pre">|</span> <span class="pre">m</span> <span class="pre">]</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-u" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set distance unit, <code class="docutils literal notranslate"><span class="pre">i</span></code> for inch, <code class="docutils literal notranslate"><span class="pre">m</span></code> for centimeter.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-w">
+<span class="sig-name descname"><span class="pre">-w</span></span><span class="sig-prename descclassname"> <span class="pre">width</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set width in units.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-l">
+<span class="sig-name descname"><span class="pre">-l</span></span><span class="sig-prename descclassname"> <span class="pre">length</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-l" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set length in units.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-x">
+<span class="sig-name descname"><span class="pre">-x</span></span><span class="sig-prename descclassname"> <span class="pre">xres</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set x/width resolution default.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-y">
+<span class="sig-name descname"><span class="pre">-y</span></span><span class="sig-prename descclassname"> <span class="pre">yres</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set y/length resolution default.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-r">
+<span class="sig-name descname"><span class="pre">-r</span></span><span class="sig-prename descclassname"> <span class="pre">[</span> <span class="pre">d</span> <span class="pre">|</span> <span class="pre">o</span> <span class="pre">]</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">d</span></code> for resolution default for images without resolution,
+<code class="docutils literal notranslate"><span class="pre">o</span></code> for resolution override for all images.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-f">
+<span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2pdf-f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set PDF <code class="docutils literal notranslate"><span class="pre">Fit</span> <span class="pre">Window</span></code> user preference.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-e">
+<span class="sig-name descname"><span class="pre">-e</span></span><span class="sig-prename descclassname"> <span class="pre">YYYYMMDDHHMMSS</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-e" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set document information date, overrides image or current date/time default,
+<code class="docutils literal notranslate"><span class="pre">YYYYMMDDHHMMSS</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-c">
+<span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"> <span class="pre">creator</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set document information creator, overrides image software default.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-a">
+<span class="sig-name descname"><span class="pre">-a</span></span><span class="sig-prename descclassname"> <span class="pre">author</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set document information author, overrides image artist default.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-t">
+<span class="sig-name descname"><span class="pre">-t</span></span><span class="sig-prename descclassname"> <span class="pre">title</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set document information title, overrides image document name default.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-s">
+<span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"> <span class="pre">subject</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set document information subject, overrides image image description default.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-k">
+<span class="sig-name descname"><span class="pre">-k</span></span><span class="sig-prename descclassname"> <span class="pre">keywords</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-k" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set document information keywords.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-m">
+<span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"> <span class="pre">size</span></span><a class="headerlink" href="#cmdoption-tiff2pdf-m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set memory allocation limit (in MiB). Default is 256MiB. Set to 0 to disable the limit.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiff2pdf-h">
+<span class="sig-name descname"><span class="pre">-h</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiff2pdf-h" title="Permalink to this definition">¶</a></dt>
+<dd><p>List usage reminder to stderr and exit.</p>
+</dd></dl>
+
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<p>The following example would generate the file output.pdf from input.tiff:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tiff2pdf<span class="w"> </span>-o<span class="w"> </span>output.pdf<span class="w"> </span>input.tiff
+</pre></div>
+</div>
+<p>The following example would generate PDF output from input.tiff and write it
+to standard output:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tiff2pdf<span class="w"> </span>input.tiff
+</pre></div>
+</div>
+<p>The following example would generate the file output.pdf from input.tiff,
+putting the image pages on a letter sized page, compressing the output
+with JPEG, with JPEG quality 75, setting the title to <code class="docutils literal notranslate"><span class="pre">Document</span></code>, and setting
+the <code class="docutils literal notranslate"><span class="pre">Fit</span> <span class="pre">Window</span></code> option:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>tiff2pdf<span class="w"> </span>-p<span class="w"> </span>letter<span class="w"> </span>-j<span class="w"> </span>-q<span class="w"> </span><span class="m">75</span><span class="w"> </span>-t<span class="w"> </span><span class="s2">&quot;Document&quot;</span><span class="w"> </span>-f<span class="w"> </span>-o<span class="w"> </span>output.pdf<span class="w"> </span>input.tiff
+</pre></div>
+</div>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="tiffcp.html"><span class="doc">tiffcp</span></a> (1),
+<a class="reference internal" href="tiff2ps.html"><span class="doc">tiff2ps</span></a> (1),
+<a class="reference internal" href="../functions/libtiff.html"><span class="doc">libtiff</span></a> (3tiff),</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">tiff2pdf</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#options">Options</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="tiff2bw.html"
+                          title="previous chapter">tiff2bw</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tiff2ps.html"
+                          title="next chapter">tiff2ps</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/tools/tiff2pdf.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tiff2ps.html" title="tiff2ps"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tiff2bw.html" title="tiff2bw"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tiff2pdf</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

@@ -89,7 +89,7 @@ SCR6.WEP
 AUDIO.RAW
 /build/
 /build_linux/
-cacert.pem
+CACERT.PEM
 /capture/
 CREDS.JSN
 /cylindrix/
@@ -179,3 +179,15 @@ DBS.lnk
 3rdparty/lpng1644/libpng16.dll.16
 3rdparty/tiff-4.6.0/win32/
 3rdparty/tiff-4.6.0/doc/__pycache__
+3rdparty/libsmacker-1.1.1/driver
+3rdparty/libsmacker-1.1.1/bmp/
+3rdparty/libsmacker-1.1.1/smk2avi
+3rdparty/libsmacker-1.1.1/*.raw
+plugins/crsid.dxelib/cRSID/resources/music/
+plugins/crsid.dxelib/cRSID/resources/test/
+3rdparty/curl-djgpp
+plugins/crsid.dxelib/crsid-cppcheck-build-dir/
+plugins/crsid.dxelib/crsid.cppcheck
+shell_history.txt
+3rdparty/curl-win32/
+*.pyc

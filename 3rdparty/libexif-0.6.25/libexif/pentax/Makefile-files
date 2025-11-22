@@ -1,0 +1,9 @@
+# -*- Makefile -*-
+# Copyright (C) 2003-2007 Lutz Mueller <lutz@users.sourceforge.net>, et. al.
+# SPDX-License-Identifier: LGPL-2.0-or-later
+noinst_LTLIBRARIES += libmnote-pentax.la
+libmnote_pentax_la_SOURCES = \
+	pentax/mnote-pentax-entry.c pentax/mnote-pentax-entry.h \
+	pentax/exif-mnote-data-pentax.c pentax/exif-mnote-data-pentax.h \
+	pentax/mnote-pentax-tag.c pentax/mnote-pentax-tag.h
+libmnote_pentax_la_LIBADD = $(LTLIBINTL)

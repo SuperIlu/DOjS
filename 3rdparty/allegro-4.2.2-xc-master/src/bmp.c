@@ -31,6 +31,10 @@
 
 #define OS2INFOHEADERSIZE  12
 #define WININFOHEADERSIZE  40
+#define WININFOHEADERSIZEV2 52
+#define WININFOHEADERSIZEV3 56
+#define WININFOHEADERSIZEV4 108
+#define WININFOHEADERSIZEV5 124
 
 
 typedef struct BITMAPFILEHEADER
@@ -589,7 +593,7 @@ BITMAP *load_bmp_pf(PACKFILE *f, RGB *pal)
 
    biSize = pack_igetl(f);
 
-   if (biSize == WININFOHEADERSIZE) {
+    if ((biSize == WININFOHEADERSIZE) || (biSize == WININFOHEADERSIZEV2) || (biSize == WININFOHEADERSIZEV3) || (biSize == WININFOHEADERSIZEV4) || (biSize == WININFOHEADERSIZEV5)) {
       if (read_win_bminfoheader(f, &infoheader) != 0) {
 	 return NULL;
       }

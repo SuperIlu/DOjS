@@ -1,0 +1,680 @@
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "TIFFCROP" "1" "Sep 11, 2025" "4.7" "LibTIFF"
+.SH NAME
+tiffcrop \- select, copy, crop, convert, extract, and/or process one or more TIFF files
+.SH SYNOPSIS
+.sp
+\fBtiffcrop\fP [ \fIoptions\fP ] \fIsrc1.tif\fP … \fIsrcN.tif\fP \fIdst.tif\fP
+.SH DESCRIPTION
+.sp
+\fBtiffcrop\fP processes one or more files created according
+to the Tag Image File Format, Revision 6.0, specification
+into one or more TIFF file(s).
+\fBtiffcrop\fP is most often used to extract portions of an image for processing
+with bar code recognizer or OCR software when that software cannot
+restrict the region of interest to a specific portion of the image
+or to improve efficiency when the regions of interest must be rotated.
+It can also be used to subdivide all or part of a processed image into
+smaller sections and export individual images or sections of images
+as separate files or separate images within one or more files derived
+from the original input image or images.
+.sp
+The available functions can be grouped broadly into three classes:
+.INDENT 0.0
+.IP 1. 3
+Those that select individual images or sections of images from the input files.
+The options \fI\%\-N\fP for sequences or lists of individual images in the input files,
+\fI\%\-Z\fP for zones, \fI\%\-z\fP for regions, \fI\%\-X\fP and \fI\%\-Y\fP for fixed sized selections,
+\fI\%\-m\fP for margins, \fI\%\-U\fP for units, and \fI\%\-E\fP for edge reference provide a variety of
+ways to specify portions of the input image.
+.IP 2. 3
+Those that allow the individual images or selections to be exported to one or
+more output files in different groupings and control the organization of the
+data in the output images. The options \fI\%\-P\fP for page size grouping, \fI\%\-S\fP for
+subdivision into columns and rows and \fI\%\-e\fP for export mode options that produce
+one or more files from each input image. The options \fI\%\-r\fP, \fI\%\-s\fP, \fI\%\-t\fP, \fI\%\-w\fP  control
+strip and tile format and sizes while \fI\%\-B\fP, \fI\%\-L\fP, \fI\%\-c\fP, \fI\%\-f\fP modify the endian addressing
+scheme, the compression options, and the bit fill sequence of images as they
+are written.
+.IP 3. 3
+Those that perform some action on each image that is selected from the input file.
+The options include \fI\%\-R\fP for rotate, \fI\%\-I\fP for inversion of the photometric
+interpretation and/or data values, and \fI\%\-F\fP to flip (mirror) the image horizontally
+or vertically.
+.UNINDENT
+.sp
+Functions are applied to the input image(s) in the following order:
+cropping, fixed area extraction, zone and region extraction,
+inversion, mirroring, rotation.
+.sp
+Functions are applied to the output image(s) in the following order:
+export mode options for grouping zones, regions, or images into
+one or more files, \fIor\fP row and column divisions with output margins,
+\fIor\fP page size divisions with page orientation options.
+.sp
+Finally, strip, tile, byte order, output resolution, and compression options are
+applied to all output images.
+.sp
+The output file(s) may be organized and compressed using a different
+algorithm from the input files.
+By default, \fBtiffcrop\fP will copy all the understood tags in a TIFF
+directory of an input file to the associated directory in the output file.
+Options can be used to force the resultant image to be written as strips
+or tiles of data, respectively.
+.sp
+\fBtiffcrop\fP can be used to reorganize the storage characteristics of data
+in a file, and to reorganize, extract, rotate, and otherwise
+process the image data as specified at the same time whereas
+\fBtiffcp\fP does not alter the image data within the file.
+.sp
+Using the options for selecting individual input images and the
+options for exporting images and/or segments defined as zones or
+regions of each input image, \fBtiffcrop\fP can perform the
+functions of \fBtiffcp\fP and \fBtiffsplit\fP in a single pass
+while applying multiple operations to individual selections or images.
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \-h
+Display the syntax summary for tiffcrop.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-v
+Report the current version and last modification date for tiffcrop.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-N odd|even|#,#\-#,#|last
+Specify one or more series or range(s) of images within each file to process.
+The words \fBodd\fP or \fBeven\fP
+may be used to specify all odd or even numbered images counting from one.
+Note that internally, TIFF images are numbered from zero rather than one
+but since this convention is not obvious to most users, \fBtiffcrop\fP used 1
+to specify the first image in a multipage file.  The word \fBlast\fP
+may be used in place of a number in the sequence to indicate the
+final image in the file without knowing how many images there are.
+Ranges of images may be specified with a dash and multiple sets
+can be indicated by joining them in a comma\-separated list. eg. use
+\fB\-N 1,5\-7,last\fP
+to process the 1st, 5th through 7th, and final image in the file.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-E top|bottom|left|right
+Specify the \fBtop\fP, \fBbottom\fP, \fBleft\fP, or \fBright\fP edge as the reference from
+which to calculate the width and length of crop regions or sequence
+of positions for zones. When used with the \fI\%\-e\fP option for exporting
+zones or regions, the reference edge determines how composite images
+are arranged. Using \fB\-E left\fP or \fB\-E right\fP causes successive zones or
+regions to be merged horizontally whereas using \fB\-E top\fP or \fB\-E bottom\fP
+causes successive zones or regions to be arranged vertically. This
+option has no effect on export layout when multiple zones or regions
+are not being exported to composite images. Edges may be abbreviated
+to the first letter.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-e combined|divided|image|multiple|separate
+Specify the export mode for images and selections from input images.
+The final filename on the command line is considered to be the
+destination file or filename stem for automatically generated
+sequences of files. Modes may be abbreviated to the first letter.
+.SH EXPORT MODES
+.TS
+center;
+|l|l|.
+_
+T{
+Export mode
+T}	T{
+Description
+T}
+_
+T{
+combined
+T}	T{
+All images and selections are written to a single file with
+multiple selections from one image combined into a single image (default)
+T}
+_
+T{
+divided
+T}	T{
+All images and selections are written to a single file
+with each selection from one image written to a new image
+T}
+_
+T{
+image
+T}	T{
+Each input image is written to a new file (numeric filename sequence)
+with multiple selections from the image combined into one image
+T}
+_
+T{
+multiple
+T}	T{
+Each input image is written to a new file (numeric filename sequence)
+with each selection from the image written to a new image
+T}
+_
+T{
+separate
+T}	T{
+Individual selections from each image are written to separate files
+T}
+_
+.TE
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-U in|cm|px
+Specify the type of units to apply to dimensions for margins and
+crop regions for input and output images. Inches or centimeters
+are converted to pixels using the resolution unit specified in the
+TIFF file (which defaults to inches if not specified in the IFD).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-m top,left,bottom,right
+Specify margins to be removed from the input image. The order must
+be \fItop\fP, \fIleft\fP, \fIbottom\fP, \fIright\fP with only commas separating the elements
+of the list. Margins are scaled according to the current units and
+removed before any other extractions are computed.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-X #
+Set the horizontal (X\-axis) dimension of a region to extract relative to
+the specified origin reference. If the origin is the top or bottom
+edge, the X axis value will be assumed to start at the left edge.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-Y #
+Set the vertical (Y\-axis) dimension of a region to extract relative to
+the specified origin reference. If the origin is the left or right
+edge, the Y axis value will be assumed to start at the top.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-Z  #:#,#:#
+Specify zones of the image designated as position X of Y equal sized portions
+measured from the reference edge,  eg 1:3 would be first third of the
+image starting from the reference edge minus any margins specified
+for the confining edges. Multiple zones can be specified as a comma
+separated list but they must reference the same edge. To extract the
+top quarter and the bottom third of an image you would use
+\fB\-Z 1:4,3:3\fP\&.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-z x1,y1,x2,y2: ... :xN,yN,xN+1,yN+1
+Specify a series of coordinates to define regions for processing and exporting.
+The coordinates represent the top left and lower right corners of each region
+in the current units, eg inch, cm, or pixels. Pixels are counted from one to
+width or height and inches or cm are calculated from image resolution data.
+.sp
+Each colon delimited series of four values represents the horizontal and vertical
+offsets from the top and left edges of the image, regardless of the edge specified
+with the \fI\%\-E\fP option. The first and third values represent the horizontal offsets of
+the corner points from the left edge while the second and fourth values represent
+the vertical offsets from the top edge.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-F horiz|vert
+Flip, ie mirror, the image or extracted region horizontally or vertically.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-R 90|180|270
+Rotate the image or extracted region 90, 180, or 270 degrees clockwise.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-I [black|white|data|both]
+Invert color space, eg dark to light for bilevel and grayscale images.
+This can be used to modify negative images to positive or to correct
+images that have the \fBPHOTOMETRIC_INTERPRETATION\fP tag set incorrectly.
+If the value is black or white, the \fBPHOTOMETRIC_INTERPRETATION\fP tag is set to
+MinIsBlack or MinIsWhite, without altering the image data. If the argument
+is data or both, the data values of the image are modified. Specifying both
+inverts the data and the \fBPHOTOMETRIC_INTERPRETATION\fP tag, whereas using data
+inverts the data but not the \fBPHOTOMETRIC_INTERPRETATION\fP tag.
+No support for modifying the color space of color images in this release.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-H #
+Set the horizontal resolution of output images to \fI#\fP,
+expressed in the current units.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-V #
+Set the vertical resolution of the output images to \fI#\fP
+expressed in the current units.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-J #
+Set the horizontal margin of an output page size to \fI#\fP
+expressed in the current units when sectioning image into \fIcolumns\fP × \fIrows\fP
+subimages using the \fI\%\-S\fP \fBcols:rows\fP option.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-K #
+Set the vertical margin of an output page size to \fI#\fP
+expressed in the current units when sectioning image into \fIcolumns\fP × \fIrows\fP
+subimages using the \fI\%\-S\fP \fBcols:rows\fP option.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-O portrait|landscape|auto
+Set the output orientation of the pages or sections.
+Auto will use the arrangement that requires the fewest pages.
+This option is only meaningful in conjunction with the \fI\%\-P\fP
+option to format an image to fit on a specific paper size.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-P page
+Format the output images to fit on page size paper. Use
+\fB\-P list\fP to show the supported page sizes and dimensions.
+You can define a custom page size by entering the width and length of the
+page in the current units with the following format \fB#.#x#.#\fP\&.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-S cols:rows
+Divide each image into cols across and rows down equal sections.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-B
+Force output to be written with Big\-Endian byte order.
+This option only has an effect when the output file is created or
+overwritten and not when it is appended to.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-C
+Suppress the use of \(dqstrip chopping\(dq when reading images
+that have a single strip/tile of uncompressed data.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-c
+Specify the compression to use for data written to the output file:
+\fB\-c none\fP for no compression,
+\fB\-c packbits\fP for PackBits compression,
+\fB\-c lzw\fP for Lempel\-Ziv & Welch compression,
+\fB\-c jpeg\fP for baseline JPEG compression.
+\fB\-c zip\fP for Deflate compression,
+\fB\-c g3\fP for CCITT Group 3 (T.4) compression,
+\fB\-c g4\fP for CCITT Group 4 (T.6) compression.
+By default \fBtiffcrop\fP will compress data according to the value of the
+\fBCompression\fP tag found in the source file.
+.sp
+The CCITT Group 3 and Group 4 compression algorithms can only
+be used with bilevel data.
+.sp
+Group 3 compression can be specified together with several
+T.4\-specific options:
+\fB1d\fP for 1\-dimensional encoding,
+\fB2d\fP for 2\-dimensional encoding,
+\fBfill\fP to force each encoded scanline to be zero\-filled so that the
+terminating EOL code lies on a byte boundary.
+Group 3\-specific options are specified by appending a \fB:\fP\-separated
+list to the \fBg3\fP option; e.g. \fB\-c g3:2d:fill\fP
+to get 2D\-encoded data with byte\-aligned EOL codes.
+.sp
+LZW compression can be specified together with a \fBpredictor\fP
+value. A predictor value of 2 causes
+each scanline of the output image to undergo horizontal
+differencing before it is encoded; a value
+of 1 forces each scanline to be encoded without differencing.
+LZW\-specific options are specified by appending a \fB:\fP\-separated
+list to the \fBlzw\fP option; e.g. \fB\-c lzw:2\fP for LZW
+compression with horizontal differencing.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-f
+Specify the bit fill order to use in writing output data.
+By default, \fBtiffcrop\fP
+will create a new file with the same fill order as the original.
+Specifying
+\fB\-f lsb2msb\fP
+will force data to be written with the \fBFillOrder\fP tag set to
+\fBLSB2MSB\fP, while
+\fB\-f msb2lsb\fP will force data to be written with the \fBFillOrder\fP
+tag set to \fBMSB2LSB\fP\&.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-i
+Ignore non\-fatal read errors and continue processing of the input file.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-k size
+Set maximum memory allocation size (in MiB). The default is 256MiB.
+Set to 0 to disable the limit.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-l
+Specify the length of a tile (in pixels).
+\fBtiffcrop\fP attempts to set the tile dimensions so
+that no more than 8 kilobytes of data appear in a tile.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-L
+Force output to be written with Little\-Endian byte order.
+This option only has an effect when the output file is created or
+overwritten and not when it is appended to.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-M
+Suppress the use of memory\-mapped files when reading images.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-p
+Specify the planar configuration to use in writing image data
+that has more than one sample per pixel.
+By default, \fBtiffcrop\fP
+will create a new file with the same planar configuration as
+the original.
+Specifying \fB\-p contig\fP
+will force data to be written with multi\-sample data packed
+together, while
+\fB\-p separate\fP
+will force samples to be written in separate planes.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-r
+Specify the number of rows (scanlines) in each strip of data
+written to the output file.
+By default (or when value \fB0\fP is specified), \fBtiffcrop\fP
+attempts to set the rows/strip that no more than 8 kilobytes of
+data appear in a strip. If you specify the special value
+\fB\-1\fP it will results in infinite number of the rows per strip. The entire image
+will be the one strip in that case.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-s
+Force the output file to be written with data organized in strips
+(rather than tiles).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-t
+Force the output file to be written with data organized in tiles
+(rather than strips).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-w
+Specify the width of a tile (in pixels).
+\fBtiffcrop\fP attempts to set the tile dimensions so
+that no more than 8 kilobytes of data appear in a tile.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-D opt1:value1,opt2:value2,opt3:value3:opt4:value4
+Debug and dump facility
+.sp
+Display program progress and/or dump raw data to non\-TIFF files.
+Options include the following and must be joined as a comma
+separated list. The use of this option is generally limited to
+program debugging and development of future options. An equal sign
+may be substituted for the colon in option:value pairs.
+.sp
+\fBdebug:N\fP:
+.INDENT 7.0
+.INDENT 3.5
+Display limited program progress indicators where larger \fIN\fP
+increases the level of detail.
+.UNINDENT
+.UNINDENT
+.sp
+\fBformat:txt|raw\fP:
+.INDENT 7.0
+.INDENT 3.5
+Format any logged data as ASCII text or raw binary
+values. ASCII text dumps include strings of ones and zeroes representing
+the binary values in the image data plus identifying headers.
+.UNINDENT
+.UNINDENT
+.sp
+\fBlevel:N\fP:
+.INDENT 7.0
+.INDENT 3.5
+Specify the level of detail presented in the dump files.
+This can vary from dumps of the entire input or output image data to dumps
+of data processed by specific functions. Current range of levels is 1 to 3.
+.UNINDENT
+.UNINDENT
+.sp
+\fBinput:full\-path\-to\-directory/input\-dumpname\fP:
+.sp
+\fBoutput:full\-path\-to\-directory/output\-dumpname\fP:
+.INDENT 7.0
+.INDENT 3.5
+When dump files are being written, each image will be written to a separate
+file with the name built by adding a numeric sequence value to the dumpname
+and an extension of \fB\&.txt\fP for ASCII dumps or \fB\&.bin\fP for binary dumps.
+.UNINDENT
+.UNINDENT
+.sp
+The four debug/dump options are independent, though it makes little sense to
+specify a dump file without specifying a detail level.
+.sp
+Note: \fBtiffcrop\fP may be compiled with \fB\-DDEVELMODE\fP to enable
+additional very low level debug reporting.
+.UNINDENT
+.sp
+However, not all option combinations are permitted.
+.INDENT 0.0
+.INDENT 3.5
+Note 1: The (\-X|\-Y), \-Z, \-z and \-S options are mutually exclusive.
+In no case should the options be applied to a given selection successively.
+.sp
+Note 2: Any of the \-X, \-Y, \-Z and \-z options together with other PAGE_MODE_x options
+such as \-H, \-V, \-P, \-J or \-K are not supported and may cause buffer overflows.
+.UNINDENT
+.UNINDENT
+.SH EXAMPLES
+.sp
+The following concatenates two files and writes the result using LZW
+encoding:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tiffcrop \-c lzw a.tif b.tif result.tif
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To convert a G3 1d\-encoded TIFF to a single strip of G4\-encoded data the following might be used:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tiffcrop \-c g4 \-r 10000 g3.tif g4.tif
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+(1000 is just a number that is larger than the number of rows in
+the source file.)
+.sp
+To extract a selected set of images from a multi\-image TIFF file
+use the \fI\%\-N\fP option described above. Thus, to copy the 1st and 3rd
+images of image file \fBalbum.tif\fP to \fBresult.tif\fP:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tiffcrop \-N 1,3 album.tif result.tif
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Invert a bilevel image scan of a microfilmed document and crop off margins of
+0.25 inches on the left and right, 0.5 inch on the top, and 0.75 inch on the
+bottom. From the remaining portion of the image, select the second and third
+quarters, ie, one half of the area left from the center to each margin:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tiffcrop \-U in \-m 0.5,0.25,0.75,0.25 \-E left \-Z 2:4,3:4 \-I both MicrofilmNegative.tif MicrofilmPostiveCenter.tif
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Extract only the final image of a large Architectural E sized
+multipage TIFF file and rotate it 90 degrees clockwise while
+reformatting the output to fit on tabloid sized sheets with one
+quarter of an inch on each side:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tiffcrop \-N last \-R 90 \-O auto \-P tabloid \-U in \-J 0.25 \-K 0.25 \-H 300 \-V 300 Big\-PlatMap.tif BigPlatMap\-Tabloid.tif
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+The output images will have a specified resolution of 300 dpi in both
+directions. The orientation of each page will be determined by whichever
+choice requires the fewest pages. To specify a specific orientation, use
+the portrait or landscape option. The paper size option does not resample
+the image. It breaks each original image into a series of smaller images
+that will fit on the target paper size at the specified resolution.
+.sp
+Extract two regions 2048 pixels wide by 2048 pixels high from each page of
+a multi\-page input file and write each region to a separate output file:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tiffcrop \-U px \-z 1,1,2048,2048:1,2049,2048,4097 \-e separate  CheckScans.tiff Check
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+The output file names will use the stem \fBCheck\fP with a numeric suffix which is
+incremented for each region of each image, eg \fBCheck\-001.tiff\fP,
+\fBCheck\-002.tiff\fP … \fBCheck\-NNN.tiff\fP\&. To produce a unique file for each page
+of the input image with one new image for each region of the input image on that page
+change the export option to \fB\-e multiple\fP\&.
+.SH NOTES
+.sp
+In general, bilevel, grayscale, palette and RGB(A) data with bit depths
+from 1 to 32 bits should work in both interleaved and separate plane
+formats. Unlike \fBtiffcp\fP, \fBtiffcrop\fP can read and write tiled images with
+bits per sample that are not a multiple of 8 in both interleaved and
+separate planar format. Floating point data types are supported at
+bit depths of 16, 24, 32 and 64 bits per sample.
+.sp
+Not all images can be converted from one compression scheme to another.
+Data with some photometric interpretations and/or bit depths are tied to
+specific compression schemes and vice\-versa, e.g. Group 3/4 compression
+is only usable for bilevel data. JPEG compression is only usable on 8
+bit per sample data (or 12 bit if \fBlibtiff\fP
+was compiled with 12 bit JPEG support). Support for OJPEG compressed
+images is problematic at best. Since OJPEG compression is no longer
+supported for writing images with LibTIFF, these images will be updated
+to the newer JPEG compression when they are copied or processed. This
+may cause the image to appear color shifted or distorted after conversion.
+In some cases, it is possible to remove the original compression from
+image data using the option \fB\-c none\fP\&.
+.sp
+\fBtiffcrop\fP does not currently provide options to up or downsample data to
+different bit depths or convert data from one photometric interpretation
+to another, e.g. 16 bits per sample to 8 bits per sample or RGB to grayscale.
+.sp
+\fBtiffcrop\fP is very loosely derived from code in \fBtiffcp\fP
+with extensive modifications and additions to support the selection of input
+images and regions and the exporting of them to one or more output files in
+various groupings. The image manipulation routines are entirely new and
+additional ones may be added in the future. It will handle tiled images with
+bit depths that are not a multiple of eight that tiffcp may refuse to read.
+.sp
+\fBtiffcrop\fP was designed to handle large files containing many moderate sized images
+with memory usage that is independent of the number of images in the file.
+In order to support compression modes that are not based on individual
+scanlines, e.g. JPEG, it now reads images by strip or tile rather than by
+individual scanlines. In addition to the memory required by the input and
+output buffers associated with \fBlibtiff\fP
+one or more buffers at least as large as the largest image to be read are
+required. The design favors large volume document processing uses over
+scientific or graphical manipulation of large datasets as might be found
+in research or remote sensing scenarios.
+.SH SEE ALSO
+.sp
+\fI\%pal2rgb\fP (1),
+\fI\%tiffinfo\fP (1),
+\fI\%tiffcmp\fP (1),
+\fI\%tiffcp\fP (1),
+\fI\%tiffmedian\fP (1),
+\fI\%tiffsplit\fP (1),
+\fI\%libtiff\fP (3tiff)
+.SH AUTHOR
+LibTIFF contributors
+.SH COPYRIGHT
+1988-2025, LibTIFF contributors
+.\" Generated by docutils manpage writer.
+.

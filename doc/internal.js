@@ -134,456 +134,6 @@ function IpxGetPacket() { }
 function IpxGetLocalAddress() { }
 
 /**
- * sound recording functions.
- * 
- * @module sndout
- */
-/**
- * Get current play position for given voice.
- * @param {number} voc the voice number.
- * @returns {number} the position or -1 if not playing.
- */
-function VoiceGetPosition(voc) { }
-
-/**
- * sound recording functions.
- * 
- * @module sndin
- */
-
-/**
-* @property {boolean} SNDIN_AVAILABLE true if sound recording is available.
-*/
-SNDIN_AVAILABLE = true;
-
-/**
- * @property {boolean} SNDIN_8BIT true if 8bit input is available.
- */
-SNDIN_8BIT = true;
-
-/**
- * @property {boolean} SNDIN_16BIT true if 16bit input is available.
- */
-SNDIN_16BIT = true;
-
-/**
- * @property {boolean} SNDIN_STEREO true if stereo input is available.
- */
-SNDIN_STEREO = true;
-
-/**
- * @property {string} DOJS_ENCODING the current text encoding used by DOjS. Usually "UTF8". other possible values are "ASCII", "ASCII_CP", "UNICODE" and "UNKNOWN"
- */
-DOJS_ENCODING = "UTF8";
-
-/**
- * select sound input source.
- * 
- * @param {*} src a value from {@link SOUND}.
- */
-function SoundInputSource(src) { }
-
-/**
- * start sound recording with given parameters.
- * 
- * @param {number} rate sample rate.
- * @param {number} bits 8 or 16 bits.
- * @param {boolean} stereo true for stereo recording.
- */
-function SoundStartInput(rate, bits, stereo) { }
-
-/**
- * stop sound recording.
- */
-function SoundStopInput() { }
-
-/**
- * get the actuall sound data.
- * 
- * @returns {number[]} returns one or two arrays with sound data or null if no data available.
- */
-function ReadSoundInput() { }
-
-/**
-* get the actuall sound data as IntArray.
-* 
-* @returns {IntArray|IntArray[]} returns one or two IntArrays with sound data or null if no data available.
-*/
-function ReadSoundInputInts() { }
-
-/**
- * MIDI music functions. See {@link Midi} on how to load MIDI files.
- * 
- * @module midi
- */
-/**
- * Check if the file is still playing.
- * @returns {boolean} true if the file is still playing.
- */
-function MidiIsPlaying() { }
-
-/**
- * Stop playing midi.
- */
-function MidiStop() { }
-
-/**
- * Pause playing midi.
- */
-function MidiPause() { }
-
-/**
- * Resume playing midi after MidiPause().
- */
-function MidiResume() { }
-
-/**
- * Get song position.
- * @returns {number} current song position in seconds.
- */
-function MidiGetTime() { }
-
-/**
- * Get song position.
- * @returns {number} current song position in MIDI file.
- */
-function MidiGetPos() { }
-
-/**
- * Send MIDI commands to output.
- * @param {number[]} data an array of midi commands.
- */
-function MidiOut(data) { }
-
-/**
- * All graphics functions.
- * 
- * @module gfx
- */
-/**
- * set the current render destination.
- * @param {Bitmap} bm A Bitmap to render on or null to use the screen as rendering destination.
- */
-function SetRenderBitmap(bm) { }
-
-/**
- * get the width of the drawing area.
- * @returns {number} the width of the drawing area.
- */
-function SizeX() { }
-
-/**
- * get the height of the drawing area.
- * @returns {number} the height of the drawing area.
- */
-function SizeY() { }
-
-/**
- * Get color depth info.
- * @returns {number} bits per pixel.
- */
-function GetScreenMode() { }
-
-/**
- * clear the screen with given color.
- * @param {number} c the color.
- */
-function ClearScreen(c) { }
-
-/**
- * draw a point.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} c color.
- */
-function Plot(x, y, c) { }
-
-/**
- * draw a line.
- * @param {number} x1 start x coordinate.
- * @param {number} y1 start y coordinate.
- * @param {number} x2 end x coordinate.
- * @param {number} y2 end y coordinate.
- * @param {number} c color.
- */
-function Line(x1, y1, x2, y2, c) { }
-
-/**
- * draw a line with given width.
- * @param {number} x1 start x coordinate.
- * @param {number} y1 start y coordinate.
- * @param {number} x2 end x coordinate.
- * @param {number} y2 end y coordinate.
- * @param {number} w line width.
- * @param {number} c color.
- */
-function CustomLine(x1, y1, x2, y2, w, c) { }
-
-/**
- * draw a box.
- * @param {number} x1 start x coordinate.
- * @param {number} y1 start y coordinate.
- * @param {number} x2 end x coordinate.
- * @param {number} y2 end y coordinate.
- * @param {number} c color.
- */
-function Box(x1, y1, x2, y2, c) { }
-
-/**
- * draw a circle.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} r radius.
- * @param {number} c color.
- */
-function Circle(x, y, r, c) { }
-
-/**
- * draw a circle with given width.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} r radius.
- * @param {number} w line width.
- * @param {number} c color.
- */
-function CustomCircle(x, y, r, w, c) { }
-
-/**
- * draw a ellipse.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} xr radius.
- * @param {number} yr radius.
- * @param {number} c color.
- */
-function Ellipse(x, y, xr, yr, c) { }
-
-/**
- * draw a ellipse with given width.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} xr radius.
- * @param {number} yr radius.
- * @param {number} w line width.
- * @param {number} c color.
- */
-function CustomEllipse(x, y, xr, yr, w, c) { }
-
-/**
- * Draw a circle arc.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} r radius.
- * @param {number} start start angle with 256 representing a full circle.
- * @param {number} end end angle with 256 representing a full circle.
- * @param {*} style value from {@link ARC}.
- * @param {number} c color.
- * @returns {ArcInfo} detailed info about the drawn arc.
- */
-function CircleArc(x, y, r, start, end, style, c) { }
-
-/**
- * Draw a circle arc with given width.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} r radius.
- * @param {number} start start angle with 256 representing a full circle.
- * @param {number} end end angle with 256 representing a full circle.
- * @param {*} style value from {@link ARC}.
- * @param {number} w line width.
- * @param {number} c color.
- * @returns {ArcInfo} detailed info about the drawn arc.
- */
-function CustomCircleArc(x, y, r, start, end, style, w, c) { }
-
-/**
- * draw a filled box.
- * @param {number} x1 start x coordinate.
- * @param {number} y1 start y coordinate.
- * @param {number} x2 end x coordinate.
- * @param {number} y2 end y coordinate.
- * @param {number} c color.
- */
-function FilledBox(x1, y1, x2, y2, c) { }
-
-/**
- * draw a filled circle.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} r radius.
- * @param {number} c color.
- */
-function FilledCircle(x, y, r, c) { }
-
-/**
- * draw a filled ellipse.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} rx radius.
- * @param {number} ry radius.
- * @param {number} c color.
- */
-function FilledEllipse(x, y, rx, ry, c) { }
-
-/**
- * do a flood fill.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @param {number} bound bound color.
- * @param {number} c fill color.
- */
-function FloodFill(x, y, bound, c) { }
-
-/**
- * draw a filled polygon.
- * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
- * @param {number} c color.
- */
-function FilledPolygon(points, c) { }
-
-/**
- * Draw a text with the default font.
-* @param {number} x x coordinate.
-* @param {number} y y coordinate.
-* @param {*} text the text to display.
-* @param {number} fg foreground color.
-* @param {number} bg background color.
-*/
-function TextXY(x, y, text, fg, bg) { }
-
-/**
- * set the character to print for missing codepoints in the current font. Default is "^".
- * @param {string} ch a one character string.
- */
-function SetMissingCharacter(ch) { }
-
-/**
- * converts the UTF8 string to the internal encoding (only useful if internal encoding is not UTF8).
- * 
- * @param {string} str string to convert.
- * @returns {string} converted string.
- */
-function FromUTF8(str) { }
-
-/**
- * converts the internal string encoding to UTF8 (only useful if internal encoding is not UTF8).
- * 
- * @param {string} str string to convert.
- * @returns {string} converted string.
- */
-function ToUTF8(str) { }
-
-/**
- * Save current screen to BMP file.
- * @param {string} fname filename.
- */
-function SaveBmpImage(fname) { }
-
-/**
- * Save current screen to PCX file.
- * @param {string} fname filename.
- */
-function SavePcxImage(fname) { }
-
-/**
- * Save current screen to TGA file.
- * @param {string} fname filename.
- */
-function SaveTgaImage(fname) { }
-
-/**
- * Save current screen to PNG file.
- * 
- * **Note: PNG module must be loaded by calling LoadLibrary("png") before using this function!**
- * 
- * @see LoadLibrary()
- * 
- * @param {string} fname filename.
- */
-function SavePngImage(fname) { }
-
-/**
- * Save current screen to QOI file.
- * 
- * **Note: QOI module must be loaded by calling LoadLibrary("qoi") before using this function!**
- * 
- * @see LoadLibrary()
- * 
- * @param {string} fname filename.
- */
-function SaveQoiImage(fname) { }
-
-/**
- * Save current screen to TIFF file.
- * 
- * **Note: TIFF module must be loaded by calling LoadLibrary("tiff") before using this function!**
- * 
- * @see LoadLibrary()
- * 
- * @param {string} fname filename.
- */
-function SaveTiffImage(fname) { }
-
-/**
- * Save bitmap to JPG file.
- * 
- * **Note: JPEG module must be loaded by calling LoadLibrary("jpeg") before using this function!**
- * 
- * @see LoadLibrary()
- * @param {string} fname filename.
- * @param {number} quality between 10 and 100.
- */
-function SaveJpgImage(fname, quality) { };
-
-/**
- * Save bitmap to JP2 (Jpeg 2000) file.
- * 
- * **Note: JASPER module must be loaded by calling LoadLibrary("jasper") before using this function!**
- * 
- * @see LoadLibrary()
- * @param {string} fname filename.
- * @param {number} quality between 1 and 100.
- */
-function SaveJp2Image(fname, quality) { };
-
-/**
- * Save bitmap to RAS (Sun Raster) file.
- * 
- * **Note: JASPER module must be loaded by calling LoadLibrary("jasper") before using this function!**
- * 
- * @see LoadLibrary()
- * @param {string} fname filename.
- */
-function SaveRasImage(fname) { };
-
-/**
- * Save current screen to WEBP file.
- * 
- * **Note: WEBP module must be loaded by calling LoadLibrary("webp") before using this function!**
- * 
- * @see LoadLibrary()
- * 
- * @param {string} fname filename.
- * @param {number} quality between 10 and 100.
- */
-function SaveWebpImage(fname, quality) { }
-
-/**
- * get color of on-screen pixel.
- * @param {number} x x coordinate.
- * @param {number} y y coordinate.
- * @returns {number} pixel color.
- */
-function GetPixel(x, y) { }
-
-/**
- * Set the blend mode for drawing.
- * @param {number} mode one of the blend modes, e.g. BLEND.ALPHA or BLEND.REPLACE.
- * @see BLEND in the color module
- */
-function TransparencyEnabled(mode) { }
-
-/**
  * @module other
  */
 /**
@@ -622,6 +172,11 @@ function MouseShowCursor(b) { }
 function MouseSetCursorMode(mode) { }
 
 /**
+ * DOjS will exit after the current call to {@link Loop}.
+ */
+function Stop() { }
+
+/**
  * Write data to JSLOG.TXT logfile.
  * @param {string} s the string to print.
  */
@@ -631,11 +186,6 @@ function Print(s) { }
  * @param {string} s the string to print.
  */
 function Println(s) { }
-
-/**
- * DOjS will exit after the current call to {@link Loop}.
- */
-function Stop() { }
 
 /**
  * Sleep for the given number of ms.
@@ -648,6 +198,12 @@ function Sleep(ms) { }
  * @returns {number} ms time.
  */
 function MsecTime() { }
+
+/**
+ * File-IO functions.
+ * 
+ * @module fileio
+ */
 
 /**
  * check for existence of a file.
@@ -711,7 +267,49 @@ function RmFile(name) { }
  * make a directory.
  * @param {string} name path/name of the new directory
  */
-function MkDir(name) { }
+function MakeDir(name) { }
+
+/**
+ * Get free space info on drive.
+ * @param {number} drvNum Number of the drive (0=default, 1=A:, 2 == B:, etc).
+ * @returns {FreeInfo} drive space info object.
+ */
+function FreeSpace(drvNum) { }
+
+/**
+ * Check if drive is a fixed drive.
+ * @param {number} drvNum Number of the drive (0=default, 1=A:, 2 == B:, etc).
+ * @returns {boolean} true if this is a fixed drive, else false.
+ */
+function IsFixed(drvNum) { }
+
+/**
+ * Check if drive is a CD-ROM.
+ * @param {number} drvNum Number of the drive (0=default, 1=A:, 2 == B:, etc).
+ * @returns {boolean} true if this is a CD-ROM, else false.
+ */
+function IsCDROM(drvNum) { }
+
+/**
+ * Check if drive was formated with FAT32.
+ * @param {number} drvNum Number of the drive (0=default, 1=A:, 2 == B:, etc).
+ * @returns {boolean} true if this is a FAT32 volume, else false.
+ */
+function IsFAT32(drvNum) { }
+
+/**
+ * Check if drive is a RAM disk.
+ * @param {number} drvNum Number of the drive (0=default, 1=A:, 2 == B:, etc).
+ * @returns {boolean} true if this is a RAM disk, else false.
+ */
+function IsRAMDisk(drvNum) { }
+
+/**
+ * determine file system type.
+ * @param {number} drvNum Number of the drive (0=default, 1=A:, 2 == B:, etc).
+ * @returns {string} file system type.
+ */
+function GetFSType(drvNum) { }
 
 /**
  * Get information about a file / directory.
@@ -882,6 +480,98 @@ function StringToBytes(str) { }
  * @param {string} [f] an optional filename where the source came from.
  */
 function NamedFunction(p, s, f) { }
+
+/**
+ * @module tcpip
+ */
+
+/**
+ * get the local IP address.
+ * @returns {IpAddress} the local IP address as an array of numbers
+ */
+function GetLocalIpAddress() { }
+/**
+ * get the netmask.
+ * @returns {IpAddress} the netmask as an array of numbers
+ */
+function GetNetworkMask() { }
+/**
+ * get the hostname.
+ * @returns {string} the hostname
+ */
+function GetHostname() { }
+/**
+ * get the domain name.
+ * @returns {string} the domain name
+ */
+function GetDomainname() { }
+/**
+ * look up a hostname in DNS.
+ * @param {string} host the hostname.
+ * @returns {IpAddress} The IP address of the host or an exception.
+ */
+function Resolve(host) { }
+/**
+ * reverse look up a host in DNS.
+ * @param {IpAddress} ip the ip address.
+ * @returns {string} The name of the host or an exception.
+ */
+function ResolveIp(ip) { }
+
+/**
+ * RawWrite() only works when DOjS was started with "-x"
+ * @module rawdisk
+ */
+
+/**
+ * @returns {number} number of FDD found in system.
+ */
+function GetNumberOfFDD() { }
+
+/**
+ * @returns {number} number of HDD found in system.
+ */
+function GetNumberOfHDD() { }
+
+/**
+ * query the status if a given disk.
+ * 
+ * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
+ * 
+ * @returns {number} disk status.
+ * 
+ * @see http://www.ctyme.com/intr/rb-0606.htm
+ */
+function GetDiskStatus(disk) { }
+
+/**
+ * get number of (LBA) sectors for a drive.
+ * 
+ * @param {number} drive 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
+ * 
+ * @returns {number} number of sectors for that disk.
+ */
+function GetRawSectorSize(drive) { }
+
+/**
+ * read a disk sector.
+ * 
+ * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
+ * @param {number} sector number 0..GetRawSectorSize()
+ * 
+ * @returns {number[]} an array with 512 bytes.
+ */
+function RawRead(disk, sector) { }
+
+/**
+ * write a disk sector.
+ * RawWrite() only works when DOjS was started with "-x"
+ * 
+ * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
+ * @param {number} sector number 0..GetRawSectorSize()
+ * @param {number[]} data an array with 512 bytes.
+ */
+function RawWrite(disk, sector, data) { }
 
 /** @module color */
 
@@ -1642,98 +1332,6 @@ function fxLfbConstantAlpha(val) { }
 function fxLfbConstantDepth(val) { }
 
 /**
- * @module tcpip
- */
-
-/**
- * get the local IP address.
- * @returns {IpAddress} the local IP address as an array of numbers
- */
-function GetLocalIpAddress() { }
-/**
- * get the netmask.
- * @returns {IpAddress} the netmask as an array of numbers
- */
-function GetNetworkMask() { }
-/**
- * get the hostname.
- * @returns {string} the hostname
- */
-function GetHostname() { }
-/**
- * get the domain name.
- * @returns {string} the domain name
- */
-function GetDomainname() { }
-/**
- * look up a hostname in DNS.
- * @param {string} host the hostname.
- * @returns {IpAddress} The IP address of the host or an exception.
- */
-function Resolve(host) { }
-/**
- * reverse look up a host in DNS.
- * @param {IpAddress} ip the ip address.
- * @returns {string} The name of the host or an exception.
- */
-function ResolveIp(ip) { }
-
-/**
- * RawWrite() only works when DOjS was started with "-x"
- * @module rawdisk
- */
-
-/**
- * @returns {number} number of FDD found in system.
- */
-function GetNumberOfFDD() { }
-
-/**
- * @returns {number} number of HDD found in system.
- */
-function GetNumberOfHDD() { }
-
-/**
- * query the status if a given disk.
- * 
- * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
- * 
- * @returns {number} disk status.
- * 
- * @see http://www.ctyme.com/intr/rb-0606.htm
- */
-function GetDiskStatus(disk) { }
-
-/**
- * get number of (LBA) sectors for a drive.
- * 
- * @param {number} drive 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
- * 
- * @returns {number} number of sectors for that disk.
- */
-function GetRawSectorSize(drive) { }
-
-/**
- * read a disk sector.
- * 
- * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
- * @param {number} sector number 0..GetRawSectorSize()
- * 
- * @returns {number[]} an array with 512 bytes.
- */
-function RawRead(disk, sector) { }
-
-/**
- * write a disk sector.
- * RawWrite() only works when DOjS was started with "-x"
- * 
- * @param {number} disk 0..GetNumberOfFDD() for FDD (0..GetNumberOfHDD())+RAW_HDD_FLAG for HDD.
- * @param {number} sector number 0..GetRawSectorSize()
- * @param {number[]} data an array with 512 bytes.
- */
-function RawWrite(disk, sector, data) { }
-
-/**
  * @module flic
  */
 
@@ -1769,3 +1367,484 @@ function FlicClose() { }
  * @returns {number} if 'loop' is false this function returns '-1' after the last frame was decoded. In all other cases the current frame number is returned.
  */
 function FlicPlay(x, y, loop) { }
+
+/**
+ * sound recording functions.
+ * 
+ * @module sndout
+ */
+/**
+ * Get current play position for given voice.
+ * @param {number} voc the voice number.
+ * @returns {number} the position or -1 if not playing.
+ */
+function VoiceGetPosition(voc) { }
+
+/**
+ * sound recording functions.
+ * 
+ * @module sndin
+ */
+
+/**
+* @property {boolean} SNDIN_AVAILABLE true if sound recording is available.
+*/
+SNDIN_AVAILABLE = true;
+
+/**
+ * @property {boolean} SNDIN_8BIT true if 8bit input is available.
+ */
+SNDIN_8BIT = true;
+
+/**
+ * @property {boolean} SNDIN_16BIT true if 16bit input is available.
+ */
+SNDIN_16BIT = true;
+
+/**
+ * @property {boolean} SNDIN_STEREO true if stereo input is available.
+ */
+SNDIN_STEREO = true;
+
+/**
+ * @property {string} DOJS_ENCODING the current text encoding used by DOjS. Usually "UTF8". other possible values are "ASCII", "ASCII_CP", "UNICODE" and "UNKNOWN"
+ */
+DOJS_ENCODING = "UTF8";
+
+/**
+ * select sound input source.
+ * 
+ * @param {*} src a value from {@link SOUND}.
+ */
+function SoundInputSource(src) { }
+
+/**
+ * start sound recording with given parameters.
+ * 
+ * @param {number} rate sample rate.
+ * @param {number} bits 8 or 16 bits.
+ * @param {boolean} stereo true for stereo recording.
+ */
+function SoundStartInput(rate, bits, stereo) { }
+
+/**
+ * stop sound recording.
+ */
+function SoundStopInput() { }
+
+/**
+ * get the actuall sound data.
+ * 
+ * @returns {number[]} returns one or two arrays with sound data or null if no data available.
+ */
+function ReadSoundInput() { }
+
+/**
+* get the actuall sound data as IntArray.
+* 
+* @returns {IntArray|IntArray[]} returns one or two IntArrays with sound data or null if no data available.
+*/
+function ReadSoundInputInts() { }
+
+/**
+ * MIDI music functions. See {@link Midi} on how to load MIDI files.
+ * 
+ * @module midi
+ */
+/**
+ * Check if the file is still playing.
+ * @returns {boolean} true if the file is still playing.
+ */
+function MidiIsPlaying() { }
+
+/**
+ * Stop playing midi.
+ */
+function MidiStop() { }
+
+/**
+ * Pause playing midi.
+ */
+function MidiPause() { }
+
+/**
+ * Resume playing midi after MidiPause().
+ */
+function MidiResume() { }
+
+/**
+ * Get song position.
+ * @returns {number} current song position in seconds.
+ */
+function MidiGetTime() { }
+
+/**
+ * Get song position.
+ * @returns {number} current song position in MIDI file.
+ */
+function MidiGetPos() { }
+
+/**
+ * Send MIDI commands to output.
+ * @param {number[]} data an array of midi commands.
+ */
+function MidiOut(data) { }
+
+/**
+ * All graphics functions.
+ * 
+ * @module gfx
+ */
+/**
+ * set the current render destination.
+ * @param {Bitmap} bm A Bitmap to render on or null to use the screen as rendering destination.
+ */
+function SetRenderBitmap(bm) { }
+
+/**
+ * get the width of the drawing area.
+ * @returns {number} the width of the drawing area.
+ */
+function SizeX() { }
+
+/**
+ * get the height of the drawing area.
+ * @returns {number} the height of the drawing area.
+ */
+function SizeY() { }
+
+/**
+ * Get color depth info.
+ * @returns {number} bits per pixel.
+ */
+function GetScreenMode() { }
+
+/**
+ * clear the screen with given color.
+ * @param {number} c the color.
+ */
+function ClearScreen(c) { }
+
+/**
+ * draw a point.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} c color.
+ */
+function Plot(x, y, c) { }
+
+/**
+ * draw a line.
+ * @param {number} x1 start x coordinate.
+ * @param {number} y1 start y coordinate.
+ * @param {number} x2 end x coordinate.
+ * @param {number} y2 end y coordinate.
+ * @param {number} c color.
+ */
+function Line(x1, y1, x2, y2, c) { }
+
+/**
+ * draw a line with given width.
+ * @param {number} x1 start x coordinate.
+ * @param {number} y1 start y coordinate.
+ * @param {number} x2 end x coordinate.
+ * @param {number} y2 end y coordinate.
+ * @param {number} w line width.
+ * @param {number} c color.
+ */
+function CustomLine(x1, y1, x2, y2, w, c) { }
+
+/**
+ * draw a box.
+ * @param {number} x1 start x coordinate.
+ * @param {number} y1 start y coordinate.
+ * @param {number} x2 end x coordinate.
+ * @param {number} y2 end y coordinate.
+ * @param {number} c color.
+ */
+function Box(x1, y1, x2, y2, c) { }
+
+/**
+ * draw a circle.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} r radius.
+ * @param {number} c color.
+ */
+function Circle(x, y, r, c) { }
+
+/**
+ * draw a circle with given width.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} r radius.
+ * @param {number} w line width.
+ * @param {number} c color.
+ */
+function CustomCircle(x, y, r, w, c) { }
+
+/**
+ * draw a ellipse.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} xr radius.
+ * @param {number} yr radius.
+ * @param {number} c color.
+ */
+function Ellipse(x, y, xr, yr, c) { }
+
+/**
+ * draw a ellipse with given width.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} xr radius.
+ * @param {number} yr radius.
+ * @param {number} w line width.
+ * @param {number} c color.
+ */
+function CustomEllipse(x, y, xr, yr, w, c) { }
+
+/**
+ * Draw a circle arc.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} r radius.
+ * @param {number} start start angle with 256 representing a full circle.
+ * @param {number} end end angle with 256 representing a full circle.
+ * @param {*} style value from {@link ARC}.
+ * @param {number} c color.
+ * @returns {ArcInfo} detailed info about the drawn arc.
+ */
+function CircleArc(x, y, r, start, end, style, c) { }
+
+/**
+ * Draw a circle arc with given width.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} r radius.
+ * @param {number} start start angle with 256 representing a full circle.
+ * @param {number} end end angle with 256 representing a full circle.
+ * @param {*} style value from {@link ARC}.
+ * @param {number} w line width.
+ * @param {number} c color.
+ * @returns {ArcInfo} detailed info about the drawn arc.
+ */
+function CustomCircleArc(x, y, r, start, end, style, w, c) { }
+
+/**
+ * draw a filled box.
+ * @param {number} x1 start x coordinate.
+ * @param {number} y1 start y coordinate.
+ * @param {number} x2 end x coordinate.
+ * @param {number} y2 end y coordinate.
+ * @param {number} c color.
+ */
+function FilledBox(x1, y1, x2, y2, c) { }
+
+/**
+ * draw a filled circle.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} r radius.
+ * @param {number} c color.
+ */
+function FilledCircle(x, y, r, c) { }
+
+/**
+ * draw a filled ellipse.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} rx radius.
+ * @param {number} ry radius.
+ * @param {number} c color.
+ */
+function FilledEllipse(x, y, rx, ry, c) { }
+
+/**
+ * do a flood fill.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @param {number} bound bound color.
+ * @param {number} c fill color.
+ */
+function FloodFill(x, y, bound, c) { }
+
+/**
+ * draw a filled polygon.
+ * @param {number[][]} points an array of arrays with two coordinates (e.g. [[1, 1], [1, 10], [10, 10], [10, 1]]).
+ * @param {number} c color.
+ */
+function FilledPolygon(points, c) { }
+
+/**
+ * Draw a text with the default font.
+* @param {number} x x coordinate.
+* @param {number} y y coordinate.
+* @param {*} text the text to display.
+* @param {number} fg foreground color.
+* @param {number} bg background color.
+*/
+function TextXY(x, y, text, fg, bg) { }
+
+/**
+ * set the character to print for missing codepoints in the current font. Default is "^".
+ * @param {string} ch a one character string.
+ */
+function SetMissingCharacter(ch) { }
+
+/**
+ * converts the UTF8 string to the internal encoding (only useful if internal encoding is not UTF8).
+ * 
+ * @param {string} str string to convert.
+ * @returns {string} converted string.
+ */
+function FromUTF8(str) { }
+
+/**
+ * converts the internal string encoding to UTF8 (only useful if internal encoding is not UTF8).
+ * 
+ * @param {string} str string to convert.
+ * @returns {string} converted string.
+ */
+function ToUTF8(str) { }
+
+/**
+ * Save current screen to BMP file.
+ * @param {string} fname filename.
+ */
+function SaveBmpImage(fname) { }
+
+/**
+ * Save current screen to PCX file.
+ * @param {string} fname filename.
+ */
+function SavePcxImage(fname) { }
+
+/**
+ * Save current screen to TGA file.
+ * @param {string} fname filename.
+ */
+function SaveTgaImage(fname) { }
+
+/**
+ * Save current screen to PNG file.
+ * 
+ * **Note: PNG module must be loaded by calling LoadLibrary("png") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * 
+ * @param {string} fname filename.
+ */
+function SavePngImage(fname) { }
+
+/**
+ * Save current screen to QOI file.
+ * 
+ * **Note: QOI module must be loaded by calling LoadLibrary("qoi") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * 
+ * @param {string} fname filename.
+ */
+function SaveQoiImage(fname) { }
+
+/**
+ * Save current screen to TIFF file.
+ * 
+ * **Note: TIFF module must be loaded by calling LoadLibrary("tiff") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * 
+ * @param {string} fname filename.
+ */
+function SaveTiffImage(fname) { }
+
+/**
+ * Save bitmap to JPG file.
+ * 
+ * **Note: JPEG module must be loaded by calling LoadLibrary("jpeg") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ * @param {number} quality between 10 and 100.
+ */
+function SaveJpgImage(fname, quality) { };
+
+/**
+ * Save bitmap to JP2 (Jpeg 2000) file.
+ * 
+ * **Note: JASPER module must be loaded by calling LoadLibrary("jasper") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ * @param {number} quality between 1 and 100.
+ */
+function SaveJp2Image(fname, quality) { };
+
+/**
+ * Save bitmap to RAS (Sun Raster) file.
+ * 
+ * **Note: JASPER module must be loaded by calling LoadLibrary("jasper") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * @param {string} fname filename.
+ */
+function SaveRasImage(fname) { };
+
+/**
+ * Save current screen to WEBP file.
+ * 
+ * **Note: WEBP module must be loaded by calling LoadLibrary("webp") before using this function!**
+ * 
+ * @see LoadLibrary()
+ * 
+ * @param {string} fname filename.
+ * @param {number} quality between 10 and 100.
+ */
+function SaveWebpImage(fname, quality) { }
+
+/**
+ * get color of on-screen pixel.
+ * @param {number} x x coordinate.
+ * @param {number} y y coordinate.
+ * @returns {number} pixel color.
+ */
+function GetPixel(x, y) { }
+
+/**
+ * Set the blend mode for drawing.
+ * @param {number} mode one of the blend modes, e.g. BLEND.ALPHA or BLEND.REPLACE.
+ * @see BLEND in the color module
+ */
+function TransparencyEnabled(mode) { }
+
+/**
+ * @module VGM
+ */
+
+/**
+ * load a VGM file for playback.
+ * @param {string} fname file to load.
+ */
+function VgmLoad(fname) { }
+
+/**
+ * get current playback position.
+ * @returns {number} the position.
+ */
+function VgmPos() { }
+
+/**
+ * start VGM playback.
+ */
+function VgmPlay() { }
+
+/**
+ * stop playback.
+ */
+function VgmStop() { }
+
+/**
+ * free VGM ressources
+ */
+function VgmDiscard() { }

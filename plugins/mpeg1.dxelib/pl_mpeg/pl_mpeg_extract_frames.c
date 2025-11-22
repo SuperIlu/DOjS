@@ -1,39 +1,21 @@
 /*
-PL_MPEG Example - extract all frames of an mpg file and store as PNG
+PL_MPEG Example - extract all frames of an mpg file and store as BMP
+SPDX-License-Identifier: MIT
 
 Dominic Szablewski - https://phoboslab.org
-
-
--- LICENSE: The MIT License(MIT)
-
-Copyright(c) 2019 Dominic Szablewski
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files(the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and / or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions :
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 
 -- Usage
 
 pl_mpeg_extract_frames <video-file.mpg>
 
+Images named 000001.bmp, 000002.bmp... will be created in the current directory 
+
 
 -- About
 
 This program demonstrates how to extract all video frames from an MPEG-PS file. 
-Frames are saved as PNG via stb_image_write: https://github.com/nothings/stb
+Frames are saved as BMP.
 
 */
 
@@ -42,8 +24,33 @@ Frames are saved as PNG via stb_image_write: https://github.com/nothings/stb
 #define PL_MPEG_IMPLEMENTATION
 #include "pl_mpeg.h"
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+int write_bmp(const char *path, int width, int height, uint8_t *pixels) {
+	FILE *fh = fopen(path, "wb");
+	if (!fh) {
+		return 0;
+	}
+
+	int padded_width = (width * 3 + 3) & (~3);
+	int padding = padded_width - (width * 3);
+	int data_size = padded_width * height;
+	int file_size = 54 + data_size;
+
+	fwrite("BM", 1, 2, fh);
+	fwrite(&file_size, 1, 4, fh);
+	fwrite("\x00\x00\x00\x00\x36\x00\x00\x00\x28\x00\x00\x00", 1, 12, fh);
+	fwrite(&width, 1, 4, fh);
+	fwrite(&height, 1, 4, fh);
+	fwrite("\x01\x00\x18\x00\x00\x00\x00\x00", 1, 8, fh); // planes, bpp, compression
+	fwrite(&data_size, 1, 4, fh);
+	fwrite("\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00", 1, 16, fh);
+
+	for (int y = height - 1; y >= 0; y--) {
+		fwrite(pixels + y * width * 3, 3, width, fh);
+		fwrite("\x00\x00\x00\x00", 1, padding, fh);
+	}
+	fclose(fh);
+	return file_size;
+}
 
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
@@ -61,17 +68,17 @@ int main(int argc, char *argv[]) {
 	
 	int w = plm_get_width(plm);
 	int h = plm_get_height(plm);
-	uint8_t *rgb_buffer = (uint8_t *)malloc(w * h * 3);
+	uint8_t *pixels = (uint8_t *)malloc(w * h * 3);
 	
-	char png_name[16];
+	char bmp_name[16];
 	plm_frame_t *frame = NULL;
 
 	for (int i = 1; frame = plm_decode_video(plm); i++) {
-		plm_frame_to_rgb(frame, rgb_buffer, w * 3);
+		plm_frame_to_bgr(frame, pixels, w * 3); // BMP expects BGR ordering
 
-		sprintf(png_name, "%06d.png", i);
-		printf("Writing %s\n", png_name);
-		stbi_write_png(png_name, w, h, 3, rgb_buffer, w * 3);
+		sprintf(bmp_name, "%06d.bmp", i);
+		printf("Writing %s\n", bmp_name);
+		write_bmp(bmp_name, w, h, pixels);
 	}
 	
     return 0;

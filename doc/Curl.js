@@ -110,7 +110,7 @@ Curl.prototype.SetCertificate = function (cert) { };
 Curl.prototype.SetCertificatePassword = function (cer_pw) { };
 /**
  * A string naming a file holding one or more certificates to verify the peer with.
- * Default: "cacert.pem"
+ * Default: "CACERT.PEM"
  * 
  * @param {string} cafile PEM cainfo file.
  */

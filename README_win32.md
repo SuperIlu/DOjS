@@ -1,7 +1,7 @@
 # Win32 version
 Since DOjS v1.13 it is possible to compile parts of DOjS for Win32 as well.
 It will create a native Win32 binary based on Allegro 4.3.3.1 and without any of the hardware support available for DOS.
-The EXE should run on Windows 98 or never.
+The EXE should run on Windows XP or newer.
 
 The win32 version has the additional `-u` command line parameter which will switch DOjS to fullscreen when running.
 See the [common README](README.md) for command line parameters and more information.
@@ -25,6 +25,8 @@ The following functionality should work:
 - Sockets
 
 # Building
+You need to specify the path to your mingw compiler directory in the environment variable `MINGWDIR`
+(e.g. `export MINGWDIR=/opt/i486-mingw/mingw-builds/install/cross` in your `~/.bashrc`).
 Just run `make -f Makefile.win32 zip` to create the distribution archive.
 
 ## Building mingw for i486 on Debian/Ubuntu

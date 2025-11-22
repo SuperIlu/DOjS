@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2023 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@ SOFTWARE.
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
-#if WINDOWS!=1
+#if WINDOWS != 1
 #include <dlfcn.h>
 #endif
 
@@ -107,7 +107,7 @@ static void usage() {
 #endif
     fputs("\n", stderr);
     fputs("This is DOjS " DOSJS_VERSION_STR "\n", stderr);
-    fputs("(c) 2019-2024 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
+    fputs("(c) 2019-2025 by Andre Seidelt <superilu@yahoo.com> and others.\n", stderr);
     fputs("See LICENSE for detailed licensing information.\n", stderr);
     fputs("\n", stderr);
     exit(1);
@@ -509,7 +509,7 @@ static void run_script(int argc, char **argv, int args) {
         fprintf(stderr, "Could not initialize Allegro\n");
         exit(1);
     }
-    if(install_keyboard() >= 0) {
+    if (install_keyboard() >= 0) {
         LOGF("Keyboard detected: %s\n", keyboard_driver->name);
         LOGF("Keyboard polling: %d\n", keyboard_needs_poll());
     }
@@ -593,7 +593,7 @@ static void run_script(int argc, char **argv, int args) {
         LOG("BPP < 24, disabling alpha\n");
     }
     if (screenSuccess) {
-#if WINDOWS==1
+#if WINDOWS == 1
         set_display_switch_mode(SWITCH_BACKGROUND);
 #endif
         DOjS.render_bm = DOjS.current_bm = create_bitmap(SCREEN_W, SCREEN_H);
@@ -652,7 +652,7 @@ static void run_script(int argc, char **argv, int args) {
 #endif
                         release_screen();
                         if (DOjS.mouse_visible) {
-                             show_mouse(screen);
+                            show_mouse(screen);
                         }
                         vsync();
                         long end = DOjS.sys_ticks;

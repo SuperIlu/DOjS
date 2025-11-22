@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>RFC 2: Restoring Needed LibTIFF Tools &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LibTIFF Project" href="../project/index.html" />
+    <link rel="prev" title="RFC 1: Project Steering Committee Guidelines" href="rfc1_psc.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../project/index.html" title="LibTIFF Project"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rfc1_psc.html" title="RFC 1: Project Steering Committee Guidelines"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Request For Comments (RFCs)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">RFC 2: Restoring Needed LibTIFF Tools</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="rfc-2-restoring-needed-libtiff-tools">
+<span id="rfc2-restoring-needed-tools"></span><h1>RFC 2: Restoring Needed LibTIFF Tools<a class="headerlink" href="#rfc-2-restoring-needed-libtiff-tools" title="Permalink to this heading">¶</a></h1>
+<p>Author: Su Laus</p>
+<p>Contact: (&#64;Su_Laus)</p>
+<p>Status: Approved</p>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h2>
+<p>The purpose of this RFC is to clarify if and which tools that were moved
+to the archive in libtiff 4.6.0 should be reactivated.</p>
+</section>
+<section id="prehistory">
+<h2>Prehistory<a class="headerlink" href="#prehistory" title="Permalink to this heading">¶</a></h2>
+<p>The tools in libtiff caused many vulnerabilities
+and CVEs that were attributed to the libtiff library itself.
+Trying to fix the security holes in the tools turned out to be a
+Sisyphean task (can never be done).
+Therefore, most of the tools in libtiff 4.6.0 were moved to the archive
+and the existing problems were closed with &quot;wontfix-unmaintained&quot;.</p>
+<p>It was later understood that some users depend on some of these archived tools.</p>
+<p>Some problems with the tools have now been fixed
+(see e.g. <a class="reference external" href="https://gitlab.com/libtiff/libtiff/-/merge_requests/569">https://gitlab.com/libtiff/libtiff/-/merge_requests/569</a>).</p>
+</section>
+<section id="proposed-procedure">
+<h2>Proposed procedure<a class="headerlink" href="#proposed-procedure" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>All tools as of libtiff 4.5.1 shall be restored.</p></li>
+<li><p>Bugfixes in MR !569 are applied in single merge requests for traceability
+and selectively as some changes might not be applicable.</p></li>
+<li><p>Remove “wontfix-unmaintained” from closed issues, when fixed.</p></li>
+<li><p>All issues related to utilities / tools shall get label “utility”.</p></li>
+<li><p>The documentation and other references shall point to
+<a class="reference external" href="https://libtiff.gitlab.io/libtiff/">https://libtiff.gitlab.io/libtiff/</a>.</p></li>
+<li><p>After an initial merge has been applied for restoring the tools,
+the <a class="reference external" href="http://www.libtiff.org">http://www.libtiff.org</a> page shall be reset as a mirror of
+<a class="reference external" href="https://libtiff.gitlab.io/libtiff/">https://libtiff.gitlab.io/libtiff/</a>.</p></li>
+<li><p>Finally release as 4.7.0 when all known issues of the tools are closed.</p></li>
+</ul>
+</section>
+<section id="references-to-previous-contributions-to-the-discussion">
+<h2>References to previous contributions to the discussion<a class="headerlink" href="#references-to-previous-contributions-to-the-discussion" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference external" href="https://gitlab.com/libtiff/libtiff/-/issues/580">https://gitlab.com/libtiff/libtiff/-/issues/580</a> and related merge request,
+<a class="reference external" href="https://gitlab.com/libtiff/libtiff/-/merge_requests/569">https://gitlab.com/libtiff/libtiff/-/merge_requests/569</a>,
+and discussion in <a class="reference external" href="https://gitlab.com/libtiff/libtiff/-/merge_requests/581">https://gitlab.com/libtiff/libtiff/-/merge_requests/581</a></p>
+</section>
+<section id="voting-history">
+<h2>Voting history<a class="headerlink" href="#voting-history" title="Permalink to this heading">¶</a></h2>
+<p>+1 from PSC members &#64;bobfriesenhahn, &#64;1-Olivier, &#64;Su_Laus</p>
+<p>+0 from PSC members &#64;theta682 and &#64;rouault</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">RFC 2: Restoring Needed LibTIFF Tools</a><ul>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#prehistory">Prehistory</a></li>
+<li><a class="reference internal" href="#proposed-procedure">Proposed procedure</a></li>
+<li><a class="reference internal" href="#references-to-previous-contributions-to-the-discussion">References to previous contributions to the discussion</a></li>
+<li><a class="reference internal" href="#voting-history">Voting history</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="rfc1_psc.html"
+                          title="previous chapter">RFC 1: Project Steering Committee Guidelines</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../project/index.html"
+                          title="next chapter">LibTIFF Project</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/rfcs/rfc2_restoring_needed_tools.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../project/index.html" title="LibTIFF Project"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rfc1_psc.html" title="RFC 1: Project Steering Committee Guidelines"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Request For Comments (RFCs)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">RFC 2: Restoring Needed LibTIFF Tools</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

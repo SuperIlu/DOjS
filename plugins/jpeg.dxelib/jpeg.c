@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -91,7 +91,7 @@ my_error_exit(j_common_ptr cinfo) {
 
     /* Create the message */
     char buffer[JMSG_LENGTH_MAX];
-    (*cinfo->err->format_message) (cinfo, buffer);
+    (*cinfo->err->format_message)(cinfo, buffer);
     /* Send it to stderr, adding a newline */
     DEBUGF("ERROR %s\n", buffer);
 
@@ -147,12 +147,12 @@ static BITMAP *load_jpg_pf(PACKFILE *f, RGB *pal) {
     /* This struct contains the JPEG decompression parameters and pointers to
      * working space (which is allocated as needed by the JPEG library).
      */
-    struct jpeg_decompress_struct cinfo={0};
+    struct jpeg_decompress_struct cinfo = {0};
     /* We use our private extension JPEG error handler.
      * Note that this struct must live as long as the main JPEG parameter
      * struct, to avoid dangling-pointer problems.
      */
-    struct my_error_mgr jerr={0};
+    struct my_error_mgr jerr = {0};
     /* More stuff */
     JSAMPARRAY buffer; /* Output row buffer */
     int row_stride;    /* physical row width in output buffer */

@@ -1348,7 +1348,6 @@ static void *load_file_object(PACKFILE *f, long size)
    /* gracefully handle failure */
    if (failed) {
       unload_datafile(dat);
-      _AL_FREE(dat);
       dat = NULL;
    }
 

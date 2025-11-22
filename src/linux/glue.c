@@ -1,4 +1,4 @@
-#if WINDOWS==1
+#if WINDOWS == 1
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0600
 #endif
@@ -24,11 +24,11 @@
 #include "ogl.h"
 
 #include "allegro/internal/aintern.h"
-#if WINDOWS==1
+#if WINDOWS == 1
 #include <winalleg.h>
 #endif
 
-#if WINDOWS==1
+#if WINDOWS == 1
 #include <winsock2.h>
 #else
 #include <netdb.h>
@@ -36,19 +36,19 @@
 #include <sys/ioctl.h>
 #endif
 
-
 #define FONTMAGIC 0x19590214L
 #define JPEG_BUFFER_SIZE (4096 * 16)  //!< memory allocation increment while loading file data
 
 unsigned short _osmajor = 1, _osminor = 2;
 unsigned short _os_trueversion = 4711;
-#if WINDOWS==1
+#if WINDOWS == 1
 const char *_os_flavor = "WinDOS";
 #else
 const char *_os_flavor = "LinDOS";
 #endif
 
 void init_png(js_State *J);
+void init_nanosvg(js_State *J);
 
 /**
  * @brief save current screen to file.
@@ -93,13 +93,13 @@ void glue_init(js_State *J) {
     init_genpdf(J);
     init_vorbis(J);
     init_gifanim(J);
-#if WINDOWS!=1
+#if WINDOWS != 1
     init_ogl(J);
 #endif
 }
 
-void glue_shutdown() { 
-#if WINDOWS!=1
+void glue_shutdown() {
+#if WINDOWS != 1
     shutdown_ogl();
 #else
     WSACleanup();
@@ -195,9 +195,9 @@ const char *wattcpCapabilities(void) { return "dummy bsd"; }
 const char *sock_init_err(int rc) { return "dummy init error"; }
 char *_inet_ntoa(char *s, DWORD x) { return "dummy address"; }
 int sock_init() {
-#if WINDOWS==1
+#if WINDOWS == 1
     WSADATA wsa;
-    return WSAStartup(MAKEWORD(2,0),&wsa); 
+    return WSAStartup(MAKEWORD(2, 0), &wsa);
 #else
     return 0;
 #endif
@@ -284,7 +284,7 @@ int _w32__getsockname(const sock_type *s, void *dest, int *len) {
 }
 
 WORD sock_dataready(sock_type *s) {
-#if WINDOWS==1
+#if WINDOWS == 1
     u_long n = -1;
     if (ioctlsocket(s->sock_num, FIONREAD, &n) < 0) {
         s->error = errno;
@@ -395,7 +395,7 @@ int tcp_listen(tcp_Socket *s, WORD lport, DWORD ina, WORD port, ProtoHandler han
 }
 
 int sock_established(sock_type *s) {
-#if WINDOWS==1
+#if WINDOWS == 1
     ////// this function is not available on Win98, we always return true!
     // if ((s->server_num >= 0) && (s->sock_num < 0)) {
     //     WSAPOLLFD fdarray = {0};
@@ -449,15 +449,15 @@ BYTE sock_putc(sock_type *s, BYTE c) {
 
 // wait 'sec' seconds for data on socket
 int _ip_delay1(sock_type *s, int sec, UserHandler fn, int *statusptr) {
-#if WINDOWS==1
-    fd_set all_sockets; // Set for all sockets connected to server
-    fd_set read_fds;    // Temporary set for select()
+#if WINDOWS == 1
+    fd_set all_sockets;  // Set for all sockets connected to server
+    fd_set read_fds;     // Temporary set for select()
     struct timeval timer;
     FD_ZERO(&all_sockets);
     FD_ZERO(&read_fds);
-    FD_SET(s->sock_num, &all_sockets); // Add listener socket to set
-    int fd_max = s->sock_num+1; // Highest fd is necessarily our socket
-    while (1) { // Main loop
+    FD_SET(s->sock_num, &all_sockets);  // Add listener socket to set
+    int fd_max = s->sock_num + 1;       // Highest fd is necessarily our socket
+    while (1) {                         // Main loop
         // Copy all socket set since select() will modify monitored set
         read_fds = all_sockets;
         // 2 second timeout for select()
@@ -473,12 +473,12 @@ int _ip_delay1(sock_type *s, int sec, UserHandler fn, int *statusptr) {
                 if (FD_ISSET(i, &read_fds) != 1) {
                     // Fd i is not a socket to monitor
                     // stop here and continue the loop
-                    continue ;
+                    continue;
                 }
                 // Ready for I/O operation
                 // Socket is ready to read!
                 if (i == s->sock_num) {
-                    return 0; // data ready
+                    return 0;  // data ready
                 }
             }
         }

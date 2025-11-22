@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>tiffgt &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tiffinfo" href="tiffinfo.html" />
+    <link rel="prev" title="tiffdump" href="tiffdump.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tiffinfo.html" title="tiffinfo"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tiffdump.html" title="tiffdump"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tiffgt</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tiffgt">
+<h1>tiffgt<a class="headerlink" href="#tiffgt" title="Permalink to this heading">¶</a></h1>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<p><strong>tiffgt</strong> [ <em>options</em> ] <em>input.tif</em> …</p>
+</section>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p><strong class="program">tiffgt</strong> displays one or more images stored using the
+Tag Image File Format, Revision 6.0.</p>
+<p><strong class="program">tiffgt</strong> correctly handles files with any of the following characteristics:</p>
+<blockquote>
+<div><table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Supported tag values</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Tag</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BitsPerSample</p></td>
+<td><p>1, 2, 4, 8, 16</p></td>
+</tr>
+<tr class="row-odd"><td><p>SamplesPerPixel</p></td>
+<td><p>1, 3, 4 (the 4th sample is ignored)</p></td>
+</tr>
+<tr class="row-even"><td><p>PhotometricInterpretation</p></td>
+<td><p>0 (min-is-white), 1 (min-is-black), 2 (RGB), 3 (palette), 6 (YCbCr)</p></td>
+</tr>
+<tr class="row-odd"><td><p>PlanarConfiguration</p></td>
+<td><p>1 (contiguous), 2 (separate)</p></td>
+</tr>
+<tr class="row-even"><td><p>Orientation</p></td>
+<td><p>1 (top-left), 4 (bottom-left)</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Data may be organized as strips or tiles and may be
+compressed with any of the compression algorithms supported
+by the <strong class="program">libtiff</strong> library.</p>
+<p>For palette images (<code class="docutils literal notranslate"><span class="pre">PhotometricInterpretation=3</span></code>), <strong class="program">tiffgt</strong>
+inspects the colormap values and assumes either 16-bit
+or 8-bit values according to the maximum value.
+That is, if no colormap entry greater than 255 is found,
+<strong class="program">tiffgt</strong> assumes the colormap has only 8-bit values; otherwise
+it assumes 16-bit values.
+This inspection is done to handle old images written by
+previous (incorrect) versions of
+<strong class="program">libtiff</strong>.</p>
+<p><strong class="program">tiffgt</strong> can be used to display multiple images one-at-a-time.
+The left mouse button switches the display to the first image in the
+<em>next</em> file in the list of files specified on the command line.
+The right mouse button switches to the first image in the
+<em>previous</em> file in the list.
+The middle mouse button causes the first image in the first file
+specified on the command line to be displayed.
+In addition the following keyboard commands are recognized:</p>
+<blockquote>
+<div><table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Action keys</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 8.0%" />
+<col style="width: 92.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">b</kbd></p></td>
+<td><p>Use a <code class="docutils literal notranslate"><span class="pre">PhotometricInterpretation</span></code>
+of <code class="docutils literal notranslate"><span class="pre">MinIsBlack</span></code> in displaying the current image</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">l</kbd></p></td>
+<td><p>Use a <code class="docutils literal notranslate"><span class="pre">FillOrder</span></code> of lsb-to-msb in decoding the current image</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">m</kbd></p></td>
+<td><p>Use a <code class="docutils literal notranslate"><span class="pre">FillOrder</span></code> of msb-to-lsb in decoding the current image</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">c</kbd></p></td>
+<td><p>Use a colormap visual to display the current image</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">r</kbd></p></td>
+<td><p>Use a true color (24-bit RGB) visual to display the current image</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">w</kbd></p></td>
+<td><p>Use a <code class="docutils literal notranslate"><span class="pre">PhotometricInterpretation</span></code> of <code class="docutils literal notranslate"><span class="pre">MinIsWhite</span></code> in displaying
+the current image</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">W</kbd></p></td>
+<td><p>Toggle (enable/disable) display of warning messages from the
+TIFF library when decoding images</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">E</kbd></p></td>
+<td><p>Toggle (enable/disable) display of error messages from the
+TIFF library when decoding images.</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">z</kbd></p></td>
+<td><p>Reset all parameters to their default settings (<code class="docutils literal notranslate"><span class="pre">FillOrder</span></code>,
+<code class="docutils literal notranslate"><span class="pre">PhotometricInterpretation</span></code>, handling of warnings and errors)</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">PageUp</kbd></p></td>
+<td><p>Display the previous image in the current file or the last
+image in the previous file</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">PageDown</kbd></p></td>
+<td><p>Display the next image in the current file or the first image
+in the next file</p></td>
+</tr>
+<tr class="row-odd"><td><p><kbd class="kbd docutils literal notranslate">Home</kbd></p></td>
+<td><p>Display the first image in the current file</p></td>
+</tr>
+<tr class="row-even"><td><p><kbd class="kbd docutils literal notranslate">End</kbd></p></td>
+<td><p>Display the last image in the current file (unimplemented)</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-c">
+<span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force image display in a colormap window.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-d">
+<span class="sig-name descname"><span class="pre">-d</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify an image to display by directory number.
+By default the first image in the file is displayed.
+Directories are numbered starting at zero.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-e">
+<span class="sig-name descname"><span class="pre">-e</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-e" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable reporting of error messages from the TIFF library.
+By default <strong class="program">tiffgt</strong> silently ignores images that cannot be read.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-f">
+<span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force <strong class="program">tiffgt</strong> to run as a foreground process.
+By default <strong class="program">tiffgt</strong> will place itself in the background once it
+has opened the requested image file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-l">
+<span class="sig-name descname"><span class="pre">-l</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-l" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force the presumed bit ordering to be LSB to MSB.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-m">
+<span class="sig-name descname"><span class="pre">-m</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force the presumed bit ordering to be MSB to LSB.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-o">
+<span class="sig-name descname"><span class="pre">-o</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-o" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify an image to display by directory offset.
+By default the first image in the file is displayed.
+Directories offsets may be specified using C-style syntax;
+i.e. a leading <code class="docutils literal notranslate"><span class="pre">0x</span></code> for hexadecimal and a leading <code class="docutils literal notranslate"><span class="pre">0</span></code> for octal.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-p">
+<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override the value of the <code class="docutils literal notranslate"><span class="pre">PhotometricInterpretation</span></code>
+tag; the parameter may be one of: <code class="docutils literal notranslate"><span class="pre">miniswhite</span></code> ,
+<code class="docutils literal notranslate"><span class="pre">minisblack</span></code>, <code class="docutils literal notranslate"><span class="pre">rgb</span></code>, <code class="docutils literal notranslate"><span class="pre">palette</span></code>, <code class="docutils literal notranslate"><span class="pre">mask</span></code>,
+<code class="docutils literal notranslate"><span class="pre">separated</span></code>, <code class="docutils literal notranslate"><span class="pre">ycbcr</span></code>, and <code class="docutils literal notranslate"><span class="pre">cielab</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-r">
+<span class="sig-name descname"><span class="pre">-r</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force image display in a full color window.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-s">
+<span class="sig-name descname"><span class="pre">-s</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop on the first read error.
+By default all errors in the input data are ignored and
+<strong class="program">tiffgt</strong>
+does it's best to display as much of an image as possible.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-w">
+<span class="sig-name descname"><span class="pre">-w</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable reporting of warning messages from the TIFF library.
+By default <strong class="program">tiffgt</strong>
+ignores warning messages generated when reading an image.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffgt-v">
+<span class="sig-name descname"><span class="pre">-v</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffgt-v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Place information in the title bar describing
+what type of window (full color or colormap) is being
+used, the name of the input file, and the directory
+index of the image (if non-zero).
+By default, the window type is not shown in the title bar.</p>
+</dd></dl>
+
+</section>
+<section id="bugs">
+<h2>Bugs<a class="headerlink" href="#bugs" title="Permalink to this heading">¶</a></h2>
+<p>Images wider and taller than the display are silently truncated to avoid
+crashing old versions of the window manager.</p>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="tiffdump.html"><span class="doc">tiffdump</span></a> (1),
+<a class="reference internal" href="tiffinfo.html"><span class="doc">tiffinfo</span></a> (1),
+<a class="reference internal" href="tiffcp.html"><span class="doc">tiffcp</span></a> (1),
+<a class="reference internal" href="../functions/libtiff.html"><span class="doc">libtiff</span></a> (3tiff)</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">tiffgt</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#options">Options</a></li>
+<li><a class="reference internal" href="#bugs">Bugs</a></li>
+<li><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="tiffdump.html"
+                          title="previous chapter">tiffdump</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tiffinfo.html"
+                          title="next chapter">tiffinfo</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/tools/tiffgt.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tiffinfo.html" title="tiffinfo"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tiffdump.html" title="tiffdump"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tiffgt</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

@@ -384,7 +384,7 @@ obj/djgpp/asmdef.inc: obj/djgpp/asmdef.exe
 	obj/djgpp/asmdef.exe obj/djgpp/asmdef.inc
 
 obj/djgpp/asmdef.exe: src/i386/asmdef.c include/*.h include/allegro/*.h obj/djgpp/asmcapa.h
-	$(CC) -O $(WFLAGS) -I. -I./include -o obj/djgpp/asmdef.exe src/i386/asmdef.c
+	$(CC) -O $(WFLAGS) -fgnu89-inline -I. -I./include -o obj/djgpp/asmdef.exe src/i386/asmdef.c
 
 endif
 

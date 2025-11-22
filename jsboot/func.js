@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -398,28 +398,35 @@ function StartupInfo() {
 	}
 
 	if (DEBUG) {
-		var funcs = [];
-		var other = [];
-		for (var e in global) {
-			if (typeof global[e] === "function") {
-				funcs.push(e + "()");
-			} else {
-				other.push(e);
-			}
-		}
-		funcs.sort();
-		other.sort();
-		_Debug("Known globals:");
-		for (var i = 0; i < other.length; i++) {
-			_Debug("    " + other[i]);
-		}
-		_Debug("Known functions:");
-		for (var i = 0; i < funcs.length; i++) {
-			_Debug("    " + funcs[i]);
-		}
+		DumpGlobals();
 	}
 }
 StartupInfo();
+
+/**
+ * dump all known global functions and variables to logfile. DEBUG needs to be set to true.
+ */
+function DumpGlobals() {
+	var funcs = [];
+	var other = [];
+	for (var e in global) {
+		if (typeof global[e] === "function") {
+			funcs.push(e + "()");
+		} else {
+			other.push(e);
+		}
+	}
+	funcs.sort();
+	other.sort();
+	_Debug("Known globals:");
+	for (var i = 0; i < other.length; i++) {
+		_Debug("    " + other[i]);
+	}
+	_Debug("Known functions:");
+	for (var i = 0; i < funcs.length; i++) {
+		_Debug("    " + funcs[i]);
+	}
+}
 
 /**
  * get char code.
@@ -502,6 +509,7 @@ if (!Math.hypot) Math.hypot = function () {
 
 /**
  * create stop watch for benchmarking
+ * @class
  */
 function StopWatch() {
 	this.Reset();

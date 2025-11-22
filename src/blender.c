@@ -2,7 +2,7 @@
 MIT License
 
 Copyright (c) 2015 Jamie Owen
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ SOFTWARE.
 
 #define bRET(r, g, b) return 0xFF000000UL | ((r << 16) & 0xFF0000UL) | ((g << 8) & 0x00FF00UL) | (b & 0x0000FFUL);
 
-#define bOPAQUE(x, y) (a >= 254) ? (x) : (((x)*a + y * (255 - a)) >> 8)
+#define bOPAQUE(x, y) (a >= 254) ? (x) : (((x) * a + y * (255 - a)) >> 8)
 
 /***********************
 ** exported functions **

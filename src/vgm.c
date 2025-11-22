@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2023 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -264,6 +264,12 @@ static void vgm_dump() {
 }
 #endif
 
+/**
+ * @brief start VGM playback
+ * VgmPlay()
+ *
+ * @param J VM state.
+ */
 static void f_VgmPlay(js_State *J) {
     if (vgm_data) {
         vgm_pos = 0;
@@ -277,8 +283,20 @@ static void f_VgmPlay(js_State *J) {
     }
 }
 
+/**
+ * @brief get current playback position
+ * VgmPos():number
+ *
+ * @param J VM state.
+ */
 static void f_VgmPos(js_State *J) { js_pushnumber(J, vgm_pos); }
 
+/**
+ * @brief stop playback.
+ * VgmStop()
+ *
+ * @param J VM state.
+ */
 static void f_VgmStop(js_State *J) {
     remove_int(vgm_int);
 
@@ -287,6 +305,12 @@ static void f_VgmStop(js_State *J) {
     // LOGF("VGM playback stopped\n");
 }
 
+/**
+ * @brief free VGM ressources
+ * VgmDiscard()
+ *
+ * @param J VM state.
+ */
 static void f_VgmDiscard(js_State *J) {
     f_VgmStop(J);
     if (vgm) {
@@ -300,6 +324,12 @@ static void f_VgmDiscard(js_State *J) {
     vgm_data = NULL;
 }
 
+/**
+ * @brief load VGM file
+ * VgmLoad(fname:string)
+ *
+ * @param J VM state.
+ */
 static void f_VgmLoad(js_State *J) {
     if (DOjS.midi_available) {
         js_error(J, "VGM OPL2 does only work when Allegro FM sound is disabled (-f on command line or in DOjS.INI)");

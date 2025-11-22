@@ -1,3 +1,27 @@
+# Version 1.14.0 (Up the grade) / November 22th, 2025
+* fixed error message for library loading in win32
+* fixed SQLite3 database opening in win32
+* return empty object from GetNetworkInterfaces() on win32
+* fixed curl on win32
+* updated zip to 0.3.5
+* Patched `3rdparty\allegro-4.2.2-xc-master\src\bmp.c` to support all BMP formats mentioned in https://en.wikipedia.org/wiki/BMP_file_format#Bitmap_file_header (backport from allegro5).
+* improved documentation
+* Updated to mbedTLS 3.6.5
+* Updated cURL to 8.17.0
+* Updated tiff to 4.7.1
+* Updated pl_mpeg
+* Updated nanoSVG
+* Updated libpng to 1.6.50
+* Updated jasper to 4.2.8
+* Updated AnimatedGIF to 2.2.0
+* Moved mbedTLS config out of the source tree
+* Added MMSynth plugin based on https://github.com/simap/MicroModSynth
+* Added smaker-plugin based on https://libsmacker.sourceforge.net/
+* Added EXIF plugin based on https://github.com/libexif/libexif
+* Added cRSID plugin based on https://github.com/dashodanger/libcRSID
+* Added more examples/tests
+* Added my VCFe talk slides from May, 2025
+
 # Version 1.13.0 (For the WIN-dows) / November 16th, 2024
 * Added `KeyIsPressed()` and `keyIsDown()` in p5js emulation.
 * Updated syntax highlighting

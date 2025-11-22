@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,8 @@ static void f_IpDebug(js_State *J) { watt_pushipaddr(J, watt_toipaddr(J, 1)); }
  */
 static void f_GetNetworkInterfaces(js_State *J) {
 #if WINDOWS == 1
-// TODO: https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/nf-iphlpapi-getipaddrtable?redirectedfrom=MSDN
+    // TODO: https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/nf-iphlpapi-getipaddrtable?redirectedfrom=MSDN
+    js_newobject(J);
 #elif LINUX == 1
     struct ifaddrs *ifaddr;
     if (getifaddrs(&ifaddr) == -1) {

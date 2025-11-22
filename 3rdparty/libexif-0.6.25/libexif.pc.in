@@ -1,0 +1,14 @@
+# Copyright (C) 2001-2009 Lutz Mueller <lutz.s.mueller@gmail.com>, et. al.
+# SPDX-License-Identifier: LGPL-2.0-or-later
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libexif
+Description: Library for easy access to EXIF data
+Requires:
+Version: @VERSION@
+Libs: -L${libdir} -lexif
+Libs.private: -lm
+Cflags: -I${includedir}

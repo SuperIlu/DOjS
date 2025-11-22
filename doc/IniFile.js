@@ -14,7 +14,7 @@ function IniFile(filename) {
 /**
  * get a key from a section of the INI.
  * 
- * @param {string} [section] the section to search for the key, can be omitted.
+ * @param {string} [section] the section to search for the key, can be omitted to search all sections.
  * @param {string} key the key to search.
  * 
  * @returns {string} the value if found or null.

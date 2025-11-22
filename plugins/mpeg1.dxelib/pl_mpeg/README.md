@@ -19,22 +19,23 @@ This library does not make use of any SIMD instructions, but because of
 the relative simplicity of the codec it still manages to decode 4k60fps video
 on a single CPU core (on my i7-6700k at least).
 
-## Compilation on Linux
 
-Use a GCC invocation like the following to build the example `pl_mpeg_player`
-program:
+## Building
+
+A Makefile to build the example applications is included. 
+
+- `pl_mpeg_extract_frames`: a command line tool that dumps all frames into BMPs
+- `pl_mpeg_player_gl`: a video player using SDL2 and OpenGL
+- `pl_mpeg_player_sdl`: a video player using SDL2 and it's built-in 2d renderer
+
+The players require the SDL2 library to be installed.
 
 ```shell
-gcc -o pl_mpeg_player pl_mpeg_player.c $(pkg-config --cflags --libs sdl2 glew)
+make # build all
+make extract # only build pl_mpeg_extract_frames
+make player_gl # only build pl_mpeg_player_gl
+make player_sdl # only build pl_mpeg_player_sdl
 ```
-
-## Example Usage
-
-- [pl_mpeg_extract_frames.c](https://github.com/phoboslab/pl_mpeg/blob/master/pl_mpeg_extract_frames.c)
-extracts all frames from a video and saves them as PNG.
- - [pl_mpeg_player.c](https://github.com/phoboslab/pl_mpeg/blob/master/pl_mpeg_player.c)
-implements a video player using SDL2 and OpenGL for rendering.
-
 
 
 ## Encoding for PL_MPEG
@@ -47,7 +48,7 @@ not supported by this library.
 You can encode video in a suitable format using ffmpeg:
 
 ```
-ffmpeg -i input.mp4 -c:v mpeg1video -q:v 0 -c:a mp2 -format mpeg output.mpg
+ffmpeg -i input.mp4 -c:v mpeg1video -q:v 0 -c:a libtwolame -b:a 224k -format mpeg output.mpg
 ```
 
 `-q:v` sets a fixed video quality with a variable bitrate, where `0` is the 

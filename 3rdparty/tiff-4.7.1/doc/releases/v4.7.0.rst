@@ -1,0 +1,211 @@
+Changes in TIFF v4.7.0
+======================
+
+.. table:: References
+    :widths: auto
+
+    ======================  ==========================================
+    Current Version         v4.7.0 (:tag:`v4.7.0`)
+    Previous Version        :doc:`v4.6.0 <v4.6.0>`
+    Primary Download Site   `<https://download.osgeo.org/libtiff/>`_
+    Home HTTP Site #1       `<http://www.simplesystems.org/libtiff/>`_
+    Home HTTP Site #2       `<https://libtiff.gitlab.io/libtiff/>`_
+    ======================  ==========================================
+
+This document provides a summary of significant changes made to the
+software between the *previous* and *current* versions (see
+above). A fully-detailed change summary is provided by the :file:`ChangeLog` file
+included in the release package and by the Git commit history.
+
+Major changes
+-------------
+
+This version restores in the default build the availability of the tools that
+had been dropped in v4.6.0 (cf :ref:`rfc2_restoring_needed_tools`)
+
+Software configuration changes
+------------------------------
+
+- autoconf build: configure.ac: avoid -Werror passed to CFLAGS to interfere with feature detection
+
+- autoconf build: fix error when running make clean (fixes :issue:`630`)
+
+- autoconf build: back off the minimum required automake version to 1.11
+
+- autoconf.ac: fix detection of windows.h for mingw (fixes :issue:`605`)
+
+- libtiff-4.pc: Fix `Requires.private` missing `Lerc`. It provides a `.pc` file starting from version 4
+  (in autoconf builds, we assume that liblerc is at least version 4)
+
+- CMake: Fix TIFF_INCLUDE_DIRS
+
+- CMake: MinGW compilers don't need a .def file for shared library
+
+- CMake: move libdeflate and Lerc to Requires.private
+
+- CMake: enable resource compilation on all Windows.
+
+Library changes
+---------------
+
+New/improved functionalities:
+
+- Add ``TIFFOpenOptionsSetMaxCumulatedMemAlloc()``. This function complements
+  ``TIFFOpenOptionsSetMaxSingleMemAlloc()`` to define the maximum cumulated
+  memory allocations in byte, for a given TIFF handle, that libtiff internal
+  memory allocation functions are allowed.
+
+API/ABI breaks:
+
+* None
+
+Bug fixes:
+
+- TIFFWriteDirectory(): Avoid overwriting following data if an IFD is enlarged.
+
+- TIFFXYZToRGB: avoid integer overflow (fixes :issue:`644`)
+
+- uv_decode() and uv_encode(): avoid potential out-of-bounds array index
+  (fixes :issue:`645`)
+
+- Fix cases where tif_curdir is set incorrectly.
+  Fix cases where the current directory number (tif_curdir) is set inconsistently
+  or incorrectly, depending on the previous history.
+
+- TIFFRead[Scanline/EncodedStrip/EncodeTile]: 0-initialize output buffer if
+  setupdecode fails ; most codecs: zero-initialize (not-yet-written parts of)
+  output buffer if failure (fixes :issue:`375`)
+
+- OJPEG: reset subsampling_convert_state=0 in OJPEGPreDecode (fixes :issue:`183`)
+
+- ThunderRLE: fix failure when decoding last run. Bug seen with GhostPDL
+
+- LERC codec: deal with issues with multi-band PlanarConfig=Contig and NaN values
+
+- tif_fax3.c: error out after a number of times end-of-file has been reached
+  (fixes :issue:`583`)
+
+- LZW: avoid warning about misaligned address with UBSAN (fixes :issue:`616`)
+
+- TIFFReadRGBAStrip/TIFFReadRGBATile: add more validation of col/row
+  (fixes :issue:`622`, CVE-2023-52356)
+
+- tif_dirread.c: only issue TIFFGetFileSize() for large enough RAM requests
+
+- Avoid FPEs (division by zero) in tif_getimage.c.
+
+- Avoiding FPE (division by zero) for TIFFhowmany_32() and TIFFhowmany_64() macros
+  by checking for denominator not zero before macros are executed. (fixes :issue:`628`)
+
+- Add non-zero check before division in TIFFComputeStrip()
+
+- Fix wrong return of TIFFIsBigTIFF() in case byte-swapping is active
+
+- Setting the TIFFFieldInfo field `set_field_type` should consider `field_writecount` not `field_readcount`
+
+- Avoid memory leaks when using TIFFCreateDirectory() by releasing the allocated
+  memory in the tif-structure.
+
+- For non-terminated ASCII arrays, the buffer is first enlarged before a NULL is
+  set at the end to avoid deleting the last character. (fixes :issue:`579`)
+
+- Check return value of _TIFFCreateAnonField(). (fixes :issue:`624`, CVE-2024-7006)
+
+- Prevent some out-of-memory attacks (https://gitlab.com/libtiff/libtiff/-/issues/614#note_1602683857)
+
+- Ensure absolute seeking is forced independent of TIFFReadDirectory success. (fixes :issue:`618`)
+
+- tif_dirinfo.c: re-enable TIFFTAG_EP_CFAREPEATPATTERNDIM and TIFFTAG_EP_CFAPATTERN tags (fixes :issue:`608`)
+
+Other changes:
+
+- Fix warnings with GCC 14
+
+- tif_dir.c: Log source file, line number, and input tif for directory count error (fixes :issue:`627`)
+
+- Last usage of get_field_type of TIFFField structure at TIFFWriteDirectorySec()
+  changed to using set_field_type.
+
+- tif_jpeg.c/tif_ojpeg.c: remove likely ifdef tricks related to old compilers or unusual setups
+
+- Remove _TIFFUInt64ToFloat() and _TIFFUInt64ToDouble()
+
+- Remove support for _MSC_VER < 1500.
+
+- Use #ifdef _WIN32 to test for Windows, and tiffio.h: remove definition of __WIN32__
+
+
+Documentation
+-------------
+
+- Amend manpages for changes in current directory index behaviour
+
+- Note on using TIFFFlush() before TIFFClose() to check that the data has been
+  successfully written to the file. (fixes :issue:`506`)
+
+- Update TIFF documentation about TIFFOpenOptions.rst and
+  TIFFOpenOptionsSetMaxSingleMemAlloc() usage and some other small fixes
+  (relates to CVE-2024-7006)
+
+Tools changes
+-------------
+
+Re-added tools:
+
+  - fax2ps
+  - fax2tiff
+  - pal2rgb
+  - ppm2tiff
+  - raw2tiff
+  - rgb2ycbcr (not installed)
+  - thumbnail (not installed)
+  - tiff2bw
+  - tiff2rgba
+  - tiffcmp
+  - tiffcrop
+  - tiffdither
+  - tiffgt
+  - tiffmedian
+  - tiff2ps
+  - tiff2pdf
+
+New/improved functionality:
+
+- tiff2rgba: Add background gradient option for alpha compositing
+- tiffcp: -i flag restored
+
+Bug fixes:
+
+- tiffcrop: address Coverity scan issues 1605444, 1605445, and 16054
+- tiffcrop: Apply "Fix heap-buffer-overflow in function extractImageSection"
+- tiffcrop: fix buffer overflows, use after free (fixes :issue:`542`,
+  :issue:`550`, :issue:`552`)
+- tiff2pdf: address Coverity scan issues
+- tiff2pdf: fix inconsistent PLANARCONFIG value for the input and output TIFF
+- tiff2pdf: fix issue with JPEG restart-interval marker when converting from
+  JPEG-compressed files (fixes :issue:`539`)
+- tiff2pdf: red and blue were being swapped for RGBA decoding (fixes :issue:`253`)
+- tiff2pdf: fixes :issue:`596`
+- thumbnail: address Coverity scan issues
+- tiffcp: Add check for limitMalloc return to fix Coverity 1603334
+- tiffcp: preserve TIFFTAG_REFERENCEBLACKWHITE when doing YCbCr JPEG -> YCbCr JPEG
+- tiffcp: replace PHOTOMETRIC_YCBCR with PHOTOMETRIC_RGB when outputting to compression != JPEG (refs :issue:`571`)
+- tiffcp: do not copy tags YCBCRCOEFFICIENTS, YCBCRSUBSAMPLING, YCBCRPOSITIONING,
+  REFERENCEBLACKWHITE. Only set YCBCRSUBSAMPLING when generating YCbCr JPEG
+- tiffcp: Check also codec of input image, not only from output image (fixes :issue:`606`)
+- Add some basic sanity checks for tiffcp and tiffcrop RGB->YCbCr JPEG conversions.
+- fax2ps and fax2tiff: memory leak fixes (fixes :issue:`476`)
+- tiffmedian: memory leak fixes (fixes :issue:`599`)
+- fax2tiff: fix EOFB interpretation (fixes :issue:`191`)
+- fax2tiff: fix issue with unreasonable width input (fixes :issue:`249`)
+- tiffcp and tiffcrop: fixes :issue:`228`
+- tiff2rgba: fixes :issue:`469`
+- tiffdither: fixes :issue:`473`
+- tiffdump: fix wrong printf formatter in error message (Coverity 1472932)
+- tiffset: avoid false positive Coverity Scan warning on 64-bit builds (Coverity 1518997)
+- tifcp/tiffset: use correct format specifiers
+
+Changes to contributed and unsupported tools
+--------------------------------------------
+
+- contrib/addtiffo: validate return of TIFFWriteEncodedXXXX() calls (Coverity 1024680)

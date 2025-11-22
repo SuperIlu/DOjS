@@ -1,0 +1,274 @@
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "RAW2TIFF" "1" "Sep 11, 2025" "4.7" "LibTIFF"
+.SH NAME
+raw2tiff \- create a TIFF file from a raw data file
+.SH SYNOPSIS
+.sp
+\fBraw2tiff\fP [ \fIoptions ] *input.raw\fP \fIoutput.tif\fP
+.SH DESCRIPTION
+.sp
+\fBraw2tiff\fP converts a raw byte sequence into TIFF.
+By default, the TIFF image is created with data samples packed
+(\fBPlanarConfiguration=1\fP), compressed with the PackBits algorithm
+(\fBCompression=32773\fP), and with each strip no more than 8 kilobytes.
+These characteristics can overridden, or explicitly specified
+with the options described below.
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \-H number
+Size of input image file header in bytes (0 by default). This amount of data
+just will be skipped from the start of file while reading.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-w number
+Width of input image in pixels (can be guessed, see \fI\%Guessing the image geometry\fP below).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B option
+\-b number
+.sp
+number of bands in input image (1 by default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-d datatype
+type of samples in input image, where \fIdatatype\fP may be one of:
+.TS
+center;
+|l|l|.
+_
+T{
+Data type
+T}	T{
+Description
+T}
+_
+T{
+byte
+T}	T{
+8\-bit unsigned integer (default)
+T}
+_
+T{
+short
+T}	T{
+16\-bit unsigned integer
+T}
+_
+T{
+long
+T}	T{
+32\-bit unsigned integer
+T}
+_
+T{
+sbyte
+T}	T{
+8\-bit signed integer
+T}
+_
+T{
+sshort
+T}	T{
+16\-bit signed integer
+T}
+_
+T{
+slong
+T}	T{
+32\-bit signed integer
+T}
+_
+T{
+float
+T}	T{
+32\-bit IEEE floating point
+T}
+_
+T{
+double
+T}	T{
+64\-bit IEEE floating point
+T}
+_
+.TE
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-i config
+type of sample interleaving in input image, where \fIconfig\fP may be one of:
+.TS
+center;
+|l|l|.
+_
+T{
+Configuration
+T}	T{
+Description
+T}
+_
+T{
+pixel
+T}	T{
+pixel interleaved data (default)
+T}
+_
+T{
+band
+T}	T{
+band interleaved data.
+T}
+_
+.TE
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-p  photo
+photometric interpretation (color space) of the input image, where \fIphoto\fP may
+be one of:
+.TS
+center;
+|l|l|.
+_
+T{
+Photometric
+T}	T{
+Description
+T}
+_
+T{
+miniswhite
+T}	T{
+white color represented with 0 value
+T}
+_
+T{
+minisblack
+T}	T{
+black color represented with 0 value (default)
+T}
+_
+T{
+rgb
+T}	T{
+image has RGB color model
+T}
+_
+T{
+cmyk
+T}	T{
+image has CMYK (separated) color model
+T}
+_
+T{
+ycbcr
+T}	T{
+image has YCbCr color model
+T}
+_
+T{
+cielab
+T}	T{
+image has CIE L*a*b color model
+T}
+_
+T{
+icclab
+T}	T{
+image has ICC L*a*b color model
+T}
+_
+T{
+itulab
+T}	T{
+image has ITU L*a*b color model
+T}
+_
+.TE
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-s
+swap bytes fetched from the input file.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-L
+input data has LSB2MSB bit order (default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-M
+input data has MSB2LSB bit order.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-c
+Specify a compression scheme to use when writing image data:
+\fB\-c none\fP for no compression,
+\fB\-c packbits\fP for the PackBits compression algorithm (the default),
+\fB\-c jpeg\fP for the baseline JPEG compression algorithm,
+\fB\-c zip\fP for the Deflate compression algorithm,
+\fB\-c lzw\fP for Lempel\-Ziv & Welch.
+.UNINDENT
+.SH GUESSING THE IMAGE GEOMETRY
+.sp
+\fBraw2tif\fP can guess image width and height in case one or both of these parameters are
+not specified. If you omit one of those parameters, the complementary one will
+be calculated based on the file size (taking into account header size, number
+of bands and data type). If you omit both parameters, the statistical approach
+will be used. Utility will compute correlation coefficient between two lines
+at the image center using several appropriate line sizes and the highest
+absolute value of the coefficient will indicate the right line size. That is
+why you should be cautious with the very large images, because guessing
+process may take a while (depending on your system performance). Of course, the
+utility can\(aqt guess the header size, number of bands and data type, so it
+should be specified manually. If you don\(aqt know anything about your image,
+just try with the several combinations of those options.
+.sp
+There is no magic, it is just a mathematical statistics, so it can be wrong
+in some cases. But for most ordinary images guessing method will work fine.
+.SH SEE ALSO
+.sp
+\fI\%pal2rgb\fP (1),
+\fI\%tiffinfo\fP (1),
+\fI\%tiffcp\fP (1),
+\fI\%tiffmedian\fP (1),
+\fI\%libtiff\fP (3tiff)
+.SH AUTHOR
+LibTIFF contributors
+.SH COPYRIGHT
+1988-2025, LibTIFF contributors
+.\" Generated by docutils manpage writer.
+.

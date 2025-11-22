@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ SOFTWARE.
 ** static functions **
 *********************/
 /**
- * @brief finalize a zbuffer and free resources.
+ * @brief finalize a IniFile and free resources.
  *
  * @param J VM state.
  */
@@ -42,8 +42,8 @@ static void IniFile_Finalize(js_State *J, void *data) {
 }
 
 /**
- * @brief create new zbuffer for Bitmap().
- * new ZBuffer(bm:Bitmap)
+ * @brief open ini file
+ * ini = new IniFile(string:filename)
  *
  * @param J VM state.
  */
@@ -66,8 +66,8 @@ static void new_IniFile(js_State *J) {
 }
 
 /**
- * @brief set this zbuffer as current.
- * zb.Set()
+ * @brief get ini file entry
+ * init.Get([section], key)
  *
  * @param J VM state.
  */
@@ -93,7 +93,7 @@ static void IniFile_Get(js_State *J) {
 ** exported functions **
 ***********************/
 /**
- * @brief initialize zbuffer subsystem.
+ * @brief initialize IniFile subsystem.
  *
  * @param J VM state.
  */

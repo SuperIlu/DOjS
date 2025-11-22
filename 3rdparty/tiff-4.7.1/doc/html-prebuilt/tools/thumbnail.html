@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>thumbnail &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tiff2bw" href="tiff2bw.html" />
+    <link rel="prev" title="rgb2ycbcr" href="rgb2ycbcr.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tiff2bw.html" title="tiff2bw"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rgb2ycbcr.html" title="rgb2ycbcr"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">thumbnail</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="thumbnail">
+<h1>thumbnail<a class="headerlink" href="#thumbnail" title="Permalink to this heading">¶</a></h1>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<p><strong>thumbnail</strong> [ <em>options</em> ] <em>input.tif</em> <em>output.tif</em></p>
+</section>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p><strong class="program">thumbnail</strong> is a program written to show how one might use the
+<code class="docutils literal notranslate"><span class="pre">SubIFD</span></code> tag (#330) to store thumbnail images.
+<strong class="program">thumbnail</strong>
+copies a TIFF Class F facsimile file to the output file
+and for each image an 8-bit greyscale &quot;thumbnail sketch&quot; is created.
+The output file contains the thumbnail image with the associated
+full-resolution page linked below with the SubIFD tag.</p>
+<p>By default, thumbnail images are 216 pixels wide by 274 pixels high.
+Pixels are calculated by sampling and filtering the input image
+with each pixel value passed through a contrast curve.</p>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-thumbnail-w">
+<span class="sig-name descname"><span class="pre">-w</span></span><span class="sig-prename descclassname"> <span class="pre">width</span></span><a class="headerlink" href="#cmdoption-thumbnail-w" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the width of thumbnail images in pixels.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-thumbnail-h">
+<span class="sig-name descname"><span class="pre">-h</span></span><span class="sig-prename descclassname"> <span class="pre">height</span></span><a class="headerlink" href="#cmdoption-thumbnail-h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the height of thumbnail images in pixels.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-thumbnail-c">
+<span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"> <span class="pre">contrast</span></span><a class="headerlink" href="#cmdoption-thumbnail-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify a contrast curve to apply in generating the thumbnail images.
+By default pixels values are passed through a linear contrast curve
+that simply maps the pixel value ranges.  Alternative curves are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Curve</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>exp50</p></td>
+<td><p>50% exponential curve</p></td>
+</tr>
+<tr class="row-odd"><td><p>exp60</p></td>
+<td><p>60% exponential curve</p></td>
+</tr>
+<tr class="row-even"><td><p>exp70</p></td>
+<td><p>70% exponential curve</p></td>
+</tr>
+<tr class="row-odd"><td><p>exp80</p></td>
+<td><p>80% exponential curve</p></td>
+</tr>
+<tr class="row-even"><td><p>exp90</p></td>
+<td><p>90% exponential curve</p></td>
+</tr>
+<tr class="row-odd"><td><p>exp</p></td>
+<td><p>pure exponential curve</p></td>
+</tr>
+<tr class="row-even"><td><p>linear</p></td>
+<td><p>linear curve</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</section>
+<section id="bugs">
+<h2>Bugs<a class="headerlink" href="#bugs" title="Permalink to this heading">¶</a></h2>
+<p>There are no options to control the format of the saved thumbnail images.</p>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="tiffdump.html"><span class="doc">tiffdump</span></a> (1),
+<a class="reference internal" href="tiffgt.html"><span class="doc">tiffgt</span></a> (1),
+<a class="reference internal" href="tiffinfo.html"><span class="doc">tiffinfo</span></a> (1),
+<a class="reference internal" href="../functions/libtiff.html"><span class="doc">libtiff</span></a> (3tiff),</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">thumbnail</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#options">Options</a></li>
+<li><a class="reference internal" href="#bugs">Bugs</a></li>
+<li><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="rgb2ycbcr.html"
+                          title="previous chapter">rgb2ycbcr</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tiff2bw.html"
+                          title="next chapter">tiff2bw</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/tools/thumbnail.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tiff2bw.html" title="tiff2bw"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rgb2ycbcr.html" title="rgb2ycbcr"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">thumbnail</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

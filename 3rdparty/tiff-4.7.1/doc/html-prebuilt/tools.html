@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>TIFF Tools Overview &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="fax2ps" href="tools/fax2ps.html" />
+    <link rel="prev" title="Defining New TIFF Tags" href="addingtags.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tools/fax2ps.html" title="fax2ps"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="addingtags.html" title="Defining New TIFF Tags"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">TIFF Tools Overview</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tiff-tools-overview">
+<h1>TIFF Tools Overview<a class="headerlink" href="#tiff-tools-overview" title="Permalink to this heading">¶</a></h1>
+<a class="reference internal image-reference" href="_images/quad.jpg"><img alt="quad" src="_images/quad.jpg" style="width: 144px;" /></a>
+<p>This software distribution comes with a small collection of
+programs for converting non-TIFF format images to TIFF and for
+manipulating and interrogating the contents of TIFF images. Several
+of these tools are useful in their own right. Many of them however
+are more intended to serve as programming examples for using the
+TIFF library.</p>
+<section id="manual-pages">
+<h2>Manual pages<a class="headerlink" href="#manual-pages" title="Permalink to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tools/fax2ps.html">fax2ps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/fax2tiff.html">fax2tiff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/pal2rgb.html">pal2rgb</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/ppm2tiff.html">ppm2tiff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/raw2tiff.html">raw2tiff</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/rgb2ycbcr.html">rgb2ycbcr</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/thumbnail.html">thumbnail</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiff2bw.html">tiff2bw</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiff2pdf.html">tiff2pdf</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiff2ps.html">tiff2ps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiff2rgba.html">tiff2rgba</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffcmp.html">tiffcmp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffcp.html">tiffcp</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffcrop.html">tiffcrop</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffdither.html">tiffdither</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffdump.html">tiffdump</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffgt.html">tiffgt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffinfo.html">tiffinfo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffmedian.html">tiffmedian</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffset.html">tiffset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools/tiffsplit.html">tiffsplit</a></li>
+</ul>
+</div>
+</section>
+<section id="device-dependent-programs">
+<h2>Device-dependent Programs<a class="headerlink" href="#device-dependent-programs" title="Permalink to this heading">¶</a></h2>
+<p>There are two device-dependent programs that serve as simple
+examples for writing programs to display and save TIFF images.</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Device-dependent programs</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/tiffgt.html"><span class="doc">tiffgt</span></a></p></td>
+<td><p>Display the contents of one or more TIFF images using OpenGL.
+The software makes extensive use of the <code class="docutils literal notranslate"><span class="pre">TIFFRGBAImage</span></code>
+facilities described elsewhere.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="device-independent-programs">
+<h2>Device-independent Programs<a class="headerlink" href="#device-independent-programs" title="Permalink to this heading">¶</a></h2>
+<p>The remaining programs should be device-independent:</p>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Device-dependent programs</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/fax2ps.html"><span class="doc">fax2ps</span></a></p></td>
+<td><p>Convert a Group 3- or Group 4- compressed TIFF to PostScript
+that is significantly more compressed than is generated by
+<strong class="program">tiff2ps</strong> (unless <strong class="program">tiff2ps</strong> writes PS Level II)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/fax2tiff.html"><span class="doc">fax2tiff</span></a></p></td>
+<td><p>Convert raw Group 3 or Group 4 facsimile data to TIFF</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/pal2rgb.html"><span class="doc">pal2rgb</span></a></p></td>
+<td><p>Convert a Palette-style image to a full color RGB image by
+applying the colormap</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/ppm2tiff.html"><span class="doc">ppm2tiff</span></a></p></td>
+<td><p>A quick hack that converts 8-bit PPM format images to TIFF</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/raw2tiff.html"><span class="doc">raw2tiff</span></a></p></td>
+<td><p>Create a TIFF file from raw data</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/rgb2ycbcr.html"><span class="doc">rgb2ycbcr</span></a></p></td>
+<td><p>Convert an RGB, grayscale, or bilevel TIFF image to a YCbCr
+TIFF image; it's mainly provided for testing</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/thumbnail.html"><span class="doc">thumbnail</span></a></p></td>
+<td><p>Copy a bilevel TIFF to one that includes 8-bit greyscale
+&quot;thumbnail images&quot; for each page; it is provided as an example of
+how one might use the <code class="docutils literal notranslate"><span class="pre">SubIFD</span></code> tag (and the library support
+for it)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/tiff2bw.html"><span class="doc">tiff2bw</span></a></p></td>
+<td><p>A simple program to convert a color image to grayscale</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/tiff2pdf.html"><span class="doc">tiff2pdf</span></a></p></td>
+<td><p>Convert TIFF images to PDF</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/tiff2ps.html"><span class="doc">tiff2ps</span></a></p></td>
+<td><p>Convert TIFF images to PostScript</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/tiff2rgba.html"><span class="doc">tiff2rgba</span></a></p></td>
+<td><p>Convert a TIFF image to RGBA color space</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/tiffcmp.html"><span class="doc">tiffcmp</span></a></p></td>
+<td><p>Compare the contents of two TIFF files (it does not check all
+the directory information, but does check all the data)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/tiffcp.html"><span class="doc">tiffcp</span></a></p></td>
+<td><p>Copy, concatenate, and convert TIFF images (e.g. switching from
+<code class="docutils literal notranslate"><span class="pre">Compression=5</span></code> to <code class="docutils literal notranslate"><span class="pre">Compression=1</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/tiffcrop.html"><span class="doc">tiffcrop</span></a></p></td>
+<td><p>Provides selection of images from within one or more multi-image
+TIFF files, with orthogonal rotation, mirroring, cropping, and
+extraction of multiple sections and exporting to one or more files.
+It extends the functionality of <strong class="program">tiffcp</strong> to support additional bit
+depths in strips and tiles and enhances the selection capabilities of
+tiffsplit. Bilevel images can be inverted and images may be split into
+segments to fit on multiple /pages/ (standard paper sizes), plus other
+functions described in the tiffcrop man page</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/tiffdither.html"><span class="doc">tiffdither</span></a></p></td>
+<td><p>Dither a b&amp;w image into a bilevel image (suitable for use
+in creating fax files)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/tiffdump.html"><span class="doc">tiffdump</span></a></p></td>
+<td><p>Display the verbatim contents of the TIFF directory in a file
+(it's very useful for debugging bogus files that you may get from
+someone that claims they support TIFF)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/tiffinfo.html"><span class="doc">tiffinfo</span></a></p></td>
+<td><p>Display information about one or more TIFF files</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/tiffmedian.html"><span class="doc">tiffmedian</span></a></p></td>
+<td><p>A version of Paul Heckbert's median cut program that reads an
+RGB TIFF image, and creates a TIFF palette file as a result</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="tools/tiffset.html"><span class="doc">tiffset</span></a></p></td>
+<td><p>Set a field in a TIFF header</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="tools/tiffsplit.html"><span class="doc">tiffsplit</span></a></p></td>
+<td><p>Create one or more single-image files from a (possibly)
+multi-image file</p></td>
+</tr>
+</tbody>
+</table>
+<p>Check out the manual pages for details about the above programs.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">TIFF Tools Overview</a><ul>
+<li><a class="reference internal" href="#manual-pages">Manual pages</a></li>
+<li><a class="reference internal" href="#device-dependent-programs">Device-dependent Programs</a></li>
+<li><a class="reference internal" href="#device-independent-programs">Device-independent Programs</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="addingtags.html"
+                          title="previous chapter">Defining New TIFF Tags</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tools/fax2ps.html"
+                          title="next chapter">fax2ps</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/tools.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tools/fax2ps.html" title="fax2ps"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="addingtags.html" title="Defining New TIFF Tags"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">TIFF Tools Overview</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

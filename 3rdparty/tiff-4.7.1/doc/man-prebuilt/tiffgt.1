@@ -1,0 +1,308 @@
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "TIFFGT" "1" "Sep 11, 2025" "4.7" "LibTIFF"
+.SH NAME
+tiffgt \- display an image stored in a TIFF file (Silicon Graphics version)
+.SH SYNOPSIS
+.sp
+\fBtiffgt\fP [ \fIoptions\fP ] \fIinput.tif\fP …
+.SH DESCRIPTION
+.sp
+\fBtiffgt\fP displays one or more images stored using the
+Tag Image File Format, Revision 6.0.
+.sp
+\fBtiffgt\fP correctly handles files with any of the following characteristics:
+.INDENT 0.0
+.INDENT 3.5
+.SH SUPPORTED TAG VALUES
+.TS
+center;
+|l|l|.
+_
+T{
+Tag
+T}	T{
+Value
+T}
+_
+T{
+BitsPerSample
+T}	T{
+1, 2, 4, 8, 16
+T}
+_
+T{
+SamplesPerPixel
+T}	T{
+1, 3, 4 (the 4th sample is ignored)
+T}
+_
+T{
+PhotometricInterpretation
+T}	T{
+0 (min\-is\-white), 1 (min\-is\-black), 2 (RGB), 3 (palette), 6 (YCbCr)
+T}
+_
+T{
+PlanarConfiguration
+T}	T{
+1 (contiguous), 2 (separate)
+T}
+_
+T{
+Orientation
+T}	T{
+1 (top\-left), 4 (bottom\-left)
+T}
+_
+.TE
+.UNINDENT
+.UNINDENT
+.sp
+Data may be organized as strips or tiles and may be
+compressed with any of the compression algorithms supported
+by the \fBlibtiff\fP library.
+.sp
+For palette images (\fBPhotometricInterpretation=3\fP), \fBtiffgt\fP
+inspects the colormap values and assumes either 16\-bit
+or 8\-bit values according to the maximum value.
+That is, if no colormap entry greater than 255 is found,
+\fBtiffgt\fP assumes the colormap has only 8\-bit values; otherwise
+it assumes 16\-bit values.
+This inspection is done to handle old images written by
+previous (incorrect) versions of
+\fBlibtiff\fP\&.
+.sp
+\fBtiffgt\fP can be used to display multiple images one\-at\-a\-time.
+The left mouse button switches the display to the first image in the
+\fInext\fP file in the list of files specified on the command line.
+The right mouse button switches to the first image in the
+\fIprevious\fP file in the list.
+The middle mouse button causes the first image in the first file
+specified on the command line to be displayed.
+In addition the following keyboard commands are recognized:
+.INDENT 0.0
+.INDENT 3.5
+.SH ACTION KEYS
+.TS
+center;
+|l|l|.
+_
+T{
+Key
+T}	T{
+Description
+T}
+_
+T{
+\fBb\fP
+T}	T{
+Use a \fBPhotometricInterpretation\fP
+of \fBMinIsBlack\fP in displaying the current image
+T}
+_
+T{
+\fBl\fP
+T}	T{
+Use a \fBFillOrder\fP of lsb\-to\-msb in decoding the current image
+T}
+_
+T{
+\fBm\fP
+T}	T{
+Use a \fBFillOrder\fP of msb\-to\-lsb in decoding the current image
+T}
+_
+T{
+\fBc\fP
+T}	T{
+Use a colormap visual to display the current image
+T}
+_
+T{
+\fBr\fP
+T}	T{
+Use a true color (24\-bit RGB) visual to display the current image
+T}
+_
+T{
+\fBw\fP
+T}	T{
+Use a \fBPhotometricInterpretation\fP of \fBMinIsWhite\fP in displaying
+the current image
+T}
+_
+T{
+\fBW\fP
+T}	T{
+Toggle (enable/disable) display of warning messages from the
+TIFF library when decoding images
+T}
+_
+T{
+\fBE\fP
+T}	T{
+Toggle (enable/disable) display of error messages from the
+TIFF library when decoding images.
+T}
+_
+T{
+\fBz\fP
+T}	T{
+Reset all parameters to their default settings (\fBFillOrder\fP,
+\fBPhotometricInterpretation\fP, handling of warnings and errors)
+T}
+_
+T{
+\fBPageUp\fP
+T}	T{
+Display the previous image in the current file or the last
+image in the previous file
+T}
+_
+T{
+\fBPageDown\fP
+T}	T{
+Display the next image in the current file or the first image
+in the next file
+T}
+_
+T{
+\fBHome\fP
+T}	T{
+Display the first image in the current file
+T}
+_
+T{
+\fBEnd\fP
+T}	T{
+Display the last image in the current file (unimplemented)
+T}
+_
+.TE
+.UNINDENT
+.UNINDENT
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \-c
+Force image display in a colormap window.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-d
+Specify an image to display by directory number.
+By default the first image in the file is displayed.
+Directories are numbered starting at zero.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-e
+Enable reporting of error messages from the TIFF library.
+By default \fBtiffgt\fP silently ignores images that cannot be read.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-f
+Force \fBtiffgt\fP to run as a foreground process.
+By default \fBtiffgt\fP will place itself in the background once it
+has opened the requested image file.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-l
+Force the presumed bit ordering to be LSB to MSB.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-m
+Force the presumed bit ordering to be MSB to LSB.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-o
+Specify an image to display by directory offset.
+By default the first image in the file is displayed.
+Directories offsets may be specified using C\-style syntax;
+i.e. a leading \fB0x\fP for hexadecimal and a leading \fB0\fP for octal.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-p
+Override the value of the \fBPhotometricInterpretation\fP
+tag; the parameter may be one of: \fBminiswhite\fP ,
+\fBminisblack\fP, \fBrgb\fP, \fBpalette\fP, \fBmask\fP,
+\fBseparated\fP, \fBycbcr\fP, and \fBcielab\fP\&.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-r
+Force image display in a full color window.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-s
+Stop on the first read error.
+By default all errors in the input data are ignored and
+\fBtiffgt\fP
+does it\(aqs best to display as much of an image as possible.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-w
+Enable reporting of warning messages from the TIFF library.
+By default \fBtiffgt\fP
+ignores warning messages generated when reading an image.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-v
+Place information in the title bar describing
+what type of window (full color or colormap) is being
+used, the name of the input file, and the directory
+index of the image (if non\-zero).
+By default, the window type is not shown in the title bar.
+.UNINDENT
+.SH BUGS
+.sp
+Images wider and taller than the display are silently truncated to avoid
+crashing old versions of the window manager.
+.SH SEE ALSO
+.sp
+\fI\%tiffdump\fP (1),
+\fI\%tiffinfo\fP (1),
+\fI\%tiffcp\fP (1),
+\fI\%libtiff\fP (3tiff)
+.SH AUTHOR
+LibTIFF contributors
+.SH COPYRIGHT
+1988-2025, LibTIFF contributors
+.\" Generated by docutils manpage writer.
+.

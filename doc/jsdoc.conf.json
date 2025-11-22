@@ -9,7 +9,9 @@
 			"ByteArray.js",
 			"COMPort.js",
 			"Cpuid.js",
+			"cRSID.js",
 			"Curl.js",
+			"Exif.js",
 			"File.js",
 			"Font.js",
 			"FxState.js",
@@ -19,6 +21,7 @@
 			"IntArray.js",
 			"Micromod.js",
 			"Midi.js",
+			"MMSynth.js",
 			"Mpeg1.js",
 			"Neural.js",
 			"Noise.js",
@@ -26,6 +29,7 @@
 			"PDFGen.js",
 			"Rawplay.js",
 			"Sample.js",
+			"Smacker.js",
 			"Socket.js",
 			"SQLite.js",
 			"TextInfo.js",
@@ -70,7 +74,7 @@
 			"outputSourceFiles": false
 		},
 		"better-docs": {
-			"name": "DOjS V1.13.0",
+			"name": "DOjS V1.14.0",
 			"hideGenerator": true,
 			"navLinks": [
 				{

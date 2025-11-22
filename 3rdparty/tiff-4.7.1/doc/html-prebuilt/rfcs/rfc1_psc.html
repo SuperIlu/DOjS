@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>RFC 1: Project Steering Committee Guidelines &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="RFC 2: Restoring Needed LibTIFF Tools" href="rfc2_restoring_needed_tools.html" />
+    <link rel="prev" title="Request For Comments (RFCs)" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="rfc2_restoring_needed_tools.html" title="RFC 2: Restoring Needed LibTIFF Tools"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Request For Comments (RFCs)"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Request For Comments (RFCs)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">RFC 1: Project Steering Committee Guidelines</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="rfc-1-project-steering-committee-guidelines">
+<span id="rfc1-psc"></span><h1>RFC 1: Project Steering Committee Guidelines<a class="headerlink" href="#rfc-1-project-steering-committee-guidelines" title="Permalink to this heading">¶</a></h1>
+<p>Author: Even Rouault</p>
+<p>Contact: even.rouault at spatials.com</p>
+<p>Status: Adopted</p>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h2>
+<p>This document describes how the libtiff Project Steering Committee
+determines membership, and makes decisions on libtiff project issues.</p>
+<p>In brief, the committee votes on proposals on the libtiff mailing list.
+Proposals are available for review for at least 5 business days, and a single
+veto is sufficient to delay progress though ultimately a majority of members can
+pass a proposal.</p>
+</section>
+<section id="detailed-process">
+<h2>Detailed Process<a class="headerlink" href="#detailed-process" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Proposals are written up and submitted on the libtiff mailing list
+for discussion and voting, by any interested party, not just
+committee members.</p></li>
+<li><p>Proposals need to be available for review for at least 5 business
+days before a final decision can be made.</p></li>
+<li><p>Respondents may vote &quot;+1&quot; to indicate support for the proposal and a
+willingness to support implementation.</p></li>
+<li><p>Respondents may vote &quot;-1&quot; to veto a proposal, but must provide clear
+reasoning and alternate approaches to resolving the problem within
+the voting delay.</p></li>
+<li><p>A vote of -0 indicates mild disagreement, but has no effect. A 0
+indicates no opinion. A +0 indicate mild support, but has no effect.</p></li>
+<li><p>Anyone may comment on proposals on the list, but only members of the
+Project Steering Committee's votes will be counted.</p></li>
+<li><p>A proposal will be accepted if it receives at least +2 (including the
+proposer) and no vetos (-1).</p></li>
+<li><p>If a proposal is vetoed, and it cannot be revised to satisfy all
+parties, then it can be resubmitted for an override vote in which a
+majority of all eligible voters indicating +1 is sufficient to pass
+it. Note that this is a majority of all committee members, not just
+those who actively vote.</p></li>
+<li><p>Upon completion of discussion and voting the proposer should
+announce whether they are proceeding (proposal accepted) or are
+withdrawing their proposal (vetoed).</p></li>
+<li><p>The Chair gets a vote.</p></li>
+<li><p>The Chair is responsible for keeping track of who is a member of the
+Project Steering Committee.</p></li>
+<li><p>Addition and removal of members from the committee, as well as
+selection of a Chair should be handled as a proposal to the
+committee.</p></li>
+<li><p>The Chair adjudicates in cases of disputes about voting.</p></li>
+</ol>
+</section>
+<section id="when-is-vote-required">
+<h2>When is Vote Required?<a class="headerlink" href="#when-is-vote-required" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Anything that could cause backward compatibility issues.</p></li>
+<li><p>Adding, removing or modifying substantial amounts of code.</p></li>
+<li><p>Changing inter-subsystem APIs.</p></li>
+<li><p>Issues of procedure.</p></li>
+<li><p>When releases should take place.</p></li>
+<li><p>Anything that might be controversial</p></li>
+</ul>
+</section>
+<section id="observations">
+<h2>Observations<a class="headerlink" href="#observations" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The Chair is the ultimate adjudicator if things break down.</p></li>
+<li><p>The absolute majority rule can be used to override an obstructionist
+veto, but it is intended that in normal circumstances vetoers need to
+be convinced to withdraw their veto. We are trying to reach
+consensus.</p></li>
+<li><p>It is strongly recommended that proposals subject to a vote be discussed
+first on the mailing list to build consensus before proceeding to the vote.</p></li>
+</ul>
+</section>
+<section id="bootstrapping">
+<h2>Bootstrapping<a class="headerlink" href="#bootstrapping" title="Permalink to this heading">¶</a></h2>
+<p>The initial members of the Project Steering Committee are:</p>
+<ul class="simple">
+<li><p>Bob Friesenhahn (&#64;bobfriesenhahn)</p></li>
+<li><p>Su Laus (&#64;Su_Laus)</p></li>
+<li><p>Roger Leigh (&#64;rleigh)</p></li>
+<li><p>Timothy Lyanguzov (&#64;theta682)</p></li>
+<li><p>Olivier Paquet (&#64;1-Olivier)</p></li>
+<li><p>Leonard Rosenthol (&#64;lrosenthol)</p></li>
+<li><p>Even Rouault (&#64;rouault)</p></li>
+</ul>
+<p>Even Rouault is declared initial Chair of the Project Steering Committee.</p>
+<p>The current membership list can be found on the <a class="reference internal" href="../project/psc.html#psc"><span class="std std-ref">Project Steering Committee</span></a> page.</p>
+</section>
+<section id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this heading">¶</a></h2>
+<p>This document is a direct adaptation from
+<a class="reference external" href="https://gdal.org/development/rfc/rfc1_pmc.html">GDAL Project Management Committee Guidelines</a>,
+authored by Frank Warmerdam.</p>
+</section>
+<section id="voting-history">
+<h2>Voting history<a class="headerlink" href="#voting-history" title="Permalink to this heading">¶</a></h2>
+<p>Adopted by +1 vote from all above mentioned initial members of the PSC.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">RFC 1: Project Steering Committee Guidelines</a><ul>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#detailed-process">Detailed Process</a></li>
+<li><a class="reference internal" href="#when-is-vote-required">When is Vote Required?</a></li>
+<li><a class="reference internal" href="#observations">Observations</a></li>
+<li><a class="reference internal" href="#bootstrapping">Bootstrapping</a></li>
+<li><a class="reference internal" href="#credits">Credits</a></li>
+<li><a class="reference internal" href="#voting-history">Voting history</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Request For Comments (RFCs)</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="rfc2_restoring_needed_tools.html"
+                          title="next chapter">RFC 2: Restoring Needed LibTIFF Tools</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/rfcs/rfc1_psc.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="rfc2_restoring_needed_tools.html" title="RFC 2: Restoring Needed LibTIFF Tools"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Request For Comments (RFCs)"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Request For Comments (RFCs)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">RFC 1: Project Steering Committee Guidelines</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

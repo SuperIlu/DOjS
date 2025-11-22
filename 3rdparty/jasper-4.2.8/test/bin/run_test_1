@@ -1,0 +1,290 @@
+#! /usr/bin/env bash
+# Copyright (c) 2016 Michael David Adams
+################################################################################
+
+# Reference on sanitizer options:
+# https://github.com/google/sanitizers/wiki/SanitizerCommonFlags
+
+################################################################################
+
+cmd_dir=$(dirname "$0") || exit 1
+source "$cmd_dir"/base_utilities || exit 1
+source "$cmd_dir"/test_utilities || exit 1
+
+debug_level="${JAS_DEBUG_LEVEL:-0}"
+if [ "$debug_level" -ge 1 ]; then
+	set -xv
+fi
+
+################################################################################
+
+set_source_and_build_dirs || panic "cannot set source and build directories"
+
+#abs_source_dir="$1"
+#abs_build_dir="$2"
+
+top_dir="$cmd_dir/../.."
+data_dir="$top_dir/data"
+
+jasper="$abs_top_builddir/src/app/jasper"
+imginfo="$abs_top_builddir/src/app/imginfo"
+export JASPER_COMMAND="$jasper"
+export IMGINFO_COMMAND="$imginfo"
+
+################################################################################
+
+internal_testing_mode="${JAS_INTERNAL_TESTING_MODE:-0}"
+
+verbose=0
+if [ $# -ge 1 ]; then
+	verbose=1
+fi
+
+################################################################################
+
+has_jpg="$(is_supported_format jpg)" || \
+  panic "cannot determine if JPG is supported format"
+has_mif="$(is_supported_format mif)" || \
+  panic "cannot determine if MIF is supported format"
+has_heic="$(is_supported_format heic)" || \
+  panic "cannot determine if HEIF is supported format"
+
+if [ "$internal_testing_mode" -ne 0 -a "$has_mif" -eq 0 ]; then
+	echo "warning: MIF support is missing"
+fi
+if [ "$internal_testing_mode" -ne 0 -a "$has_heic" -eq 0 ]; then
+	echo "warning: HEIF support is missing"
+fi
+if [ "$has_jpg" -eq 0 ]; then
+	echo "warning: JPEG support is missing"
+fi
+
+# Decoder tests for valid data.
+good_list=()
+for file in "$data_dir"/test/good/*.*; do
+
+	skip=0
+	case "$file" in
+	*.jpg)
+		if [ "$has_jpg" -eq 0 ]; then
+			skip=1
+		fi
+		;;
+	*.mif)
+		if [ "$has_mif" -eq 0 ]; then
+			skip=1
+		fi
+		;;
+	*.heic)
+		if [ "$has_heic" -eq 0 ]; then
+			skip=1
+		fi
+		;;
+	*.txt)
+		skip=1
+		;;
+	esac
+
+	if [ "$skip" -eq 0 ]; then
+		good_list+=("$file")
+	fi
+
+done
+
+# Decoder tests for invalid data.
+bad_list=()
+for file in "$data_dir"/test/bad/*.*; do
+
+	skip=0
+	case "$file" in
+	*.jpg)
+		if [ "$has_jpg" -eq 0 ]; then
+			skip=1
+		fi
+		;;
+	*.mif)
+		if [ "$has_mif" -eq 0 ]; then
+			skip=1
+		fi
+		;;
+	*.txt)
+		skip=1
+		;;
+	esac
+
+	if [ "$skip" -eq 0 ]; then
+		bad_list+=("$file")
+	fi
+
+done
+
+# Encoder tests that should fail.
+enc_list=()
+enc_list+=("$data_dir"/test/good/109-PoC.jp2)
+
+error_count=0
+failed_tests=()
+
+jpeg_turbo_lib_version=$("$imginfo" -o version \
+  < "$data_dir/images/goldenears.jpg" | \
+  awk '{print $2;}' ) || \
+  panic "cannot get JPEG turbo library version"
+if [ -z "$jpeg_turbo_lib_version" ]; then
+	jpeg_turbo_lib_version=unknown
+fi
+
+echo "JPEG Turbo Library version: $jpeg_turbo_lib_version"
+
+echo "############################################################"
+echo "PART 1: Decoder tests --- valid data sets"
+echo "############################################################"
+
+for in_file in "${good_list[@]}"; do
+	echo "############################################################"
+	expected_status=0
+	test_case="part1-$(basename "$in_file")"
+	echo "Input file: $in_file"
+	"$imginfo" --enable-all-formats < "$in_file"
+	status=$?
+	echo "actual exit status: $status"
+	echo "expected exit status: $expected_status"
+	if [ "$status" -ne "$expected_status" ]; then
+		echo "ERROR: imginfo command had unexpected exit status " \
+		  "(expected $expected_status got $status)"
+		error_count=$((error_count + 1))
+		failed_tests+=("$test_case")
+	fi
+done
+echo "############################################################"
+
+echo "############################################################"
+echo "PART 2: Decoder tests --- invalid data sets"
+echo "############################################################"
+
+for in_file in "${bad_list[@]}"; do
+	name=$(basename "$in_file")
+	test_case="part2-$name"
+	echo "############################################################"
+
+	# Select the maximum number of samples that is allowed to be decoded.
+	#
+	# The information below should be taken into consideration when
+	# selecting the maximum number of samples for decoding.
+	#
+	# 5_crashes.bmp
+	# This file will effectively hang some systems by requesting
+	# a very large amount of virtual memory.  So, the number of samples
+	# to be decoded must be restricted to make decoding fail from the start.
+	#
+	# jasper-doublefree-mem_close.jpg
+	# 1_crash.jpg
+	# 00028-jasper-uaf-jas_realloc.jpg
+	# These files must restrict the number of samples to be decoded in order
+	# to force decoding to fail; otherwise the test could pass or fail
+	# depending on the version of the JPEG library used.
+	# Furthermore, if the decoding test passes, it will take a very long
+	# time due complete due to the large image involved.
+	#
+	# 00047-jasper-stackoverflow-jpc_tsfb_getbands2.jpc
+	# This test must be allowed to fully decode in order to check for
+	# array/buffer overrun.
+	case "$name" in
+	00047-jasper-stackoverflow-jpc_tsfb_getbands2.jpc)
+		max_samples=0;;
+	5_crashes.bmp | \
+	2_crashes.bmp | \
+	1_crash.jpg | \
+	00028-jasper-uaf-jas_realloc.jpg | \
+	jasper-doublefree-mem_close.jpg \
+	)
+		max_samples=100000000;;
+	*)
+		max_samples=0;;
+	esac
+
+	# The following allows for extra debugging for certain specific test cases.
+	#imginfo_debug_level=
+	#case "$name" in
+	#*abort*)
+	#	imginfo_debug_level=20
+	#	;;
+	#esac
+
+	echo "Input file: $in_file"
+	case "$name" in
+	*.jpg)
+		echo "JPEG Turbo Library version: $jpeg_turbo_lib_version"
+		;;
+	esac
+	imginfo_opts=()
+	imginfo_opts+=(--enable-all-formats)
+	imginfo_opts+=(--max-samples "$max_samples")
+	if [ -n "$imginfo_debug_level" ]; then
+		echo "Setting imginfo debug level to $imginfo_debug_level"
+		imginfo_opts+=(--debug-level "$imginfo_debug_level")
+	fi
+	special_asan_options=()
+	special_asan_options+=(exitcode=10)
+	special_asan_options+=(allocator_may_return_null=true)
+	special_asan_options+=(detect_leaks=false)
+	#special_asan_options+=(soft_rss_limit_mb=1024)
+	expected_status=1
+	ASAN_OPTIONS="${special_asan_options[*]}" \
+	  "$imginfo" "${imginfo_opts[@]}" < "$in_file"
+	status=$?
+	echo "actual exit status: $status"
+	echo "expected exit status: $expected_status"
+	if [ "$status" -ne 1 ]; then
+		echo "ERROR: imginfo command had unexpected exit status " \
+		  "(expected $expected_status got $status)"
+		error_count=$((error_count + 1))
+		failed_tests+=("$test_case")
+	fi
+done
+echo "############################################################"
+
+echo "############################################################"
+echo "PART 3: Encoder tests"
+echo "############################################################"
+
+for in_file in "${enc_list[@]}"; do
+	jasper_options=()
+	jasper_options+=(--enable-all-formats)
+	test_case="part3-$(basename "$in_file")"
+	echo "############################################################"
+	echo "Input file: $in_file"
+#	special_asan_options=()
+#	special_asan_options+=(exitcode=10)
+#	special_asan_options+=(allocator_may_return_null=true)
+#	special_asan_options+=(detect_leaks=false)
+	expected_status=1
+	if [ "$verbose" -ge 1 ]; then
+		#echo "Running ASAN_OPTIONS=${special_asan_options[*]} $jasper -f $in_file -T jp2 -F - > /dev/null"
+		echo "Running $jasper ${jasper_options[*]} -f $in_file -T jp2 -F - > /dev/null"
+	fi
+	#ASAN_OPTIONS="${special_asan_options[*]}" \
+	#  "$jasper" -f "$in_file" -T jp2 -F - > /dev/null
+	"$jasper" "${jasper_options[@]}" -f "$in_file" -T jp2 -F - > /dev/null
+	status=$?
+	if [ "$status" -ne "$expected_status" ]; then
+		echo "ERROR: imginfo command had unexpected exit status " \
+		  "(expected $expected_status got $status)"
+		error_count=$((error_count + 1))
+		failed_tests+=("$test_case")
+	fi
+done
+echo "############################################################"
+
+echo "############################################################"
+
+if [ "$error_count" -gt 0 ]; then
+	echo "The following test cases failed:"
+	for failed_test in "${failed_tests[@]}"; do
+		echo "    $failed_test"
+	done
+	echo "Number of failed test cases: $error_count"
+	echo "STATUS: FAILED"
+	panic "FAILED"
+fi
+
+echo "STATUS: PASSED"

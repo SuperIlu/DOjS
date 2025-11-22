@@ -1,6 +1,0 @@
-BasedOnStyle: llvm
-IndentWidth: 4
-BreakBeforeBraces: Linux
-ColumnLimit: 78
-AllowShortFunctionsOnASingleLine: None
-AllowAllParametersOfDeclarationOnNextLine: false

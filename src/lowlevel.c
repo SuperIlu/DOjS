@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -229,7 +229,7 @@ static uint32_t ll_int48_extended_drive_parameters(int drive) {
     int ret = __dpmi_int(LL_DISK_INT, &r);
     if (ret == 0) {
         if (r.x.flags & 1) { /* is carry flag set?  */
-            return false;
+            return 0;
         }
         ll_dosget(buffer, data->size);
         return data->total_sectors;

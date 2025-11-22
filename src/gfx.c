@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@ SOFTWARE.
 */
 
 #include <allegro.h>
-#if WINDOWS==1
+#if WINDOWS == 1
 #include <winalleg.h>
 #endif
 #include <dirent.h>
@@ -159,8 +159,8 @@ static poly_array_t *f_convertArray(js_State *J, int idx) {
 }
 
 /**
- * @brief get name of screen mode.
- * GetScreenMode():string
+ * @brief Get color depth info.
+ * GetScreenMode():number
  *
  * @param J
  */

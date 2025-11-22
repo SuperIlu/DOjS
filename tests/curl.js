@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,8 @@ function sslTest(url) {
 function Setup() {
 	SetFramerate(1);
 	Println(">>> date=" + new Date().toISOString());
+
+	Println("Resolve()              = " + JSON.stringify(Resolve("curl.se")));
 
 	// simple https get
 	sslTest("https://curl.se");

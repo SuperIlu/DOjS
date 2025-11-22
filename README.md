@@ -21,7 +21,7 @@ DOjS was only possible due to the work of these people/projects:
   * [AllegroPNG](http://alpng.sourceforge.net/) PNG loader for Allegro
   * [DZCOMM](http://dzcomm.sourceforge.net/) COM port library
   * [libcpuid](https://github.com/anrieff/libcpuid) for cpuid module
-  * [curl](https://curl.se/) and [OpenSSL](https://www.openssl.org/) for curl module
+  * [curl](https://curl.se/) and [mbedTLS](https://github.com/Mbed-TLS/mbedtls) for curl module
   * [cylindrix](https://sourceforge.net/projects/cylindrix/) for IPX module
   * [nanosvg](https://github.com/memononen/nanosvg) for SVG loading
   * [noise](https://github.com/stegu/perlin-noise) for perlin noise generation
@@ -42,6 +42,9 @@ DOjS was only possible due to the work of these people/projects:
   * [libtiff](https://gitlab.com/libtiff/libtiff) for TIFF decoding/encoding
   * [jasper](https://github.com/jasper-software/jasper) for Jpeg 2000 and Sun Raster decoding/encoding
   * [NOISE.SYS](https://github.com/robrwo/noise.sys) for a better entropy source for TLS.
+  * [libsmacker](https://libsmacker.sourceforge.net/) for SMK file playback.
+  * [libexif](https://github.com/libexif/libexif) for EXIF tag reading.
+  * [cRSID](https://github.com/dashodanger/libcRSID) for C64 SID playback
 
 ## Contact
 You can find me on [Mastodon](https://mastodon.social/@dec_hl) in [DOjS Matrix](https://matrix.to/#/#dojs:tchncs.de) or in the [DOjS Discord](https://discord.gg/J7MUTap9fM) if you want...
@@ -245,7 +248,7 @@ Now you are ready to compile DOjS with `make clean all`. This might take some ti
 There is an experimental Linux version of DOjS. It only supports a subset of the DOS version and should be considered ALPHA! See [this](README_Linux.md) file for more information.
 
 ## Compile the Win32 version of DOjS
-There is an experimental Win32 (Windows98 or never) version of DOjS. It only supports a subset of the DOS version and should be considered ALPHA! See [this](README_win32.md) file for more information.
+There is an experimental Win32 (WindowsXP or never) version of DOjS. It only supports a subset of the DOS version and should be considered ALPHA! See [this](README_win32.md) file for more information.
 
 # Notes
 ## 3dfx/Glide3
@@ -286,7 +289,6 @@ See the [changelog](/CHANGELOG.md) for the projects history.
   * add FFT module
   * add webp decoder (https://github.com/webmproject/libwebp/blob/main/doc/api.md)
   * Add ZIP file functions (e.g. https://libzip.org/users/ or https://github.com/kuba--/zip).
-    * Implement 3df file loading from ZIP
   * add/implement some more math functions
     * https://mathjs.org/
     * https://github.com/evanw/lightgl.js
@@ -297,120 +299,8 @@ See the [changelog](/CHANGELOG.md) for the projects history.
     * http://espeak.sourceforge.net/
 
 # Licenses
-See [LICENSE](LICENSE) file for all licenses and details.
-
-## DOjS
+See [LICENSE](LICENSE) file for all licenses and details for libraries.
 All code from me is released under **MIT license**.
-
-## MuJS
-MuJS is released under **ISC license**. See *COPYING* in the MuJS folder for details.
-
-## Allegro
-Allegro 4 is released under the **Giftware license** (https://liballeg.org/license.html).
-
-## GRX fonts
-The GRX fonts are under **MIT and other licenses**. See copying.grx in `LICENSE` for details.
-The converted fonts from the Linux Font Project are in the public domain.
-
-## IPX and dosbuffer sub-system
-This code is taken from the game [Cylindrix](https://www.allegro.cc/depot/Cylindrix) by Hotwarez LLC, Goldtree Enterprises.
-It was [released](https://sourceforge.net/projects/cylindrix/) under **GPLv2**.
-
-## CWSDPMI.EXE
-[CWSDPMI](http://sandmann.dotster.com/cwsdpmi/) DPMI host is licensed under **GPL**. The documentation states:
-> The files in this binary distribution may be redistributed under the GPL (with source) or without the source code provided.
-
-## 3dfx/Glide3
-The code is licensed under "3DFX GLIDE Source Code General Public License".
-Source code is available at https://github.com/SuperIlu/glide
-
-## DZComm
-DZComm serial library is release as **gift-ware**. See *readme.txt* in the dzcomm folder for details.
-
-## Logo
-The DOjS logo dog was downloaded from [Pexels](https://www.pexels.com/photo/animal-cachorro-doge-pug-1753686/) and kindly provided by Iago Garcia Garcia.
-
-The logo font is [Comic relief](https://www.fontsquirrel.com/fonts/comic-relief) by Jeff Davis provided under **SIL OPEN FONT LICENSE Version 1.1**.
-
-## WAVs
-All WAV files were downloaded from [BigSoundBank](https://bigsoundbank.com/) and are licensed under [WTFPL](https://bigsoundbank.com/droit.html)
-  * https://bigsoundbank.com/detail-0283-song-of-rooster.html
-  * https://bigsoundbank.com/detail-1102-bell-bike-5.html
-  * https://bigsoundbank.com/detail-1023-explosion-far-away.html
-
-## MIDs
-The MIDI files were downloaded from the [FreeDOOM](https://github.com/freedoom/freedoom) project and are licensed under [this](https://github.com/freedoom/freedoom/blob/master/COPYING.adoc) license.
-
-## p5js and examples
-p5js is is released under **LGPL**. 
-
-The examples are licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).
-
-## zlib
-[zlib](http://www.zlib.net/) is released under [zlib license](http://www.zlib.net/zlib_license.html).
-
-## alpng
-Copyright (c) 2006 Michal Molhanec
-
-This software is provided 'as-is', without any express or implied
-warranty. In no event will the authors be held liable for any damages
-arising from the use of this software.
-
-Permission is granted to anyone to use this software for any purpose,
-including commercial applications, and to alter it and redistribute
-it freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented;
-     you must not claim that you wrote the original software.
-     If you use this software in a product, an acknowledgment
-     in the product documentation would be appreciated but
-     is not required.
-
-  2. Altered source versions must be plainly marked as such,
-     and must not be misrepresented as being the original software.
-
-  3. This notice may not be removed or altered from any
-     source distribution.
-
-## zip code
-See UNLICENSE in zip directory.
-
-## WATTCP
-See manual.txt in watt32 directory.
-
-## OpenSSL
-The OpenSSL toolkit stays under a double license, i.e. both the conditions of
-the OpenSSL License and the original SSLeay license apply to the toolkit.
-
-## cURL
-See COPYING in curl directory.
-
-## genann
-See LICENSE in neural.dxelib.
-
-## sqlite
-See LICENSE.md in sqlite.dxelib.
-
-## libcpuid
-See COPYING in cpuid.dxelib.
-
-## nanosvg
-See LICENSE.txt in nanosvg.dxelib.
-
-## noise
-See LICENSE.md in noise.dxelib.
-
-## libjpeg
-See README in jpeg-9f directory.
-
-## gifanim
-See LICENSE in gifanim.dxelib.
-
-## libtiff
-See LICENSE.md in tiff directory.
-
-## Jasper
-See LICENSE.txt in jasper directory
 
 # Usage
 ## Command line

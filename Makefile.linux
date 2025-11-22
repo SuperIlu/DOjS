@@ -2,9 +2,9 @@ THIRDPARTY	= 3rdparty
 PLUGINS     = plugins
 MUJS		= $(THIRDPARTY)/mujs-1.0.5
 ALLEGRO		= $(THIRDPARTY)/allegro-4.3.3.1
-KUBAZIP		= $(THIRDPARTY)/zip-0.3.2
+KUBAZIP		= $(THIRDPARTY)/zip-0.3.5
 INI			= $(THIRDPARTY)/ini-20220806/src
-WEBP		= $(THIRDPARTY)/libwebp-1.3.2
+WEBP		= $(THIRDPARTY)/libwebp-1.6.0
 
 LIB_MUJS	= $(MUJS)/build/release/libmujs.a
 LIB_ALLEGRO	= $(ALLEGRO)/build/lib/liballeg.a
@@ -17,7 +17,7 @@ SQLITE_CFLAGS	= \
 	-DSQLITE_MAX_MMAP_SIZE=0 \
 	-DSQLITE_OMIT_WAL=1 \
 	-DSQLITE_OMIT_LOAD_EXTENSION=1 \
-	-DSQLITE_ENABLE_8_3_NAMES=2 \
+	-DSQLITE_ENABLE_8_3_NAMES=1 \
 	-DSQLITE_ENABLE_LOCKING_STYLE=0
 
 CDEF     = -DLINUX=1 -D__LINUX__ -DUSE_MESA=1 -DUSE_GLUT=1 $(SQLITE_CFLAGS) -DGC_BEFORE_MALLOC #-DDEBUG_ENABLED #-DEDI_FAST  # -DMEMDEBUG 
@@ -51,7 +51,7 @@ INCLUDES = \
 	-I$(realpath $(INI))/
 
 # linker
-LIBS     = -lalleg -lloadpng -ljpeg -lmujs -lm -lz -lpthread -lm -lpthread -lrt -lXpm -lX11 -lXext -lXxf86vm -lXcursor -lXcursor -lasound -lpng -lcurl -lGL -lGLU -lglut -lGLEW -lglfw -lwebp -lsharpyuv
+LIBS     = -lalleg -lloadpng -ljpeg -lmujs -lm -lz -lpthread -lm -lpthread -lrt -lXpm -lX11 -lXext -lXxf86vm -lXcursor -lXcursor -lasound -lpng -lcurl -lGL -lGLU -lglut -lGLEW -lglfw -lwebp -lsharpyuv -lXxf86dga
 LDFLAGS  = -s \
 	-L$(MUJS)/build/release \
 	-L$(WEBP)/src \
@@ -130,7 +130,7 @@ PARTS= \
 	$(BUILDDIR)/ogl_const.o \
 	$(BUILDDIR)/socket.o
 
-all: init $(EXE) JSBOOT.ZIP cacert.pem
+all: init $(EXE) JSBOOT.ZIP CACERT.PEM
 
 libmujs: $(LIB_MUJS)
 $(LIB_MUJS):
@@ -224,12 +224,12 @@ JSBOOT.ZIP: $(shell find jsboot/ -type f)
 	rm -f $@
 	zip -9 -r $@ jsboot/
 
-cacert.pem:
-	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
+CACERT.PEM:
+	curl -o CACERT.PEM https://curl.se/ca/cacert.pem
 
-zip: all cacert.pem doc
+zip: all CACERT.PEM doc
 	rm -f $(RELZIP)
-	zip -9 -r $(RELZIP) $(EXE) dojs.ini LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) cacert.pem
+	zip -9 -r $(RELZIP) $(EXE) dojs.ini LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) CACERT.PEM
 
 doc:
 	rm -rf $(DOCDIR)
@@ -243,7 +243,7 @@ init:
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) $(ZIP) JSLOG.TXT JSBOOT.ZIP cacert.pem
+	rm -f $(EXE) $(ZIP) JSLOG.TXT JSBOOT.ZIP CACERT.PEM
 
 jsclean:
 	$(MAKE) -C $(MUJS) clean

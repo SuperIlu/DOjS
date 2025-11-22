@@ -22,15 +22,22 @@ Run `./xmake.sh lib` to compile the library. No standard make command will work.
 
 If all goes well, a `lib/djgpp/liballeg.a` file will be generated that you can link with.
 
-Usage on Windows
--------------------
+### Targeting Windows
 
-If you're on Windows, you should not use this. Just use MinGW instead. It should be [easy to compile something that works on both Windows 10 and DOS](https://twitter.com/Sosowski/status/730563851389964293).
+If you're targeting Windows, you should probably not use this. Just use MinGW instead. It should be [easy to compile something that works on both Windows 10 and DOS](https://twitter.com/Sosowski/status/730563851389964293).
+
+Patches
+-------
+
+Aside from the modifications for easier cross-compiling, the following changes were made:
+
+* [#1 - Fix broken 8-bit Sound Blaster volume](https://github.com/msikma/allegro-4.2.2-xc/pull/1) - this was a longstanding bug with the 4.2.2 source
+* [#2 - Add `-fgnu89-inline` to `asmdef.exe` target to facilitate GCC 5+](https://github.com/msikma/allegro-4.2.2-xc/pull/2)
 
 Example
 -------
 
-An example repository will be made available soon.
+There's an [Allegro DOS example](https://github.com/msikma/allegro-dos-example) repository available with a small Hello World program.
 
 Copyright
 ---------

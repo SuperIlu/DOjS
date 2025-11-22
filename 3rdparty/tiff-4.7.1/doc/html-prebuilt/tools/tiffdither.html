@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>tiffdither &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tiffdump" href="tiffdump.html" />
+    <link rel="prev" title="tiffcrop" href="tiffcrop.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tiffdump.html" title="tiffdump"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tiffcrop.html" title="tiffcrop"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tiffdither</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="tiffdither">
+<h1>tiffdither<a class="headerlink" href="#tiffdither" title="Permalink to this heading">¶</a></h1>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<p><strong>tiffdither</strong> [ <em>options</em> ] <em>input.tif</em> <em>output.tif</em></p>
+</section>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p><strong class="program">tiffdither</strong> converts a single channel 8-bit greyscale image to a bilevel image
+using Floyd-Steinberg error propagation with thresholding.</p>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffdither-c">
+<span class="sig-name descname"><span class="pre">-c</span></span><span class="sig-prename descclassname"> <span class="pre">compress</span></span><a class="headerlink" href="#cmdoption-tiffdither-c" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the compression to use for data written to the output file:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Compression</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>none</p></td>
+<td><p>no compression</p></td>
+</tr>
+<tr class="row-odd"><td><p>packbits</p></td>
+<td><p>PackBits compression</p></td>
+</tr>
+<tr class="row-even"><td><p>lzw</p></td>
+<td><p>Lempel-Ziv &amp; Welch compression</p></td>
+</tr>
+<tr class="row-odd"><td><p>zip</p></td>
+<td><p>Deflate compression</p></td>
+</tr>
+<tr class="row-even"><td><p>g3</p></td>
+<td><p>CCITT Group 3 (T.4) compression</p></td>
+</tr>
+<tr class="row-odd"><td><p>g4</p></td>
+<td><p>for CCITT Group 4 (T.6) compression</p></td>
+</tr>
+</tbody>
+</table>
+<p>By default <strong class="program">tiffdither</strong>
+will compress data according to the value of the
+<code class="docutils literal notranslate"><span class="pre">Compression</span></code> tag found in the source file.</p>
+<p>The CCITT Group 3 and Group 4 compression algorithms can only
+be used with bilevel data.</p>
+<p>Group 3 compression can be specified together with several
+T.4-specific options:
+<code class="docutils literal notranslate"><span class="pre">1d</span></code> for 1-dimensional encoding,
+<code class="docutils literal notranslate"><span class="pre">2d</span></code> for 2-dimensional encoding, and
+<code class="docutils literal notranslate"><span class="pre">fill</span></code> to force each encoded scanline to be zero-filled so that the
+terminating EOL code lies on a byte boundary.
+Group 3-specific options are specified by appending a <code class="docutils literal notranslate"><span class="pre">:</span></code>-separated
+list to the <code class="docutils literal notranslate"><span class="pre">g3</span></code> option; e.g. <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">g3:2d:fill</span></code>
+to get 2D-encoded data with byte-aligned EOL codes.</p>
+<p>LZW compression can be specified together with a <code class="docutils literal notranslate"><span class="pre">predictor</span></code> value.
+A predictor value of 2 causes each scanline of the output image to undergo
+horizontal differencing before it is encoded; a value
+of 1 forces each scanline to be encoded without differencing.
+LZW-specific options are specified by appending a <code class="docutils literal notranslate"><span class="pre">:</span></code>-separated
+list to the <code class="docutils literal notranslate"><span class="pre">lzw</span></code> option; e.g. <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">lzw:2</span></code> for LZW
+compression with horizontal differencing.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffdither-f">
+<span class="sig-name descname"><span class="pre">-f</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffdither-f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify the bit fill order to use in writing output data.
+By default, <strong class="program">tiffdither</strong>
+will create a new file with the same fill order as the original.
+Specifying
+<strong class="command">-f lsb2msb</strong> will force data to be written with the
+<code class="docutils literal notranslate"><span class="pre">FillOrder</span></code> tag set to <code class="docutils literal notranslate"><span class="pre">LSB2MSB</span></code>, while
+<strong class="command">-f msb2lsb</strong> will force data to be written with the
+<code class="docutils literal notranslate"><span class="pre">FillOrder</span></code> tag set to <code class="docutils literal notranslate"><span class="pre">MSB2LSB</span></code>.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffdither-r">
+<span class="sig-name descname"><span class="pre">-r</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffdither-r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make each strip have no more than the given number of rows.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-tiffdither-t">
+<span class="sig-name descname"><span class="pre">-t</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-tiffdither-t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the threshold value for dithering.
+By default the threshold value is 128.</p>
+</dd></dl>
+
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h2>
+<p>The dither algorithm is taken from the <strong class="program">tiffmedian</strong>
+program (written by Paul Heckbert).</p>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p><a class="reference internal" href="pal2rgb.html"><span class="doc">pal2rgb</span></a> (1),
+<a class="reference internal" href="fax2tiff.html"><span class="doc">fax2tiff</span></a> (1),
+<a class="reference internal" href="tiffinfo.html"><span class="doc">tiffinfo</span></a> (1),
+<a class="reference internal" href="tiffcp.html"><span class="doc">tiffcp</span></a> (1),
+<a class="reference internal" href="tiff2bw.html"><span class="doc">tiff2bw</span></a> (3tiff)</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">tiffdither</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#options">Options</a></li>
+<li><a class="reference internal" href="#notes">Notes</a></li>
+<li><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="tiffcrop.html"
+                          title="previous chapter">tiffcrop</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="tiffdump.html"
+                          title="next chapter">tiffdump</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/tools/tiffdither.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tiffdump.html" title="tiffdump"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tiffcrop.html" title="tiffcrop"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">tiffdither</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

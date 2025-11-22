@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -384,30 +384,30 @@ static void f__ScenePolygon3D(js_State *J) {
  */
 static void f_VDebug(js_State *J) {
     if (LOGSTREAM) {
-    int vc = 0;
-    V3D_f **vtx = v3d_array(J, 1, &vc);
-    if (vtx) {
-        fprintf(LOGSTREAM, "Number of entries=%d\n", vc);
-        for (int i = 0; i < vc; i++) {
-            fprintf(LOGSTREAM, "  v[%d] = {x=%f, y=%f, z=%f, u=%f, v=%f, c=0x%X}\n", i, vtx[i]->x, vtx[i]->y, vtx[i]->z, vtx[i]->u, vtx[i]->v, vtx[i]->c);
+        int vc = 0;
+        V3D_f **vtx = v3d_array(J, 1, &vc);
+        if (vtx) {
+            fprintf(LOGSTREAM, "Number of entries=%d\n", vc);
+            for (int i = 0; i < vc; i++) {
+                fprintf(LOGSTREAM, "  v[%d] = {x=%f, y=%f, z=%f, u=%f, v=%f, c=0x%X}\n", i, vtx[i]->x, vtx[i]->y, vtx[i]->z, vtx[i]->u, vtx[i]->v, vtx[i]->c);
+            }
+        } else {
+            js_error(J, "Cannot convert vertices");
         }
-    } else {
-        js_error(J, "Cannot convert vertices");
-    }
-    fflush(LOGSTREAM);
+        fflush(LOGSTREAM);
 
-    free_v3d(vtx, vc);
-}
+        free_v3d(vtx, vc);
+    }
 }
 
 static void print_matrix(MATRIX_f *m) {
     if (LOGSTREAM) {
-    fprintf(LOGSTREAM, "%s={\n", "matrix");
-    for (int r = 0; r < 3; r++) {
-        fprintf(LOGSTREAM, "  |%3.4f, %3.4f, %3.4f|\n", m->v[r][0], m->v[r][1], m->v[r][2]);
-    }
-    fprintf(LOGSTREAM, "  {%3.4f, %3.4f, %3.4f}\n}\n", m->t[0], m->t[1], m->t[2]);
-    fflush(LOGSTREAM);
+        fprintf(LOGSTREAM, "%s={\n", "matrix");
+        for (int r = 0; r < 3; r++) {
+            fprintf(LOGSTREAM, "  |%3.4f, %3.4f, %3.4f|\n", m->v[r][0], m->v[r][1], m->v[r][2]);
+        }
+        fprintf(LOGSTREAM, "  {%3.4f, %3.4f, %3.4f}\n}\n", m->t[0], m->t[1], m->t[2]);
+        fflush(LOGSTREAM);
     }
 }
 

@@ -260,6 +260,9 @@ get the width of the drawing area.
 ### SizeY():number
 get the height of the drawing area.
 
+### GetScreenMode():number
+Get color depth info.
+
 ### ClearScreen(c:Color)
 clear the screen with given color.
 
@@ -392,6 +395,18 @@ This function determine the current default drive (1=A:, 2=B:, etc.).
 ### SetDrive(num:number):number
 This function set the current default drive based on drive (1=A:, 2=B:, etc.) and returns the number of available logical drives.
 
+### IsCDROM(num:number):boolean
+### IsFAT32(num:number):boolean
+### IsFixed(num:number):boolean
+### IsRAMDisk(num:number):boolean
+Check drive for given feature (1=A:, 2=B:, etc.).
+
+### GetFSType(num:number):string
+Get file system type (1=A:, 2=B:, etc.).
+
+### FreeSpace(drive_number:number):{"availClusters":number, "totalClusters":number, "bytesPerSector":number, "bytesPerCluster":number}
+Get free space info (1=A:, 2=B:, etc.).
+
 ### RealPath(path:string):string
 This function canonicalizes the input path.
 
@@ -438,6 +453,9 @@ Current frame rate.
 ### SetExitKey(key:number)
 Change the exit key from ESCAPE to any other keycode from jsboot/func.js.
 
+### SetExitMessage(msg:string)
+set an exit message when shutting down.
+
 ### SetMissingCharacter(key:number)
 Set the char to render in case of it missing from the current font.
 
@@ -452,6 +470,12 @@ Used to load a module. The functions exported from this module can be accessed u
 
 ### Include(filename:string)
 Used to load a module. The functions exported from this module will be put into the global context.
+
+### LoadLibrary(name:string)
+Load a DXE module.
+
+### GetLoadedLibraries():string[]
+get an array with the names of loaded libraries.
 
 ### ZipPrefix(fname:string):string
 Prefix a filename with the ZIP file the started script came from.
@@ -615,11 +639,8 @@ send data to parallel port.
 read parallel port status.
 
 ## TCP/IP
-### GetNetworkInterface():{"<interface>:{"inet": [], "netmask":[]}}
+### GetNetworkInterfaces(): {"eth0":{"inet":[192.168.1.2], "netmask":[255,255,255,0]}, "lo":{"inet":[127.0.0.1], "netmask":[255,0,0,0]}}
 Get the local IP addresses and netmasks.
-
-### GetNetworkMask():number[]
-Get the netmask.
 
 ### Resolve(hostname:string):number[]
 Resolve an IP address using DNS.
@@ -737,6 +758,9 @@ Add file to ZIP.
 ### zip.ExtractFile(entry_path:string, hdd_path:string)
 Extract file from ZIP.
 
+### zip.DeleteFile(entry_path:string)
+Delete file from ZIP.
+
 ### zip.ReadBytes(entry_name:string):number[]
 ### zip.ReadInts(entry_name:string):ByteArray
 Return the bytes from the zip entry as number array.
@@ -765,3 +789,82 @@ read a sector from a disk.
 
 ### RawWrite(disk:number, sector:number, data:number[])
 write a sector to disk
+
+## INI Files
+### ini = new IniFile(filename:string)
+Open a INI.
+
+### value = ini.Get([section:string], key:string)
+Get a value from INI file. If the section is omitted the key is search in all sections.
+
+## EXIF Files
+### ex = new Exif(filename:string)
+Open an EXIF.
+
+### values = ex.GetTags()
+Get all tags as key->value pairs.
+
+## VGM Files
+### VgmLoad(fname:string)
+load VGM file.
+
+### VgmPlay()
+start VGM playback.
+
+### VgmPos():number
+get current playback position.
+
+### VgmStop()
+stop playback.
+
+### VgmDiscard()
+free VGM ressources.
+
+## IntArray
+## ByteArray
+Fast array implementation for int32/uint8
+
+### ia = new IntArray()
+### ba = new ByteArray()
+### ia = new IntArray(s:string)
+### ba = new ByteArray(s:string)
+### ia = new IntArray(ar:number[])
+### ba = new ByteArray(ar:number[])
+create an IntArray/ByteArray
+
+### ia.Append(a:number[])
+### ba.Append(a:number[])
+append javascript array to Array
+
+### ia.Get(idx:number):number
+### ba.Get(idx:number):number
+get value from specific index
+
+### ia.Set(idx:number, val:number)
+### ba.Set(idx:number, val:number)
+set value at specific index
+
+### ia.Push(val:number)
+### ba.Push(val:number)
+append value to array.
+
+### ia.Pop():number
+### ba.Pop():number
+get and remove last entry
+
+### ia.Shift():number
+### ba.Shift():number
+get and remove first entry
+
+### ia.Clear()
+### ba.Clear()
+truncate the array to zero size
+
+### ia.ToArray():number[]
+### ba.ToArray():number[]
+convert to JS array.
+
+### ia.ToString():string
+### ba.ToString():string
+convert Array to a string
+

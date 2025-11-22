@@ -21,43 +21,6 @@ class Event { }
 class ArcInfo { }
 
 /**
- * Node addresses are arrays of 6 numbers between 0-255 (e.g. [1, 2, 3, 4, 5, 6]).
- * @typedef {object} IpcAddress
- */
-class IpxAddress { }
-
-/**
- * received IPX data packet.
- * @typedef {object} IpxPacket
- * @property {string} data the received data.
- * @property {IpxAddress} source address of the sending node.
- */
-class IpxPacket { }
-
-/**
- * @typedef {object} StatInfo
- * @property {string} atime file access timestamp.
- * @property {string} ctime file creation time.
- * @property {string} mtime file modification time.
- * @property {number} blksize file size in blocks.
- * @property {number} size file size in bytes.
- * @property {number} nlink number of sub entries.
- * @property {string} drive drive letter for the entry.
- * @property {boolean} is_blockdev true if this is a block device.
- * @property {boolean} is_chardev true if this is a character device.
- * @property {boolean} is_directory true if this is a directory.
- * @property {boolean} is_regular true if this is a regular file.
- */
-class StatInfo { }
-
-/**
- * @typedef {object} MemInfo
- * @property {number} total total amount of memory in the system.
- * @property {number} remaining number of available bytes.
- */
-class MemInfo { }
-
-/**
  * @typedef {object} Matrix
  * @property {number[][]} v the 3x3 matrix data.
  * @property {number[]} t the translation data.
@@ -151,6 +114,52 @@ class V3D { }
 }
  */
 class JoyInfo { }
+
+/**
+ * Node addresses are arrays of 6 numbers between 0-255 (e.g. [1, 2, 3, 4, 5, 6]).
+ * @typedef {object} IpcAddress
+ */
+class IpxAddress { }
+
+/**
+ * received IPX data packet.
+ * @typedef {object} IpxPacket
+ * @property {string} data the received data.
+ * @property {IpxAddress} source address of the sending node.
+ */
+class IpxPacket { }
+
+/**
+ * @typedef {object} StatInfo
+ * @property {string} atime file access timestamp.
+ * @property {string} ctime file creation time.
+ * @property {string} mtime file modification time.
+ * @property {number} blksize file size in blocks.
+ * @property {number} size file size in bytes.
+ * @property {number} nlink number of sub entries.
+ * @property {string} drive drive letter for the entry.
+ * @property {boolean} is_blockdev true if this is a block device.
+ * @property {boolean} is_chardev true if this is a character device.
+ * @property {boolean} is_directory true if this is a directory.
+ * @property {boolean} is_regular true if this is a regular file.
+ */
+class StatInfo { }
+
+/**
+ * @typedef {object} MemInfo
+ * @property {number} total total amount of memory in the system.
+ * @property {number} remaining number of available bytes.
+ */
+class MemInfo { }
+
+/**
+ * @typedef {object} FreeInfo
+ * @property {number} availClusters available clusters on drive.
+ * @property {number} totalClusters total clusters on drive.
+ * @property {number} bytesPerSector bytes per sector.
+ * @property {number} bytesPerCluster sectors per cluster.
+ */
+class FreeInfo { }
 
 /**
  * An array with four numbers (e.g. [192.168.1.2]).

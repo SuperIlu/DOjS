@@ -1,23 +1,20 @@
-# missing symbols in MSVCRT.DLL
-#	vsnprintf_s
-# missing symbols in WS2_32.DLL
-#	WASPoll
-#	freeaddrinfo
-#	getaddrinfo
+###
+# Makefile for cross compiling DOjS for Win32/WinXP using i486-w64-mingw32
 
 THIRDPARTY	= 3rdparty
 PLUGINS     = plugins
 MUJS		= $(THIRDPARTY)/mujs-1.0.5
 ALLEGRO		= $(THIRDPARTY)/allegro-4.3.3.1
 ZLIB		= $(THIRDPARTY)/zlib-1.3.1
-PNGLIB		= $(THIRDPARTY)/lpng1644
-KUBAZIP		= $(THIRDPARTY)/zip-0.3.2
+PNGLIB		= $(THIRDPARTY)/libpng-1.6.50
+KUBAZIP		= $(THIRDPARTY)/zip-0.3.5
 INI			= $(THIRDPARTY)/ini-20220806/src
-WEBP		= $(THIRDPARTY)/libwebp-1.3.2
+WEBP		= $(THIRDPARTY)/libwebp-1.6.0
 JPEG		= $(THIRDPARTY)/jpeg-9f
-TIFF		= $(THIRDPARTY)/tiff-4.6.0
-CURL		= $(THIRDPARTY)/curl-8.11.0
-MBEDTLS		= $(THIRDPARTY)/mbedtls-3.6.2
+TIFF		= $(THIRDPARTY)/tiff-4.7.1
+CURL_SRC	= $(THIRDPARTY)/curl-8.17.0
+CURL_BIN	= $(THIRDPARTY)/curl-win32
+MBEDTLS		= $(THIRDPARTY)/mbedtls-3.6.5
 
 LIB_ALLEGRO	= $(ALLEGRO)/win32/lib/alleg44.dll
 LIB_Z		= $(ZLIB)/libz.a
@@ -26,20 +23,23 @@ LIB_MUJS	= $(MUJS)/build/release/libmujs.a
 LIB_JPEG 	= $(JPEG)/libjpeg.a
 LIB_TIFF 	= $(TIFF)/win32/libtiff/libtiff.a
 LIB_WEBP 	= $(WEBP)/src/libwebp.a
-LIB_CURL	= $(CURL)/lib/libcurl.a
+LIB_CURL	= $(CURL_BIN)/lib/libcurl.a
 LIB_MBEDTLS = $(MBEDTLS)/library/libmbedtls.a
 
 # compiler
 SQLITE_CFLAGS	= \
+	-DSQLITE_FORCE_OS_TRACE=1 \
+	-DSQLITE_DEBUG_OS_TRACE=1 \
+	-DSQLITE_WIN32_NO_OVERLAPPED=1 \
 	-DSQLITE_THREADSAFE=0 \
 	-DSQLITE_DEFAULT_MEMSTATUS=0 \
 	-DSQLITE_MAX_MMAP_SIZE=0 \
 	-DSQLITE_OMIT_WAL=1 \
 	-DSQLITE_OMIT_LOAD_EXTENSION=1 \
-	-DSQLITE_ENABLE_8_3_NAMES=2 \
+	-DSQLITE_ENABLE_8_3_NAMES=1 \
 	-DSQLITE_ENABLE_LOCKING_STYLE=0
 
-CDEF     = -DLINUX=1 -DWINDOWS=1 -D__LINUX__ -DCURL_STATICLIB -DHTTP_ONLY -D_WIN32_WINNT=0x400 $(SQLITE_CFLAGS) -DGC_BEFORE_MALLOC #-DDEBUG_ENABLED #-DEDI_FAST  # -DMEMDEBUG 
+CDEF     = -DMBEDTLS_CONFIG_FILE='<$(realpath $(THIRDPARTY)/dojs_mbedtls_config.h)>' -DLINUX=1 -DWINDOWS=1 -D__LINUX__ -DCURL_STATICLIB -DHTTP_ONLY -D_WIN32_WINNT=0x0501 $(SQLITE_CFLAGS) -DGC_BEFORE_MALLOC -DDEBUG_ENABLED #-DEDI_FAST  # -DMEMDEBUG 
 CFLAGS   = -MMD -Wall -Wno-format -std=gnu99 -O2 -fomit-frame-pointer $(INCLUDES) -fgnu89-inline -Wmissing-prototypes $(CDEF)
 INCLUDES = \
 	-I$(realpath ./src) \
@@ -68,7 +68,7 @@ INCLUDES = \
 	-I$(realpath $(KUBAZIP))/src/linux \
 	-I$(realpath $(MBEDTLS))/include \
 	-I$(realpath $(MBEDTLS))/library \
-	-I$(realpath $(CURL))/include \
+	-I$(realpath $(CURL_SRC))/include \
 	-I$(realpath $(TIFF))/libtiff \
 	-I$(realpath $(WEBP))/src \
 	-I$(realpath $(JPEG)) \
@@ -77,19 +77,19 @@ INCLUDES = \
 
 
 # linker
-LIBS     =  3rdparty/libwebp-1.3.2/src/utils/utils.o -lalleg44.dll -lloadpng.dll -ljpeg -lmujs -lpng -lcurl -lwebp -lsharpyuv -lws2_32 -lmbedtls -lmbedx509 -lmbedcrypto -lm -lz -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lole32 -Wl,-Bstatic -ldinput -lddraw -ldxguid -Wl,-Bdynamic -lwinmm -Wl,-Bstatic -ldsound -Wl,-Bdynamic -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+LIBS     =  $(WEBP)/src/utils/utils.o -lalleg44.dll -lloadpng.dll -ljpeg -lmujs -lpng -lcurl -lwebp -lsharpyuv -lws2_32 -lmbedtls -lmbedx509 -lmbedcrypto -lm -lz -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lole32 -Wl,-Bstatic -ldinput -lddraw -ldxguid -Wl,-Bdynamic -lwinmm -Wl,-Bstatic -ldsound -Wl,-Bdynamic -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
 LDFLAGS  = -s \
-	-L$(MUJS)/build/release \
-	-L$(WEBP)/src \
-	-L$(WEBP)/sharpyuv \
-	-L$(ALLEGRO)/win32/lib \
-	-L$(ZLIB) \
-	-L$(PNGLIB) \
-	-L$(JPEG) \
-	-L$(TIFF)/win32/libtiff \
-	-L$(WEBP)/src \
-	-L$(CURL)/lib \
-	-L$(MBEDTLS)/library
+	-L$(realpath $(MUJS)/build/release) \
+	-L$(realpath $(WEBP)/src) \
+	-L$(realpath $(WEBP)/sharpyuv) \
+	-L$(realpath $(ALLEGRO)/win32/lib) \
+	-L$(realpath $(ZLIB)) \
+	-L$(realpath $(PNGLIB)) \
+	-L$(realpath $(JPEG)) \
+	-L$(realpath $(TIFF)/win32/libtiff) \
+	-L$(realpath $(WEBP)/src) \
+	-L$(realpath $(CURL_BIN)/lib) \
+	-L$(realpath $(MBEDTLS)/library)
 
 # output
 EXE      = dojs.exe
@@ -184,74 +184,74 @@ PARTS= \
 	$(BUILDDIR)/watt.o \
 	$(BUILDDIR)/socket.o
 
-all: $(EXE) JSBOOT.ZIP cacert.pem
+all: prereqs $(EXE) JSBOOT.ZIP CACERT.PEM
 
-prereqs: Makefile init liballegro libtiff libpng libmujs libwebp libcurl
+prereqs: Makefile liballegro libtiff libpng libmujs libwebp libcurl
 
-$(EXE): prereqs $(PARTS)
+$(EXE): $(PARTS)
 	$(CC) $(LDFLAGS) -o $@ $(PARTS) $(LIBS)
 
-$(BUILDDIR)/%.o: src/%.c prereqs
+$(BUILDDIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/sqlite.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/sqlite.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/jpeg.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/jpeg.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/qoi.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/qoi.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/webp.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/webp.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/curl.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/curl.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/noise.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/noise.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/noise.dxelib/src/%.c prereqs
+$(BUILDDIR)/%.o: plugins/noise.dxelib/src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/neural.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/neural.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/nanosvg.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/nanosvg.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/mpeg1.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/mpeg1.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/genpdf.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/genpdf.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/vorbis.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/vorbis.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/gifanim.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/gifanim.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/%.o: plugins/ogl.dxelib/%.c prereqs
+$(BUILDDIR)/%.o: plugins/ogl.dxelib/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/zip/src/%.o: $(KUBAZIP)/src/%.c prereqs
+$(BUILDDIR)/zip/src/%.o: $(KUBAZIP)/src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILDDIR)/ini/%.o: $(INI)/%.c prereqs
+$(BUILDDIR)/ini/%.o: $(INI)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 JSBOOT.ZIP: $(shell find jsboot/ -type f)
 	rm -f $@
 	zip -9 -r $@ jsboot/
 
-cacert.pem:
-	curl --remote-name --time-cond cacert.pem https://curl.se/ca/cacert.pem
+CACERT.PEM:
+	curl -o CACERT.PEM https://curl.se/ca/cacert.pem
 
-zip: all cacert.pem doc
+zip: all CACERT.PEM doc
 	rm -f $(RELZIP)
-	zip -9 -r $(RELZIP) $(EXE) dojs.ini LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) cacert.pem *.dll
+	zip -9 -r $(RELZIP) $(EXE) dojs.ini LICENSE *.md JSBOOT.ZIP examples/ $(DOCDIR) CACERT.PEM *.dll
 
 init: configure_tiff
 	$(MKDIRPRG) -p $(BUILDDIR) $(BUILDDIR)/loadpng $(BUILDDIR)/zip/src $(BUILDDIR)/ini $(BUILDDIR)/linux $(BUILDDIR)/PDFGen-master/ $(ALLEGRO)/win32
@@ -259,8 +259,8 @@ init: configure_tiff
 	#$(RMPRG) -f $(BUILDDIR)/DOjS.o
 
 libcurl: $(LIB_CURL)
-$(LIB_CURL): libmbedtls libz
-	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls TRIPLET=$(CROSS)
+$(LIB_CURL): $(LIB_MBEDTLS) $(LIB_Z) $(LIB_WATT)
+	(cd $(CURL_SRC) && $(SHPRG) ./cmake-win32.sh)
 
 libmbedtls: $(LIB_MBEDTLS)
 $(LIB_MBEDTLS):
@@ -285,7 +285,7 @@ $(TIFF)/win32/Makefile:
 
 libtiff: $(LIB_TIFF)
 $(LIB_TIFF): $(TIFF)/win32/Makefile 
-	$(MAKE) $(MPARA) -C $(TIFF)/win32
+	$(MAKE) $(MPARA) -C $(TIFF)/win32 tiff
 
 libjpeg: $(LIB_JPEG)
 $(LIB_JPEG):
@@ -336,15 +336,15 @@ mbedtlsclean:
 	$(FINDPRG) $(MBEDTLS) -name \*.d -exec rm {} +
 
 curlclean:
-	$(MAKE) $(MPARA) -C $(CURL)/lib -f Makefile.mk CFG=-zlib-mbedtls TRIPLET=$(CROSS) clean
-	$(RMPRG) -f $(LIB_CURL)
+	$(RMPRG) -rf $(CURL_BIN)
 
 clean:
 	rm -rf $(BUILDDIR)/
-	rm -f $(EXE) $(ZIP) JSLOG.TXT JSBOOT.ZIP cacert.pem
+	rm -f $(EXE) $(ZIP) JSLOG.TXT JSBOOT.ZIP CACERT.PEM
 
 distclean: clean alclean zclean pngclean jsclean webpclean distclean_tiff muclean jpegclean mbedtlsclean curlclean
 	rm -f *.dll
+	$(FINDPRG) $(MBEDTLS) -name \*.pyc -exec rm {} +
 
 .PHONY: clean distclean init
 

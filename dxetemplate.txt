@@ -22,12 +22,15 @@
 #include <sys/movedata.h>
 #include <sys/stat.h>
 #include <tcp.h>
+#include <poll.h>
 #include <termios.h>
 #include <time.h>
 #include <unistd.h>
 #include <zlib.h>
 #include <setjmp.h>
 #include <locale.h>
+#include <fnmatch.h>
+#include <pwd.h>
 
 #include "DOjS.h"
 #include "intarray.h"
@@ -45,7 +48,15 @@ extern unsigned long __udivmoddi4 (unsigned long A, unsigned long B, unsigned lo
 extern long __divmoddi4 (long A, long B, long *C);
 extern unsigned long __umoddi3 (unsigned long A, unsigned long B);
 
+
 // stdio/files
+fnmatch
+if_nametoindex
+llseek
+pipe
+fseeko
+getpwuid
+realpath
 close
 close_s
 closedir
@@ -95,6 +106,7 @@ sprintf
 sscanf
 stat
 strerror
+strerror_r
 unlink
 utimes
 vfprintf
@@ -114,6 +126,7 @@ clock
 delay
 gettimeofday
 gmtime
+gmtime_r
 localtime
 localtime_r
 sleep
@@ -132,6 +145,7 @@ memmove
 memset
 strcasecmp
 strcat
+strncat
 strchr
 strcmp
 strcpy
@@ -166,6 +180,8 @@ qsort
 raise
 realloc
 signal
+siglongjmp
+sigsetjmp
 longjmp
 setjmp
 sigaction
@@ -185,6 +201,10 @@ sin
 roundf
 log
 log10
+logf
+expf
+sqrtf
+__fpclassifyf
 
 // other
 bsearch
@@ -334,6 +354,7 @@ inflate
 inflateEnd
 inflateInit_
 inflateInit2_
+inflateReset2
 uncompress
 zlibVersion
 
@@ -367,12 +388,16 @@ Bitmap_fromRGBA
 // watt32
 _w32_inet_pton
 _watt_do_exit
+_w32_inet_ntop
+gethostname
+poll
 accept
 access
 basename
 bind
 chmod
 clearerr
+closesocket
 connect
 gai_strerror
 getaddrinfo

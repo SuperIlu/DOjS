@@ -1,0 +1,308 @@
+.\" Man page generated from reStructuredText.
+.
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.TH "FAX2TIFF" "1" "Sep 11, 2025" "4.7" "LibTIFF"
+.SH NAME
+fax2tiff \- create a TIFF Class F fax file from raw fax data
+.SH SYNOPSIS
+.sp
+\fBfax2tiff\fP [ \fIoptions\fP ] [ \fB\-o\fP \fIoutput.tif\fP ] \fIinput.raw\fP
+.SH DESCRIPTION
+.sp
+\fBfax2tiff\fP creates a TIFF file containing  CCITT
+Group 3 or Group 4 encoded data from one or more files containing \(dqraw\(dq
+Group 3 or Group 4 encoded data (typically obtained directly from a fax modem).
+By default, each row of data in the resultant TIFF
+file is 1\-dimensionally encoded and
+padded or truncated to 1728 pixels, as needed.
+The resultant image is a set of low resolution (98 lines/inch)
+or medium resolution (196 lines/inch)
+pages, each of which is a single strip of data.
+The generated file conforms to the TIFF
+Class F (FAX) specification for storing facsimile data.
+This means, in particular, that each page of the data does
+\fBnot\fP include the trailing
+\fI\(dqreturn to control\(dq\fP (\fBRTC\fP) code; as required
+for transmission by the CCITT Group 3 specifications.
+The old, \(dqclassic\(dq, format is created if the
+\fI\%\-c\fP option is used.
+(The Class F format can also be requested with the
+\fI\%\-f\fP option.)
+.sp
+The default name of the output image is \fBfax.tif\fP;
+this can be changed with the \fI\%\-o\fP option.
+Each input file is assumed to be a separate page of facsimile data
+from the same document.
+The order in which input files are specified on the command
+line is the order in which the resultant pages appear in the
+output file.
+.SH OPTIONS
+.sp
+Options that affect the interpretation of input data are:
+.INDENT 0.0
+.TP
+.B \-3
+Assume input data is CCITT Group 3 encoded (default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-4
+Assume input data is CCITT Group 4 encoded.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-U
+Assume input data is uncompressed (Group 3 or Group 4).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-1
+Assume input data is encoded with the 1\-dimensional version of the CCITT
+Group 3 Huffman encoding algorithm (default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-2
+Assume input data is 2\-dimensional version of the CCITT
+Group 3 Huffman encoding algorithm.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-P
+Assume input data is \fBnot\fP
+EOL\-aligned (default). This option has effect with Group 3 encoded input only.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-A
+Assume input data is EOL\-aligned. This option has effect with Group 3
+encoded input only.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-M
+Treat input data as having bits filled from most significant bit (\fBMSB\fP) to most least bit (\fBLSB\fP).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-L
+Treat input data as having bits filled from least significant bit (\fBLSB\fP) to most significant bit
+(\fBMSB\fP) (default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-B
+Assume input data was encoded with black as 0 and white as 1.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-W
+Assume input data was encoded with black as 1 and white as 0 (default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-R
+Specify the vertical resolution, in lines/inch, of the input images.
+By default input are assumed to have a vertical resolution of 196 lines/inch.
+If images are low resolution facsimile, a value of 98 lines/inch should
+be specified.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-X
+Specify the width, in pixels, of the input images.
+By default input are assumed to have a width of 1728 pixels.
+.UNINDENT
+.sp
+Options that affect the output file format are:
+.INDENT 0.0
+.TP
+.B \-o
+Specify the name of the output file.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-7
+Force output to be compressed with the CCITT
+Group 3 Huffman encoding algorithm (default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-8
+Force output to be compressed with the CCITT
+Group 4 Huffman encoding.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-u
+Force output to be uncompressed (Group 3 or Group 4).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-5
+Force output to be encoded with the 1\-dimensional version of the CCITT
+Group 3 Huffman encoding algorithm.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-6
+Force output to be encoded with the 2\-dimensional version of the CCITT
+Group 3 Huffman encoding algorithm (default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-a
+Force the last bit of each \fI\(dqEnd Of Line\(dq\fP (\fBEOL\fP)
+code to land on a byte boundary (default). This \(dqzero padding\(dq will
+be reflected in the contents of the \fBGroup3Options\fP
+tag of the resultant TIFF file. This option has effect with Group 3 encoded output only.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-p
+Do not EOL\-align output. This option has effect with Group 3 encoded
+output only.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-c
+Generate \(dqclassic\(dq Group 3 TIFF format.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-f
+Generate TIFF Class F (TIFF/F) format (default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-m
+Force output data to have bits filled from most significant bit (\fBMSB\fP)
+to most least bit (\fBLSB\fP).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-l
+Force output data to have bits filled from least significant bit (\fBLSB\fP)
+to most significant bit (\fBMSB\fP) (default).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-r
+Specify the number of rows (scanlines) in each strip of data
+written to the output file.
+By default (or when value \fB0\fP is specified), \fBtiffcp\fP
+attempts to set the rows/strip
+that no more than 8 kilobytes of data appear in a strip (with except of G3/G4
+compression schemes). If you specify special value \fB\-1\fP
+it will results in infinite number of the rows per strip. The entire image
+will be the one strip in that case. This is default in case of G3/G4 output
+compression schemes.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-s
+Stretch the input image vertically by writing each input row of
+data twice to the output file.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-v
+Force \fBfax2tiff\fP
+to print the number of rows of data it retrieved from the input file.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-z
+Force output to be compressed with the LZW encoding.
+.UNINDENT
+.SH DIAGNOSTICS
+.sp
+The following warnings and errors come from the decoding
+routines in the library.
+.sp
+\fB\(dqWarning, %s: Premature EOL at scanline %d (x %d).en\(dq\fP:
+.INDENT 0.0
+.INDENT 3.5
+The input data had a row that was shorter than the expected width.
+The row is padded with white.
+.UNINDENT
+.UNINDENT
+.sp
+\fB\(dq%s: Premature EOF at scanline %d (x %d).en\(dq\fP:
+.INDENT 0.0
+.INDENT 3.5
+The decoder ran out of data in the middle of a scanline.
+The resultant row is padded with white.
+.UNINDENT
+.UNINDENT
+.sp
+\fB\(dq%s: Bad code word at row %d, x %den\(dq\fP:
+.INDENT 0.0
+.INDENT 3.5
+An invalid Group 3 \fBcode\fP
+was encountered while decoding the input file.
+The row number and horizontal position is given.
+The remainder of the input row is discarded, while
+the corresponding output row is padded with white.
+.UNINDENT
+.UNINDENT
+.sp
+\fB\(dq%s: Bad 2D code word at scanline %d.en\(dq\fP:
+.INDENT 0.0
+.INDENT 3.5
+An invalid Group 4 or 2D Group 3 \fBcode\fP
+was encountered while decoding the input file.
+The row number and horizontal position is given.
+The remainder of the input row is discarded, while
+the corresponding output row is padded with white.
+.UNINDENT
+.UNINDENT
+.SH BUGS
+.sp
+Input data are assumed to have a a \(dqtop left\(dq orientation;
+it should be possible to override this assumption
+from the command line.
+.SH SEE ALSO
+.sp
+\(dqCCITT Recommendation T.4\(dq
+(Standardization of Group 3 Facsimile Apparatus for Document Transmission).
+.sp
+\(dqThe Spirit of TIFF Class F\(dq,
+an appendix to the TIFF 5.0 specification prepared by Cygnet Technologies.
+.sp
+\fI\%tiffinfo\fP (1),
+\fI\%tiffdither\fP (1),
+\fI\%tiffgt\fP (1),
+\fI\%libtiff\fP (3tiff)
+.SH AUTHOR
+LibTIFF contributors
+.SH COPYRIGHT
+1988-2025, LibTIFF contributors
+.\" Generated by docutils manpage writer.
+.

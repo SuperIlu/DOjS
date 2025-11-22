@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>BigTIFF Design &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LibTIFF Coverage of the BigTIFF Specification" href="coverage-bigtiff.html" />
+    <link rel="prev" title="LibTIFF Coverage of the TIFF 6.0 Specification" href="coverage.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="coverage-bigtiff.html" title="LibTIFF Coverage of the BigTIFF Specification"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="coverage.html" title="LibTIFF Coverage of the TIFF 6.0 Specification"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">TIFF File Format Specification</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">BigTIFF Design</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="bigtiff-design">
+<h1>BigTIFF Design<a class="headerlink" href="#bigtiff-design" title="Permalink to this heading">¶</a></h1>
+<p>The classic TIFF file format uses 32bit offsets and, as such, is limited to 4 gigabytes.
+The <strong>BigTIFF</strong> design details a 64-bit (larger than 4GB) TIFF format specification.
+The design is based on a proposal by Steve Carlsen of Adobe, with input
+from various other parties.</p>
+<section id="overview-of-bigtiff-extension">
+<h2>Overview of BigTIFF Extension<a class="headerlink" href="#overview-of-bigtiff-extension" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The Version ID, in header bytes 2-3, formerly decimal 42, changes to <strong>43</strong> for BigTIFF.</p></li>
+<li><p>Header bytes 4-5 contain the decimal number <strong>8</strong>.</p>
+<ul>
+<li><p>If there is some other number here, a reader should give up.</p></li>
+<li><p>This is to provide a nice way to move to 16-byte pointers some day.</p></li>
+</ul>
+</li>
+<li><p>Header bytes 6-7 are reserved and must be <strong>zero</strong>.</p>
+<ul>
+<li><p>If they're not, a reader should give up.</p></li>
+</ul>
+</li>
+<li><p>Header bytes 8-15 contain the 8-byte offset to the first IFD.</p></li>
+<li><p>Value/Offset fields are 8 bytes long, and take up bytes 8-15 in an IFD entry.</p>
+<ul>
+<li><p>If the value is ≤ 8 bytes, it must be stored in the field.</p></li>
+<li><p>All values must begin at an 8-byte-aligned address.</p></li>
+</ul>
+</li>
+<li><p>8-byte offset to the Next_IFD, at the end of an IFD.</p></li>
+<li><p>To keep IFD entries 8-byte-aligned, we begin with an 8-byte
+(instead of 2-byte) count of the number of directory entries.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">TIFFDataTypes</span></code> of <code class="docutils literal notranslate"><span class="pre">TIFF_LONG8</span></code> (= 16), an 8-byte unsigned int,
+and <code class="docutils literal notranslate"><span class="pre">TIFF_SLONG8</span></code> (= 17), an 8-byte signed int.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">TIFFDataType</span></code> <code class="docutils literal notranslate"><span class="pre">TIFF_IFD8</span></code> (=18) an 8-byte IFD offset.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StripOffsets</span></code> and <code class="docutils literal notranslate"><span class="pre">TileOffsets</span></code> and <code class="docutils literal notranslate"><span class="pre">ByteCounts</span></code> may be <code class="docutils literal notranslate"><span class="pre">TIFF_LONG8</span></code>
+or the traditionally allowed <code class="docutils literal notranslate"><span class="pre">TIFF_LONG</span></code> or <code class="docutils literal notranslate"><span class="pre">TIFF_SHORT</span></code>.</p></li>
+<li><p>The proposed extension is <code class="file docutils literal notranslate"><span class="pre">.tf8</span></code> or <code class="file docutils literal notranslate"><span class="pre">.btf</span></code>, and call it &quot;BigTIFF&quot;.</p></li>
+</ul>
+<p>Otherwise, it's just like &quot;original TIFF&quot; or &quot;classic TIFF&quot;.</p>
+</section>
+<section id="bigtiff-structures-compared-to-classic-tiff">
+<h2>BigTIFF Structures compared to Classic TIFF<a class="headerlink" href="#bigtiff-structures-compared-to-classic-tiff" title="Permalink to this heading">¶</a></h2>
+<section id="tiff-and-bigtiff-file-header">
+<h3>TIFF and BigTIFF File Header<a class="headerlink" href="#tiff-and-bigtiff-file-header" title="Permalink to this heading">¶</a></h3>
+<p>Here's the classic TIFF file header ...</p>
+<table class="docutils align-left" id="id1" style="width: 90%">
+<caption><span class="caption-text">Classic File Header</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Datatype</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>UInt16</p></td>
+<td><p>Byte order indication</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>UInt16</p></td>
+<td><p>Version number (always 42)</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>UInt32</p></td>
+<td><p>Offset to first IFD</p></td>
+</tr>
+</tbody>
+</table>
+<p>And this is the <strong>BigTIFF</strong> file header ...</p>
+<table class="docutils align-left" id="id2" style="width: 90%">
+<caption><span class="caption-text">BigTIFF File Header</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Datatype</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>UInt16</p></td>
+<td><p>Byte order indication</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>UInt16</p></td>
+<td><p>Version number, always <strong>43</strong> for BigTIFF</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>UInt16</p></td>
+<td><div class="line-block">
+<div class="line">Bytesize of offsets.</div>
+<div class="line">Always 8 in BigTIFF, it provides a nice way to move to 16-byte pointers some day.</div>
+<div class="line">If there is some other value here, a reader should give up.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>UInt16</p></td>
+<td><div class="line-block">
+<div class="line">Reserved, always 0.</div>
+<div class="line">If there is some other value here, a reader should give up.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p>UInt64</p></td>
+<td><p>Offset to first IFD</p></td>
+</tr>
+</tbody>
+</table>
+<p>The last members in both variants of the structure point to the first IFD
+(Image File Directory).
+This IFD can be located anywhere in the file. Every 'page' in a multi-page TIFF,
+classic TIFF or BigTIFF, is represented by exactly one IFD.</p>
+</section>
+<section id="tiff-and-bigtiff-image-file-directory-structure">
+<h3>TIFF and BigTIFF Image File Directory Structure<a class="headerlink" href="#tiff-and-bigtiff-image-file-directory-structure" title="Permalink to this heading">¶</a></h3>
+<p>Here's a more detailed view of the classic IFD ...</p>
+<table class="docutils align-left" id="id3">
+<caption><span class="caption-text">Classic IFD</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Datatype</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>UInt16</p></td>
+<td><p>Number of tags in IFD</p></td>
+</tr>
+<tr class="row-odd"><td><p>2 + x * 12</p></td>
+<td><p>Tag structure</p></td>
+<td><p>Tag data</p></td>
+</tr>
+<tr class="row-even"><td><p>2 + (Number of tags in IFD) * 12</p></td>
+<td><p>UInt32</p></td>
+<td><div class="line-block">
+<div class="line">Offset to next IFD, if there is a next IFD,</div>
+<div class="line">0 otherwise.</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>And this is how the IFD looks like in the <strong>BigTIFF</strong> file format ...</p>
+<table class="docutils align-left" id="id4">
+<caption><span class="caption-text">BigTIFF IFD</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Datatype</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>UInt64</p></td>
+<td><p>Number of tags in IFD</p></td>
+</tr>
+<tr class="row-odd"><td><p>8 + x * 20</p></td>
+<td><p>Tag structure</p></td>
+<td><p>Tag data</p></td>
+</tr>
+<tr class="row-even"><td><p>8 + (Number of tags in IFD) * 20</p></td>
+<td><p>UInt64</p></td>
+<td><div class="line-block">
+<div class="line">Offset to next IFD, if there is a next IFD,</div>
+<div class="line">0 otherwise.</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tiff-and-bigtiff-tag-structure">
+<h3>TIFF and BigTIFF Tag Structure<a class="headerlink" href="#tiff-and-bigtiff-tag-structure" title="Permalink to this heading">¶</a></h3>
+<p>The tags in this IFD should be sorted by code, in both classic TIFF and BigTIFF.
+Every tag takes up exactly 12 bytes in classic TIFF, and looks like this ...</p>
+<table class="docutils align-left" id="id5">
+<caption><span class="caption-text">Classic Tag Structure</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Datatype</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>UInt16</p></td>
+<td><p>Tag identifying code</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>UInt16</p></td>
+<td><p>Datatype of tag data</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>UInt32</p></td>
+<td><p>Number of values</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><div class="line-block">
+<div class="line">x * tag data datatype</div>
+<div class="line">or UInt32 offset</div>
+</div>
+</td>
+<td><div class="line-block">
+<div class="line">Tag data</div>
+<div class="line">or offset to tag data</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This same tag structure, in <strong>BigTIFF</strong>, takes up 20 bytes, and looks like this ...</p>
+<table class="docutils align-left" id="id6">
+<caption><span class="caption-text">BigTIFF Tag Structure</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Offset</p></th>
+<th class="head"><p>Datatype</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p>UInt16</p></td>
+<td><p>Tag identifying code</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>UInt16</p></td>
+<td><p>Datatype of tag data</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>UInt64</p></td>
+<td><p>Number of values</p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><div class="line-block">
+<div class="line">x * tag data datatype</div>
+<div class="line">or UInt64 offset</div>
+</div>
+</td>
+<td><div class="line-block">
+<div class="line">Tag data</div>
+<div class="line">or offset to tag data</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The same rule for 'inlining' the tag data applies to both classic TIFF and BigTIFF,
+only the threshold size differs.
+In classic TIFF, the tag data was written inside the tag structure, in the IFD,
+if its size was smaller than or equal to 4 bytes. Otherwise, it's written elsewhere,
+and pointed to.
+In BigTIFF, the tag data is written inside the tag structure, in the IFD,
+if its size is smaller than or equal to 8 bytes.</p>
+</section>
+</section>
+<section id="other-miscellaneous-details">
+<h2>Other miscellaneous details<a class="headerlink" href="#other-miscellaneous-details" title="Permalink to this heading">¶</a></h2>
+<p>Amongst the suggested file extensions are 'tif', 'tf8' and 'btf'.</p>
+<p>Three datatypes are added to classic TIFF:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TIFF_LONG8</span></code> = 16, being unsigned 8-byte (64-bit) integer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TIFF_SLONG8</span></code> = 17, being signed 8-byte (64-bit) integer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TIFF_IFD8</span></code> = 18, being a new unsigned 8-byte (64-bit) IFD offset.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">StripOffsets</span></code>, <code class="docutils literal notranslate"><span class="pre">StripByteCounts</span></code>, <code class="docutils literal notranslate"><span class="pre">TileOffsets</span></code>, and <code class="docutils literal notranslate"><span class="pre">TileByteCounts</span></code> tags are allowed
+to have the datatype <code class="docutils literal notranslate"><span class="pre">TIFF_LONG8</span></code> in BigTIFF. Old datatypes <code class="docutils literal notranslate"><span class="pre">TIFF_LONG</span></code>, and <code class="docutils literal notranslate"><span class="pre">TIFF_SHORT</span></code>
+where allowed in the TIFF 6.0 specification, are still valid in BigTIFF, too.</p>
+<p>Likewise, tags that point to other IFDs, like e.g. the SubIFDs tag, are now allowed
+to have the datatype <code class="docutils literal notranslate"><span class="pre">TIFF_IFD8</span></code> in BigTIFF. Again, the old datatypes TIFF_IFD,
+and the hardly recommendable <code class="docutils literal notranslate"><span class="pre">TIFF_LONG</span></code>, are still valid, too.</p>
+</section>
+<section id="samples">
+<h2>Samples<a class="headerlink" href="#samples" title="Permalink to this heading">¶</a></h2>
+<p>BigTIFF sample file BigTIFFSamples.zip contains a series of 8 different BigTIFF files.
+Especially note the BigTIFFSamples.html file in this zip, documenting their characteristics.</p>
+<p>That sample file from Joris Van Damme can still be found at the Wayback Machine:
+<a class="reference external" href="https://web.archive.org/web/20240329145231/https://www.awaresystems.be/imaging/tiff/bigtiff/BigTIFFSamples.zip">BigTIFF Example files</a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">BigTIFF Design</a><ul>
+<li><a class="reference internal" href="#overview-of-bigtiff-extension">Overview of BigTIFF Extension</a></li>
+<li><a class="reference internal" href="#bigtiff-structures-compared-to-classic-tiff">BigTIFF Structures compared to Classic TIFF</a><ul>
+<li><a class="reference internal" href="#tiff-and-bigtiff-file-header">TIFF and BigTIFF File Header</a></li>
+<li><a class="reference internal" href="#tiff-and-bigtiff-image-file-directory-structure">TIFF and BigTIFF Image File Directory Structure</a></li>
+<li><a class="reference internal" href="#tiff-and-bigtiff-tag-structure">TIFF and BigTIFF Tag Structure</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-miscellaneous-details">Other miscellaneous details</a></li>
+<li><a class="reference internal" href="#samples">Samples</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="coverage.html"
+                          title="previous chapter">LibTIFF Coverage of the TIFF 6.0 Specification</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="coverage-bigtiff.html"
+                          title="next chapter">LibTIFF Coverage of the BigTIFF Specification</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/specification/bigtiff.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="coverage-bigtiff.html" title="LibTIFF Coverage of the BigTIFF Specification"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="coverage.html" title="LibTIFF Coverage of the TIFF 6.0 Specification"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >TIFF File Format Specification</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">BigTIFF Design</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

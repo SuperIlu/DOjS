@@ -1,8 +1,8 @@
 all: $(DXE_NAME) check_exports
 
 clean distclean:
-	rm -rf *.DXE *.o *.undef
-	find . -name \*.d -exec rm {} +
+	$(RMPRG) -rf *.DXE *.o *.undef
+	$(FINDPRG) . -name \*.d -exec rm {} +
 
 %.o: %.c
 	$(CC) -o $@ -c $(CFLAGS) $(DXE_CFLAGS) $<
@@ -10,7 +10,7 @@ clean distclean:
 %.DXE: %.o $(DXE_FILES)
 	# $(DXE3GEN) -o $@ $^ $(DXE_LDFLAGS) -U -E _init_ -E _shutdown_ -V | tee $(basename $@).undef | sort
 	$(DXE3GEN) -o $@ $^ $(DXE_LDFLAGS) -U -E _init_ -E _shutdown_ -V > $(basename $@).undef
-	cp $@ $(DOJSPATH)
+	$(CPPRG) $@ $(DOJSPATH)
 
 check_exports: $(DXE_NAME) $(DOJSPATH)/$(DXE_TEMPLATE)
-	python3 $(DOJSPATH)/check_exports.py $(DOJSPATH)/$(DXE_TEMPLATE) $(basename $<).undef
+	$(PYTHONPRG) $(DOJSPATH)/check_exports.py $(DOJSPATH)/$(DXE_TEMPLATE) $(basename $<).undef

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ var fnt;
 function setup() {
 	fnt = new Font(JSBOOTPATH + "fonts/pc6x8.fnt");
 	var cur = Stat('.');
-	tree = buildTree("c:", "");
+	tree = buildTree("c:", "tmp");
 }
 
 /**

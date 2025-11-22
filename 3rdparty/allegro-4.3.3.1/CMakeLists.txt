@@ -22,7 +22,7 @@
 # CMake setup
 #
 
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 if(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif(COMMAND cmake_policy)
@@ -964,7 +964,10 @@ if(UNIX)
         set(target ${name})
 
         # For static linking: get extra libraries to link with.
-        get_target_property(link_with ${target} static_link_with)
+        if (TARGET ${name})
+            # Do something when target found
+            get_target_property(link_with ${target} static_link_with)
+        endif()
 
         configure_file(
             misc/${name}.pc.in

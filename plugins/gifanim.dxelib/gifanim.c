@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2019-2021 Andre Seidelt <superilu@yahoo.com>
+Copyright (c) 2019-2025 Andre Seidelt <superilu@yahoo.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,10 @@ SOFTWARE.
 
 #include "DOjS.h"
 
-#include "AnimatedGIF-1.4.7/src/AnimatedGIF.h"
-#include "AnimatedGIF-1.4.7/src/gif.inl"
+#include "AnimatedGIF-2.2.0/src/AnimatedGIF.h"
+#include "AnimatedGIF-2.2.0/src/gif.inl"
 
-void init_gifanim(js_State *J);
+void init_gifanim(js_State* J);
 
 /************
 ** defines **
@@ -62,7 +62,7 @@ typedef struct __gifanim {
  * @param color
  * @param gif
  */
-static void GIF_drawPixel(uint32_t x, uint32_t y, uint16_t color, gifanim_t *gif) {
+static void GIF_drawPixel(uint32_t x, uint32_t y, uint16_t color, gifanim_t* gif) {
     int r = (color >> 8) & 0xFF;
     int g = (color >> 3) & 0xFC;
     int b = (color << 3) & 0xFF;
@@ -75,15 +75,15 @@ static void GIF_drawPixel(uint32_t x, uint32_t y, uint16_t color, gifanim_t *gif
  *
  * @param pDraw callback struct from AnimatedGIF
  */
-static void GIF_DrawCallback(GIFDRAW *pDraw) {
-    gifanim_t *user = (gifanim_t *)pDraw->pUser;
+static void GIF_DrawCallback(GIFDRAW* pDraw) {
+    gifanim_t* user = (gifanim_t*)pDraw->pUser;
 
     if (!user->skip) {
         int y = pDraw->iY + pDraw->y;  // current line
 
-        uint8_t *s = pDraw->pPixels;
+        uint8_t* s = pDraw->pPixels;
 
-        uint16_t *usPalette = pDraw->pPalette;
+        uint16_t* usPalette = pDraw->pPalette;
         if (pDraw->ucHasTransparency) {  // if transparency used
             for (int x = 0; x < pDraw->iWidth; x++) {
                 int c = *s++;
@@ -104,8 +104,8 @@ static void GIF_DrawCallback(GIFDRAW *pDraw) {
  *
  * @param J VM state.
  */
-static void GIF_Finalize(js_State *J, void *data) {
-    gifanim_t *g = (gifanim_t *)data;
+static void GIF_Finalize(js_State* J, void* data) {
+    gifanim_t* g = (gifanim_t*)data;
 
     if (g->is_open) {
         GIF_close(&g->gif);
@@ -120,18 +120,18 @@ static void GIF_Finalize(js_State *J, void *data) {
  *
  * @param J VM state.
  */
-static void new_GIF(js_State *J) {
+static void new_GIF(js_State* J) {
     GIFINFO info;
 
     NEW_OBJECT_PREP(J);
 
-    gifanim_t *g = calloc(1, sizeof(gifanim_t));
+    gifanim_t* g = calloc(1, sizeof(gifanim_t));
     if (!g) {
         JS_ENOMEM(J);
         return;
     }
 
-    const char *fname = js_tostring(J, 1);
+    const char* fname = js_tostring(J, 1);
     if (!GIF_openFile(&g->gif, fname, GIF_DrawCallback)) {
         js_error(J, "Could not open GIF '%s'.", fname);
         free(g);
@@ -174,8 +174,8 @@ static void new_GIF(js_State *J) {
  *
  * @param J VM state.
  */
-static void GIF_Close(js_State *J) {
-    gifanim_t *g = js_touserdata(J, 0, TAG_GIF);
+static void GIF_Close(js_State* J) {
+    gifanim_t* g = js_touserdata(J, 0, TAG_GIF);
 
     if (g->is_open) {
         GIF_close(&g->gif);
@@ -189,9 +189,9 @@ static void GIF_Close(js_State *J) {
  *
  * @param J VM state.
  */
-static void GIF_GetComment(js_State *J) {
-    gifanim_t *g = js_touserdata(J, 0, TAG_GIF);
-    char *comment = malloc(g->gif.sCommentLen);
+static void GIF_GetComment(js_State* J) {
+    gifanim_t* g = js_touserdata(J, 0, TAG_GIF);
+    char* comment = malloc(g->gif.sCommentLen);
     if (!comment) {
         JS_ENOMEM(J);
         return;
@@ -207,9 +207,9 @@ static void GIF_GetComment(js_State *J) {
  *
  * @param J VM state.
  */
-static void GIF_PlayFrame(js_State *J) {
+static void GIF_PlayFrame(js_State* J) {
     int nextDelay;
-    gifanim_t *g = js_touserdata(J, 0, TAG_GIF);
+    gifanim_t* g = js_touserdata(J, 0, TAG_GIF);
 
     g->x = js_toint16(J, 1);
     g->y = js_toint16(J, 2);
@@ -231,9 +231,9 @@ static void GIF_PlayFrame(js_State *J) {
  *
  * @param J VM state.
  */
-static void GIF_SkipFrame(js_State *J) {
+static void GIF_SkipFrame(js_State* J) {
     int nextDelay;
-    gifanim_t *g = js_touserdata(J, 0, TAG_GIF);
+    gifanim_t* g = js_touserdata(J, 0, TAG_GIF);
 
     g->skip = true;
     int res = GIF_playFrame(&g->gif, &nextDelay, g);
@@ -253,7 +253,7 @@ static void GIF_SkipFrame(js_State *J) {
  *
  * @param J VM state.
  */
-void init_gifanim(js_State *J) {
+void init_gifanim(js_State* J) {
     LOGF("%s\n", __PRETTY_FUNCTION__);
 
     js_newobject(J);

@@ -1,0 +1,37 @@
+# modified for DOjS by Andre Seidelt
+
+# To compile libsmaker.a
+#
+#   make 
+#
+
+INCLUDE_PATH=.
+
+CFLAGS=-MMD -Os -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
+             -Wstrict-prototypes -Wmissing-prototypes -I$(INCLUDE_PATH) -march=i386 -mtune=i586
+
+LIBS=libsmacker.a
+
+OBJS = smacker.o smk_bitstream.o smk_hufftree.o
+
+all: $(LIBS)
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBS): $(OBJS) $(OBJA)
+	$(AR) cr $@ $(OBJS) $(OBJA)
+
+# INCLUDE_PATH and LIBRARY_PATH were set for [make] in djgpp.env .
+
+.PHONY : uninstall clean
+
+clean:
+	$(RM) *.d
+	$(RM) *.o
+	$(RM) $(LIBS)
+
+DEPS := $(wildcard *.d)
+ifneq ($(DEPS),)
+include $(DEPS)
+endif

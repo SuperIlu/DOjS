@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>fax2ps &#8212; LibTIFF 4.7.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b849a4e9" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinxdoc.css?v=0a676766" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=3b5d5a7b"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="fax2tiff" href="fax2tiff.html" />
+    <link rel="prev" title="TIFF Tools Overview" href="../tools.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="fax2tiff.html" title="fax2tiff"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../tools.html" title="TIFF Tools Overview"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">fax2ps</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="fax2ps">
+<h1>fax2ps<a class="headerlink" href="#fax2ps" title="Permalink to this heading">¶</a></h1>
+<section id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this heading">¶</a></h2>
+<p><strong>fax2ps</strong> [ <em>options</em> ] [ <em>file …</em> ]</p>
+</section>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this heading">¶</a></h2>
+<p><strong class="program">fax2ps</strong> reads one or more TIFF
+facsimile image files and prints a compressed form of
+PostScript on the standard output that is suitable for printing.</p>
+<p>By default, each page is scaled to reflect the
+image dimensions and resolutions stored in the file.
+The <a class="reference internal" href="#cmdoption-fax2ps-x"><code class="xref std std-option docutils literal notranslate"><span class="pre">-x</span></code></a> and <a class="reference internal" href="#cmdoption-fax2ps-y"><code class="xref std std-option docutils literal notranslate"><span class="pre">-y</span></code></a>
+options can be used to specify the horizontal and vertical
+image resolutions (lines/inch), respectively.
+If the <a class="reference internal" href="#cmdoption-fax2ps-S"><code class="xref std std-option docutils literal notranslate"><span class="pre">-S</span></code></a>
+option is specified, each page is scaled to fill an output page.
+The default output page is 8.5 by 11 inches.
+Alternate page dimensions can be specified in inches with the
+<a class="reference internal" href="#cmdoption-fax2ps-W"><code class="xref std std-option docutils literal notranslate"><span class="pre">-W</span></code></a> and <a class="reference internal" href="#cmdoption-fax2ps-H"><code class="xref std std-option docutils literal notranslate"><span class="pre">-H</span></code></a>
+options.</p>
+<p>By default <strong class="program">fax2ps</strong>
+generates PostScript for all pages in the file.
+The <a class="reference internal" href="#cmdoption-fax2ps-p"><code class="xref std std-option docutils literal notranslate"><span class="pre">-p</span></code></a>
+option can be used to select one or more pages from
+a multi-page document.</p>
+<p><strong class="program">fax2ps</strong>
+generates a compressed form of PostScript that is
+optimized for sending pages of text to a PostScript
+printer attached to a host through a low-speed link (such
+as a serial line).
+Each output page is filled with white and then only
+the black areas are drawn.
+The PostScript specification of the black drawing operations
+is optimized by using a special font that encodes the
+move-draw operations required to fill
+the black regions on the page.
+This compression scheme typically results in a substantially
+reduced PostScript description, relative to the straightforward
+imaging of the page with a PostScript
+<code class="docutils literal notranslate"><span class="pre">image</span></code>
+operator.
+This algorithm can, however, be ineffective
+for continuous-tone and white-on-black images.
+For these images, it sometimes is more efficient to send
+the raster bitmap image directly; see
+.BR tiff2ps (1).</p>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fax2ps-p">
+<span class="sig-name descname"><span class="pre">-p</span></span><span class="sig-prename descclassname"> <span class="pre">number</span></span><a class="headerlink" href="#cmdoption-fax2ps-p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print only the indicated page.
+Multiple pages may be printed by specifying
+this option more than once.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fax2ps-x">
+<span class="sig-name descname"><span class="pre">-x</span></span><span class="sig-prename descclassname"> <span class="pre">resolution</span></span><a class="headerlink" href="#cmdoption-fax2ps-x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use <em>resolution</em>
+as the horizontal resolution, in dots/inch, of the image data.
+By default this value is taken from the file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fax2ps-y">
+<span class="sig-name descname"><span class="pre">-y</span></span><span class="sig-prename descclassname"> <span class="pre">resolution</span></span><a class="headerlink" href="#cmdoption-fax2ps-y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use <em>resolution</em>
+as the vertical resolution, in lines/inch, of the image data.
+By default this value is taken from the file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fax2ps-S">
+<span class="sig-name descname"><span class="pre">-S</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-fax2ps-S" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale each page of image data to fill the output page dimensions.
+By default images are presented according to the dimension
+information recorded in the TIFF file.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fax2ps-W">
+<span class="sig-name descname"><span class="pre">-W</span></span><span class="sig-prename descclassname"> <span class="pre">width</span></span><a class="headerlink" href="#cmdoption-fax2ps-W" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use <em>width</em>
+as the width, in inches, of the output page.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-fax2ps-H">
+<span class="sig-name descname"><span class="pre">-H</span></span><span class="sig-prename descclassname"> <span class="pre">height</span></span><a class="headerlink" href="#cmdoption-fax2ps-H" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use <em>height</em>
+as the height, in inches, of the output page.</p>
+</dd></dl>
+
+</section>
+<section id="diagnostics">
+<h2>Diagnostics<a class="headerlink" href="#diagnostics" title="Permalink to this heading">¶</a></h2>
+<p>Some messages about malformed TIFF images come from the
+TIFF library.</p>
+<p>Various messages about badly formatted facsimile images
+may be generated due to transmission errors in received
+facsimile.
+<strong class="program">fax2ps</strong>
+attempts to recover from such data errors by resynchronizing
+decoding at the end of the current scanline.
+This can result in long horizontal black lines in the resultant
+PostScript image.</p>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading">¶</a></h2>
+<p>If the destination printer supports PostScript Level II then
+it is always faster to just send the encoded bitmap generated
+by the <strong class="program">tiff2ps</strong> program.</p>
+</section>
+<section id="bugs">
+<h2>Bugs<a class="headerlink" href="#bugs" title="Permalink to this heading">¶</a></h2>
+<p><strong class="program">fax2ps</strong>
+should probably figure out when it is doing a poor
+job of compressing the output and just generate
+PostScript to image the bitmap raster instead.</p>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h2>
+<p>:doc`tiff2ps` (1), <a class="reference internal" href="../functions/libtiff.html"><span class="doc">libtiff</span></a> (3tiff)</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">fax2ps</a><ul>
+<li><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#options">Options</a></li>
+<li><a class="reference internal" href="#diagnostics">Diagnostics</a></li>
+<li><a class="reference internal" href="#notes">Notes</a></li>
+<li><a class="reference internal" href="#bugs">Bugs</a></li>
+<li><a class="reference internal" href="#see-also">See also</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../tools.html"
+                          title="previous chapter">TIFF Tools Overview</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="fax2tiff.html"
+                          title="next chapter">fax2tiff</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/tools/fax2ps.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="fax2tiff.html" title="fax2tiff"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../tools.html" title="TIFF Tools Overview"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">LibTIFF 4.7.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >TIFF Tools Overview</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">fax2ps</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 1988-2025, LibTIFF contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+    </div>
+  </body>
+</html>

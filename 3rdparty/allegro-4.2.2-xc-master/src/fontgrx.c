@@ -19,11 +19,14 @@
 /* magic number for GRX format font files */
 #define FONTMAGIC 0x19590214L
 
+
+
 /* load_grx_font:
  *  Loads a GRX font from PACKFILE. The palette and param
  *  parameters are ignored by this function.
  */
-FONT *load_grx_font_pf(PACKFILE *pack, RGB *pal, void *param) {
+FONT *load_grx_font_pf(PACKFILE *pack, RGB *pal, void *param) 
+{
     FONT *f;
     FONT_MONO_DATA *mf;
     FONT_GLYPH **gl;
@@ -60,7 +63,8 @@ FONT *load_grx_font_pf(PACKFILE *pack, RGB *pal, void *param) {
         for (i = 0; i < 38; i++) pack_getc(pack);
         wtab = _AL_MALLOC_ATOMIC(sizeof(int) * num);
         for (i = 0; i < num; i++) wtab[i] = pack_igetw(pack);
-    } else {
+    } 
+    else {
         for (i = 0; i < 38; i++) pack_getc(pack);
     }
 
@@ -99,7 +103,8 @@ FONT *load_grx_font(AL_CONST char *filename, RGB *pal, void *param) {
 /* load_grx_or_bios_font:
  *  Loads a GRX or bios font from the file named filename.
  */
-FONT *load_grx_or_bios_font(AL_CONST char *filename, RGB *pal, void *param) {
+FONT *load_grx_or_bios_font(AL_CONST char *filename, RGB *pal, void *param) 
+{
     PACKFILE *f;
     FONT *font = NULL;
     char tmp[16];
@@ -108,7 +113,8 @@ FONT *load_grx_or_bios_font(AL_CONST char *filename, RGB *pal, void *param) {
 
     if (ustricmp(get_extension(filename), uconvert_ascii("fnt", tmp)) == 0) {
         f = pack_fopen(filename, F_READ);
-        if (!f) return NULL;
+        if (!f) 
+       return NULL;
 
         id = pack_igetl(f);
         pack_fclose(f);

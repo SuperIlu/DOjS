@@ -99,21 +99,24 @@ See [DOStodon](https://github.com/SuperIlu/DOStodon) for an complex examples. It
 ## A minimal script
 You can find the following example in `examples/exampl.js`:
 ```javascript
+var str='';
+
 /*
 ** This function is called once when the script is started.
 */
 function Setup() {
-    pink = new Color(241, 66, 244, 255); // define the color pink
+    pink = Color(241, 66, 244, 255); // define the color pink
 }
 
 /*
 ** This function is called repeatedly until ESC is pressed or Stop() is called.
 */
 function Loop() {
-    ClearScreen(EGA.BLACK);
+    ClearScreen(EGA.LIGHT_BLUE);
     TextXY(SizeX() / 2, SizeY() / 2, "Hello World!", pink, NO_COLOR);
 
-    TextXY(10, 10, "rate=" + GetFramerate(), EGA.BLACK, EGA.LIGHT_BLUE);
+    TextXY(10, 10, "rate=" + GetFramerate(), EGA.WHITE, EGA.LIGHT_BLUE);
+    TextXY(10, 20, "input=" + str, EGA.WHITE, EGA.LIGHT_BLUE);
 }
 
 /*

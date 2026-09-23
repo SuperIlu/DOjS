@@ -20,6 +20,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+var str = '';
+
 /*
 ** This function is called once when the script is started.
 */
@@ -31,10 +33,11 @@ function Setup() {
 ** This function is repeatedly until ESC is pressed or Stop() is called.
 */
 function Loop() {
-    ClearScreen(EGA.BLACK);
+    ClearScreen(EGA.LIGHT_BLUE);
     TextXY(SizeX() / 2, SizeY() / 2, "Hello World!", pink, NO_COLOR);
 
-    TextXY(10, 10, "rate=" + GetFramerate(), EGA.BLACK, EGA.LIGHT_BLUE);
+    TextXY(10, 10, "rate=" + GetFramerate(), EGA.WHITE, EGA.LIGHT_BLUE);
+    TextXY(10, 20, "input=" + str, EGA.WHITE, EGA.LIGHT_BLUE);
 }
 
 /*
